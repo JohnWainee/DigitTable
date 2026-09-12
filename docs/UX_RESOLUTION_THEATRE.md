@@ -7,7 +7,7 @@ The rules engine stays mostly invisible; fiction, consequence, and player choice
 ## State machine
 
 ```text
-compose → ready → rolling-player → rolling-opposition → reveal
+compose → ready → rolling-player → waiting-on-gm → rolling-opposition → reveal
         → allocating → applying → resolved | cancelled | interrupted
 ```
 
@@ -33,5 +33,7 @@ Respect OS reduced-motion. Provide separate animation, flashing, camera, sound, 
 ## Shared cutaways and safety
 
 Every client receives the same semantic scene/event ID, but timing tolerates slow devices and late joins. A client can skip locally without blocking resolution.
+
+Cutaways never move focus without user action. Ordinary changes use a polite live region; only safety interrupts may be assertive. Every cutaway is dismissible through the same semantic control in cinematic, standard, and reduced modes. The `waiting-on-gm` state is announced once and remains visible without repeated announcements.
 
 Pause, Fade/Veil, and Skip remain reachable at all times and do not reveal their actor. Safety activation interrupts presentation and suppresses queued effects cleanly.

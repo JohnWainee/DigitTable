@@ -13,10 +13,11 @@ Start with [CLAUDE_HANDOFF.md](CLAUDE_HANDOFF.md). The canonical technical propo
 ## Proposed stack
 
 - React, TypeScript, and Vite for the application shell
-- Firebase Anonymous Auth and Realtime Database for rooms and live state
+- Firebase Anonymous Auth, Functions, and Firestore for authoritative rooms and live state
+- Realtime Database for ephemeral presence
 - SVG for interactive maps
-- PixiJS for template-specific 2D effects
-- React Three Fiber only for selective 3D moments such as dice
+- PixiJS later for template-specific 2D effects after the core flow is proven
+- React Three Fiber deferred until after the core flow is proven
 - A service worker and local persistence for resilient PWA behavior
 
 No copyrighted game text or art should be committed unless its use and distribution are authorized. Rules/content packs must remain separable from the platform.

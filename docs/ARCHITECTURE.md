@@ -1,6 +1,6 @@
 # DigiTable architecture specification
 
-- **Status:** Proposed for review
+- **Status:** Revised after independent review; ready for second review
 - **Date:** 2026-09-12
 - **Deciders:** JohnWainee, implementation reviewer, security reviewer
 - **Initial template:** *Eat the Reich*
@@ -12,7 +12,7 @@ DigiTable is a template-driven, mobile-first digital play surface for narrative 
 
 The first playable milestone is one opposed action completed by two players and one GM on separate devices. The action is submitted as an idempotent command, validated by trusted server code, stored as ordered events, projected to each authorized client, and rendered as accessible interface state plus optional synchronized theatre.
 
-The proposed stack is an npm/TypeScript monorepo, React/Vite client, Firebase Anonymous Authentication, Realtime Database, and Firebase Functions. SVG is the map format. DOM/CSS is the primary UI. PixiJS is reserved for 2D presentation; React Three Fiber is deferred until the core flow is proven.
+The proposed stack is an npm/TypeScript monorepo, React/Vite client, Firebase Anonymous Authentication, Firestore for authoritative room data, Realtime Database for presence, and Firebase Functions. SVG is the map format. DOM/CSS is the primary UI. PixiJS is reserved for later 2D presentation; React Three Fiber is deferred until the core flow is proven.
 
 ## 2. Requirements and constraints
 
@@ -45,7 +45,7 @@ The proposed stack is an npm/TypeScript monorepo, React/Vite client, Firebase An
 | Attribute | Initial target |
 |---|---|
 | UI response | Local feedback under 100 ms |
-| Accepted command | Reflected under 750 ms p95 on a warm regional path |
+| Accepted command | Reflected under 750 ms p95 on a warm regional path; cold-path target measured before preview |
 | Reconnect | No duplicate accepted action after refresh or retry |
 | Accessibility | WCAG 2.2 AA target; equivalent non-animated path |
 | Security | Hidden data never delivered to unauthorized clients |
@@ -67,8 +67,6 @@ apps/
 packages/
   contracts/           wire schemas, IDs, errors, versions
   engine/              authorization, decisions, reducers, projections
-  platform/            session/map/encounter/journal interfaces
-  presentation/        semantic theatre model and render adapters
   testing/             fixtures, contract tests, emulator helpers
 templates/
   eat-the-reich/       manifest, rules, theme, placeholder content
@@ -82,24 +80,27 @@ templates/
 
 ### ADR-002: Trusted command authority
 
-**Decision:** Clients do not directly mutate authoritative game state. They send versioned, idempotent commands to a Firebase Function. The function authenticates the actor, reads the current revision, invokes the shared pure engine, and atomically commits command receipt, accepted events, revision, and projections.
+**Decision:** Clients do not directly mutate authoritative game state. They send versioned, idempotent commands to a callable Firebase Function. The function authenticates the actor, performs platform authorization, and runs one Firestore transaction that reads the room authority document, checks/creates the actor-private receipt, invokes the shared pure engine, and atomically commits accepted events, revision, and viewer projections. RTDB is used only for ephemeral presence.
 
 Firebase rules can protect paths and shapes, but should not implement game rules, allocation invariants, hidden-state decisions, or multipath transitions.
 
 | Option | Complexity | Correctness | Decision |
 |---|---:|---:|---|
 | Direct RTDB writes | Low | Weak trust boundary | Reject for game state |
-| Functions + RTDB | Medium | Strong for v1 | Choose |
-| Firestore transactions | Medium | Strong | Revisit if query needs dominate |
+| Functions + RTDB authority | Medium | Cannot conditionally update separated paths | Reject |
+| Functions + Firestore authority, RTDB presence | Medium | Conditional multi-document atomicity | Choose |
 | Durable Object per room | Medium-high | Strong ordering | Revisit if contention/latency justifies it |
 
-**Consequence:** Multiplayer writes require connectivity and may see cold starts. Cached reads remain available. Client retries reuse the same command ID.
+**Consequence:** Multiplayer writes require connectivity and may see cold starts. Cached reads remain available. Client retries reuse the same command ID. Firestore and Functions require a billing-enabled project. Staging and production may set one warm command-function instance if measured cold-path latency warrants the fixed cost.
+
+The receipt check is inside the transaction. Each Function invocation generates its candidate random values once, before entering the transaction, and passes them as immutable input to the pure transaction callback. If Firestore retries that callback, it reuses those values. Concurrent invocations with the same command ID may generate different candidates, but only the transaction winner commits; each loser observes and returns the winner's stored result without exposing its candidate.
 
 ### ADR-003: Events plus materialized projections
 
 **Decision:** Store immutable accepted events for audit/reconnect and materialized viewer projections for fast reads. This is pragmatic event sourcing, not permanent replay-from-genesis.
 
-- Events use a server-assigned room sequence.
+- Events use a server-assigned room sequence allocated in the same transaction as their receipt and projections.
+- `roomRevision` counts accepted commands; `sequence` orders individual events, so one revision may contain several consecutive sequences.
 - Shared, GM, and player projections update atomically with acceptance.
 - Periodic snapshots bound replay and permit compaction.
 - Corrections are new events; accepted events are not edited by clients.
@@ -118,7 +119,7 @@ Animations can be reduced, skipped, late, or unavailable without blocking resolu
 
 ### ADR-006: Firebase-first delivery
 
-**Decision:** Use Firebase Auth, RTDB, Functions, Hosting preview channels, and Emulator Suite initially. Keep Firebase behind adapters so static hosting or storage can change later.
+**Decision:** Use Firebase Auth, Firestore, RTDB presence, Functions, Hosting preview channels, and Emulator Suite initially. Keep Firebase behind adapters so static hosting or storage can change later.
 
 ## 5. System context
 
@@ -129,8 +130,8 @@ Animations can be reduced, skipped, late, or unavailable without blocking resolu
       │ authorized realtime reads         └─────────┬──────────┘
 ┌─────▼────────────┐                                │ atomic update
 │ Firebase Auth + │ ◀──────────────────────────────┘
-│ Realtime DB     │
-└─────▲────────────┘
+│ Firestore       │
+└─────▲────────────┘       RTDB: ephemeral presence only
       │ authorized realtime reads
 ┌─────┴──────────┐
 │ GM and shared │
@@ -154,11 +155,11 @@ The role in the URL is presentation intent, not authorization.
 
 ### State layers
 
-- Server cache: authorized projection and event tail.
-- Domain state: normalized engine projection, never mutated by views.
+- Server cache: authorized projection and event tail; projections are authoritative.
+- Domain state: normalized viewer projection, never reconstructed from partial events or mutated by views.
 - Ephemeral UI: panels, draft choices, theatre/focus state.
 - Durable preferences: motion, audio, theme, accessibility.
-- Outbox: unsent commands with UUID, revision, and status.
+- Outbox: unsent commands with UUID, optional revision guard, and status. Pending UI may be optimistic; domain state is not.
 
 Start with React context/hooks and an explicit external-store adapter. Add a broader state framework only when evidence warrants it.
 
@@ -173,16 +174,20 @@ interface GameTemplate<TState, TCommand, TEvent> {
   manifest: TemplateManifest;
   schemas: TemplateSchemas<TState, TCommand, TEvent>;
   initialState(input: InitialCampaignInput): TState;
-  authorize(ctx: CommandContext, command: TCommand): AuthorizationResult;
+  authorizeGameAction(ctx: AuthorizedMemberContext, command: TCommand): AuthorizationResult;
   decide(ctx: DecisionContext<TState>, command: TCommand): Decision<TEvent>;
   reduce(state: TState, event: TEvent): TState;
   project(state: TState, viewer: ViewerContext): ViewerProjection;
+  explainPool(projection: ViewerProjection, input: PoolInput): PoolExplanation;
+  validAllocations(projection: ViewerProjection, roll: VisibleRoll): AllocationOption[];
   theatre(event: TEvent, prefs: PresentationPreferences): TheatreScene | null;
   migrate(record: VersionedTemplateRecord): MigrationResult<TState>;
 }
 ```
 
-`decide` and `reduce` are pure. Trusted handlers inject random values into `DecisionContext`; emitted events capture the generated faces. Tests inject deterministic values without requiring seeded live play.
+Platform code first checks room membership, seat capability, room status, payload bounds, and command-family guards; a template cannot weaken those checks. `authorizeGameAction`, `decide`, `reduce`, `project`, `explainPool`, and `validAllocations` are pure. Trusted handlers generate candidate values once per invocation with `crypto.randomInt` before entering the transaction and inject them into `DecisionContext`; emitted events capture only the committed faces. Tests inject deterministic values without requiring seeded live play.
+
+`Decision` assigns every emitted event a destination of `shared`, `gm`, or one or more member IDs. An event copied to more than one physical visibility partition retains one logical event ID, so storage document paths—not `eventId` alone—are unique. `project` returns a full bounded projection in v1; each projection must remain below 64 KiB. Patch projections require a later measured need.
 
 ```ts
 interface CommandEnvelope<T> {
@@ -190,10 +195,15 @@ interface CommandEnvelope<T> {
   roomId: string;
   templateId: string;
   templateVersion: string;
-  expectedRevision: number;
+  expectedRevision?: number;
   issuedAtClient: string;
   payload: T;
 }
+
+type EventActor =
+  | { kind: "member"; memberId: string }
+  | { kind: "anonymous" }
+  | { kind: "system" };
 
 interface EventEnvelope<T> {
   eventId: string;
@@ -203,38 +213,49 @@ interface EventEnvelope<T> {
   templateId: string;
   templateVersion: string;
   schemaVersion: number;
-  actorId: string;
+  actor: EventActor;
   occurredAtServer: string;
   payload: T;
 }
 ```
 
-Actor identity and server time come from trusted context. Events are stored physically under their authorized visibility path; a visibility string alone is not security.
+Actor identity and server time come from trusted context. Safety events always use `{ kind: "anonymous" }`. Events are stored physically under their authorized visibility path; a visibility string alone is not security.
+
+Only scene transitions, encounter loads, GM-seat administration, and other explicitly enumerated room-wide transitions require `expectedRevision`. Entity-scoped actions use entity preconditions such as “roll remains unresolved.” Safety interrupts are never revision-gated.
 
 ## 8. Data model
 
 ```text
 rooms/{roomId}/
-  meta/                       template, status, revision, gmUid, timestamps
-  members/{uid}/              role, display name, join/last-seen times
+  meta/                       template, status, revision, gmMemberId, timestamps
+  members/{memberId}/         uid binding, capabilities, display name, join/last-seen times
   projections/
     shared/{...}
     gm/{...}
-    players/{uid}/{...}
+    players/{memberId}/{...}
   events/
     shared/{sequence}/{event}
     gm/{sequence}/{event}
-    players/{uid}/{sequence}/{event}
-  commands/{commandId}/       status, accepted sequence, error, received time
-  snapshots/{sequence}/       shared state, checksums, versions
-  presence/{uid}/{connectionId}/
+    players/{memberId}/{sequence}/{event}
+  receipts/{memberId}/{commandId}/ status, accepted sequence, stable error code, result
+  snapshots/{sequence}/       full authority state, checksums, versions; service-only
+roomCodes/{code}/              roomId; service-only, rotatable
+
+RTDB:
+presence/{roomId}/{memberId}/{connectionId}/
 ```
 
-- Clients read only authorized projection/event paths.
+- Clients read only authorized projection/event/receipt paths. Rules compare the seat's bound UID with `auth.uid`.
 - Game commands go through Functions; direct client writes are limited to presence and explicitly safe preferences/drafts.
 - Only service code writes roles, GM claims, accepted events, receipts, and projections.
-- GM claim is transactional and UID-bound; transfer/release is an audited command.
+- GM claim is transactional and member-seat-bound; transfer/release/recovery is an audited command.
 - Human room codes are locators, not secrets.
+- Player and GM data survive UID replacement because private data is keyed by stable room-scoped member ID.
+- A `table` seat has shared-read capability and cannot issue game or safety commands. The GM admits it using a separate table code. It must receive a user gesture through an “Enable audio” control before sound playback.
+- Draft choices remain local-only in v1.
+- One authenticated identity holds one participant seat/capability per room in v1. Local development provides multi-role simulation rather than weakening this constraint.
+
+When a seat is claimed, the service generates its one-time recovery code; the GM seat uses a separately protected GM recovery code. Only salted hashes are stored on a service-only path. Redeeming a code transactionally rebinds that seat to the caller's current UID, invalidates the code, revokes the prior binding, and records an audit event without exposing the code. Durable account linking may replace this mechanism later without rekeying campaign data.
 
 ### Proposed retention for review
 
@@ -244,23 +265,24 @@ rooms/{roomId}/
 - Diagnostic logs omit content and use the shortest practical retention.
 
 Do not automate deletion until product approves values and recovery behavior.
+Because anonymous users have no contact channel, retention prompts are in-app on the next visit. A hard-delete policy and any additional grace period require product approval before automation.
 
 ## 9. Critical flows
 
 ### Join and GM claim
 
 1. Obtain anonymous Firebase identity.
-2. Submit room code and requested role.
-3. Function validates room/template status.
-4. Create player membership or transactionally claim the empty/same-UID GM seat.
+2. Submit room code and requested capability.
+3. Function resolves the service-only code index, enforces App Check, validates room/template status, capacity, and admission policy, and applies IP/room throttles.
+4. Create a stable member seat or transactionally claim the empty/same-member GM seat; show its one-time recovery code.
 5. Subscribe only to authorized paths.
 
 ### Opposed action
 
 1. Player composes an action; engine explains the pool.
-2. `BeginAction` is validated at the current revision.
+2. `BeginAction` is validated against its relevant entity preconditions.
 3. Server injects random dice and emits `ActionRolled`.
-4. GM accepts/submits opposition; server emits `OppositionRolled`.
+4. GM submits opposition pool inputs; the server validates them, generates the opposition faces, and emits `OppositionRolled`.
 5. Player submits `AllocateResults` against that unresolved roll.
 6. Server verifies actor, faces, targets, totals, and state.
 7. One atomic acceptance emits consequences and updates projections.
@@ -270,14 +292,14 @@ Do not automate deletion until product approves values and recovery behavior.
 
 1. Restore identity and cached projection.
 2. Subscribe from the last sequence/revision.
-3. Apply missing events in order.
-4. Query receipt for every outbox command ID.
+3. Read the authorized event tail for timeline and theatre only; per-path sequence gaps are expected.
+4. Query the actor-private receipt for every outbox command ID.
 5. Remove accepted commands; retry pending safe commands unchanged.
 6. Surface stale choices that require rebuilding.
 
 ### Safety interrupt
 
-Any member can submit Pause, Fade/Veil, or Skip. The server emits participant-anonymous safety state. Every client immediately stops presentation; resumption is a separate command. Actor identity is never shown and is retained only if operationally necessary.
+Any player or GM can submit Pause, Fade/Veil, or Skip without a revision guard. The server emits a shared event with an anonymous actor and stores any receipt only in the submitting member's private partition. Every client immediately stops presentation; resumption is a separate command. Client-readable data and operational logs contain no actor UID/member ID for the safety action.
 
 ## 10. Resolution Theatre
 
@@ -299,29 +321,34 @@ interface TheatreScene {
 - Local skip/reduced-motion never blocks game state.
 - Asset manifests include license metadata.
 - Audio requires user permission and visible controls.
+- Cutaways never move focus without a user action and are dismissible through the same semantic control at every presentation level.
+- Status and ordinary results use a polite live region; safety interrupts alone may use an assertive live region.
+- `waiting-on-gm` is a semantic state announced once, not merely an animation phase.
 
 ## 11. Security model
 
-Browser inputs, cache, room codes, roles, timestamps, and calculated pools are untrusted. Auth identity is necessary but insufficient; functions check membership and role. RTDB rules independently prevent bypass and cross-viewer reads.
+Browser inputs, cache, room codes, roles, timestamps, and calculated pools are untrusted. Auth identity is necessary but insufficient; functions check membership and capability. Firestore rules independently prevent cross-viewer reads; RTDB rules isolate presence writes and reads.
 
 | Threat | Mitigation |
 |---|---|
 | Player reads GM/private data | Separate paths, viewer projections, emulator denial tests |
 | Client forges dice/result | Server randomness and validation |
-| Retry duplicates consequence | Command receipts and atomic idempotent acceptance |
-| Room-code guessing | Join policy, optional passphrase/invite, rate limits |
+| Retry duplicates consequence | Receipt check and effects in one Firestore transaction |
+| Room-code guessing | Rotatable codes, admission policy, App Check, IP/room throttles |
 | GM seat race | Trusted transaction |
 | Malicious content | No remote executable templates; sanitize rich text; CSP/asset allowlist |
-| Spam/oversized payload | Runtime schemas, limits, per-UID/room throttles |
+| Spam/oversized payload | Runtime schemas, room capacity, App Check, IP/room throttles |
 | Hidden data in logs | Structured redaction; no narrative payload logging |
 
 Complete a focused threat model before public release, especially recovery, moderation, deletion, and denial-of-service cost.
 
+Before public preview, enable Firebase App Check with the web reCAPTCHA Enterprise provider for callable Functions, Firestore, RTDB, and Authentication after monitoring legitimate traffic. App Check reduces automated abuse but is not user authorization. Cap room membership at eight participant seats plus one table seat. Realtime milestone commands include kick, code rotation, and admission closure; anonymous bans are not durable and therefore do not replace code rotation.
+
 ## 12. Reliability, scale, and cost
 
-- Co-locate Functions and RTDB where supported.
+- Co-locate Functions, Firestore, and RTDB where supported.
 - Retry only idempotent IDs with exponential backoff and jitter.
-- Atomically update event, receipt, revision, and projections.
+- Atomically update event, actor-private receipt, revision, and projections in Firestore.
 - Bound payload/event sizes and initial event history.
 - Snapshot and archive before compaction.
 - Cache the PWA shell and authorized assets; do not assume private caches are share-safe.
@@ -331,9 +358,9 @@ The expected 3–8 clients per room fit Firebase comfortably. Do not optimize fo
 
 ## 13. Testing and review
 
-- **Unit:** `authorize/decide/reduce/project`, dice/allocation invariants, migrations.
+- **Unit:** platform authorization, `authorizeGameAction/decide/reduce/project`, dice/allocation invariants, migrations.
 - **Contract:** client/function/stored-fixture schemas and every template.
-- **Integration:** Emulator Auth, Rules, Functions, RTDB atomicity/idempotency.
+- **Integration:** Emulator Auth, Rules, Functions, Firestore transaction atomicity/idempotency, and RTDB presence.
 - **Component:** accessible interactions, focus, reduced motion, explanations.
 - **E2E:** GM/player/table contexts at phone/tablet/desktop widths.
 - **Resilience:** disconnect after submit, duplicate submit, stale revision, late join.
@@ -343,10 +370,14 @@ Required vertical-slice proofs:
 
 - Valid action resolves once and projects consistently.
 - Duplicate command does not reroll.
+- Two concurrent invocations with one command ID produce one event and identical responses.
 - Player cannot allocate another player's roll or exceed successes.
 - Player cannot read GM or another player's projection.
-- Refresh during theatre does not replay consequences.
-- Keyboard/screen-reader/reduced-motion route completes the same action.
+- Refresh does not resubmit an accepted outbox command or re-fire theatre for an already presented event ID.
+- No client-readable path or operational log identifies a safety-interrupt actor.
+- A lost anonymous identity can recover its GM seat without moving private campaign data.
+- Automated checks prove keyboard operation, accessible names/roles, focus behavior, live-region semantics, reduced motion, and axe rules.
+- Manual milestone checks cover VoiceOver on iOS and NVDA on Windows for the complete action.
 
 ## 14. Environments and CI
 
@@ -357,13 +388,13 @@ Required vertical-slice proofs:
 | Staging | Multi-device playtest | Explicit test campaigns |
 | Production | Approved release | Retention/export enforced |
 
-CI runs formatting/lint/typecheck, unit/contract tests, emulator integration/rules tests, production build/bundle budgets, and Playwright accessibility smoke tests. Preview deploy follows automated checks; production requires manual approval.
+Early CI runs formatting/lint/typecheck, unit/contract tests, and targeted Playwright accessibility checks. Emulator integration/rules tests enter with realtime work. Preview deploys, bundle budgets, production observability, and production approval gates enter before public preview rather than burdening the local engine PRs.
 
 No production credentials or licensed source assets are committed. Firebase web configuration is public by design, but environment separation and rules remain mandatory.
 
 ## 15. Observability
 
-- Structured server logs: command ID, hashed room ID, event type, latency, result code—never narrative/private payloads.
+- Structured server logs: command ID, hashed room ID, event type, latency, result code—never narrative/private payloads. Safety commands omit UID/member identity and use a non-correlatable command reference.
 - Metrics: acceptance/rejection, p50/p95 latency, reconnect success, duplicate suppression, active rooms, bandwidth/function cost.
 - Alerts: sustained function failures, permission-denial anomalies, cost spikes, projection transaction failure.
 - Sampled client reports include only redacted error codes and app/template versions.
@@ -380,31 +411,36 @@ No production credentials or licensed source assets are committed. Firebase web 
 - [ ] Select room join policy: open code, code + passphrase, or invites.
 - [ ] Approve retention/export/deletion behavior.
 
+### Before public preview
+
+- [ ] Enable and monitor App Check, then enforce it for public clients.
+- [ ] Validate warm and cold command latency; choose whether to fund a warm instance.
+- [ ] Complete VoiceOver/iOS and NVDA/Windows manual flows.
+
 ### After the local vertical slice
 
 - [ ] Decide whether physical 3D dice enter v1.
-- [ ] Decide whether durable account linking/recovery is needed.
+- [ ] Decide whether durable account linking should replace recovery codes.
 - [ ] Decide whether static hosting moves to Cloudflare.
 - [ ] Select a second template to validate the extension boundary.
 
 ## 17. Implementation sequence
 
-1. Add governance (`AGENTS.md`, review rule, handoff log) and tooling.
-2. Scaffold workspaces and CI without production credentials.
-3. Implement contracts and pure in-memory engine with fixtures.
-4. Build one local multi-role opposed-action vertical slice.
-5. Independently review and adjust contracts before persistence.
-6. Add Emulator adapters, Rules, Function authority, and integration tests.
-7. Add reconnect/outbox and physical-device playtest.
-8. Expand maps, encounters, dossiers, safety, and history.
-9. Add presentation renderers and production hardening.
+1. **PR 1 — scaffold and engine:** governance, workspaces, contracts, pure engine, initial template fixture, deterministic dice, pool/allocation queries, projection-isolation property tests.
+2. **PR 2 — player surface:** React/Vite app, in-memory repository, player flow, phone-width keyboard/reduced-motion/axe checks.
+3. **PR 3 — GM and shared views:** GM console, read-only table capability, multi-role local simulation, desktop-width tests.
+4. Independently review and adjust contracts before persistence.
+5. Add Emulator adapters, rules, transactional Function authority, recovery, App Check monitoring, and integration tests.
+6. Add reconnect/outbox and physical-device playtest.
+7. Expand maps, encounters, dossiers, safety, and history.
+8. Add presentation renderers and production hardening.
 
-The next implementation PR covers steps 1–4 only. It must not provision production Firebase, ingest licensed content, introduce Three.js, or design a generic rules DSL.
+The next implementation PR covers step 1 only. It must not provision production Firebase, ingest licensed content, introduce React/PixiJS/Three.js, or design a generic rules DSL.
 
 ## 18. Revisit triggers
 
-- Move from RTDB if query/index requirements dominate subscriptions.
+- Revisit Firestore authority only if measured cost, contention, or query requirements justify a different serialized store.
 - Adopt a per-room serialized service only if measured contention/latency warrants it.
 - Extract a template SDK only after a second game proves shared contracts.
 - Add signed/public content packs only after rights, moderation, and update security are designed.
-- Add durable accounts when recovery needs outweigh anonymous-play simplicity.
+- Add durable accounts when they improve recovery and ownership enough to replace recovery codes.

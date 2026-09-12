@@ -1,6 +1,6 @@
 # Claude implementation handoff
 
-- **Status:** Architecture ready for review; implementation has not started
+- **Status:** First architecture review resolved; ready for independent second pass; implementation has not started
 - **Branch:** `codex/eat-the-reich-platform-plan`
 - **PR:** `JohnWainee/DigitTable#1`
 - **Last updated:** 2026-09-12 by Codex
@@ -17,7 +17,7 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
 - Architecture work is on this branch and draft PR #1.
 - No application scaffold, dependencies, Firebase project, or production credentials exist yet.
 - No licensed game text, art, or audio is approved for commit.
-- The architecture selects trusted Firebase Functions as command authority and RTDB as realtime event/projection storage.
+- The revised architecture selects trusted Firebase Functions as command authority, Firestore as transactional event/projection storage, and RTDB for ephemeral presence.
 
 ## Read in this order
 
@@ -30,39 +30,39 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
 
 Also inspect `JohnWainee/signal-bleed` `AGENTS.md`, `README.md`, and `HANDOFF.md` for reference behavior. Its repository instructions apply only inside that repository.
 
-## Immediate assignment: architecture review
+## First review and resolution
 
-Perform a fresh, independent review of `docs/ARCHITECTURE.md`. Report findings by severity and propose concrete edits. Challenge:
+Claude's independent review is recorded by commit `4324ecb` on branch `claude/codex-handoff-review-bc3ucm`. Every finding is dispositioned in [`docs/reviews/2026-09-12-architecture-review-resolution.md`](docs/reviews/2026-09-12-architecture-review-resolution.md). The principal changes are:
 
-- Functions + RTDB versus direct writes or Firestore;
-- atomic event/receipt/projection updates and room sequence allocation;
-- shared, GM-only, and per-player path isolation;
-- anonymous-auth recovery and room-join threats;
-- whether the template contract exposes too much before a second game;
-- DOM/Resolution Theatre accessibility equivalence;
-- delivery scope for a small team.
+- Firestore is authoritative and transactional; RTDB is presence-only.
+- Stable member seats decouple private data and GM ownership from anonymous UIDs.
+- Safety actors and receipts are anonymous/private by construction.
+- Viewer projections are authoritative; event tails do not reconstruct client state.
+- Platform authorization and template mechanics are separate contracts.
+- Accessibility verification and presentation semantics are explicit.
+- The original vertical-slice PR is split into three reviewable PRs.
 
-Do not begin broad implementation until John approves the architectural direction or review changes are folded into PR #1.
+## Immediate assignment: second architecture review
 
-## First implementation PR after approval
+Perform an independent second pass over `docs/ARCHITECTURE.md`, the supporting docs, and the resolution record. Confirm each first-pass finding is actually closed, identify regressions or new risks introduced by Firestore and recovery codes, and report any remaining findings by severity with concrete edits. Pay special attention to transaction document boundaries/write counts, randomness under transaction retry, security-rule feasibility, recovery credential threats, safety-event correlation, and consistency across documents.
+
+Do not begin implementation until John approves the revised architecture or second-pass changes are folded into PR #1.
+
+## First implementation PR after approval: scaffold and engine
 
 Scope it to a local-only vertical slice:
 
 1. Add `AGENTS.md` with architecture/handoff and independent-review expectations.
-2. Scaffold npm workspaces, TypeScript, React, Vite, Vitest, ESLint, formatting, and Playwright.
-3. Create `contracts`, `engine`, `platform`, `presentation`, and initial-template packages at the documented boundaries.
-4. Implement an in-memory repository; do not configure production Firebase.
-5. Use original placeholder data for one character, location, objective, and threat.
-6. Complete choose action → explain pool → player roll → opposition → allocate → consequences → event log.
-7. Show the same accepted semantic result in player, GM, and table views.
-8. Support keyboard, screen reader, and reduced-motion paths in that flow.
+2. Scaffold npm workspaces, TypeScript, Vitest, ESLint, and formatting without React or Firebase.
+3. Create `contracts`, `engine`, `testing`, and the initial-template package.
+4. Use original placeholder data for one character, location, objective, and threat.
+5. Implement pure `decide`, `reduce`, `project`, `explainPool`, and `validAllocations` for one opposed action with deterministic injected dice.
 
 ### Required checks
 
 - Format, lint, and typecheck.
-- Unit tests for `authorize`, `decide`, `reduce`, `project`, dice interpretation, and allocation invariants.
-- Component tests for accessible pool explanation and allocation.
-- Playwright smoke tests at phone and desktop widths.
+- Unit tests for platform authorization, `authorizeGameAction`, `decide`, `reduce`, `project`, dice interpretation, and allocation invariants.
+- Property/fixture tests proving one member projection never contains another member's private state.
 - No Three.js, production credentials, licensed source assets, marketplace, tactical grid, or generic rules DSL.
 
 ## Definition of first playable
@@ -72,7 +72,7 @@ After the later realtime PR, two players and one GM can join a room, load the sa
 ## Decisions requiring John
 
 - Game-content distribution rights and approved placeholder fixture.
-- Architecture approval after independent review.
+- Architecture approval after the independent second review.
 - Room join policy and campaign retention/export/deletion policy.
 - Firebase staging/production projects and region before realtime work.
 - Whether 3D dice, durable accounts, or Cloudflare hosting enter the first public milestone.
@@ -88,4 +88,4 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-Independent architecture review of PR #1, followed by John's approval or requested revisions. Only then create the local vertical-slice implementation branch/PR.
+Independent second-pass architecture review using the checklist in `docs/reviews/2026-09-12-architecture-review-resolution.md`, followed by John's approval or requested revisions. Only then create the scaffold-and-engine implementation branch/PR.
