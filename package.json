@@ -1,0 +1,37 @@
+{
+  "name": "digitable",
+  "private": true,
+  "version": "0.0.0",
+  "description": "DigiTable: a template-driven, mobile-first digital play surface for narrative tabletop RPGs.",
+  "license": "SEE LICENSE IN LICENSE",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "packages/*",
+    "templates/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "format": "prettier --check .",
+    "format:write": "prettier --write .",
+    "lint": "eslint .",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build": "npm run build --workspaces --if-present",
+    "check": "npm run format && npm run lint && npm run typecheck && npm run test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "@types/node": "^22.9.0",
+    "@vitest/coverage-v8": "^2.1.4",
+    "eslint": "^9.13.0",
+    "eslint-config-prettier": "^9.1.0",
+    "fast-check": "^3.23.1",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.12.2",
+    "vitest": "^2.1.4"
+  }
+}
