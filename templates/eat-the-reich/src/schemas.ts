@@ -6,6 +6,8 @@ import type {
   EatTheReichState,
   LocationState,
   ObjectiveState,
+  RollAllocation,
+  RollState,
   ThreatState,
 } from "./state.js";
 import type { EatTheReichView } from "./view.js";
@@ -36,6 +38,16 @@ function expectString(value: unknown, where: string): string {
 function expectNumber(value: unknown, where: string): number {
   if (typeof value !== "number" || !Number.isFinite(value)) fail(where, `expected finite number`);
   return value;
+}
+
+function expectBoolean(value: unknown, where: string): boolean {
+  if (typeof value !== "boolean") fail(where, `expected boolean, got ${typeof value}`);
+  return value;
+}
+
+function expectNumberArray(value: unknown, where: string): number[] {
+  if (!Array.isArray(value)) fail(where, "expected an array of finite numbers");
+  return value.map((item, index) => expectNumber(item, `${where}[${index}]`));
 }
 
 function expectStringArray(value: unknown, where: string): string[] {
@@ -103,6 +115,72 @@ function parseThreat(value: unknown): ThreatState {
   };
 }
 
+function parseAllocation(value: unknown, where: string): RollAllocation {
+  if (!isRecord(value)) fail(where, "expected an object");
+  return {
+    optionId: expectString(value.optionId, `${where}.optionId`),
+    uses: expectNumber(value.uses, `${where}.uses`),
+  };
+}
+
+function parseRoll(value: unknown, where: string): RollState {
+  if (!isRecord(value)) fail(where, "expected an object");
+  const status = value.status;
+  if (
+    status !== "awaiting_opposition" &&
+    status !== "awaiting_allocation" &&
+    status !== "resolved"
+  ) {
+    fail(`${where}.status`, "expected awaiting_opposition|awaiting_allocation|resolved");
+  }
+  const poolComponents = value.poolComponents;
+  if (!isRecord(poolComponents)) fail(`${where}.poolComponents`, "expected an object");
+  const allocations = value.allocations;
+  if (allocations !== undefined && !Array.isArray(allocations)) {
+    fail(`${where}.allocations`, "expected an array");
+  }
+  return {
+    id: expectString(value.id, `${where}.id`),
+    actorMemberId: asMemberId(expectString(value.actorMemberId, `${where}.actorMemberId`)),
+    threatId: expectString(value.threatId, `${where}.threatId`),
+    actionId: expectString(value.actionId, `${where}.actionId`),
+    status,
+    playerFaces: expectNumberArray(value.playerFaces, `${where}.playerFaces`),
+    playerHits: expectNumber(value.playerHits, `${where}.playerHits`),
+    poolComponents: {
+      nerve: expectNumber(poolComponents.nerve, `${where}.poolComponents.nerve`),
+      gear: expectNumber(poolComponents.gear, `${where}.poolComponents.gear`),
+      hiddenModifier: expectNumber(
+        poolComponents.hiddenModifier,
+        `${where}.poolComponents.hiddenModifier`,
+      ),
+    },
+    hiddenAdjustmentApplied: expectBoolean(
+      value.hiddenAdjustmentApplied,
+      `${where}.hiddenAdjustmentApplied`,
+    ),
+    ...(value.pushDice === undefined
+      ? {}
+      : { pushDice: expectNumber(value.pushDice, `${where}.pushDice`) }),
+    ...(value.oppositionFaces === undefined
+      ? {}
+      : { oppositionFaces: expectNumberArray(value.oppositionFaces, `${where}.oppositionFaces`) }),
+    ...(value.oppositionHits === undefined
+      ? {}
+      : { oppositionHits: expectNumber(value.oppositionHits, `${where}.oppositionHits`) }),
+    ...(value.netSuccesses === undefined
+      ? {}
+      : { netSuccesses: expectNumber(value.netSuccesses, `${where}.netSuccesses`) }),
+    ...(allocations === undefined
+      ? {}
+      : {
+          allocations: allocations.map((entry, index) =>
+            parseAllocation(entry, `${where}.allocations[${index}]`),
+          ),
+        }),
+  };
+}
+
 export function parseState(value: unknown): EatTheReichState {
   if (!isRecord(value)) fail("state", "expected an object");
   if (value.schemaVersion !== 1) fail("state.schemaVersion", "expected 1");
@@ -111,11 +189,7 @@ export function parseState(value: unknown): EatTheReichState {
   const rolls = value.rolls;
   if (!isRecord(characters)) fail("state.characters", "expected an object");
   if (!isRecord(threats)) fail("state.threats", "expected an object");
-  if (!isRecord(rolls) || Object.keys(rolls).length > 0) {
-    // Phase 1A fixtures only ever validate freshly-initialized state; a
-    // richer rolls-map validator arrives when persistence lands.
-    if (!isRecord(rolls)) fail("state.rolls", "expected an object");
-  }
+  if (!isRecord(rolls)) fail("state.rolls", "expected an object");
   return {
     schemaVersion: 1,
     location: parseLocation(value.location),
@@ -129,7 +203,12 @@ export function parseState(value: unknown): EatTheReichState {
     threats: Object.fromEntries(
       Object.entries(threats).map(([threatId, threat]) => [threatId, parseThreat(threat)]),
     ),
-    rolls: {},
+    rolls: Object.fromEntries(
+      Object.entries(rolls).map(([rollId, roll]) => [
+        rollId,
+        parseRoll(roll, `state.rolls.${rollId}`),
+      ]),
+    ),
     nextRollSequence: expectNumber(value.nextRollSequence, "state.nextRollSequence"),
   };
 }
@@ -159,10 +238,7 @@ export function parseCommand(value: unknown): EatTheReichCommand {
         rollId: expectString(value.rollId, "command.rollId"),
         allocations: allocations.map((entry, index) => {
           if (!isRecord(entry)) fail(`command.allocations[${index}]`, "expected an object");
-          return {
-            optionId: expectString(entry.optionId, `command.allocations[${index}].optionId`),
-            uses: expectNumber(entry.uses, `command.allocations[${index}].uses`),
-          };
+          return parseAllocation(entry, `command.allocations[${index}]`);
         }),
       };
     }
@@ -173,26 +249,205 @@ export function parseCommand(value: unknown): EatTheReichCommand {
 
 export function parseEvent(value: unknown): EatTheReichEvent {
   if (!isRecord(value)) fail("event", "expected an object");
-  // Full structural validation of every event variant mirrors parseCommand
-  // above; omitted here to avoid repeating the same pattern three more
-  // times. `type` is checked as the minimum needed to keep a bad event tail
-  // from reaching `reduce` with a completely wrong shape.
-  const knownTypes = ["ActionRolled", "OppositionRolled", "ActionResolved"];
-  if (typeof value.type !== "string" || !knownTypes.includes(value.type)) {
-    fail("event.type", `unknown event type ${String(value.type)}`);
+  switch (value.type) {
+    case "ActionRolled": {
+      const components = value.poolComponents;
+      if (!isRecord(components)) fail("event.poolComponents", "expected an object");
+      const faces = value.faces;
+      const hiddenModifier = components.hiddenModifier;
+      return {
+        type: "ActionRolled",
+        rollId: expectString(value.rollId, "event.rollId"),
+        actorMemberId: asMemberId(expectString(value.actorMemberId, "event.actorMemberId")),
+        threatId: expectString(value.threatId, "event.threatId"),
+        actionId: expectString(value.actionId, "event.actionId"),
+        faces: faces === null ? null : expectNumberArray(faces, "event.faces"),
+        hits: expectNumber(value.hits, "event.hits"),
+        poolComponents: {
+          nerve: expectNumber(components.nerve, "event.poolComponents.nerve"),
+          gear: expectNumber(components.gear, "event.poolComponents.gear"),
+          hiddenModifier:
+            hiddenModifier === null
+              ? null
+              : expectNumber(hiddenModifier, "event.poolComponents.hiddenModifier"),
+        },
+        hiddenAdjustmentApplied: expectBoolean(
+          value.hiddenAdjustmentApplied,
+          "event.hiddenAdjustmentApplied",
+        ),
+      };
+    }
+    case "OppositionRolled":
+      return {
+        type: "OppositionRolled",
+        rollId: expectString(value.rollId, "event.rollId"),
+        threatId: expectString(value.threatId, "event.threatId"),
+        pushDice: expectNumber(value.pushDice, "event.pushDice"),
+        faces: expectNumberArray(value.faces, "event.faces"),
+        hits: expectNumber(value.hits, "event.hits"),
+        netSuccesses: expectNumber(value.netSuccesses, "event.netSuccesses"),
+      };
+    case "ActionResolved": {
+      if (!Array.isArray(value.allocations)) fail("event.allocations", "expected an array");
+      if (value.threatStatus !== "active" && value.threatStatus !== "defeated") {
+        fail("event.threatStatus", "expected active|defeated");
+      }
+      if (value.objectiveStatus !== "active" && value.objectiveStatus !== "complete") {
+        fail("event.objectiveStatus", "expected active|complete");
+      }
+      return {
+        type: "ActionResolved",
+        rollId: expectString(value.rollId, "event.rollId"),
+        allocations: value.allocations.map((entry, index) =>
+          parseAllocation(entry, `event.allocations[${index}]`),
+        ),
+        threatId: expectString(value.threatId, "event.threatId"),
+        threatResolveRemaining: expectNumber(
+          value.threatResolveRemaining,
+          "event.threatResolveRemaining",
+        ),
+        threatStatus: value.threatStatus,
+        objectiveAdvancesRemaining: expectNumber(
+          value.objectiveAdvancesRemaining,
+          "event.objectiveAdvancesRemaining",
+        ),
+        objectiveStatus: value.objectiveStatus,
+      };
+    }
+    default:
+      return fail("event.type", `unknown event type ${String(value.type)}`);
   }
-  return value as EatTheReichEvent;
 }
 
 export function parseView(value: unknown): EatTheReichView {
   if (!isRecord(value)) fail("view", "expected an object");
-  if (
-    !("location" in value) ||
-    !("objective" in value) ||
-    !("characters" in value) ||
-    !("threats" in value)
-  ) {
-    fail("view", "missing required fields");
+  if (!Array.isArray(value.characters)) fail("view.characters", "expected an array");
+  if (!Array.isArray(value.threats)) fail("view.threats", "expected an array");
+  const characters = value.characters.map((entry, index) => {
+    if (!isRecord(entry)) fail(`view.characters[${index}]`, "expected an object");
+    return {
+      memberId: expectString(entry.memberId, `view.characters[${index}].memberId`),
+      name: expectString(entry.name, `view.characters[${index}].name`),
+      wounds: expectNumber(entry.wounds, `view.characters[${index}].wounds`),
+      maxWounds: expectNumber(entry.maxWounds, `view.characters[${index}].maxWounds`),
+    };
+  });
+  const threats: Array<EatTheReichView["threats"][number]> = value.threats.map((entry, index) => {
+    if (!isRecord(entry)) fail(`view.threats[${index}]`, "expected an object");
+    if (entry.status !== "active" && entry.status !== "defeated") {
+      fail(`view.threats[${index}].status`, "expected active|defeated");
+    }
+    const status: "active" | "defeated" = entry.status;
+    const base = {
+      id: expectString(entry.id, `view.threats[${index}].id`),
+      name: expectString(entry.name, `view.threats[${index}].name`),
+      description: expectString(entry.description, `view.threats[${index}].description`),
+      resolveRemaining: expectNumber(
+        entry.resolveRemaining,
+        `view.threats[${index}].resolveRemaining`,
+      ),
+      maxResolve: expectNumber(entry.maxResolve, `view.threats[${index}].maxResolve`),
+      status,
+    };
+    return "hiddenDifficultyModifier" in entry || "hiddenIntel" in entry
+      ? {
+          ...base,
+          hiddenDifficultyModifier: expectNumber(
+            entry.hiddenDifficultyModifier,
+            `view.threats[${index}].hiddenDifficultyModifier`,
+          ),
+          hiddenIntel: expectString(entry.hiddenIntel, `view.threats[${index}].hiddenIntel`),
+        }
+      : base;
+  });
+  const self = value.self;
+  let parsedSelf: EatTheReichView["self"] = null;
+  if (self !== null) {
+    if (!isRecord(self)) fail("view.self", "expected an object or null");
+    const attributes = self.attributes;
+    if (!isRecord(attributes)) fail("view.self.attributes", "expected an object");
+    parsedSelf = {
+      memberId: expectString(self.memberId, "view.self.memberId"),
+      name: expectString(self.name, "view.self.name"),
+      wounds: expectNumber(self.wounds, "view.self.wounds"),
+      maxWounds: expectNumber(self.maxWounds, "view.self.maxWounds"),
+      attributes: { nerve: expectNumber(attributes.nerve, "view.self.attributes.nerve") },
+      gear: expectStringArray(self.gear, "view.self.gear"),
+    };
   }
-  return value as unknown as EatTheReichView;
+  const activeRoll = value.activeRoll;
+  let parsedActiveRoll: EatTheReichView["activeRoll"] = null;
+  if (activeRoll !== null) {
+    if (!isRecord(activeRoll)) fail("view.activeRoll", "expected an object or null");
+    const status = activeRoll.status;
+    if (
+      status !== "awaiting_opposition" &&
+      status !== "awaiting_allocation" &&
+      status !== "resolved"
+    ) {
+      fail("view.activeRoll.status", "invalid roll status");
+    }
+    const playerFaces = activeRoll.playerFaces;
+    parsedActiveRoll = {
+      rollId: expectString(activeRoll.rollId, "view.activeRoll.rollId"),
+      actorMemberId: expectString(activeRoll.actorMemberId, "view.activeRoll.actorMemberId"),
+      threatId: expectString(activeRoll.threatId, "view.activeRoll.threatId"),
+      actionId: expectString(activeRoll.actionId, "view.activeRoll.actionId"),
+      status,
+      playerFaces:
+        playerFaces === null ? null : expectNumberArray(playerFaces, "view.activeRoll.playerFaces"),
+      playerHits: expectNumber(activeRoll.playerHits, "view.activeRoll.playerHits"),
+      hiddenAdjustmentApplied: expectBoolean(
+        activeRoll.hiddenAdjustmentApplied,
+        "view.activeRoll.hiddenAdjustmentApplied",
+      ),
+      ...(activeRoll.hiddenDifficultyModifier === undefined
+        ? {}
+        : {
+            hiddenDifficultyModifier: expectNumber(
+              activeRoll.hiddenDifficultyModifier,
+              "view.activeRoll.hiddenDifficultyModifier",
+            ),
+          }),
+      ...(activeRoll.pushDice === undefined
+        ? {}
+        : { pushDice: expectNumber(activeRoll.pushDice, "view.activeRoll.pushDice") }),
+      ...(activeRoll.oppositionFaces === undefined
+        ? {}
+        : {
+            oppositionFaces: expectNumberArray(
+              activeRoll.oppositionFaces,
+              "view.activeRoll.oppositionFaces",
+            ),
+          }),
+      ...(activeRoll.oppositionHits === undefined
+        ? {}
+        : {
+            oppositionHits: expectNumber(
+              activeRoll.oppositionHits,
+              "view.activeRoll.oppositionHits",
+            ),
+          }),
+      ...(activeRoll.netSuccesses === undefined
+        ? {}
+        : { netSuccesses: expectNumber(activeRoll.netSuccesses, "view.activeRoll.netSuccesses") }),
+      ...(activeRoll.allocations === undefined
+        ? {}
+        : {
+            allocations: Array.isArray(activeRoll.allocations)
+              ? activeRoll.allocations.map((entry, index) =>
+                  parseAllocation(entry, `view.activeRoll.allocations[${index}]`),
+                )
+              : fail("view.activeRoll.allocations", "expected an array"),
+          }),
+    };
+  }
+  return {
+    location: parseLocation(value.location),
+    objective: parseObjective(value.objective),
+    self: parsedSelf,
+    characters,
+    threats,
+    activeRoll: parsedActiveRoll,
+  };
 }

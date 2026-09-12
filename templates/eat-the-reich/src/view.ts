@@ -33,7 +33,8 @@ export interface ActiveRollView {
   readonly threatId: string;
   readonly actionId: string;
   readonly status: RollStatus;
-  readonly playerFaces: readonly number[];
+  /** Null outside the GM projection when the roll used a hidden adjustment. */
+  readonly playerFaces: readonly number[] | null;
   readonly playerHits: number;
   readonly hiddenAdjustmentApplied: boolean;
   /** GM-only: the real magnitude of the hidden difficulty modifier. */

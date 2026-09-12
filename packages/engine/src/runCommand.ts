@@ -38,6 +38,12 @@ export interface RunCommandInput<TState, TCommand> {
   readonly commandId: CommandId;
   readonly occurredAtServer: string;
   /**
+   * A receipt found by the caller's transactional receipt lookup. When
+   * present, the engine returns the originally accepted result without
+   * authorizing, deciding, reducing, or drawing randomness again.
+   */
+  readonly priorReceipt?: AcceptedCommandReceipt;
+  /**
    * Defaults to `{ kind: "member", memberId: member.memberId }`. Pass
    * `{ kind: "anonymous" }` for safety interrupts, which must never record a
    * member actor (docs/ARCHITECTURE.md, "Safety interrupt").
@@ -53,6 +59,14 @@ export interface DeliveredEnvelope<TEvent> {
 export interface RunCommandOutput<TState, TEvent> {
   readonly authority: AuthorityRecord<TState>;
   readonly envelopes: readonly DeliveredEnvelope<TEvent>[];
+  readonly receipt: AcceptedCommandReceipt;
+}
+
+/** Actor-private stored result used to make retries idempotent. */
+export interface AcceptedCommandReceipt {
+  readonly commandId: CommandId;
+  readonly roomRevision: number;
+  readonly acceptedSequences: readonly number[];
 }
 
 export type RunCommandResult<TState, TEvent> =
@@ -74,6 +88,18 @@ export function runCommand<TState, TCommand, TEvent>(
   template: CommandHandlerTemplate<TState, TCommand, TEvent>,
   input: RunCommandInput<TState, TCommand>,
 ): RunCommandResult<TState, TEvent> {
+  if (input.priorReceipt !== undefined) {
+    if (input.priorReceipt.commandId !== input.commandId) {
+      throw new Error("priorReceipt commandId does not match the command being retried");
+    }
+    return {
+      ok: true,
+      authority: input.authority,
+      envelopes: [],
+      receipt: input.priorReceipt,
+    };
+  }
+
   const authorization = template.authorizeGameAction(input.member, input.command);
   if (!authorization.allowed) {
     return { ok: false, code: authorization.code, message: authorization.message };
@@ -114,14 +140,22 @@ export function runCommand<TState, TCommand, TEvent>(
     sequence += 1;
   }
 
+  const authority: AuthorityRecord<TState> = {
+    ...input.authority,
+    roomRevision: input.authority.roomRevision + 1,
+    nextSequence: sequence,
+    state,
+  };
+  const receipt: AcceptedCommandReceipt = {
+    commandId: input.commandId,
+    roomRevision: authority.roomRevision,
+    acceptedSequences: [...new Set(envelopes.map(({ envelope }) => envelope.sequence))],
+  };
+
   return {
     ok: true,
-    authority: {
-      ...input.authority,
-      roomRevision: input.authority.roomRevision + 1,
-      nextSequence: sequence,
-      state,
-    },
+    authority,
     envelopes,
+    receipt,
   };
 }

@@ -27,7 +27,7 @@ export function computeVisiblePool(
     return { nerve: 0, gear: 0, total: 0 };
   }
   const carriedGearIds = new Set(character.gear);
-  const gearBonus = gearIds
+  const gearBonus = [...new Set(gearIds)]
     .filter((id) => carriedGearIds.has(id))
     .reduce((sum, id) => sum + (ACTION_GEAR_BONUS[id] ?? 0), 0);
   return {

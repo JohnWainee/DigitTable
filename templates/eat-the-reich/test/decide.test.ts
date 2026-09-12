@@ -50,7 +50,7 @@ describe("decide: BeginAction", () => {
     });
   });
 
-  it("redacts the hidden modifier from the shared/player copy but keeps it for the GM copy", () => {
+  it("redacts the hidden modifier and revealing face count from the shared copy", () => {
     const state = freshState();
     const decision = eatTheReichTemplate.decide(
       { state, actor: PLAYER_CTX, random: createSeededRandom("redaction-seed") },
@@ -67,13 +67,17 @@ describe("decide: BeginAction", () => {
     const shared = decided?.effects.find((e) => e.destination.kind === "shared");
     const gm = decided?.effects.find((e) => e.destination.kind === "gm");
     expect(shared?.payload).toMatchObject({
-      poolComponents: { hiddenModifier: 0 },
+      faces: null,
+      poolComponents: { hiddenModifier: null },
       hiddenAdjustmentApplied: true,
     });
     expect(gm?.payload).toMatchObject({
       poolComponents: { hiddenModifier: -1 },
       hiddenAdjustmentApplied: true,
     });
+    expect(gm?.payload.type).toBe("ActionRolled");
+    if (gm?.payload.type !== "ActionRolled") return;
+    expect(Array.isArray(gm.payload.faces)).toBe(true);
   });
 
   it("rejects an actor with no bound character", () => {
@@ -338,6 +342,22 @@ describe("decide: AllocateResults", () => {
         allocations: [
           { optionId: "damage-threat", uses: 1 },
           { optionId: "advance-objective", uses: 1 },
+        ],
+      },
+    );
+    expectRejected(decision);
+    expect(decision.code).toBe("INVALID_ALLOCATION");
+  });
+
+  it("rejects duplicate allocation option ids", () => {
+    const decision = eatTheReichTemplate.decide(
+      { state: awaitingAllocationState(2), actor: PLAYER_CTX, random: createSeededRandom("x") },
+      {
+        type: "AllocateResults",
+        rollId: "roll-1",
+        allocations: [
+          { optionId: "damage-threat", uses: 1 },
+          { optionId: "damage-threat", uses: 1 },
         ],
       },
     );

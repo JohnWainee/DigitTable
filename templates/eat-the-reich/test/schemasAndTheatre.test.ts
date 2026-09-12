@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { asMemberId, asTemplateId } from "@digitable/contracts";
+import { asMemberId, asRoomId, asTemplateId } from "@digitable/contracts";
 import { EAT_THE_REICH_MANIFEST } from "../src/manifest.js";
 import { eatTheReichTemplate } from "../src/engine.js";
-import { freshState } from "./fixtures.js";
+import { PLAYER_MEMBER_ID, freshState, stateWithRoll } from "./fixtures.js";
 
 describe("schemas", () => {
   it("parseState round-trips a valid state through JSON", () => {
@@ -14,6 +14,26 @@ describe("schemas", () => {
   it("parseState rejects a wrong schema version", () => {
     const bad = { ...freshState(), schemaVersion: 99 };
     expect(() => eatTheReichTemplate.schemas.parseState(bad)).toThrow();
+  });
+
+  it("parseState preserves an active roll instead of discarding it", () => {
+    const state = stateWithRoll({
+      id: "roll-1",
+      actorMemberId: PLAYER_MEMBER_ID,
+      threatId: "enforcer",
+      actionId: "strong-arm-the-enforcer",
+      status: "awaiting_allocation",
+      playerFaces: [5, 2],
+      playerHits: 1,
+      poolComponents: { nerve: 2, gear: 1, hiddenModifier: -1 },
+      hiddenAdjustmentApplied: true,
+      oppositionFaces: [2],
+      oppositionHits: 0,
+      netSuccesses: 1,
+    });
+    expect(eatTheReichTemplate.schemas.parseState(JSON.parse(JSON.stringify(state)))).toEqual(
+      state,
+    );
   });
 
   it("parseCommand rejects an unknown command type", () => {
@@ -29,6 +49,23 @@ describe("schemas", () => {
       gearIds: ["silenced-tool"],
     };
     expect(eatTheReichTemplate.schemas.parseCommand(command)).toEqual(command);
+  });
+
+  it("parseEvent rejects a known event type with malformed fields", () => {
+    expect(() =>
+      eatTheReichTemplate.schemas.parseEvent({ type: "ActionRolled", rollId: "roll-1" }),
+    ).toThrow();
+  });
+
+  it("parseView rejects malformed nested projection fields", () => {
+    const view = eatTheReichTemplate.project(freshState(), {
+      roomId: asRoomId("room-1"),
+      viewerId: PLAYER_MEMBER_ID,
+      capability: "player",
+    });
+    expect(() =>
+      eatTheReichTemplate.schemas.parseView({ ...view, characters: [{ name: 42 }] }),
+    ).toThrow();
   });
 });
 

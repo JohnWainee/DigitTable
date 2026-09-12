@@ -56,6 +56,12 @@ describe("computeVisiblePool", () => {
     });
   });
 
+  it("counts a carried gear item at most once when its id is repeated", () => {
+    expect(
+      computeVisiblePool(character, ACTION_ID, [GEAR_SILENCED_TOOL, GEAR_SILENCED_TOOL]),
+    ).toEqual({ nerve: 2, gear: 1, total: 3 });
+  });
+
   it("contributes nothing for an unrecognized action id", () => {
     expect(computeVisiblePool(character, "not-a-real-action", [GEAR_SILENCED_TOOL])).toEqual({
       nerve: 0,

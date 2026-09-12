@@ -62,6 +62,8 @@ describe("project", () => {
 
     expect(playerRoll).not.toHaveProperty("hiddenDifficultyModifier");
     expect(playerRoll?.hiddenAdjustmentApplied).toBe(true);
+    expect(playerRoll?.playerFaces).toBeNull();
+    expect(gmRoll?.playerFaces).toEqual(state.rolls["roll-1"]?.playerFaces);
     expect(gmRoll?.hiddenDifficultyModifier).toBe(-1);
   });
 
