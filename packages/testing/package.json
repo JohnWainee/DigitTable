@@ -1,0 +1,22 @@
+{
+  "name": "@digitable/testing",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Fixtures, builders, and reusable contract-test helpers (e.g. projection-isolation checks) shared by engine and template test suites. Fixture-only until the realtime milestone adds emulator helpers.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@digitable/contracts": "*",
+    "@digitable/engine": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}
