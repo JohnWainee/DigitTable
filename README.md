@@ -8,7 +8,7 @@ DigiTable is a template-driven digital play surface for narrative tabletop RPGs.
 
 The product should foreground fiction and spectacle while keeping calculation inspectable but quiet. Players get a mobile-first character/action surface; the GM gets a director console; shared events can temporarily turn every connected screen into one synchronized presentation.
 
-Start with [CLAUDE_HANDOFF.md](CLAUDE_HANDOFF.md), then read the documents in [`docs/`](docs/).
+Start with [CLAUDE_HANDOFF.md](CLAUDE_HANDOFF.md). The canonical technical proposal is [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md); the remaining documents in [`docs/`](docs/) provide focused product and UX detail.
 
 ## Proposed stack
 
