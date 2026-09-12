@@ -1,6 +1,6 @@
 # Claude implementation handoff
 
-- **Status:** First architecture review resolved; ready for independent second pass; implementation has not started
+- **Status:** Architecture direction approved; second-pass findings folded into PR #1; implementation has not started
 - **Branch:** `codex/eat-the-reich-platform-plan`
 - **PR:** `JohnWainee/DigitTable#1`
 - **Last updated:** 2026-09-12 by Codex
@@ -42,11 +42,11 @@ Claude's independent review is recorded by commit `4324ecb` on branch `claude/co
 - Accessibility verification and presentation semantics are explicit.
 - The original vertical-slice PR is split into three reviewable PRs.
 
-## Immediate assignment: second architecture review
+## Second architecture review and resolution
 
-Perform an independent second pass over `docs/ARCHITECTURE.md`, the supporting docs, and the resolution record. Confirm each first-pass finding is actually closed, identify regressions or new risks introduced by Firestore and recovery codes, and report any remaining findings by severity with concrete edits. Pay special attention to transaction document boundaries/write counts, randomness under transaction retry, security-rule feasibility, recovery credential threats, safety-event correlation, and consistency across documents.
+Claude's second pass is commit `868c75c` on PR #2. It approved the direction and identified N1–N12: the undefined authority record, projection tearing, invalid/inconsistent Firestore paths, RTDB presence authorization, recovery hardening, retry-stable randomness, and smaller safety, privacy, routing, bandwidth, factual, and pool-explanation issues. John approved the updated plan on 2026-09-12. Their dispositions are recorded in [`docs/reviews/2026-09-12-architecture-second-pass-resolution.md`](docs/reviews/2026-09-12-architecture-second-pass-resolution.md) and folded into the canonical architecture.
 
-Do not begin implementation until John approves the revised architecture or second-pass changes are folded into PR #1.
+Implementation may begin after these documentation changes pass review and merge.
 
 ## First implementation PR after approval: scaffold and engine
 
@@ -56,7 +56,8 @@ Scope it to a local-only vertical slice:
 2. Scaffold npm workspaces, TypeScript, Vitest, ESLint, and formatting without React or Firebase.
 3. Create `contracts`, `engine`, `testing`, and the initial-template package.
 4. Use original placeholder data for one character, location, objective, and threat.
-5. Implement pure `decide`, `reduce`, `project`, `explainPool`, and `validAllocations` for one opposed action with deterministic injected dice.
+5. Implement pure `decide`, `reduce`, `project`, `explainPool`, and `validAllocations` for one opposed action with a fixed-seed deterministic generator.
+6. Include bounded authority-record and atomic per-viewer projection fixtures in the contracts.
 
 ### Required checks
 
@@ -72,7 +73,6 @@ After the later realtime PR, two players and one GM can join a room, load the sa
 ## Decisions requiring John
 
 - Game-content distribution rights and approved placeholder fixture.
-- Architecture approval after the independent second review.
 - Room join policy and campaign retention/export/deletion policy.
 - Firebase staging/production projects and region before realtime work.
 - Whether 3D dice, durable accounts, or Cloudflare hosting enter the first public milestone.
@@ -88,4 +88,4 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-Independent second-pass architecture review using the checklist in `docs/reviews/2026-09-12-architecture-review-resolution.md`, followed by John's approval or requested revisions. Only then create the scaffold-and-engine implementation branch/PR.
+Run documentation consistency checks, obtain final review of this resolution commit, merge PR #1 followed by PR #2, then create a fresh scaffold-and-engine implementation branch from updated `main`.

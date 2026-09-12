@@ -1,6 +1,6 @@
 # DigiTable architecture specification
 
-- **Status:** Revised after independent review; ready for second review
+- **Status:** Approved direction; second-pass findings resolved
 - **Date:** 2026-09-12
 - **Deciders:** JohnWainee, implementation reviewer, security reviewer
 - **Initial template:** *Eat the Reich*
@@ -67,7 +67,7 @@ apps/
 packages/
   contracts/           wire schemas, IDs, errors, versions
   engine/              authorization, decisions, reducers, projections
-  testing/             fixtures, contract tests, emulator helpers
+  testing/             fixtures and contract tests; emulator helpers arrive with realtime work
 templates/
   eat-the-reich/       manifest, rules, theme, placeholder content
 ```
@@ -91,9 +91,9 @@ Firebase rules can protect paths and shapes, but should not implement game rules
 | Functions + Firestore authority, RTDB presence | Medium | Conditional multi-document atomicity | Choose |
 | Durable Object per room | Medium-high | Strong ordering | Revisit if contention/latency justifies it |
 
-**Consequence:** Multiplayer writes require connectivity and may see cold starts. Cached reads remain available. Client retries reuse the same command ID. Firestore and Functions require a billing-enabled project. Staging and production may set one warm command-function instance if measured cold-path latency warrants the fixed cost.
+**Consequence:** Multiplayer writes require connectivity and may see cold starts. Cached reads remain available when Firestore web persistence is explicitly enabled with the multi-tab persistent cache manager. Client retries reuse the same command ID. Functions require a billing-enabled project; Firestore itself is available on the Spark plan, subject to its quotas. Staging and production may set one warm command-function instance if measured cold-path latency warrants the fixed cost.
 
-The receipt check is inside the transaction. Each Function invocation generates its candidate random values once, before entering the transaction, and passes them as immutable input to the pure transaction callback. If Firestore retries that callback, it reuses those values. Concurrent invocations with the same command ID may generate different candidates, but only the transaction winner commits; each loser observes and returns the winner's stored result without exposing its candidate.
+The receipt check is inside the transaction. Each Function invocation generates one seed with `crypto.randomBytes` before entering the transaction and constructs a deterministic generator from it inside `DecisionContext`. The engine draws as many values as the transaction-read state requires. Firestore retries reuse the seed and therefore repeat the same internal draws. Concurrent invocations with the same command ID may generate different seeds, but only the transaction winner commits; each loser observes and returns the winner's stored result without exposing its seed or candidate values. Tests inject a fixed seed.
 
 ### ADR-003: Events plus materialized projections
 
@@ -101,8 +101,8 @@ The receipt check is inside the transaction. Each Function invocation generates 
 
 - Events use a server-assigned room sequence allocated in the same transaction as their receipt and projections.
 - `roomRevision` counts accepted commands; `sequence` orders individual events, so one revision may contain several consecutive sequences.
-- Shared, GM, and player projections update atomically with acceptance.
-- Periodic snapshots bound replay and permit compaction.
+- One complete projection document per viewer updates atomically with acceptance; shared content is an input to projection rather than a separately observed document.
+- Periodic snapshots are archival copies of authority state that bound recovery and permit compaction; command execution never reconstructs current state from snapshots and event tails.
 - Corrections are new events; accepted events are not edited by clients.
 
 ### ADR-004: Compile-time templates for v1
@@ -146,9 +146,9 @@ No analytics SDK ships until a privacy-reviewed event inventory exists.
 | Route | Audience | Purpose |
 |---|---|---|
 | `/` | Everyone | Lore landing and join/create entry |
-| `/room/:code/player` | Player | Character, actions, private inbox, map, dossier |
-| `/room/:code/gm` | GM | Director console, encounter control, hidden state |
-| `/room/:code/table` | Shared display | Map, feed, reveals, theatre |
+| `/room/:roomId/player` | Player | Character, actions, private inbox, map, dossier |
+| `/room/:roomId/gm` | GM | Director console, encounter control, hidden state |
+| `/room/:roomId/table` | Shared display | Map, feed, reveals, theatre |
 | `/library/:templateId` | Everyone | Authorized reference content outside sessions |
 
 The role in the URL is presentation intent, not authorization.
@@ -185,9 +185,11 @@ interface GameTemplate<TState, TCommand, TEvent> {
 }
 ```
 
-Platform code first checks room membership, seat capability, room status, payload bounds, and command-family guards; a template cannot weaken those checks. `authorizeGameAction`, `decide`, `reduce`, `project`, `explainPool`, and `validAllocations` are pure. Trusted handlers generate candidate values once per invocation with `crypto.randomInt` before entering the transaction and inject them into `DecisionContext`; emitted events capture only the committed faces. Tests inject deterministic values without requiring seeded live play.
+Platform code first checks room membership, seat capability, room status, payload bounds, and command-family guards; a template cannot weaken those checks. `authorizeGameAction`, `decide`, `reduce`, `project`, `explainPool`, and `validAllocations` are pure. Trusted handlers generate one cryptographic seed per invocation before entering the transaction and inject a deterministic generator into `DecisionContext`; emitted events capture only the committed faces, never the seed. Tests inject a fixed seed.
 
-`Decision` assigns every emitted event a destination of `shared`, `gm`, or one or more member IDs. An event copied to more than one physical visibility partition retains one logical event ID, so storage document paths—not `eventId` alone—are unique. `project` returns a full bounded projection in v1; each projection must remain below 64 KiB. Patch projections require a later measured need.
+`Decision` assigns every emitted event a destination of `shared`, `gm`, or one or more member IDs. An event copied to more than one physical visibility partition retains one logical event ID, so storage document paths—not `eventId` alone—are unique. `project` returns one full projection for each viewer, including all shared content that viewer may see; each projection must remain below 64 KiB. This avoids cross-document revision tearing. At eight participants plus GM and table, a worst-case command rewrites under 640 KiB of projection data, within the Firestore commit limit. A 200-command session at the projection bound transfers roughly 13 MB to each continuously connected viewer. Revisit patches if measured bandwidth, latency, or cost exceeds the quality targets.
+
+`explainPool` operates on a viewer projection and therefore cannot include hidden GM modifiers. `ActionRolled` carries the server-authoritative pool derivation, with hidden inputs redacted appropriately, so the receiving player can understand any difference from the pre-roll explanation.
 
 ```ts
 interface CommandEnvelope<T> {
@@ -227,25 +229,31 @@ Only scene transitions, encounter loads, GM-seat administration, and other expli
 
 ```text
 rooms/{roomId}/
-  meta/                       template, status, revision, gmMemberId, timestamps
-  members/{memberId}/         uid binding, capabilities, display name, join/last-seen times
-  projections/
-    shared/{...}
-    gm/{...}
-    players/{memberId}/{...}
-  events/
-    shared/{sequence}/{event}
-    gm/{sequence}/{event}
-    players/{memberId}/{sequence}/{event}
-  receipts/{memberId}/{commandId}/ status, accepted sequence, stable error code, result
-  snapshots/{sequence}/       full authority state, checksums, versions; service-only
-roomCodes/{code}/              roomId; service-only, rotatable
+  meta/current                template, status, gmMemberId, timestamps
+  authority/current           full TState, roomRevision, nextSequence, versions; service-only
+  members/{memberId}          capabilities, display name, join/last-seen times
+  bindings/{memberId}         uid binding; service-only and client-unreadable
+  projections/{viewerId}      one full document for memberId, gm, or table
+  receipts/{receiptId}        memberId, commandId, status, accepted sequence, stable result
+  snapshots/{sequence}        archival authority copy, checksum, versions; service-only
+  events/shared/items/{sequence}
+  events/gm/items/{sequence}
+  events/member-{memberId}/items/{sequence}
+roomCodes/{code}               roomId; service-only, rotatable
 
 RTDB:
-presence/{roomId}/{memberId}/{connectionId}/
+presence/{roomId}/{uid}/{connectionId}/
 ```
 
-- Clients read only authorized projection/event/receipt paths. Rules compare the seat's bound UID with `auth.uid`.
+Firestore paths alternate collections and documents. `viewerId` is a stable member ID or the reserved `gm`/`table` identifier. `receiptId` is a collision-free encoding or hash of `memberId` and `commandId`; its document repeats both values for validation. Event visibility is a physical collection path, and each event document stores numeric `sequence` for ordering.
+
+Every accepted-command transaction reads `authority/current`, the actor's `bindings/{memberId}`, and the actor-private receipt if present. It writes the updated authority document, receipt, emitted event documents, and affected complete viewer projections. `authority/current` is the sole live source of full `TState`; snapshots are copies for archive and recovery. Keep authority below a 256 KiB working budget and enforce both that budget and Firestore's 1 MiB document ceiling with representative campaign fixtures.
+
+Firestore rules allow a signed-in client to read `members`, its own projection and receipts, and visibility partitions granted by its client-unreadable binding; direct authoritative writes are denied. A representative rule performs one `get()` of `/rooms/$(roomId)/bindings/$(memberId)` and compares its `uid` with `request.auth.uid`, remaining within Firestore rule access-call limits. Functions use privileged service access but still execute platform authorization before template code.
+
+RTDB rules enforce `$uid === auth.uid` for presence writes. RTDB cannot verify a Firestore binding, so room presence is deliberately limited to opaque room IDs plus online/offline connection state and is readable to an authenticated user who knows the room ID. Clients map UIDs to displayable members through authorized Firestore data. If that residual disclosure becomes unacceptable, replace presence tokens with short-lived signed room claims rather than duplicating authorization state across databases.
+
+- Clients read only authorized projection/event/receipt paths. Firestore rules compare the service-only seat binding with `auth.uid`.
 - Game commands go through Functions; direct client writes are limited to presence and explicitly safe preferences/drafts.
 - Only service code writes roles, GM claims, accepted events, receipts, and projections.
 - GM claim is transactional and member-seat-bound; transfer/release/recovery is an audited command.
@@ -255,7 +263,9 @@ presence/{roomId}/{memberId}/{connectionId}/
 - Draft choices remain local-only in v1.
 - One authenticated identity holds one participant seat/capability per room in v1. Local development provides multi-role simulation rather than weakening this constraint.
 
-When a seat is claimed, the service generates its one-time recovery code; the GM seat uses a separately protected GM recovery code. Only salted hashes are stored on a service-only path. Redeeming a code transactionally rebinds that seat to the caller's current UID, invalidates the code, revokes the prior binding, and records an audit event without exposing the code. Durable account linking may replace this mechanism later without rekeying campaign data.
+When a seat is claimed, the service generates a recovery code with at least 64 bits of entropy—for example, 13 characters from a 32-symbol unambiguous alphabet. Codes are shown once, never placed in a URL, and only salted slow hashes are stored on a service-only path. An authenticated seat holder may rotate their own code; the GM may rotate a player's code for out-of-band handoff. The GM recovery code remains separately protected and can be rotated only by the bound GM.
+
+Redemption is rate-limited per room and source IP and locks the room's recovery endpoint briefly after a small number of failures. Successful redemption transactionally rebinds the seat, invalidates the code, deletes the old UID's presence, and emits a GM-visible audit event naming only the seat. The GM receives commands to rebind the seat back or kick the replacement. Neither audit records nor errors contain the code or either UID. Durable account linking may replace this mechanism later without rekeying campaign data.
 
 ### Proposed retention for review
 
@@ -274,7 +284,7 @@ Because anonymous users have no contact channel, retention prompts are in-app on
 1. Obtain anonymous Firebase identity.
 2. Submit room code and requested capability.
 3. Function resolves the service-only code index, enforces App Check, validates room/template status, capacity, and admission policy, and applies IP/room throttles.
-4. Create a stable member seat or transactionally claim the empty/same-member GM seat; show its one-time recovery code.
+4. Create a stable member seat or transactionally claim the empty/same-member GM seat; show its initial rotatable recovery code once.
 5. Subscribe only to authorized paths.
 
 ### Opposed action
@@ -299,7 +309,7 @@ Because anonymous users have no contact channel, retention prompts are in-app on
 
 ### Safety interrupt
 
-Any player or GM can submit Pause, Fade/Veil, or Skip without a revision guard. The server emits a shared event with an anonymous actor and stores any receipt only in the submitting member's private partition. Every client immediately stops presentation; resumption is a separate command. Client-readable data and operational logs contain no actor UID/member ID for the safety action.
+Any player or GM can submit Pause, Fade/Veil, or Skip without a revision guard. The server emits a shared event with an anonymous actor and stores any receipt only in the submitting member's private partition. Every client immediately stops presentation; resumption is a separate command. Client-readable game data and application logs contain no actor UID/member ID for the safety action. Infrastructure request metadata can still correlate timestamps and client addresses with an interrupt; treat this as a residual risk, restrict access, and retain those logs for the shortest practical period. The actor sees no distinctive pending animation that other clients could correlate.
 
 ## 10. Resolution Theatre
 
@@ -327,7 +337,7 @@ interface TheatreScene {
 
 ## 11. Security model
 
-Browser inputs, cache, room codes, roles, timestamps, and calculated pools are untrusted. Auth identity is necessary but insufficient; functions check membership and capability. Firestore rules independently prevent cross-viewer reads; RTDB rules isolate presence writes and reads.
+Browser inputs, cache, room codes, roles, timestamps, and calculated pools are untrusted. Auth identity is necessary but insufficient; functions check membership and capability. Firestore rules independently prevent cross-viewer reads; RTDB rules isolate presence writes by UID while accepting the limited read disclosure documented in the data model.
 
 | Threat | Mitigation |
 |---|---|
@@ -374,7 +384,8 @@ Required vertical-slice proofs:
 - Player cannot allocate another player's roll or exceed successes.
 - Player cannot read GM or another player's projection.
 - Refresh does not resubmit an accepted outbox command or re-fire theatre for an already presented event ID.
-- No client-readable path or operational log identifies a safety-interrupt actor.
+- No client-readable path or application log identifies a safety-interrupt actor; infrastructure correlation risk is documented and access-controlled.
+- The GM cannot read another member's receipt, and a safety decision emits no GM-partition copy carrying a member actor.
 - A lost anonymous identity can recover its GM seat without moving private campaign data.
 - Automated checks prove keyboard operation, accessible names/roles, focus behavior, live-region semantics, reduced motion, and axe rules.
 - Manual milestone checks cover VoiceOver on iOS and NVDA on Windows for the complete action.
@@ -394,7 +405,7 @@ No production credentials or licensed source assets are committed. Firebase web 
 
 ## 15. Observability
 
-- Structured server logs: command ID, hashed room ID, event type, latency, result code—never narrative/private payloads. Safety commands omit UID/member identity and use a non-correlatable command reference.
+- Structured server logs: command ID, hashed room ID, event type, latency, result code—never narrative/private payloads. Safety commands omit UID/member identity and use a non-correlatable command reference. Infrastructure request logs remain a documented correlation risk with restricted access and short retention.
 - Metrics: acceptance/rejection, p50/p95 latency, reconnect success, duplicate suppression, active rooms, bandwidth/function cost.
 - Alerts: sustained function failures, permission-denial anomalies, cost spikes, projection transaction failure.
 - Sampled client reports include only redacted error codes and app/template versions.

@@ -36,4 +36,4 @@ Every client receives the same semantic scene/event ID, but timing tolerates slo
 
 Cutaways never move focus without user action. Ordinary changes use a polite live region; only safety interrupts may be assertive. Every cutaway is dismissible through the same semantic control in cinematic, standard, and reduced modes. The `waiting-on-gm` state is announced once and remains visible without repeated announcements.
 
-Pause, Fade/Veil, and Skip remain reachable at all times and do not reveal their actor. Safety activation interrupts presentation and suppresses queued effects cleanly.
+Pause, Fade/Veil, and Skip remain reachable at all times on player and GM surfaces and do not reveal their actor. The read-only table surface cannot invoke them. Safety activation interrupts presentation and suppresses queued effects cleanly; the submitting client does not show a distinctive pending state visible to observers.

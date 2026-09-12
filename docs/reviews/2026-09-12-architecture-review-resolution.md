@@ -2,7 +2,7 @@
 
 - **Source review:** Claude, commit `4324ecb` on `claude/codex-handoff-review-bc3ucm`
 - **Reviewed proposal:** `81993ef`
-- **Resolution status:** Ready for independent second pass
+- **Resolution status:** First pass resolved; second pass completed at `868c75c` and dispositioned separately
 - **Canonical document:** [`../ARCHITECTURE.md`](../ARCHITECTURE.md)
 
 ## Disposition
@@ -26,7 +26,7 @@
 | L1 | Accepted: revision counts commands; sequence orders events, including multiple events per revision. |
 | L2 | Superseded by Firestore authority; sequence is an indexed numeric field, not an RTDB key-order dependency. |
 | L3 | Accepted: visibility-path gaps are expected and not used for reconstruction. |
-| L4 | Accepted: trusted randomness specifies `crypto.randomInt`; generated faces remain persisted. |
+| L4 | Accepted at first pass; subsequently refined by second-pass N6 to use `crypto.randomBytes` for one invocation seed and a deterministic retry-stable generator. Generated faces remain persisted. |
 | L5 | Accepted: refresh proofs now cover outbox resubmission and theatre event replay. |
 | L6 | Accepted: GM submits opposition inputs and the server generates faces. |
 | L7 | Accepted: anonymous retention prompts are in-app; deletion automation remains gated. |

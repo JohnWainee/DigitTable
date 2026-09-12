@@ -12,6 +12,7 @@ Exit: authorized or placeholder material is ready.
 
 - Scaffold workspaces and early quality gates.
 - Define template, command, event, and presentation contracts.
+- Define the bounded authority-record and atomic per-viewer projection shapes.
 - Implement pure decide/reduce/project and pool/allocation queries with deterministic dice.
 - Add allocation, idempotency, and projection-isolation tests.
 
@@ -36,7 +37,7 @@ Exit: one encounter resolves end to end with simulated roles.
 ## Phase 2 — realtime room
 
 - Firebase emulator, anonymous auth, App Check monitoring, Firestore/RTDB rules.
-- Stable member seats, recovery codes, room admission, GM claim, RTDB presence, private partitions.
+- Stable member seats, hardened recovery/rotation, room admission, GM claim, UID-keyed RTDB presence, private partitions.
 - Idempotent commands, ordering, reconnect, offline queue.
 - Multi-device tests and failure injection.
 

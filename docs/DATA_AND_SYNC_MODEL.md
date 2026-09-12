@@ -2,31 +2,16 @@
 
 ## Room partitions
 
-Carry forward Signal Bleed's visibility model with finer-grained writes:
+[`ARCHITECTURE.md`](ARCHITECTURE.md#8-data-model) is the canonical path specification and rules boundary. Do not duplicate its Firestore layout here. In summary: Firestore holds a service-only authority document and binding documents, one complete projection document per viewer, physically partitioned events, actor-private receipts, and archival snapshots. RTDB holds UID-keyed ephemeral presence only.
 
-```text
-Firestore:
-rooms/{roomId}
-  meta
-  members/{memberId}
-  projections/{shared|gm|player-memberId}
-  receipts/{memberId-commandId}
-  events/{visibility-sequence}
-  snapshots/{sequence}  # service-only full state
-roomCodes/{code}        # service-only lookup to roomId
-
-RTDB:
-presence/{roomId}/{memberId}/{connectionId}
-```
-
-Firebase rules—not client checks—enforce access. Private state is keyed by stable room-scoped member ID, not anonymous UID; a replaceable UID binding and one-time recovery code permit seat recovery without moving data.
+Firebase rules—not client checks—enforce access. Private state is keyed by stable room-scoped member ID, not anonymous UID; replaceable service-only UID bindings and rotatable recovery codes permit seat recovery without moving data.
 
 ## Command/event flow
 
 1. Client sends a UUID command to a callable Function with template version, payload, timestamp, and an optional command-family revision guard.
 2. UI shows the command as pending without speculatively changing domain state.
 3. Platform authority validates membership, capability, room status, payload bounds, and command guard before template authorization.
-4. One Firestore transaction checks/creates the actor-private receipt and atomically commits ordered events, revision, and full bounded projections.
+4. One Firestore transaction reads the live authority state and actor binding, checks/creates the actor-private receipt, and atomically commits authority, ordered events, revision, and full per-viewer projections.
 5. Repeated or concurrent command IDs return the stored result without rerolling.
 6. Clients read authoritative projections; event tails drive timeline and theatre only.
 
@@ -43,4 +28,4 @@ The local vertical slice implements the same repository interface in memory/loca
 
 ## Audit and privacy
 
-Dice events record pool inputs, faces, rules version, allocations, and overrides. Visibility is represented by physical storage partitions. Per-path sequence gaps are expected because the room sequence is global. Private content must not leak into shared events, analytics, logs, receipts, or errors. Safety actor identity appears in neither client-readable data nor operational logs. Define retention and deletion before production.
+Dice events record the server-authoritative derivation, faces, rules version, allocations, and overrides, redacted for each destination. Visibility is represented by physical storage partitions. Per-path sequence gaps are expected because the room sequence is global. Private content must not leak into shared events, analytics, logs, receipts, or errors. Safety actor identity appears in neither client-readable game data nor application logs; infrastructure timing/address correlation remains a restricted, short-retention residual risk. Define retention and deletion before production.
