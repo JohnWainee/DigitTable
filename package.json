@@ -5,7 +5,7 @@
   "description": "DigiTable: a template-driven, mobile-first digital play surface for narrative tabletop RPGs.",
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.12"
   },
   "workspaces": [
     "packages/*",
