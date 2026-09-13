@@ -2,6 +2,27 @@
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
+import reactHooks from "eslint-plugin-react-hooks";
+import jsxA11y from "eslint-plugin-jsx-a11y";
+
+const ENGINE_ONLY_RESTRICTED_IMPORTS = [
+  {
+    name: "react",
+    message:
+      "packages/ and templates/ stay framework-independent (AGENTS.md). React belongs in apps/web only.",
+  },
+];
+
+const PLATFORM_WIDE_RESTRICTED_IMPORTS = [
+  {
+    name: "firebase",
+    message: "No Firebase adapters before the realtime milestone (Phase 2).",
+  },
+  {
+    name: "three",
+    message: "Three.js is deferred; not part of this platform's scope.",
+  },
+];
 
 export default tseslint.config(
   {
@@ -37,27 +58,32 @@ export default tseslint.config(
       ],
       "@typescript-eslint/consistent-type-imports": "error",
       "@typescript-eslint/explicit-function-return-type": ["warn", { allowExpressions: true }],
+      "no-restricted-imports": ["error", { paths: PLATFORM_WIDE_RESTRICTED_IMPORTS }],
+    },
+  },
+  {
+    files: ["packages/**/*.ts", "templates/**/*.ts"],
+    rules: {
       "no-restricted-imports": [
         "error",
-        {
-          paths: [
-            {
-              name: "react",
-              message:
-                "Phase 1A is engine-only. React does not belong in packages/ or templates/ yet.",
-            },
-            {
-              name: "firebase",
-              message:
-                "Phase 1A is local-only. Firebase adapters land with the realtime milestone.",
-            },
-            {
-              name: "three",
-              message: "Three.js is deferred; not part of this platform's scope.",
-            },
-          ],
-        },
+        { paths: [...PLATFORM_WIDE_RESTRICTED_IMPORTS, ...ENGINE_ONLY_RESTRICTED_IMPORTS] },
       ],
+    },
+  },
+  {
+    files: ["apps/web/**/*.{ts,tsx}"],
+    plugins: {
+      "react-hooks": reactHooks,
+      "jsx-a11y": jsxA11y,
+    },
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    rules: {
+      ...reactHooks.configs["recommended-latest"].rules,
+      ...jsxA11y.flatConfigs.recommended.rules,
     },
   },
   eslintConfigPrettier,
