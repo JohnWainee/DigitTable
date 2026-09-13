@@ -21,6 +21,6 @@
     "@digitable/testing": "*",
     "fast-check": "^3.23.1",
     "typescript": "^5.6.3",
-    "vitest": "^2.1.4"
+    "vitest": "^5.0.0"
   }
 }

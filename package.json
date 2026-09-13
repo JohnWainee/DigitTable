@@ -5,7 +5,7 @@
   "description": "DigiTable: a template-driven, mobile-first digital play surface for narrative tabletop RPGs.",
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.12"
   },
   "workspaces": [
     "packages/*",
@@ -25,13 +25,13 @@
   "devDependencies": {
     "@eslint/js": "^9.13.0",
     "@types/node": "^22.9.0",
-    "@vitest/coverage-v8": "^2.1.4",
+    "@vitest/coverage-v8": "^5.0.0",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
     "fast-check": "^3.23.1",
     "prettier": "^3.3.3",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.12.2",
-    "vitest": "^2.1.4"
+    "vitest": "^5.0.0"
   }
 }
