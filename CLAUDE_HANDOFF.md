@@ -1,8 +1,8 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1B independently reviewed with no blocking findings and ready to merge.
-- **Branch:** `worktree-phase1b-player`
-- **PR:** opened against `main`; see repository PR list (this session cannot self-merge)
+- **Status:** Phases 1A and 1B are merged. Phase 1C is planned and ready for implementation on the rebased branch.
+- **Branch:** `worktree-phase1c-gm-table`
+- **PR:** draft PR #5; keep draft until Phase 1C implementation and independent review are complete
 - **Last updated:** 2026-09-13 by Codex
 
 ## Mission
@@ -139,9 +139,9 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-1. Merge the independently approved Phase 1B PR.
-2. Rebase and implement **Phase 1C — GM and shared views** (`docs/IMPLEMENTATION_ROADMAP.md`): add GM opposition controls (replacing the local GM stand-in described above with a real GM console) and a read-only shared-table capability, add multi-role local simulation and desktop-width tests, and complete one opposed roll/allocation flow across all views. Exit criterion: one encounter resolves end to end with simulated roles.
+1. Implement **Phase 1C — GM and shared views** from `docs/PHASE_1C_PLAN.md`: add GM opposition controls (replacing the local GM stand-in with a real GM console) and a read-only shared-table capability, add multi-role local simulation and desktop-width tests, and complete one opposed roll/allocation flow across all views. Exit criterion: one encounter resolves end to end with simulated roles.
 3. Concretely for Phase 1C: `templates/eat-the-reich`'s `authorizeGameAction` already accepts a `gm` capability for `SubmitOpposition`; a real GM UI needs to surface the visible-to-GM projection (`viewer.capability === "gm"`, already implemented in `project`) and let a human choose push dice, rather than `apps/web/src/repository/localGmPolicy.ts`'s fixed stand-in value. Multi-role local simulation likely means the in-memory repository grows a second tracked viewer the UI can switch between, still with no Firebase.
 4. Fold this PR's two contract refinements (actor in `DecisionContext`, raw-view `project` + `projectViewer`) into `docs/ARCHITECTURE.md` section 7 on the next documentation pass — flagged above under "Contract refinements made during implementation". Still outstanding from Phase 1A.
-5. Do not pull forward realtime sync or a second template — those remain Phase 2 and later per the roadmap.
-6. Keep `apps/web/vitest.config.ts` listed in the root `vitest.config.ts` projects array so its jsdom environment and setup file remain active.
+5. Surface opposition-dispatch failures in the player UI and consider explicit runtime reduced-motion preference-change coverage, per the Phase 1B independent review.
+6. Do not pull forward realtime sync or a second template — those remain Phase 2 and later per the roadmap.
+7. Keep `apps/web/vitest.config.ts` listed in the root `vitest.config.ts` projects array so its jsdom environment and setup file remain active.
