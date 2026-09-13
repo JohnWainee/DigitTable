@@ -1,8 +1,8 @@
 # Claude implementation handoff
 
-- **Status:** Phases 1A and 1B are merged. Phase 1C (GM console, shared-table view, multi-role local simulation) is implemented on this branch and awaits independent review before merge.
+- **Status:** Phase 1C is implemented, independently reviewed with no findings, and approved for merge.
 - **Branch:** `worktree-phase1c-gm-table`
-- **PR:** PR #5; move out of draft once independent review is requested, but do not merge without it
+- **PR:** PR #5; approved for merge
 - **Last updated:** 2026-09-13 by Claude (Sonnet 5)
 
 ## Mission
@@ -168,9 +168,8 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-1. **Request an independent implementation review of Phase 1C** (a second pass, not the author's own read-through — see `AGENTS.md` and the precedent under `docs/reviews/`), covering the source, tests, and scope against `docs/PHASE_1C_PLAN.md`'s acceptance criteria. Record the outcome as `docs/reviews/<date>-phase-1c-implementation-review.md`, the same way Phase 1A's and Phase 1B's reviews are recorded.
-2. Once reviewed and any findings are remediated, move PR #5 out of draft and merge to `main` (do not merge without that review, per `AGENTS.md`).
-3. After merge, the next roadmap slice is **Phase 2 — realtime room** (`docs/IMPLEMENTATION_ROADMAP.md`): Firebase emulator, anonymous auth, App Check monitoring, Firestore/RTDB rules, stable member seats, idempotent commands/reconnect/offline queue, and multi-device tests. This is the first point at which Firebase enters the repository at all — nothing before it should introduce Firebase packages, credentials, or projects.
+1. Merge the independently approved Phase 1C PR.
+2. After merge, the next roadmap slice is **Phase 2 — realtime room** (`docs/IMPLEMENTATION_ROADMAP.md`): Firebase emulator, anonymous auth, App Check monitoring, Firestore/RTDB rules, stable member seats, idempotent commands/reconnect/offline queue, and multi-device tests. This is the first point at which Firebase enters the repository at all — nothing before it should introduce Firebase packages, credentials, or projects.
 4. Do not pull forward encounter authoring, safety controls, GM overrides, 3D, or a second template ahead of their place in the roadmap.
 5. Keep `apps/web/vitest.config.ts` listed in the root `vitest.config.ts` projects array so its jsdom environment and setup file remain active.
 6. This PR was not verified in a real browser (no browser tool available in this session) — consider a manual pass across the Player/GM/Table tab switcher in `apps/web/src/App.tsx` before or during review, even though the automated `jest-axe` + `@testing-library/react` suite already exercises the full rendered DOM for all three surfaces.
