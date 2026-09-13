@@ -1,8 +1,8 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1C is implemented, independently reviewed with no findings, and approved for merge.
-- **Branch:** `worktree-phase1c-gm-table`
-- **PR:** PR #5; approved for merge
+- **Status:** Phase 1A/1B/1C are merged to `main`. The Phase 2 preflight (architecture step 4: "independently review and adjust contracts before persistence") is complete on this branch: a new contract review, a Phase 2 PR-by-PR plan with an acceptance/failure-injection matrix, and a decision brief for John. No Firebase package, credential, project, or persistence code was introduced — this branch is documentation-only.
+- **Branch:** `worktree-phase2-preflight`
+- **PR:** not yet opened; open as a draft PR for review, do not merge without John's review of the decision brief.
 - **Last updated:** 2026-09-13 by Claude (Sonnet 5)
 
 ## Mission
@@ -27,7 +27,8 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
 - The first independent Phase 1A implementation review is recorded in [`docs/reviews/2026-09-12-phase-1a-implementation-review.md`](docs/reviews/2026-09-12-phase-1a-implementation-review.md). Its six findings were remediated: the pure harness can return stored actor-private receipt results without rerolling, hidden-adjusted face counts are redacted outside the GM view, live rolls survive schema parsing/migration, duplicate allocation IDs are rejected, repeated gear IDs count once, and event/view parsers now validate their complete nested shapes. Regression coverage raised the suite to 111 tests, and the PR merged to `main` clean.
 - The revised architecture selects trusted Firebase Functions as command authority, Firestore as transactional event/projection storage, and RTDB for ephemeral presence — all still deferred to Phase 2 per scope.
 - **Phase 1B (player surface) is merged to `main`** (PR #7), scoped exactly to `docs/IMPLEMENTATION_ROADMAP.md`'s Phase 1B and `docs/ARCHITECTURE.md` section 17's PR 2. See "Second implementation PR: player surface (Phase 1B)" below for the full description, design decisions, and verification commands. Its independent review is recorded in [`docs/reviews/2026-09-13-phase-1b-implementation-review.md`](docs/reviews/2026-09-13-phase-1b-implementation-review.md): approved for merge, no blocking findings, with four non-blocking Phase 1C follow-ups (all addressed below).
-- **Phase 1C (GM and shared views) is implemented** on this branch, scoped exactly to `docs/IMPLEMENTATION_ROADMAP.md`'s Phase 1C and `docs/ARCHITECTURE.md` section 17's PR 3, per `docs/PHASE_1C_PLAN.md`. See "Third implementation PR: GM and shared views (Phase 1C)" below for the full description, design decisions, and verification commands. This still requires independent review before merge.
+- **Phase 1C (GM and shared views) is merged to `main`** (PR #5), scoped exactly to `docs/IMPLEMENTATION_ROADMAP.md`'s Phase 1C and `docs/ARCHITECTURE.md` section 17's PR 3, per `docs/PHASE_1C_PLAN.md`. See "Third implementation PR: GM and shared views (Phase 1C)" below for the full description, design decisions, and verification commands. Its independent review is recorded in [`docs/reviews/2026-09-13-phase-1c-implementation-review.md`](docs/reviews/2026-09-13-phase-1c-implementation-review.md): approved for merge, no blocking or non-blocking code findings.
+- **Phase 2 preflight is complete on this branch** (`worktree-phase2-preflight`), per `docs/ARCHITECTURE.md` section 17 step 4. See "Phase 2 preflight: contract re-evaluation before persistence" below.
 
 ## Read in this order
 
@@ -146,15 +147,36 @@ Scope was exactly `docs/IMPLEMENTATION_ROADMAP.md`'s Phase 1C and `docs/ARCHITEC
 - No Firebase, Three.js, encounter authoring, safety controls, GM overrides, 3D, licensed content, or second template were introduced. `packages/contracts`, `packages/engine`, and `templates/eat-the-reich`'s pure functions are unchanged except the additive `MAX_PUSH_DICE` export noted above.
 - Not independently verified in a real browser this session (no browser tool available); the automated suite above exercises the full rendered DOM (via `@testing-library/react` + `jsdom`) for every surface and the full multi-role flow, including `jest-axe` checks, so this substitutes for but does not replace a manual pass before merge.
 
+## Phase 2 preflight: contract re-evaluation before persistence — DONE (this branch)
+
+Scope was exactly `docs/ARCHITECTURE.md` section 17 step 4 ("Independently review and adjust contracts before persistence"), run before any Phase 2 implementation per its precondition. No Firebase package, credential, project, or persistence code was touched; this is a documentation-only branch.
+
+1. ✅ **Independent contract re-evaluation:** [`docs/reviews/2026-09-13-phase-2-preflight-review.md`](docs/reviews/2026-09-13-phase-2-preflight-review.md) re-reads the actual merged Phase 1A–1C code (not just the architecture pseudocode) against repository boundaries, command receipts/idempotency, member-seat binding, projection atomics, recovery, authorization, failure semantics, and the emulator-test seam. It dispositions the architecture third-pass review's six still-open findings (R1–R6, all now folded into `docs/ARCHITECTURE.md` by this same branch) and records nine new findings (P1–P9) found only by reading the shipped code: most substantively, that command IDs are currently minted server-side inside `InMemoryRoomRepository.dispatch()` rather than by the caller (P1), which means the engine's already-correct idempotent-retry path (`runCommand`'s `priorReceipt` short-circuit) is currently unreachable from any UI code path and must be fixed by making `commandId` a caller-supplied outbox concern before `FirebaseRoomRepository` exists; and that no repository interface is yet an explicit contract, only one concrete synchronous implementation (P8). No blocking defect was found in the merged code.
+2. ✅ **Documentation-only architecture corrections**, folding in the architecture third-pass review's R1–R6 (recorded there as "ride the next documentation edit"): `docs/ARCHITECTURE.md` section 8 now specifies the `uidBindings/{uid}` reverse index Firestore rules need to establish room membership from a UID alone (R1), states that `authority/current` carries `roomStatus`/`gmMemberId` directly as the transaction's serialization point with `meta/current` as a synced mirror (R2), fixes the `receiptId` scheme to `${memberId}_${commandId}` (R6), and states the GM-lockout, GM-code-theft, and old-UID-presence-recreation residuals explicitly (R3–R5). These are documentation corrections only — the corresponding `packages/contracts` shape changes (e.g. `AuthorityRecord` gaining `roomStatus`/`gmMemberId`) are deliberately deferred to Phase 2 PR 2, not made here.
+3. ✅ **Phase 2 implementation plan:** [`docs/PHASE_2_PLAN.md`](docs/PHASE_2_PLAN.md) splits `docs/ARCHITECTURE.md` section 17 steps 5–6 into seven reviewable PRs (repository interface + emulator harness; Firestore data model + rules; anonymous auth + admission + GM claim; the transactional command-authority Function; RTDB presence; recovery-code redemption; client reconnect/outbox), each scoped like the Phase 1A–1C PRs (own tests, own review, land before the next starts). It includes a 22-row acceptance/failure-injection matrix combining `docs/ARCHITECTURE.md` sections 11/13's required proofs with concrete failure injections (duplicate command, concurrent invocation, disconnect-after-submit, stale revision, recovery lockout, kick), each mapped to the PR that first makes it testable.
+4. ✅ **Decision brief for John:** [`docs/PHASE_2_DECISION_BRIEF.md`](docs/PHASE_2_DECISION_BRIEF.md) covers the three "before realtime implementation" decisions from `docs/ARCHITECTURE.md` section 16 — Firebase region/project separation, room join policy, and retention/export/deletion values — with options, tradeoffs, and a recommendation for each, plus the specific open questions only John can answer (e.g. what happens after a 90-day archive prompt goes unanswered).
+5. ✅ **First safe implementation slice identified:** `docs/PHASE_2_PLAN.md`'s PR 1 (repository interface + Firebase emulator harness) and PR 2 (Firestore data model + security rules) need none of the three decisions above and can start in the Emulator Suite immediately — both run entirely against local emulators with a placeholder project ID. PR 3 onward (real project creation, the actual join/admission flow) waits on the decision brief.
+
+### Required checks — all pass locally
+
+- `npm install` (this worktree had no `node_modules` before this session; a clean install is required and is unaffected by the documentation-only changes here).
+- `npm run format` (Prettier check) — clean.
+- `npm run lint` (ESLint 9) — clean, zero warnings.
+- `npm run typecheck` (`tsc --noEmit` in all 5 workspaces) — clean.
+- `npx vitest run` — **161/161 tests pass** across 28 test files, unchanged from the Phase 1C merge (no source files were touched).
+- `npm run build` — clean.
+- `npm audit` — 0 vulnerabilities.
+- `git diff --check` — clean.
+- No Firebase, Three.js, or persistence-layer code was introduced; `packages/contracts`, `packages/engine`, `apps/web`, and `templates/eat-the-reich` are byte-for-byte unchanged from `main`. Only `docs/ARCHITECTURE.md`, `CLAUDE_HANDOFF.md`, and three new `docs/` files changed.
+
 ## Definition of first playable
 
 After the later realtime PR, two players and one GM can join a room, load the sample encounter, resolve an opposed action, receive correctly isolated projections, reconnect without duplicating it, invoke anonymous safety controls, and review the timeline.
 
 ## Decisions requiring John
 
+- **See [`docs/PHASE_2_DECISION_BRIEF.md`](docs/PHASE_2_DECISION_BRIEF.md) for the full brief, options, and recommendations.** Summary: Firebase region and staging/production project separation; room join policy (open code / code + passphrase / invites); campaign retention/export/deletion values, including what happens if a 90-day archive prompt goes unanswered.
 - Game-content distribution rights and approved placeholder fixture.
-- Room join policy and campaign retention/export/deletion policy.
-- Firebase staging/production projects and region before realtime work.
 - Whether 3D dice, durable accounts, or Cloudflare hosting enter the first public milestone.
 
 ## Handoff protocol
@@ -168,8 +190,9 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-1. Merge the independently approved Phase 1C PR.
-2. After merge, the next roadmap slice is **Phase 2 — realtime room** (`docs/IMPLEMENTATION_ROADMAP.md`): Firebase emulator, anonymous auth, App Check monitoring, Firestore/RTDB rules, stable member seats, idempotent commands/reconnect/offline queue, and multi-device tests. This is the first point at which Firebase enters the repository at all — nothing before it should introduce Firebase packages, credentials, or projects.
+1. **Get this branch's Phase 2 preflight independently reviewed** (per `AGENTS.md`: "do not call a non-trivial change complete until it has been independently reviewed"), open a draft PR, and get John's decisions on `docs/PHASE_2_DECISION_BRIEF.md`.
+2. **Start `docs/PHASE_2_PLAN.md`'s PR 1 (repository interface + Firebase emulator harness) immediately, then begin PR 2 (Firestore data model + security rules) after PR 1 is reviewed and landed.** Neither needs the three pending decisions; both run entirely against the local Emulator Suite with a placeholder project ID. This is the first point at which a Firebase *package* (not project or credentials) enters the repository, and only as an emulator/dev dependency.
+3. **PR 3 onward waits on the decision brief** — anonymous auth/admission/GM claim (PR 3) needs the join-policy decision and is the first PR that creates a real Firebase project, which needs the region/project decision.
 4. Do not pull forward encounter authoring, safety controls, GM overrides, 3D, or a second template ahead of their place in the roadmap.
 5. Keep `apps/web/vitest.config.ts` listed in the root `vitest.config.ts` projects array so its jsdom environment and setup file remain active.
-6. This PR was not verified in a real browser (no browser tool available in this session) — consider a manual pass across the Player/GM/Table tab switcher in `apps/web/src/App.tsx` before or during review, even though the automated `jest-axe` + `@testing-library/react` suite already exercises the full rendered DOM for all three surfaces.
+6. Phase 1C was not verified in a real browser during its own review (no browser tool available in that session) — still worth a manual pass across the Player/GM/Table tab switcher in `apps/web/src/App.tsx` at some point before Phase 2 replaces `InMemoryRoomRepository`, even though the automated `jest-axe` + `@testing-library/react` suite already exercises the full rendered DOM for all three surfaces.
