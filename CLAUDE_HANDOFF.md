@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phases 1A and 1B are merged. Phase 1C is planned and ready for implementation on the rebased branch.
+- **Status:** Phases 1A and 1B are merged. Phase 1C (GM console, shared-table view, multi-role local simulation) is implemented on this branch and awaits independent review before merge.
 - **Branch:** `worktree-phase1c-gm-table`
-- **PR:** draft PR #5; keep draft until Phase 1C implementation and independent review are complete
-- **Last updated:** 2026-09-13 by Codex
+- **PR:** PR #5; move out of draft once independent review is requested, but do not merge without it
+- **Last updated:** 2026-09-13 by Claude (Sonnet 5)
 
 ## Mission
 
@@ -26,7 +26,8 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
   - No application scaffold existed at merge time: no React/Vite client, no Firebase project, dependencies, or production credentials, and no licensed game text, art, or audio.
 - The first independent Phase 1A implementation review is recorded in [`docs/reviews/2026-09-12-phase-1a-implementation-review.md`](docs/reviews/2026-09-12-phase-1a-implementation-review.md). Its six findings were remediated: the pure harness can return stored actor-private receipt results without rerolling, hidden-adjusted face counts are redacted outside the GM view, live rolls survive schema parsing/migration, duplicate allocation IDs are rejected, repeated gear IDs count once, and event/view parsers now validate their complete nested shapes. Regression coverage raised the suite to 111 tests, and the PR merged to `main` clean.
 - The revised architecture selects trusted Firebase Functions as command authority, Firestore as transactional event/projection storage, and RTDB for ephemeral presence — all still deferred to Phase 2 per scope.
-- **Phase 1B (player surface) is implemented** on this branch, scoped exactly to `docs/IMPLEMENTATION_ROADMAP.md`'s Phase 1B and `docs/ARCHITECTURE.md` section 17's PR 2. See "Second implementation PR: player surface (Phase 1B)" below for the full description, design decisions, and verification commands. This still requires independent review before merge.
+- **Phase 1B (player surface) is merged to `main`** (PR #7), scoped exactly to `docs/IMPLEMENTATION_ROADMAP.md`'s Phase 1B and `docs/ARCHITECTURE.md` section 17's PR 2. See "Second implementation PR: player surface (Phase 1B)" below for the full description, design decisions, and verification commands. Its independent review is recorded in [`docs/reviews/2026-09-13-phase-1b-implementation-review.md`](docs/reviews/2026-09-13-phase-1b-implementation-review.md): approved for merge, no blocking findings, with four non-blocking Phase 1C follow-ups (all addressed below).
+- **Phase 1C (GM and shared views) is implemented** on this branch, scoped exactly to `docs/IMPLEMENTATION_ROADMAP.md`'s Phase 1C and `docs/ARCHITECTURE.md` section 17's PR 3, per `docs/PHASE_1C_PLAN.md`. See "Third implementation PR: GM and shared views (Phase 1C)" below for the full description, design decisions, and verification commands. This still requires independent review before merge.
 
 ## Read in this order
 
@@ -89,7 +90,7 @@ Scope was a local-only vertical slice:
 
 Recommend folding both into `docs/ARCHITECTURE.md` section 7 on the next documentation pass; nothing about the wire format, security model, or data model changed.
 
-## Second implementation PR: player surface (Phase 1B) — DONE (this branch)
+## Second implementation PR: player surface (Phase 1B) — DONE (merged to `main`)
 
 Scope was exactly `docs/IMPLEMENTATION_ROADMAP.md`'s Phase 1B and `docs/ARCHITECTURE.md` section 17's PR 2: React/Vite, an in-memory repository behind the same `runCommand`/`projectViewer` contract, the full accessible local player flow, and phone-width keyboard/reduced-motion/axe checks. No GM console, shared-table UI, Firebase/realtime, 3D, licensed content, or second template.
 
@@ -117,6 +118,34 @@ root `vitest.config.ts` `test.projects` list, including `apps/web/vitest.config.
 project sets its own root and jsdom/setup configuration. Root test scripts can therefore use
 plain `vitest run`/`vitest` while retaining all project-specific settings.
 
+## Third implementation PR: GM and shared views (Phase 1C) — DONE (this branch)
+
+Scope was exactly `docs/IMPLEMENTATION_ROADMAP.md`'s Phase 1C and `docs/ARCHITECTURE.md` section 17's PR 3, per `docs/PHASE_1C_PLAN.md`: GM opposition controls (replacing Phase 1B's timed local GM stand-in with real human GM commands), a read-only shared-table capability, multi-role local simulation, and desktop-width tests, completing one opposed roll/allocation flow across all three views. No Firebase/realtime, encounter authoring, safety controls, GM overrides, 3D, licensed content, or second template were introduced.
+
+1. ✅ **Replaced the local GM stand-in with real GM opposition controls.** `apps/web/src/repository/InMemoryRoomRepository.ts`'s `simulateOpposition` (a fixed-value, timer-triggered stand-in) and `localGmPolicy.ts` are gone. A new `submitOpposition(rollId, pushDice)` method dispatches `SubmitOpposition` as the GM member through the exact same `dispatch`/`runCommand` path every other command uses. `apps/web/src/gm/GmScreen.tsx` (a new `/room/:roomId/gm`-equivalent surface, simulated locally per `docs/ARCHITECTURE.md` section 6) renders the GM's own `ViewerProjection<EatTheReichView>` — full threat list including `ThreatGmSummary`'s hidden fields, the active roll's un-redacted `playerFaces`/`hiddenDifficultyModifier` — and a push-dice control (the existing `AllocationStepper`, moved to `apps/web/src/shared/` and reused as-is, bounded by a newly-exported `MAX_PUSH_DICE` from `templates/eat-the-reich/src/engine.ts` instead of a duplicated magic number) wired to `submitOpposition`. `apps/web/src/gm/useGmFlow.ts` owns the GM's projection subscription and dispatch-result handling.
+2. ✅ **Read-only shared-table surface.** `apps/web/src/table/TableScreen.tsx` (a new `/room/:roomId/table`-equivalent surface) renders the `table` capability's projection — public character/threat summaries, the active roll without GM-only fields, `self` always null — via `apps/web/src/table/useTableProjection.ts`. It renders no buttons, inputs, or other controls anywhere, and no Pause/Fade/Veil/Skip (not yet implemented anywhere in the current command surface). `InMemoryRoomRepository.getGmProjection()`/`getTableProjection()` build the `{ viewerId: "gm" | "table", capability: "gm" | "table" }` viewer contexts directly (matching `templates/eat-the-reich/test/fixtures.ts`'s `GM_VIEWER`/`TABLE_VIEWER` pattern), distinct from the GM's own dispatch-time member ID.
+3. ✅ **Multi-role local simulation.** One `InMemoryRoomRepository` instance is shared by all three surfaces: `apps/web/src/App.tsx` is now a local tab switcher (Player/GM/Table) over one repository instance, standing in for real per-role routing until Phase 2. `apps/web/test/multiRole/MultiRoleFlow.test.tsx` renders `PlayerScreen`, `GmScreen`, and `TableScreen` concurrently against one shared repository and drives the full `BeginAction` (player) → `SubmitOpposition` (GM) → `AllocateResults` (player) flow, asserting each surface's DOM only ever shows what its own projection contains at each step. A dedicated regression test (`attemptCommandAsTable`, a test-support-only repository method mapping a fixed member to the `table` capability) proves a table-attributed command is rejected by platform authorization through the same dispatch path, not merely omitted from the table UI.
+4. ✅ **Projection isolation (extended).** `templates/eat-the-reich/test/multiRoleProjectionIsolation.property.test.ts` is a new property test that runs the actual `BeginAction`/`SubmitOpposition`/`AllocateResults` command sequence through `runCommand` with randomized hidden threat data and push-dice values (50 runs), asserting after every accepted command that `table` never carries hidden fields, `gm` is the only viewer that does, player-vs-GM isolation is unweakened by the added viewers, and all three projections stay within the 64 KiB ceiling (`checkProjectionBudget`). This is additive to, not a replacement for, the existing single-scenario `projectionIsolation.property.test.ts`.
+5. ✅ **Responsive accessibility.** `GmScreen`/`TableScreen` reuse Phase 1B's `LiveRegion` and `usePrefersReducedMotion`/reduced-motion CSS harness (no second accessibility configuration). `apps/web/test/gm/GmScreen.test.tsx` and `apps/web/test/table/TableScreen.test.tsx` add `jest-axe` checks at both the existing 375px phone-width breakpoint and a new 1280px desktop-width breakpoint (chosen because none is named in `docs/ARCHITECTURE.md`/`docs/UX_RESOLUTION_THEATRE.md`; `docs/PHASE_1C_PLAN.md` flagged this as an open pick), plus keyboard-only operability of the GM's push-dice control and a polite live region announced once per `docs/UX_RESOLUTION_THEATRE.md`.
+6. ✅ **Phase 1B independent review follow-ups, all addressed:**
+   - "Replace the timed local GM stand-in with human opposition controls" — done (item 1 above); `usePlayerActionFlow.ts` no longer runs a `setTimeout`-based delay at all, since `waiting-on-gm` is now a genuine wait on another surface's action reflected live through `repository.subscribe`.
+   - "Surface opposition-dispatch failures in the player UI" — `InMemoryRoomRepository` gained `subscribeToErrors`, broadcasting every rejected dispatch (from any role) to subscribers; `usePlayerActionFlow` shows the GM's dispatch failures as the same top-level alert used for the player's own failures (`apps/web/test/player/PlayerFlow.a11y.test.tsx`, "surfaces an opposition-dispatch failure instead of waiting silently forever").
+   - "Consider explicit coverage for runtime reduced-motion preference changes" — added: `apps/web/test/accessibility/usePrefersReducedMotion.test.ts` drives a controllable `matchMedia` mock through a runtime `change` event (jsdom's own mock in `test/setup.ts` can't flip `matches`, so this test installs its own and restores it afterward).
+   - "Preserve the existing engine-level idempotency guarantees when Phase 2 adds reconnect/outbox behavior" — unaffected by this PR; no change to command-ID minting.
+7. ✅ **Contract refinements folded into `docs/ARCHITECTURE.md`.** Section 7's `GameTemplate` pseudocode now shows `DecisionContext<TState>`'s `actor` field and `project`'s raw-`TView`-plus-`projectViewer`-wrapper split explicitly, both flagged as outstanding since Phase 1A. No change to the wire format or security model — see the note appended to that section.
+
+### Required checks — all pass locally
+
+- `npm run format` (Prettier check) — clean.
+- `npm run lint` (ESLint 9) — clean, zero warnings, across all workspaces.
+- `npm run typecheck` (`tsc --noEmit` in all 5 workspaces) — clean.
+- `npx vitest run` — **161/161 tests pass** across 28 test files (127 carried over from Phase 1A/1B plus 1 new in `templates/eat-the-reich` and 33 new in `apps/web`): the new template test is the multi-role projection-isolation property test (item 4 above); the new `apps/web` tests cover `GmScreen`/`useGmFlow` (hidden-field rendering, keyboard-operable opposition dispatch, engine-driven status, dispatch-failure surfacing, phone/desktop axe), `TableScreen` (public-only rendering, no controls, no safety controls, live status, stale-mount regression, phone/desktop axe), the multi-role integration flow, the reduced-motion runtime-change hook test, and updated repository/player-flow tests reflecting the real GM dispatch path.
+- `npm run build` — clean; `apps/web` builds via `vite build` (verified the built `dist/` serves correctly under `vite preview`, HTTP 200).
+- `npm audit` — 0 vulnerabilities.
+- `git diff --check` — clean.
+- No Firebase, Three.js, encounter authoring, safety controls, GM overrides, 3D, licensed content, or second template were introduced. `packages/contracts`, `packages/engine`, and `templates/eat-the-reich`'s pure functions are unchanged except the additive `MAX_PUSH_DICE` export noted above.
+- Not independently verified in a real browser this session (no browser tool available); the automated suite above exercises the full rendered DOM (via `@testing-library/react` + `jsdom`) for every surface and the full multi-role flow, including `jest-axe` checks, so this substitutes for but does not replace a manual pass before merge.
+
 ## Definition of first playable
 
 After the later realtime PR, two players and one GM can join a room, load the sample encounter, resolve an opposed action, receive correctly isolated projections, reconnect without duplicating it, invoke anonymous safety controls, and review the timeline.
@@ -139,9 +168,9 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-1. Implement **Phase 1C — GM and shared views** from `docs/PHASE_1C_PLAN.md`: add GM opposition controls (replacing the local GM stand-in with a real GM console) and a read-only shared-table capability, add multi-role local simulation and desktop-width tests, and complete one opposed roll/allocation flow across all views. Exit criterion: one encounter resolves end to end with simulated roles.
-3. Concretely for Phase 1C: `templates/eat-the-reich`'s `authorizeGameAction` already accepts a `gm` capability for `SubmitOpposition`; a real GM UI needs to surface the visible-to-GM projection (`viewer.capability === "gm"`, already implemented in `project`) and let a human choose push dice, rather than `apps/web/src/repository/localGmPolicy.ts`'s fixed stand-in value. Multi-role local simulation likely means the in-memory repository grows a second tracked viewer the UI can switch between, still with no Firebase.
-4. Fold this PR's two contract refinements (actor in `DecisionContext`, raw-view `project` + `projectViewer`) into `docs/ARCHITECTURE.md` section 7 on the next documentation pass — flagged above under "Contract refinements made during implementation". Still outstanding from Phase 1A.
-5. Surface opposition-dispatch failures in the player UI and consider explicit runtime reduced-motion preference-change coverage, per the Phase 1B independent review.
-6. Do not pull forward realtime sync or a second template — those remain Phase 2 and later per the roadmap.
-7. Keep `apps/web/vitest.config.ts` listed in the root `vitest.config.ts` projects array so its jsdom environment and setup file remain active.
+1. **Request an independent implementation review of Phase 1C** (a second pass, not the author's own read-through — see `AGENTS.md` and the precedent under `docs/reviews/`), covering the source, tests, and scope against `docs/PHASE_1C_PLAN.md`'s acceptance criteria. Record the outcome as `docs/reviews/<date>-phase-1c-implementation-review.md`, the same way Phase 1A's and Phase 1B's reviews are recorded.
+2. Once reviewed and any findings are remediated, move PR #5 out of draft and merge to `main` (do not merge without that review, per `AGENTS.md`).
+3. After merge, the next roadmap slice is **Phase 2 — realtime room** (`docs/IMPLEMENTATION_ROADMAP.md`): Firebase emulator, anonymous auth, App Check monitoring, Firestore/RTDB rules, stable member seats, idempotent commands/reconnect/offline queue, and multi-device tests. This is the first point at which Firebase enters the repository at all — nothing before it should introduce Firebase packages, credentials, or projects.
+4. Do not pull forward encounter authoring, safety controls, GM overrides, 3D, or a second template ahead of their place in the roadmap.
+5. Keep `apps/web/vitest.config.ts` listed in the root `vitest.config.ts` projects array so its jsdom environment and setup file remain active.
+6. This PR was not verified in a real browser (no browser tool available in this session) — consider a manual pass across the Player/GM/Table tab switcher in `apps/web/src/App.tsx` before or during review, even though the automated `jest-axe` + `@testing-library/react` suite already exercises the full rendered DOM for all three surfaces.

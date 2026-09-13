@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
 import { beforeEach, describe, expect, it } from "vitest";
@@ -6,14 +6,30 @@ import { PlayerScreen } from "../../src/player/PlayerScreen.js";
 import { InMemoryRoomRepository } from "../../src/repository/InMemoryRoomRepository.js";
 
 /** Renders the player surface at a common phone viewport width. */
-function renderAtPhoneWidth(
-  reducedMotion: boolean,
-): { repository: InMemoryRoomRepository } & ReturnType<typeof render> {
+function renderAtPhoneWidth(): { repository: InMemoryRoomRepository } & ReturnType<typeof render> {
   window.innerWidth = 375;
   window.innerHeight = 667;
   const repository = new InMemoryRoomRepository();
-  const utils = render(<PlayerScreen repository={repository} reducedMotion={reducedMotion} />);
+  const utils = render(<PlayerScreen repository={repository} />);
   return { repository, ...utils };
+}
+
+/**
+ * Stands in for the GM surface (out of scope for this test file — see
+ * apps/web/test/gm/GmScreen.test.tsx) by submitting opposition directly
+ * through the shared repository, exactly as `GmScreen` would.
+ */
+function resolveOppositionAsGm(repository: InMemoryRoomRepository, pushDice = 0): void {
+  const rollId = repository.getPlayerProjection().view.activeRoll?.rollId;
+  if (!rollId) {
+    throw new Error("expected an active roll awaiting opposition");
+  }
+  act(() => {
+    const result = repository.submitOpposition(rollId, pushDice);
+    if (!result.ok) {
+      throw new Error(`opposition dispatch unexpectedly failed: ${result.message}`);
+    }
+  });
 }
 
 describe("Player flow at phone width", () => {
@@ -23,13 +39,13 @@ describe("Player flow at phone width", () => {
   });
 
   it("has no detectable accessibility violations in the compose step", async () => {
-    const { container } = renderAtPhoneWidth(true);
+    const { container } = renderAtPhoneWidth();
     expect(await axe(container)).toHaveNoViolations();
   });
 
   it("announces the compact pool total and reveals its derivation in a native, keyboard-operable disclosure", async () => {
     const user = userEvent.setup();
-    const { container } = renderAtPhoneWidth(true);
+    const { container } = renderAtPhoneWidth();
 
     expect(container.textContent).toMatch(/Pool:/);
     const disclosure = screen.getByText("Why?");
@@ -37,9 +53,21 @@ describe("Player flow at phone width", () => {
     expect(container.textContent).toMatch(/Nerve:/);
   });
 
+  it("shows the waiting-on-gm state as soon as the roll is submitted, with no fixed delay", async () => {
+    const user = userEvent.setup();
+    renderAtPhoneWidth();
+
+    const beginButton = screen.getByRole("button", { name: /strong-arm the enforcer/i });
+    beginButton.focus();
+    await user.keyboard("{Enter}");
+
+    expect(await screen.findByRole("heading", { name: /your roll/i })).toBeInTheDocument();
+    expect(screen.getAllByText(/waiting on the opposition/i)).toHaveLength(2);
+  });
+
   it("completes compose -> roll -> wait for opposition -> allocate -> confirm using only the keyboard", async () => {
     const user = userEvent.setup();
-    const { container } = renderAtPhoneWidth(true);
+    const { container, repository } = renderAtPhoneWidth();
 
     // compose: toggle the one gear item by keyboard, then begin the action.
     const gearCheckbox = screen.getByRole("checkbox", { name: /silenced tool/i });
@@ -51,13 +79,12 @@ describe("Player flow at phone width", () => {
     beginButton.focus();
     await user.keyboard("{Enter}");
 
-    // roll: the player's own result is shown immediately (no activeRoll -> activeRoll transition to wait for).
+    // roll: the player's own result is shown immediately.
     expect(await screen.findByRole("heading", { name: /your roll/i })).toBeInTheDocument();
 
-    // wait for opposition: the local GM stand-in resolves it after a short, announced delay.
-    expect(
-      await screen.findByRole("button", { name: /confirm allocation/i }, { timeout: 3000 }),
-    ).toBeInTheDocument();
+    // wait for opposition: a real GM surface (not this one) submits it through the shared repository.
+    resolveOppositionAsGm(repository);
+    expect(await screen.findByRole("button", { name: /confirm allocation/i })).toBeInTheDocument();
 
     // allocate: drive the first stepper (if any successes were earned) with the keyboard alone.
     const spinbuttons = screen.queryAllByRole("spinbutton");
@@ -80,17 +107,16 @@ describe("Player flow at phone width", () => {
 
   it("can play again after resolution, returning to a fresh compose step", async () => {
     const user = userEvent.setup();
-    renderAtPhoneWidth(true);
+    const { repository } = renderAtPhoneWidth();
 
     const beginButton = screen.getByRole("button", { name: /strong-arm the enforcer/i });
     beginButton.focus();
     await user.keyboard("{Enter}");
 
-    const confirmButton = await screen.findByRole(
-      "button",
-      { name: /confirm allocation/i },
-      { timeout: 3000 },
-    );
+    await screen.findByRole("heading", { name: /your roll/i });
+    resolveOppositionAsGm(repository);
+
+    const confirmButton = await screen.findByRole("button", { name: /confirm allocation/i });
     confirmButton.focus();
     await user.keyboard("{Enter}");
     await screen.findByRole("heading", { name: /resolved/i });
@@ -100,5 +126,27 @@ describe("Player flow at phone width", () => {
     await user.keyboard("{Enter}");
 
     expect(await screen.findByRole("heading", { name: /choose an action/i })).toBeInTheDocument();
+  });
+
+  it("surfaces an opposition-dispatch failure instead of waiting silently forever", async () => {
+    const user = userEvent.setup();
+    const { repository } = renderAtPhoneWidth();
+
+    const beginButton = screen.getByRole("button", { name: /strong-arm the enforcer/i });
+    beginButton.focus();
+    await user.keyboard("{Enter}");
+    await screen.findByRole("heading", { name: /your roll/i });
+
+    const rollId = repository.getPlayerProjection().view.activeRoll?.rollId;
+    if (!rollId) throw new Error("expected an active roll");
+
+    // An out-of-range push-dice value is rejected by the template's own validation
+    // (templates/eat-the-reich/src/engine.ts), simulating any other reason the GM's
+    // dispatch might fail.
+    act(() => {
+      repository.submitOpposition(rollId, 99);
+    });
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(/push dice/i);
   });
 });

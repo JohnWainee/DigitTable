@@ -7,12 +7,11 @@ import { usePlayerActionFlow, type PlayerActionFlow } from "./usePlayerActionFlo
 
 export interface PlayerScreenProps {
   readonly repository: InMemoryRoomRepository;
-  readonly reducedMotion: boolean;
 }
 
 /** Top-level player surface: scene summary, one persistent status announcement, and the active step. */
-export function PlayerScreen({ repository, reducedMotion }: PlayerScreenProps): JSX.Element {
-  const flow = usePlayerActionFlow(repository, reducedMotion);
+export function PlayerScreen({ repository }: PlayerScreenProps): JSX.Element {
+  const flow = usePlayerActionFlow(repository);
   const { view } = flow.projection;
 
   return (
@@ -29,7 +28,7 @@ export function PlayerScreen({ repository, reducedMotion }: PlayerScreenProps): 
 
       <LiveRegion politeness="polite" message={computeAnnouncement(flow)} />
 
-      {flow.errorMessage && !view.activeRoll && (
+      {flow.errorMessage && (
         <p role="alert" className="error-message">
           {flow.errorMessage}
         </p>
@@ -40,10 +39,8 @@ export function PlayerScreen({ repository, reducedMotion }: PlayerScreenProps): 
       ) : view.activeRoll ? (
         <ActiveRollPanel
           roll={view.activeRoll}
-          awaitingOpposition={flow.awaitingOpposition}
           validAllocations={flow.validAllocations}
           onAllocate={flow.allocate}
-          errorMessage={flow.errorMessage}
         />
       ) : view.self ? (
         <ComposeStep

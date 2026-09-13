@@ -50,7 +50,8 @@ import type {
   ThreatPublicSummary,
 } from "./view.js";
 
-const MAX_PUSH_DICE = 2;
+/** The GM's opposition push-dice input is bounded to this range (0..MAX_PUSH_DICE), inclusive. */
+export const MAX_PUSH_DICE = 2;
 
 function decideBeginAction(
   ctx: DecisionContext<EatTheReichState>,

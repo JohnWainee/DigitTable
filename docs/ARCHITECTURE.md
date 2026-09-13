@@ -170,24 +170,51 @@ Start with React context/hooks and an explicit external-store adapter. Add a bro
 ## 7. Contracts
 
 ```ts
-interface GameTemplate<TState, TCommand, TEvent> {
+interface DecisionContext<TState> {
+  state: TState;
+  // The same trusted, server-verified membership context passed to
+  // authorizeGameAction. authorizeGameAction never receives `state`, so an
+  // entity-scoped ownership check (e.g. "this roll belongs to this actor")
+  // has nowhere else to live; `decide` needs both `state` and `actor`
+  // together to make that check.
+  actor: AuthorizedMemberContext;
+  random: RandomSource;
+}
+
+interface GameTemplate<TState, TCommand, TEvent, TView> {
   manifest: TemplateManifest;
-  schemas: TemplateSchemas<TState, TCommand, TEvent>;
+  schemas: TemplateSchemas<TState, TCommand, TEvent, TView>;
   initialState(input: InitialCampaignInput): TState;
   authorizeGameAction(ctx: AuthorizedMemberContext, command: TCommand): AuthorizationResult;
   decide(ctx: DecisionContext<TState>, command: TCommand): Decision<TEvent>;
   reduce(state: TState, event: TEvent): TState;
-  project(state: TState, viewer: ViewerContext): ViewerProjection;
-  explainPool(projection: ViewerProjection, input: PoolInput): PoolExplanation;
-  validAllocations(projection: ViewerProjection, roll: VisibleRoll): AllocationOption[];
+  // Returns the raw, viewer-scoped view, not the wire envelope: `TState`
+  // alone carries no room revision or version metadata (those live one level
+  // up, on the authority record), so a template cannot construct a complete
+  // ViewerProjection from `state` alone. The platform's `projectViewer(...)`
+  // wraps this into the full envelope below — the same split `decide` already
+  // has, returning raw events that the platform wraps into EventEnvelopes.
+  project(state: TState, viewer: ViewerContext): TView;
+  explainPool(projection: ViewerProjection<TView>, input: PoolInput): PoolExplanation;
+  validAllocations(projection: ViewerProjection<TView>, roll: VisibleRoll): AllocationOption[];
   theatre(event: TEvent, prefs: PresentationPreferences): TheatreScene | null;
   migrate(record: VersionedTemplateRecord): MigrationResult<TState>;
 }
+
+// Wraps a template's raw `project` output into the full wire envelope,
+// pulling room revision and version metadata from the live authority record.
+function projectViewer<TState, TView>(
+  template: GameTemplate<TState, unknown, unknown, TView>,
+  authority: AuthorityRecord<TState>,
+  viewer: ViewerContext,
+): ViewerProjection<TView>;
 ```
 
 Platform code first checks room membership, seat capability, room status, payload bounds, and command-family guards; a template cannot weaken those checks. `authorizeGameAction`, `decide`, `reduce`, `project`, `explainPool`, and `validAllocations` are pure. Trusted handlers generate one cryptographic seed per invocation before entering the transaction and inject a deterministic generator into `DecisionContext`; emitted events capture only the committed faces, never the seed. Tests inject a fixed seed.
 
 `Decision` assigns every emitted event a destination of `shared`, `gm`, or one or more member IDs. An event copied to more than one physical visibility partition retains one logical event ID, so storage document paths—not `eventId` alone—are unique. `project` returns one full projection for each viewer, including all shared content that viewer may see; each projection must remain below 64 KiB. This avoids cross-document revision tearing. At eight participants plus GM and table, a worst-case command rewrites under 640 KiB of projection data, within the Firestore commit limit. A 200-command session at the projection bound transfers roughly 13 MB to each continuously connected viewer. Revisit patches if measured bandwidth, latency, or cost exceeds the quality targets.
+
+Neither addition above changes the wire format or the security model: `DecisionContext.actor` is the same trusted context `authorizeGameAction` already receives, just also passed to `decide`, and `projectViewer`'s wrapping step is exactly what building `ViewerProjection`'s `roomRevision`/version fields always required — this section originally left both implicit. They were identified while implementing the local vertical slice (PR 1) and are recorded as findings in `CLAUDE_HANDOFF.md`.
 
 `explainPool` operates on a viewer projection and therefore cannot include hidden GM modifiers. `ActionRolled` carries the server-authoritative pool derivation, with hidden inputs redacted appropriately, so the receiving player can understand any difference from the pre-roll explanation.
 

@@ -1,10 +1,18 @@
 # Phase 1C implementation plan — GM and shared views
 
-- **Status:** Planning only. Implementation blocked on Phase 1B (see "Dependency status").
+- **Status:** Implemented on `worktree-phase1c-gm-table`, PR #5. Pending independent review before merge (see `CLAUDE_HANDOFF.md`).
 - **Scope authority:** `docs/IMPLEMENTATION_ROADMAP.md` Phase 1C; `docs/ARCHITECTURE.md` section 17, PR 3.
-- **Date:** 2026-09-12
+- **Date:** 2026-09-12 (plan); implemented 2026-09-13.
 
 ## Dependency status
+
+**Update, 2026-09-13:** Phase 1B merged to `main` (PR #7) after its
+independent review (`docs/reviews/2026-09-13-phase-1b-implementation-review.md`)
+found no blocking issues. This branch was rebased onto that merged state
+before implementation started, so the "not yet a usable foundation" note
+below is historical context from when this plan was written, not the current
+state. The concrete repository/component shapes Phase 1C actually integrated
+with are described in `CLAUDE_HANDOFF.md`.
 
 Phase 1C is a stacked follow-on to Phase 1B, not an independent slice. Phase 1B
 (`worktree-phase1b-player`, branch `codex/phase-1a-scaffold-engine`'s successor)
@@ -237,33 +245,40 @@ Restated from `AGENTS.md` scope discipline and `docs/ARCHITECTURE.md` section
 
 ## Acceptance criteria
 
-- [ ] A local simulation resolves one full opposed action
+- [x] A local simulation resolves one full opposed action
       (`BeginAction`→`ActionRolled`→`SubmitOpposition`→`OppositionRolled`→
       `AllocateResults`→`ActionResolved`) with the player, GM, and table
       surfaces all rendering from the same shared in-memory room.
-- [ ] GM surface renders `hiddenDifficultyModifier`/`hiddenIntel` and
+- [x] GM surface renders `hiddenDifficultyModifier`/`hiddenIntel` and
       un-redacted `playerFaces`; player and table surfaces never render them,
       proven by an automated property test, not spot-checked manually.
-- [ ] Table surface renders no actionable controls and cannot submit any
+- [x] Table surface renders no actionable controls and cannot submit any
       command; a command attributed to the `table` capability is rejected by
       platform authorization (existing engine behavior — add a regression
       test exercising it through the local harness).
-- [ ] GM's `SubmitOpposition` control uses the same command-dispatch path as
+- [x] GM's `SubmitOpposition` control uses the same command-dispatch path as
       the player's `BeginAction`/`AllocateResults` controls — no parallel
       dispatch implementation.
-- [ ] Keyboard-only operation completes the full GM and table interaction
+- [x] Keyboard-only operation completes the full GM and table interaction
       surface (table has no interaction surface beyond focus/reading order).
-- [ ] Automated axe checks pass on GM and table surfaces at phone-width and
+- [x] Automated axe checks pass on GM and table surfaces at phone-width and
       desktop-width breakpoints.
-- [ ] Reduced-motion path verified equivalent (no information conveyed by
+- [x] Reduced-motion path verified equivalent (no information conveyed by
       motion alone) on GM and table surfaces.
-- [ ] `waiting-on-gm` and result announcements use a polite live region,
+- [x] `waiting-on-gm` and result announcements use a polite live region,
       announced once, matching `docs/UX_RESOLUTION_THEATRE.md`.
-- [ ] No changes to `packages/contracts`, `packages/engine`, or
+- [x] No changes to `packages/contracts`, `packages/engine`, or
       `templates/eat-the-reich`'s pure functions beyond a documented,
-      independently reviewed bug fix if one is found.
-- [ ] `npm run format`, `npm run lint`, `npm run typecheck`, and
+      independently reviewed bug fix if one is found. (`MAX_PUSH_DICE` was
+      exported from `templates/eat-the-reich/src/engine.ts` — an additive
+      export, not a behavior change — so the GM's push-dice stepper reads
+      the template's own bound instead of duplicating the magic number `2`.)
+- [x] `npm run format`, `npm run lint`, `npm run typecheck`, and
       `npx vitest run` all pass with the new surfaces included.
+
+See `CLAUDE_HANDOFF.md`'s "Third implementation PR: GM and shared views
+(Phase 1C)" for the concrete file-by-file description, design decisions, and
+verification commands.
 
 ## Test matrix
 
