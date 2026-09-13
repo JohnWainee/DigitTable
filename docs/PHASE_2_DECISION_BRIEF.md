@@ -22,7 +22,7 @@ Three decisions block parts of Phase 2 (`docs/PHASE_2_PLAN.md`); none blocks sta
 | Single region, single project with environment prefixing (e.g. `staging-` collection prefixes) | Less setup, but staging and production data live in the same project — a staging bug or a mis-scoped query can touch production data, and IAM can't cleanly separate who can touch which environment. Architecture doesn't recommend this and neither do I. |
 | Multi-region (e.g. `nam5` multi-region Firestore) | Better availability, meaningfully higher latency variance and cost for a 3–8-person-per-room app with no stated multi-region user base yet. Nothing in the quality targets (section 3) asks for this. |
 
-**Recommendation:** a single regional Firestore location close to your actual player base (commonly `us-central1` or `nam5` for US-based play, `europe-west1`/`eur3` for EU-based play — pick based on where you and your playtesters actually are, not a default), with two separate Firebase projects for staging and production. This matches section 14's environment table without over-provisioning for scale the app isn't targeting.
+**Recommendation:** a single regional Firestore location close to your actual player base (for example `us-central1` for US-based play or `europe-west1` for EU-based play — pick based on where you and your playtesters actually are, not a default), with two separate Firebase projects for staging and production. This matches section 14's environment table without over-provisioning for scale the app isn't targeting.
 
 **What I need from you:** confirm (a) two projects, and (b) which region — I don't have visibility into where your playtesters are, so I can't pick the region for you.
 

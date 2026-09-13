@@ -191,7 +191,7 @@ When pausing or finishing a material unit:
 ## Next action
 
 1. **Get this branch's Phase 2 preflight independently reviewed** (per `AGENTS.md`: "do not call a non-trivial change complete until it has been independently reviewed"), open a draft PR, and get John's decisions on `docs/PHASE_2_DECISION_BRIEF.md`.
-2. **`docs/PHASE_2_PLAN.md`'s PR 1 (repository interface + Firebase emulator harness) and PR 2 (Firestore data model + security rules) can start immediately** — neither needs any of the three pending decisions, both run entirely against the local Emulator Suite with a placeholder project ID. This is the first point at which a Firebase *package* (not project or credentials) enters the repository, and only as an emulator/dev dependency.
+2. **Start `docs/PHASE_2_PLAN.md`'s PR 1 (repository interface + Firebase emulator harness) immediately, then begin PR 2 (Firestore data model + security rules) after PR 1 is reviewed and landed.** Neither needs the three pending decisions; both run entirely against the local Emulator Suite with a placeholder project ID. This is the first point at which a Firebase *package* (not project or credentials) enters the repository, and only as an emulator/dev dependency.
 3. **PR 3 onward waits on the decision brief** — anonymous auth/admission/GM claim (PR 3) needs the join-policy decision and is the first PR that creates a real Firebase project, which needs the region/project decision.
 4. Do not pull forward encounter authoring, safety controls, GM overrides, 3D, or a second template ahead of their place in the roadmap.
 5. Keep `apps/web/vitest.config.ts` listed in the root `vitest.config.ts` projects array so its jsdom environment and setup file remain active.
