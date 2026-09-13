@@ -79,6 +79,10 @@ describe("projection isolation (property)", () => {
             expect(playerView.activeRoll).not.toHaveProperty("hiddenDifficultyModifier");
             expect(tableView.activeRoll).not.toHaveProperty("hiddenDifficultyModifier");
             expect(gmView.activeRoll?.hiddenDifficultyModifier).toBe(rollHiddenModifier);
+            if (rollHiddenModifier !== 0) {
+              expect(playerView.activeRoll?.playerFaces).toBeNull();
+              expect(tableView.activeRoll?.playerFaces).toBeNull();
+            }
           }
         },
       ),

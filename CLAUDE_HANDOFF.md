@@ -1,6 +1,6 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A (scaffold and pure engine) implemented and passing all required checks locally; awaiting PR review and merge
+- **Status:** Phase 1A implemented; first independent review findings remediated and awaiting verification/merge
 - **Branch:** `codex/phase-1a-scaffold-engine`
 - **PR:** opened against `main`; see repository PR list (this session cannot self-merge)
 - **Last updated:** 2026-09-12 by Claude
@@ -24,6 +24,7 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
   - `templates/eat-the-reich`: original placeholder content (character "Rook", location "Abandoned Métro Platform", objective "Silence the alarm...", threat "The Enforcer" — names match the already-approved placeholder art pack, no licensed text/mechanics), and a full pure implementation of one opposed action end to end: `BeginAction` → `ActionRolled` → `SubmitOpposition` → `OppositionRolled` → `AllocateResults` → `ActionResolved`. The threat carries a GM-only hidden difficulty modifier and hidden intel string that are folded into resolution but redacted from every non-GM event copy and projection (docs/ARCHITECTURE.md, N12).
   - **Contract refinements made during implementation** (not yet reflected in `docs/ARCHITECTURE.md`'s section 7 pseudocode, which was illustrative): `DecisionContext<TState>` also carries `actor: AuthorizedMemberContext`, because `authorizeGameAction` has no `state` and so cannot check entity ownership (e.g. "this roll belongs to this actor") — that check has to live in `decide`, which needs to know who is acting. `project` returns the raw `TView`, not a full `ViewerProjection<TView>`, because `TState` alone carries no `roomRevision`/version metadata; `@digitable/engine`'s `projectViewer` wraps it, mirroring how `decide` returns raw events that `runCommand` wraps into `EventEnvelope`s. Recommend folding both into `docs/ARCHITECTURE.md` section 7 on the next doc pass.
   - No application scaffold beyond the above exists yet: no React/Vite client, no Firebase project, dependencies, or production credentials, and no licensed game text, art, or audio.
+- The first independent Phase 1A implementation review is recorded in [`docs/reviews/2026-09-12-phase-1a-implementation-review.md`](docs/reviews/2026-09-12-phase-1a-implementation-review.md). Its six findings were remediated: the pure harness can return stored actor-private receipt results without rerolling, hidden-adjusted face counts are redacted outside the GM view, live rolls survive schema parsing/migration, duplicate allocation IDs are rejected, repeated gear IDs count once, and event/view parsers now validate their complete nested shapes. Regression coverage raises the suite to 111 tests. These fixes still require independent verification before merge.
 - The revised architecture selects trusted Firebase Functions as command authority, Firestore as transactional event/projection storage, and RTDB for ephemeral presence — all still deferred to Phase 2 per scope.
 
 ## Read in this order
@@ -71,10 +72,10 @@ Scope was a local-only vertical slice:
 - `npm run format` (Prettier check) — clean.
 - `npm run lint` (ESLint 9, `typescript-eslint` type-checked rules) — clean, zero warnings.
 - `npm run typecheck` (`tsc --noEmit` in all 4 workspaces) — clean.
-- `npx vitest run` — **105/105 tests pass** across 19 test files:
+- `npx vitest run` — **111/111 tests pass** across 19 test files after review remediation:
   - `packages/contracts`: 11 tests (authority/projection budget checks, dice-draw ordering, decision/authorization helpers).
-  - `packages/engine`: 18 tests (seeded-RNG determinism/retry-stability/range, platform authorization's 7 denial branches + 2 allow branches, `runCommand` sequencing/reduction/per-destination redaction).
-  - `templates/eat-the-reich`: 76 tests — `authorizeGameAction` (7), `decide` for all three commands including every rejection branch (21), `reduce` (4), `project` including per-viewer redaction (6), `explainPool` (5), `validAllocations`/allocation invariants (10), dice interpretation (7), schemas/migrate/theatre (8), one full opposed-action lifecycle integration test plus a duplicate-begin rejection test (2), size-budget fixtures (4), and a **fast-check property test** (200 runs) proving a player's or table's projection never contains the threat's hidden intel string or hidden difficulty modifier, in both idle and active-roll states.
+  - `packages/engine`: 19 tests (seeded-RNG determinism/retry-stability/range, platform authorization's denial/allow branches, `runCommand` sequencing/reduction/per-destination redaction, and stored-receipt duplicate suppression without another draw).
+  - `templates/eat-the-reich`: 81 tests — including regression coverage for hidden face-count inference, live-roll schema round trips, complete event/view structural validation, duplicate allocation IDs, and repeated gear IDs, plus the existing 200-run projection-isolation property.
 - No React, Firebase, Three.js, licensed source assets, marketplace, tactical grid, or generic rules DSL were introduced (verified by dependency grep across every `package.json`).
 - No production credentials of any kind exist in this repository.
 
@@ -109,7 +110,7 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-1. Independently review this PR (branch `codex/phase-1a-scaffold-engine`) — do not treat this session's own report as the required independent review.
+1. Independently verify the dispositions in `docs/reviews/2026-09-12-phase-1a-implementation-review.md`, then merge the Phase 1A PR if clean.
 2. After merge, start **Phase 1B — player surface** (`docs/IMPLEMENTATION_ROADMAP.md`): add React/Vite and an in-memory repository implementing the same `runCommand`/`projectViewer` shape this PR already established in `packages/engine`, then build the compose/explain/roll/wait/allocate/confirm player states against `templates/eat-the-reich`'s existing `authorizeGameAction`/`decide`/`reduce`/`project`/`explainPool`/`validAllocations`. Add phone-width keyboard, reduced-motion, and axe checks. Exit criterion: the player flow resolves the one implemented opposed action locally and accessibly.
 3. Concretely for Phase 1B: the in-memory repository only needs to hold one `AuthorityRecord<EatTheReichState>` and call `runCommand`/`projectViewer` per player action — no Firebase, no persistence beyond memory, per docs/DATA_AND_SYNC_MODEL.md ("The local vertical slice implements the same repository interface in memory/local storage").
 4. Fold this PR's two contract refinements (actor in `DecisionContext`, raw-view `project` + `projectViewer`) into `docs/ARCHITECTURE.md` section 7 on the next documentation pass — flagged above under "Contract refinements made during implementation".

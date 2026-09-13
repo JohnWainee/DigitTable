@@ -117,4 +117,39 @@ describe("runCommand", () => {
     expect(second.envelopes[0]?.envelope.sequence).toBe(first.authority.nextSequence);
     expect(second.authority.roomRevision).toBe(first.authority.roomRevision + 1);
   });
+
+  it("returns the stored receipt for a duplicate command without deciding or drawing again", () => {
+    const authority = makeAuthority({ count: 0 });
+    const commandId = asCommandId("cmd-idempotent");
+    const first = runCommand(counterTemplate, {
+      member,
+      authority,
+      random: createSeededRandom("first-attempt"),
+      command: { type: "RollAndAdd", sides: 6 },
+      commandId,
+      occurredAtServer: "2026-09-12T00:00:00.000Z",
+    });
+    expect(first.ok).toBe(true);
+    if (!first.ok) return;
+
+    const duplicate = runCommand(counterTemplate, {
+      member,
+      authority: first.authority,
+      random: {
+        rollDie(): number {
+          throw new Error("a duplicate command must not draw randomness");
+        },
+      },
+      command: { type: "RollAndAdd", sides: 6 },
+      commandId,
+      occurredAtServer: "2026-09-12T00:00:10.000Z",
+      priorReceipt: first.receipt,
+    });
+
+    expect(duplicate.ok).toBe(true);
+    if (!duplicate.ok) return;
+    expect(duplicate.authority).toEqual(first.authority);
+    expect(duplicate.envelopes).toEqual([]);
+    expect(duplicate.receipt).toEqual(first.receipt);
+  });
 });

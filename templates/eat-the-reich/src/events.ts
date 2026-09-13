@@ -4,13 +4,11 @@ import type { RollAllocation } from "./state.js";
 /**
  * `ActionRolled.poolComponents.hiddenModifier` and `hiddenAdjustmentApplied`
  * carry the server-authoritative derivation. The GM-destination copy keeps
- * the true `hiddenModifier`; the shared/player copy zeroes it while keeping
+ * the true `hiddenModifier`; the shared/player copy omits it while keeping
  * `hiddenAdjustmentApplied`, so a player can tell an adjustment happened
- * without learning its magnitude (docs/ARCHITECTURE.md, N12). Known
- * limitation: `faces.length` still reveals the total pool size, so a player
- * who also knows their own nerve/gear contribution can back out the
- * magnitude by arithmetic; concealing that too is out of scope for this
- * slice.
+ * without learning its magnitude (docs/ARCHITECTURE.md, N12). Player-visible
+ * copies also redact `faces`, because their length would reveal the exact
+ * hidden modifier when compared with the visible pool.
  */
 export type EatTheReichEvent =
   | {
@@ -19,12 +17,12 @@ export type EatTheReichEvent =
       readonly actorMemberId: MemberId;
       readonly threatId: string;
       readonly actionId: string;
-      readonly faces: readonly number[];
+      readonly faces: readonly number[] | null;
       readonly hits: number;
       readonly poolComponents: {
         readonly nerve: number;
         readonly gear: number;
-        readonly hiddenModifier: number;
+        readonly hiddenModifier: number | null;
       };
       readonly hiddenAdjustmentApplied: boolean;
     }

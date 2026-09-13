@@ -101,7 +101,8 @@ function decideBeginAction(
   };
   const redactedForPlayers: EatTheReichEvent = {
     ...fullEvent,
-    poolComponents: { ...poolComponents, hiddenModifier: 0 },
+    faces: hiddenAdjustmentApplied ? null : faces,
+    poolComponents: { ...poolComponents, hiddenModifier: null },
   };
 
   return decided([
@@ -183,7 +184,14 @@ function decideAllocateResults(
   const optionById = new Map(options.map((option) => [option.id, option]));
 
   let totalCost = 0;
+  const seenOptionIds = new Set<string>();
   for (const allocation of command.allocations) {
+    if (seenOptionIds.has(allocation.optionId)) {
+      return rejected(
+        stableError("INVALID_ALLOCATION", `Duplicate allocation option "${allocation.optionId}".`),
+      );
+    }
+    seenOptionIds.add(allocation.optionId);
     const option = optionById.get(allocation.optionId);
     if (!option || !Number.isInteger(allocation.uses) || allocation.uses < 0) {
       return rejected(
@@ -276,6 +284,9 @@ function decide(
 function reduce(state: EatTheReichState, event: EatTheReichEvent): EatTheReichState {
   switch (event.type) {
     case "ActionRolled": {
+      if (event.faces === null || event.poolComponents.hiddenModifier === null) {
+        throw new Error("reduce requires the full-fidelity ActionRolled event");
+      }
       const roll: RollState = {
         id: event.rollId,
         actorMemberId: event.actorMemberId,
@@ -284,7 +295,11 @@ function reduce(state: EatTheReichState, event: EatTheReichEvent): EatTheReichSt
         status: "awaiting_opposition",
         playerFaces: event.faces,
         playerHits: event.hits,
-        poolComponents: event.poolComponents,
+        poolComponents: {
+          nerve: event.poolComponents.nerve,
+          gear: event.poolComponents.gear,
+          hiddenModifier: event.poolComponents.hiddenModifier,
+        },
         hiddenAdjustmentApplied: event.hiddenAdjustmentApplied,
       };
       return {
@@ -393,7 +408,8 @@ function project(state: EatTheReichState, viewer: ViewerContext): EatTheReichVie
         threatId: activeRollState.threatId,
         actionId: activeRollState.actionId,
         status: activeRollState.status,
-        playerFaces: activeRollState.playerFaces,
+        playerFaces:
+          !isGm && activeRollState.hiddenAdjustmentApplied ? null : activeRollState.playerFaces,
         playerHits: activeRollState.playerHits,
         hiddenAdjustmentApplied: activeRollState.hiddenAdjustmentApplied,
         ...(isGm
