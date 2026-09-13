@@ -256,10 +256,11 @@ Only scene transitions, encounter loads, GM-seat administration, and other expli
 
 ```text
 rooms/{roomId}/
-  meta/current                template, status, gmMemberId, timestamps
-  authority/current           full TState, roomRevision, nextSequence, versions; service-only
+  meta/current                template, status, gmMemberId, timestamps; denormalized, client-readable mirror
+  authority/current           full TState, roomRevision, nextSequence, roomStatus, gmMemberId, versions; service-only
   members/{memberId}          capabilities, display name, join/last-seen times
   bindings/{memberId}         uid binding; service-only and client-unreadable
+  uidBindings/{uid}           { memberId, capability } reverse index; service-only and client-unreadable
   projections/{viewerId}      one full document for memberId, gm, or table
   receipts/{receiptId}        memberId, commandId, status, accepted sequence, stable result
   snapshots/{sequence}        archival authority copy, checksum, versions; service-only
@@ -272,11 +273,13 @@ RTDB:
 presence/{roomId}/{uid}/{connectionId}/
 ```
 
-Firestore paths alternate collections and documents. `viewerId` is a stable member ID or the reserved `gm`/`table` identifier. `receiptId` is a collision-free encoding or hash of `memberId` and `commandId`; its document repeats both values for validation. Event visibility is a physical collection path, and each event document stores numeric `sequence` for ordering.
+Firestore paths alternate collections and documents. `viewerId` is a stable member ID or the reserved `gm`/`table` identifier. `receiptId` is `${memberId}_${commandId}`, with `commandId` validated as a UUID before use; no hashing is required, and the document repeats both values for validation. Event visibility is a physical collection path, and each event document stores numeric `sequence` for ordering.
 
 Every accepted-command transaction reads `authority/current`, the actor's `bindings/{memberId}`, and the actor-private receipt if present. It writes the updated authority document, receipt, emitted event documents, and affected complete viewer projections. `authority/current` is the sole live source of full `TState`; snapshots are copies for archive and recovery. Keep authority below a 256 KiB working budget and enforce both that budget and Firestore's 1 MiB document ceiling with representative campaign fixtures.
 
-Firestore rules allow a signed-in client to read `members`, its own projection and receipts, and visibility partitions granted by its client-unreadable binding; direct authoritative writes are denied. A representative rule performs one `get()` of `/rooms/$(roomId)/bindings/$(memberId)` and compares its `uid` with `request.auth.uid`, remaining within Firestore rule access-call limits. Functions use privileged service access but still execute platform authorization before template code.
+`authority/current` also carries `roomStatus` and `gmMemberId` directly, because it is already the transaction's serialization point: a command transaction that read only `meta/current` for these fields could miss a concurrent archive or GM-seat transfer committed by a different transaction (third-pass review R2). `meta/current` remains a denormalized, cheaply-readable mirror of the same two fields for clients that only need to display room status without subscribing to `authority/current` (which is service-only); the transaction that changes `roomStatus`/`gmMemberId` writes both documents atomically. This adds no read to the command transaction's existing read set (authority + binding + receipt).
+
+Firestore rules cannot establish "is this UID a member of this room" from `bindings/{memberId}` alone, because bindings are keyed by member ID and rules cannot query a collection to find the matching one (third-pass review R1). `rooms/{roomId}/uidBindings/{uid}` is a service-only reverse index, `{ memberId, capability }`, written in the same transaction as `bindings/{memberId}` on join, rebind, and kick. Rules use one `get()` of `uidBindings/$(request.auth.uid)` for every membership-shaped check: room membership is `exists(...)`, a member's own projection/receipt/event-partition reads compare `.data.memberId` to the path's `{memberId}`, and `gm`/`table` projection and event-partition reads compare `.data.capability` to `'gm'`/`'table'`. `bindings/{memberId}` remains the service-only, member-keyed record Functions use to resolve a member's UID (for example, to validate `uidBindings` stays in sync). Functions use privileged service access but still execute platform authorization before template code.
 
 RTDB rules enforce `$uid === auth.uid` for presence writes. RTDB cannot verify a Firestore binding, so room presence is deliberately limited to opaque room IDs plus online/offline connection state and is readable to an authenticated user who knows the room ID. Clients map UIDs to displayable members through authorized Firestore data. If that residual disclosure becomes unacceptable, replace presence tokens with short-lived signed room claims rather than duplicating authorization state across databases.
 
@@ -292,7 +295,9 @@ RTDB rules enforce `$uid === auth.uid` for presence writes. RTDB cannot verify a
 
 When a seat is claimed, the service generates a recovery code with at least 64 bits of entropy—for example, 13 characters from a 32-symbol unambiguous alphabet. Codes are shown once, never placed in a URL, and only salted slow hashes are stored on a service-only path. An authenticated seat holder may rotate their own code; the GM may rotate a player's code for out-of-band handoff. The GM recovery code remains separately protected and can be rotated only by the bound GM.
 
-Redemption is rate-limited per room and source IP and locks the room's recovery endpoint briefly after a small number of failures. Successful redemption transactionally rebinds the seat, invalidates the code, deletes the old UID's presence, and emits a GM-visible audit event naming only the seat. The GM receives commands to rebind the seat back or kick the replacement. Neither audit records nor errors contain the code or either UID. Durable account linking may replace this mechanism later without rekeying campaign data.
+Redemption is rate-limited per room and source IP and locks the room's recovery endpoint briefly after a small number of failures. Successful redemption transactionally rebinds the seat, invalidates the code, deletes the old UID's presence, and emits a GM-visible audit event naming only the seat. The old UID remains authenticated after redemption, so its still-valid `$uid === auth.uid` RTDB write rule can re-create a presence node on its next `.info/connected` tick until that session ends; this is harmless for presence display but is a known, accepted residual rather than a hard revocation (third-pass review R5). A stronger fix — revoking the old anonymous user's refresh tokens on redemption — is deferred until residual re-connection is observed to cause real confusion. The GM receives commands to rebind the seat back or kick the replacement. Neither audit records nor errors contain the code or either UID. Durable account linking may replace this mechanism later without rekeying campaign data.
+
+Two recovery residuals are accepted rather than solved in v1 (third-pass review R3, R4): a GM who loses both their browser identity and their recovery code has no self-service recovery path, since only the bound GM may rotate the GM code; a v2 option is a player-majority reclaim after prolonged GM absence, or a designated backup GM seat. Symmetrically, a stolen GM code is a permanent campaign takeover, since redemption invalidates the code and every remedy command belongs to whoever holds the GM seat afterward; the only mitigation is the rotation already specified, plus advising GMs to rotate immediately after any out-of-band share.
 
 ### Proposed retention for review
 
@@ -467,7 +472,7 @@ No production credentials or licensed source assets are committed. Firebase web 
 1. **PR 1 — scaffold and engine:** governance, workspaces, contracts, pure engine, initial template fixture, deterministic dice, pool/allocation queries, projection-isolation property tests.
 2. **PR 2 — player surface:** React/Vite app, in-memory repository, player flow, phone-width keyboard/reduced-motion/axe checks.
 3. **PR 3 — GM and shared views:** GM console, read-only table capability, multi-role local simulation, desktop-width tests.
-4. Independently review and adjust contracts before persistence.
+4. Independently review and adjust contracts before persistence. Done: [`docs/reviews/2026-09-13-phase-2-preflight-review.md`](reviews/2026-09-13-phase-2-preflight-review.md) folds in the third-pass review's R1–R6 (this section and the recovery-code paragraphs above) and records new findings against the merged Phase 1A–1C code. [`docs/PHASE_2_PLAN.md`](PHASE_2_PLAN.md) splits step 5–6 below into reviewable PRs with an acceptance/failure-injection matrix, and [`docs/PHASE_2_DECISION_BRIEF.md`](PHASE_2_DECISION_BRIEF.md) covers the "before realtime implementation" decisions below.
 5. Add Emulator adapters, rules, transactional Function authority, recovery, App Check monitoring, and integration tests.
 6. Add reconnect/outbox and physical-device playtest.
 7. Expand maps, encounters, dossiers, safety, and history.
