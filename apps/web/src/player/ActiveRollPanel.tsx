@@ -1,23 +1,19 @@
 import { useState } from "react";
 import type { AllocationOption, VisibleRoll } from "@digitable/contracts";
 import type { ActiveRollView, RollAllocation } from "@digitable/template-eat-the-reich";
-import { AllocationStepper } from "./AllocationStepper.js";
+import { AllocationStepper } from "../shared/AllocationStepper.js";
 
 export interface ActiveRollPanelProps {
   readonly roll: ActiveRollView;
-  readonly awaitingOpposition: boolean;
   readonly validAllocations: (roll: VisibleRoll) => readonly AllocationOption[];
   readonly onAllocate: (allocations: readonly RollAllocation[]) => void;
-  readonly errorMessage: string | null;
 }
 
 /** roll, wait for opposition, and allocate (docs/UX_RESOLUTION_THEATRE.md / docs/EAT_THE_REICH_BUILD_GUIDE.md). */
 export function ActiveRollPanel({
   roll,
-  awaitingOpposition,
   validAllocations,
   onAllocate,
-  errorMessage,
 }: ActiveRollPanelProps): JSX.Element {
   const netSuccesses = roll.netSuccesses ?? 0;
   const visibleRoll: VisibleRoll = {
@@ -56,11 +52,7 @@ export function ActiveRollPanel({
           : `Faces: ${roll.playerFaces.join(", ")} — ${roll.playerHits} success${roll.playerHits === 1 ? "" : "es"}.`}
       </p>
 
-      {roll.status === "awaiting_opposition" && (
-        <p role="status">
-          {awaitingOpposition ? "Waiting on the opposition…" : "Opposition ready."}
-        </p>
-      )}
+      {roll.status === "awaiting_opposition" && <p role="status">Waiting on the opposition…</p>}
 
       {roll.status === "awaiting_allocation" && roll.oppositionHits !== undefined && (
         <>
@@ -90,12 +82,6 @@ export function ActiveRollPanel({
               ? `${remaining} success${remaining === 1 ? "" : "es"} unspent.`
               : `Over-allocated by ${-remaining}.`}
           </p>
-
-          {errorMessage && (
-            <p role="alert" className="error-message">
-              {errorMessage}
-            </p>
-          )}
 
           <button
             type="button"

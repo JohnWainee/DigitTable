@@ -10,14 +10,16 @@ export interface AllocationStepperProps {
 }
 
 /**
- * A tap/select- and keyboard-operable allocation control (docs/UX_RESOLUTION_
- * THEATRE.md: "Never require drag; allocations also support tap/select and
- * keyboard input"). Deliberately not a native `<input type="number">`: on a
- * phone, a numeric text field summons the on-screen keyboard for a value
- * that only ever needs a handful of small integer steps, which both risks
- * covering the control and offers no benefit over direct +/- taps or arrow
- * keys. The spinbutton role keeps it a first-class accessible control
- * without ever needing that keyboard.
+ * A tap/select- and keyboard-operable bounded-integer control (docs/UX_
+ * RESOLUTION_THEATRE.md: "Never require drag; allocations also support
+ * tap/select and keyboard input"). Deliberately not a native `<input
+ * type="number">`: on a phone, a numeric text field summons the on-screen
+ * keyboard for a value that only ever needs a handful of small integer
+ * steps, which both risks covering the control and offers no benefit over
+ * direct +/- taps or arrow keys. The spinbutton role keeps it a first-class
+ * accessible control without ever needing that keyboard. Shared between the
+ * player's net-success allocation and the GM's opposition push-dice input
+ * (docs/PHASE_1C_PLAN.md: "reusing Phase 1B's shared UI primitives").
  */
 export function AllocationStepper({
   option,

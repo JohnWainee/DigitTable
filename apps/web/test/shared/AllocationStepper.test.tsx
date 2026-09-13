@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
 import { describe, expect, it, vi } from "vitest";
-import { AllocationStepper } from "../../src/player/AllocationStepper.js";
+import { AllocationStepper } from "../../src/shared/AllocationStepper.js";
 
 const option = { id: "damage-threat", label: "Wound the Enforcer", costPerUse: 1, maxUses: 3 };
 
