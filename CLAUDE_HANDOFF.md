@@ -1,8 +1,8 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A implemented; first independent review findings remediated and awaiting verification/merge
-- **Branch:** `codex/phase-1a-scaffold-engine`
-- **PR:** opened against `main`; see repository PR list (this session cannot self-merge)
+- **Status:** Phase 1A independently verified and merged; Phase 1B and Phase 1C kickoff are in progress
+- **Branch:** `main`
+- **PR:** Phase 1A merged via PR #4 as `6de3ad6`
 - **Last updated:** 2026-09-12 by Claude
 
 ## Mission
@@ -15,7 +15,7 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
 
 - Repository is initialized and connected to GitHub.
 - Architecture work (PR #1, PR #2) is merged to `main`.
-- **Phase 1A (scaffold and pure engine) is implemented** on branch `codex/phase-1a-scaffold-engine`, scoped exactly to `docs/IMPLEMENTATION_ROADMAP.md`'s Phase 1A and `docs/ARCHITECTURE.md` section 17's PR 1:
+- **Phase 1A (scaffold and pure engine) is merged**, scoped exactly to `docs/IMPLEMENTATION_ROADMAP.md`'s Phase 1A and `docs/ARCHITECTURE.md` section 17's PR 1:
   - `AGENTS.md` added at the repo root.
   - npm workspace monorepo scaffolded: TypeScript (strict), ESLint 9 flat config with `typescript-eslint` type-checked rules plus `no-restricted-imports` guards against `react`/`firebase`/`three`, Prettier, and per-package Vitest configs wired through a root `vitest.workspace.ts`.
   - `packages/contracts`: branded IDs, stable error codes, `CommandEnvelope`/`EventEnvelope`, the bounded `AuthorityRecord<TState>` shape (256 KiB working budget / 1 MiB Firestore ceiling checks), the atomic per-viewer `ViewerProjection<TView>` shape (64 KiB ceiling check), the `RandomSource` interface, and the full `GameTemplate<TState, TCommand, TEvent, TView>` contract (`authorizeGameAction`, `decide`, `reduce`, `project`, `explainPool`, `validAllocations`, `theatre`, `migrate`).
@@ -24,7 +24,7 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
   - `templates/eat-the-reich`: original placeholder content (character "Rook", location "Abandoned Métro Platform", objective "Silence the alarm...", threat "The Enforcer" — names match the already-approved placeholder art pack, no licensed text/mechanics), and a full pure implementation of one opposed action end to end: `BeginAction` → `ActionRolled` → `SubmitOpposition` → `OppositionRolled` → `AllocateResults` → `ActionResolved`. The threat carries a GM-only hidden difficulty modifier and hidden intel string that are folded into resolution but redacted from every non-GM event copy and projection (docs/ARCHITECTURE.md, N12).
   - **Contract refinements made during implementation** (not yet reflected in `docs/ARCHITECTURE.md`'s section 7 pseudocode, which was illustrative): `DecisionContext<TState>` also carries `actor: AuthorizedMemberContext`, because `authorizeGameAction` has no `state` and so cannot check entity ownership (e.g. "this roll belongs to this actor") — that check has to live in `decide`, which needs to know who is acting. `project` returns the raw `TView`, not a full `ViewerProjection<TView>`, because `TState` alone carries no `roomRevision`/version metadata; `@digitable/engine`'s `projectViewer` wraps it, mirroring how `decide` returns raw events that `runCommand` wraps into `EventEnvelope`s. Recommend folding both into `docs/ARCHITECTURE.md` section 7 on the next doc pass.
   - No application scaffold beyond the above exists yet: no React/Vite client, no Firebase project, dependencies, or production credentials, and no licensed game text, art, or audio.
-- The first independent Phase 1A implementation review is recorded in [`docs/reviews/2026-09-12-phase-1a-implementation-review.md`](docs/reviews/2026-09-12-phase-1a-implementation-review.md). Its six findings were remediated: the pure harness can return stored actor-private receipt results without rerolling, hidden-adjusted face counts are redacted outside the GM view, live rolls survive schema parsing/migration, duplicate allocation IDs are rejected, repeated gear IDs count once, and event/view parsers now validate their complete nested shapes. Regression coverage raises the suite to 111 tests. These fixes still require independent verification before merge.
+- The first independent Phase 1A implementation review is recorded in [`docs/reviews/2026-09-12-phase-1a-implementation-review.md`](docs/reviews/2026-09-12-phase-1a-implementation-review.md). Its six findings were remediated and independently verified at `5c197f8`; the full quality gate passed with 111 tests before PR #4 merged.
 - The revised architecture selects trusted Firebase Functions as command authority, Firestore as transactional event/projection storage, and RTDB for ephemeral presence — all still deferred to Phase 2 per scope.
 
 ## Read in this order
@@ -110,8 +110,8 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-1. Independently verify the dispositions in `docs/reviews/2026-09-12-phase-1a-implementation-review.md`, then merge the Phase 1A PR if clean.
-2. After merge, start **Phase 1B — player surface** (`docs/IMPLEMENTATION_ROADMAP.md`): add React/Vite and an in-memory repository implementing the same `runCommand`/`projectViewer` shape this PR already established in `packages/engine`, then build the compose/explain/roll/wait/allocate/confirm player states against `templates/eat-the-reich`'s existing `authorizeGameAction`/`decide`/`reduce`/`project`/`explainPool`/`validAllocations`. Add phone-width keyboard, reduced-motion, and axe checks. Exit criterion: the player flow resolves the one implemented opposed action locally and accessibly.
+1. Complete and independently review **Phase 1B — player surface** on its isolated worktree/branch.
+2. Stack **Phase 1C — GM and shared views** after the Phase 1B foundation is review-ready, preserving projection isolation and the local in-memory command path.
 3. Concretely for Phase 1B: the in-memory repository only needs to hold one `AuthorityRecord<EatTheReichState>` and call `runCommand`/`projectViewer` per player action — no Firebase, no persistence beyond memory, per docs/DATA_AND_SYNC_MODEL.md ("The local vertical slice implements the same repository interface in memory/local storage").
 4. Fold this PR's two contract refinements (actor in `DecisionContext`, raw-view `project` + `projectViewer`) into `docs/ARCHITECTURE.md` section 7 on the next documentation pass — flagged above under "Contract refinements made during implementation".
 5. Do not pull forward GM console, shared-table view, realtime sync, or a second template — those remain Phase 1C and later per the roadmap.

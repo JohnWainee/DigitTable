@@ -3,7 +3,7 @@
 - **Reviewed branch:** `codex/phase-1a-scaffold-engine` at `42f21e8`
 - **Against:** `main` at `b9ae9f2`
 - **Date:** 2026-09-12
-- **Resolution status:** Findings fixed on the reviewed branch; awaiting independent verification
+- **Resolution status:** Independently verified at `5c197f8`; merged in PR #4 as `6de3ad6`
 
 ## Review result
 
@@ -21,6 +21,10 @@ blocking correctness/privacy gaps.
 | I6 — event and view schema functions performed unchecked casts | Medium | Replaced casts with nested structural validation of every event variant and the complete viewer shape. Added malformed known-event and nested-view rejection tests. |
 
 ## Verification
+
+An independent second pass on 2026-09-12 verified all six dispositions against commit
+`5c197f8` with no blocking findings. `git diff --check` was clean, no dependency changes were
+introduced by the remediation, and the full quality gate passed before PR #4 was merged.
 
 After the fixes:
 
