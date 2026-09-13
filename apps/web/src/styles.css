@@ -1,0 +1,141 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f5f0e6;
+  --fg: #1b1b1b;
+  --accent: #8a1f1f;
+  --border: #3a3a3a;
+  --focus: #1a6fbf;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+.player-screen {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.step {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+fieldset {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+.gear-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gear-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+}
+
+.primary-action {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.primary-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.allocation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.allocation-stepper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.stepper-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stepper-controls button {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 1.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: white;
+  cursor: pointer;
+}
+
+.stepper-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stepper-value {
+  min-width: 2.5rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+}
+
+.stepper-value:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.live-region {
+  font-weight: 600;
+}
+
+.error-message {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

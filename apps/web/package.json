@@ -1,0 +1,36 @@
+{
+  "name": "@digitable/web",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Local player-surface client for the DigiTable vertical slice (docs/IMPLEMENTATION_ROADMAP.md, Phase 1B): React/Vite UI over an in-memory repository implementing the same runCommand/projectViewer contract the trusted server will use later.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@digitable/contracts": "*",
+    "@digitable/engine": "*",
+    "@digitable/template-eat-the-reich": "*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@digitable/testing": "*",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/jest-axe": "^3.5.9",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^6.1.1",
+    "jest-axe": "^9.0.0",
+    "jsdom": "^25.0.1",
+    "typescript": "^5.6.3",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.0"
+  }
+}

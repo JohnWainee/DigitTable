@@ -6,6 +6,7 @@ export default defineConfig({
       "packages/contracts/vitest.config.ts",
       "packages/engine/vitest.config.ts",
       "templates/eat-the-reich/vitest.config.ts",
+      "apps/web/vitest.config.ts",
     ],
   },
 });
