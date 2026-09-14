@@ -1,9 +1,65 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A/1B/1C, the Phase 2 preflight, Phase 2 PR 1, and **Phase 2 PR 2 (Firestore data model and rules) are merged to `main`.** PR 2 was independently reviewed and approved with two narrow remediations (see `docs/reviews/2026-09-14-phase-2-pr2-independent-review.md`); John chose this candidate over the competing draft PR #10 (`claude/phase-2-pr-2-firestore-159rmr`), which should now be closed or rebased (review finding S5). The Phase 2 decision brief records John's code-plus-passphrase admission policy and 90-day manual-retention policy.
+- **Status:** Phase 1A/1B/1C, the Phase 2 preflight, Phase 2 PR 1, and **Phase 2 PR 2 (Firestore data model and rules) are merged to `main`.** PR 2 was independently reviewed and approved with two narrow remediations (see `docs/reviews/2026-09-14-phase-2-pr2-independent-review.md`); John chose this candidate over the competing draft PR #10 (`claude/phase-2-pr-2-firestore-159rmr`), which should now be closed or rebased (review finding S5). The Phase 2 decision brief records John's code-plus-passphrase admission policy and 90-day manual-retention policy. **Phase 2 PR 3 (anonymous auth, admission, GM claim) is implemented in a sibling worktree (`worktree-phase2-pr3-admission`, not this branch) but is not independently reviewed and not merged to `main`.** **Phase 2 PR 4 (trusted command authority Function) is planning-only and blocked on PR 3** — see immediately below.
 - **Branch:** `main` (PR 2 landed via `worktree-phase2-pr2`, which carried the review branch `claude/phase2-pr2-security-review-lexa32` merged through PR #11)
 - **PR:** PR #11 (review into `worktree-phase2-pr2`) and the PR 2 merge into `main` are both merged on John's instruction.
-- **Last updated:** 2026-09-14 by Claude (independent review pass, then merge)
+- **Last updated:** 2026-09-13 by Claude, in isolated worktree `worktree-phase2-pr4-design`, preparing the Phase 2 PR 4 plan (planning only, no runtime code)
+
+## Phase 2 PR 4 planning (this branch, `worktree-phase2-pr4-design`) — PLANNING ONLY, BLOCKED ON PR 3
+
+This branch adds **only** [`docs/PHASE_2_PR4_PLAN.md`](docs/PHASE_2_PR4_PLAN.md) and this handoff
+update. It does not implement the transactional Function, add `firebase-admin`/`firebase-functions`
+to any workspace, create an `apps/functions` workspace, touch real project settings/secrets, or
+modify any existing runtime contract (`packages/contracts`, `packages/engine`,
+`templates/eat-the-reich`, `apps/web`). This is deliberate: `docs/PHASE_2_PLAN.md` PR 4 states "this
+PR cannot land without PR 3's admission path to create the members it authorizes commands for," and
+Phase 2 PR 3 (`worktree-phase2-pr3-admission` at `42df5b5`) is implemented but **not yet
+independently reviewed or merged to `main`**. Writing PR 4's runtime code now would mean building
+against `uidBindings`/`bindings`/`members`/receipt shapes that PR 3's own review could still change.
+
+[`docs/PHASE_2_PR4_PLAN.md`](docs/PHASE_2_PR4_PLAN.md) is the implementation-ready design PR 4's
+author follows once PR 3 merges, covering: the platform-vs-template command split (admission/
+recovery are PR 3/PR 6's own callables and never enter this Function); UID-binding-to-capability
+resolution before any template code runs (closing preflight finding P4); receipt/idempotency
+semantics including the concurrent-invocation and rejected-retry cases; the precise seed-generation/
+retry-reuse boundary (transaction-internal retry vs. client-level retry) implementing ADR-002;
+platform-before-template authorization wiring; the exact atomic write set (authority, receipt,
+every event partition, every live viewer's projection) and its open contract questions (receipt's
+`acceptedSequence` singular-vs-array mismatch with `runCommand`'s existing shape); `expectedRevision`
+checking; privacy-partition and anonymous-actor obligations (with a concrete transport-level test
+plan for the not-yet-existing safety-command family, per the plan's PR 4 row 12); structured
+logging/error-handling rules; Firestore's transaction write-count/document-size/transaction-size
+limits with concrete numbers to assert against; wire-boundary schema validation; the dependencies
+PR 4 will add (`apps/functions`, `firebase-admin`, `firebase-functions`, scoped ESLint carve-outs);
+a 22-test emulator concurrency/failure matrix; and a 22-row review-ready acceptance matrix (A1–A22)
+cross-referencing every proof to its section and test. It also records four open questions
+explicitly left for the implementer to resolve (not decided by this plan) and a table of every
+assumption it makes about PR 3's current draft shapes, so a later PR 3 review that changes those
+shapes has a precise list of what to re-check in this plan.
+
+### Required checks — all pass locally (documentation-only branch)
+
+- `npm run format` — clean.
+- `npm run lint` — clean.
+- `npm run typecheck` — clean.
+- `npx vitest run` — unchanged pass count; no source file was touched.
+- `npm run build` — clean.
+- `git diff --check` — clean.
+- No `firebase-admin`, `firebase-functions`, or other new runtime dependency was added. No
+  `apps/functions` workspace was created. No production credentials, secrets, or real project
+  configuration were added or changed. No existing runtime contract was modified. Only
+  `docs/PHASE_2_PR4_PLAN.md` (new) and this file changed.
+
+### Next action
+
+1. Land Phase 2 PR 3 on `main` after its own independent review — PR 4 implementation cannot start
+   before that, per `docs/PHASE_2_PLAN.md`.
+2. Before PR 4 implementation begins, re-check `docs/PHASE_2_PR4_PLAN.md`'s "Assumptions this plan
+   makes about PR 3" table against whatever PR 3's review actually changes, and resolve the plan's
+   four open implementer questions (rejected-receipt storage, `acceptedSequence` shape, emulator
+   test strategy, whether the `bindings/{memberId}` read stays separate from `uidBindings`).
+3. Do not implement the transactional Function, add Firebase Admin/Functions packages, or create
+   `apps/functions` from this branch or before PR 3 merges.
 
 ## Mission
 
