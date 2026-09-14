@@ -1,6 +1,6 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A/1B/1C and the Phase 2 preflight are merged to `main`. **Phase 2 PR 1 (repository interface + Firebase emulator harness) is complete on this branch**, scoped exactly to `docs/PHASE_2_PLAN.md`'s PR 1. See "Fourth implementation PR: repository interface and Firebase emulator harness (Phase 2 PR 1)" below for the full description, design decisions, and verification commands.
+- **Status:** Phase 1A/1B/1C, the Phase 2 preflight, and **Phase 2 PR 1 (repository interface + Firebase emulator harness) are merged to `main`**. Phase 2 PR 2 (Firestore data model and rules) is the next implementation slice on this branch. The Phase 2 decision brief now records John's code-plus-passphrase admission policy and 90-day manual-retention policy.
 - **Branch:** `worktree-phase2-pr1`
 - **PR:** not yet opened; open as a draft PR for independent review, do not merge without review.
 - **Last updated:** 2026-09-13 by Claude (Sonnet 5)
