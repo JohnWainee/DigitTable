@@ -16,6 +16,9 @@ export const STABLE_ERROR_CODES = [
   "INVALID_ALLOCATION",
   "ROOM_FULL",
   "ADMISSION_CLOSED",
+  "ROOM_NOT_FOUND",
+  "INVALID_PASSPHRASE",
+  "GM_SEAT_TAKEN",
 ] as const;
 
 export type StableErrorCode = (typeof STABLE_ERROR_CODES)[number];

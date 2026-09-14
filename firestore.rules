@@ -49,6 +49,10 @@ service cloud.firestore {
       }
       match /bindings/{memberId} { allow read, write: if false; }
       match /uidBindings/{uid} { allow read, write: if false; }
+      // Phase 2 PR 3: room passphrase hash and per-seat recovery-code hashes.
+      // Only the trusted admission authority reads or writes either path.
+      match /admission/secret { allow read, write: if false; }
+      match /recovery/{memberId} { allow read, write: if false; }
       match /projections/{viewerId} {
         allow read: if (!isReservedViewer(viewerId) && isOwnMember(roomId, viewerId))
           || (viewerId == "gm" && hasCapability(roomId, "gm"))

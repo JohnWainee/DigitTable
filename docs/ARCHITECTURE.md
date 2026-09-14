@@ -165,7 +165,7 @@ Start with React context/hooks and an explicit external-store adapter. Add a bro
 
 ### Stable errors
 
-`AUTH_REQUIRED`, `ROLE_FORBIDDEN`, `REVISION_CONFLICT`, `ROLL_ALREADY_RESOLVED`, `TEMPLATE_VERSION_MISMATCH`, `ROOM_ARCHIVED`, and `RATE_LIMITED` map to actionable client states. Never expose stack traces or hidden payload details.
+`AUTH_REQUIRED`, `ROLE_FORBIDDEN`, `REVISION_CONFLICT`, `ROLL_ALREADY_RESOLVED`, `TEMPLATE_VERSION_MISMATCH`, `ROOM_ARCHIVED`, `RATE_LIMITED`, `PAYLOAD_TOO_LARGE`, `UNKNOWN_ACTION`, `INVALID_ALLOCATION`, and the admission family added in Phase 2 PR 3 (`ROOM_FULL`, `ADMISSION_CLOSED`, `ROOM_NOT_FOUND`, `INVALID_PASSPHRASE`, `GM_SEAT_TAKEN`) map to actionable client states — kept in sync with `packages/contracts/src/errors.ts`'s `STABLE_ERROR_CODES`, the canonical list. Never expose stack traces or hidden payload details.
 
 ## 7. Contracts
 
@@ -257,10 +257,13 @@ Only scene transitions, encounter loads, GM-seat administration, and other expli
 ```text
 rooms/{roomId}/
   meta/current                template, status, gmMemberId, timestamps; denormalized, client-readable mirror
-  authority/current           full TState, roomRevision, nextSequence, roomStatus, gmMemberId, versions; service-only
+  authority/current           full TState, roomRevision, nextSequence, roomStatus, gmMemberId,
+                               admissionStatus, participantCount, tableSeatClaimed, versions; service-only
   members/{memberId}          capabilities, display name, join/last-seen times
   bindings/{memberId}         uid binding; service-only and client-unreadable
   uidBindings/{uid}           { memberId, capability } reverse index; service-only and client-unreadable
+  admission/secret            room passphrase hash+salt+iterations; service-only
+  recovery/{memberId}         per-seat recovery-code hash+salt+iterations; service-only
   projections/{viewerId}      one full document for memberId, gm, or table
   receipts/{receiptId}        memberId, commandId, status, accepted sequence, stable result
   snapshots/{sequence}        archival authority copy, checksum, versions; service-only
@@ -282,6 +285,8 @@ Every accepted-command transaction reads `authority/current`, the actor's `bindi
 Firestore rules cannot establish "is this UID a member of this room" from `bindings/{memberId}` alone, because bindings are keyed by member ID and rules cannot query a collection to find the matching one (third-pass review R1). `rooms/{roomId}/uidBindings/{uid}` is a service-only reverse index, `{ memberId, capability }`, written in the same transaction as `bindings/{memberId}` on join, rebind, and kick. Rules use one `get()` of `uidBindings/$(request.auth.uid)` for every membership-shaped check: room membership is `exists(...)`, a member's own projection/receipt/event-partition reads compare `.data.memberId` to the path's `{memberId}`, and `gm`/`table` projection and event-partition reads compare `.data.capability` to `'gm'`/`'table'`. `bindings/{memberId}` remains the service-only, member-keyed record Functions use to resolve a member's UID (for example, to validate `uidBindings` stays in sync). Functions use privileged service access but still execute platform authorization before template code.
 
 RTDB rules enforce `$uid === auth.uid` for presence writes. RTDB cannot verify a Firestore binding, so room presence is deliberately limited to opaque room IDs plus online/offline connection state and is readable to an authenticated user who knows the room ID. Clients map UIDs to displayable members through authorized Firestore data. If that residual disclosure becomes unacceptable, replace presence tokens with short-lived signed room claims rather than duplicating authorization state across databases.
+
+`admissionStatus`, `participantCount`, and `tableSeatClaimed` (Phase 2 PR 3) live directly on `authority/current` for the same reason `roomStatus`/`gmMemberId` do: the admission transaction already reads and writes this document as its serialization point, so a concurrent `AdmitMember`/`ClaimSeat` race against it rather than a second document that could drift. `admissionStatus` is independent of `roomStatus` — a GM can close admission to new joiners without archiving the room, and an already-bound identity reconnecting is never blocked by either check. Cap participant seats (players plus the GM) at eight; the table seat is exclusive (at most one per room), tracked separately since it does not consume a participant slot. `rooms/{roomId}/admission/secret` holds the room's code-plus-passphrase secret as a salted PBKDF2 hash (join policy decision, `docs/PHASE_2_DECISION_BRIEF.md`); `rooms/{roomId}/recovery/{memberId}` holds each seat's recovery-code hash in the same shape. Both are service-only paths no client rule grants access to; the admission authority (a trusted Firestore transaction today, folded into the Phase 2 PR 4+ command Function once it exists) is their only reader or writer. Room *creation* — minting the initial code, passphrase, and empty GM seat — is out of this PR's scope; it assumes a room, its code, and its hashed passphrase already exist.
 
 - Clients read only authorized projection/event/receipt paths. Firestore rules compare the service-only seat binding with `auth.uid`.
 - Game commands go through Functions; direct client writes are limited to presence and explicitly safe preferences/drafts.

@@ -139,6 +139,9 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
       await assertFails(get(uid, `rooms/${room}/uidBindings/${uid}`));
       await assertFails(get(uid, `rooms/${room}/snapshots/1`));
       await assertFails(get(uid, `roomCodes/CODE-1`));
+      // Phase 2 PR 3: room passphrase and per-seat recovery-code hashes.
+      await assertFails(get(uid, `rooms/${room}/admission/secret`));
+      await assertFails(get(uid, `rooms/${room}/recovery/player-a`));
     }
   });
 
@@ -224,6 +227,18 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
     );
     await assertFails(
       context(playerUid).firestore().doc(`rooms/${room}/receipts/player-a_command-1`).delete(),
+    );
+    await assertFails(
+      context(playerUid)
+        .firestore()
+        .doc(`rooms/${room}/admission/secret`)
+        .set({ hash: "forged", salt: "forged", iterations: 1 }),
+    );
+    await assertFails(
+      context(gmUid)
+        .firestore()
+        .doc(`rooms/${room}/recovery/player-a`)
+        .set({ hash: "forged", salt: "forged", iterations: 1 }),
     );
     await assertFails(
       context(playerUid)

@@ -59,6 +59,27 @@ export interface RoomCodeDocument {
   readonly roomId: RoomId;
 }
 
+/**
+ * Service-only salted-hash record. Shared shape for the room passphrase
+ * (`rooms/{roomId}/admission/secret`) and per-seat recovery codes
+ * (`rooms/{roomId}/recovery/{memberId}`, Phase 2 PR 3) — both are "shown or
+ * set once, verified many times" secrets per docs/ARCHITECTURE.md section 8,
+ * never stored or logged in plaintext.
+ */
+export interface HashedSecretDocument {
+  readonly hash: string;
+  readonly salt: string;
+  readonly iterations: number;
+}
+
+/** Service-only room passphrase at `rooms/{roomId}/admission/secret`. */
+export type RoomAdmissionSecretDocument = HashedSecretDocument;
+
+/** Service-only per-seat recovery credential at `rooms/{roomId}/recovery/{memberId}`. */
+export interface RecoveryCredentialDocument extends HashedSecretDocument {
+  readonly memberId: MemberId;
+}
+
 /** Canonical Firestore document identifier from the architecture's R6 decision. */
 export function receiptIdFor(memberId: MemberId, commandId: CommandId): ReceiptId {
   return `${memberId}_${commandId}` as ReceiptId;
