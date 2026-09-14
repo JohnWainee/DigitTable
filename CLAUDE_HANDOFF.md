@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A/1B/1C, the Phase 2 preflight, and Phase 2 PR 1 are merged to `main`. **Phase 2 PR 2 (Firestore data model and rules) is implemented on `worktree-phase2-pr2` (`a40e7dc`) and has been independently reviewed on this branch: approved with two narrow remediations applied here (see `docs/reviews/2026-09-14-phase-2-pr2-independent-review.md`). It has not been merged.** A competing PR 2 candidate, draft PR #10 from `claude/phase-2-pr-2-firestore-159rmr`, is also open; John must pick one (review finding S5). The Phase 2 decision brief records John's code-plus-passphrase admission policy and 90-day manual-retention policy.
-- **Branch:** `claude/phase2-pr2-security-review-lexa32` (stacked on `worktree-phase2-pr2` at `a40e7dc`)
-- **PR:** draft PR from this branch into `worktree-phase2-pr2` carrying the review record and remediations; `worktree-phase2-pr2` itself has no PR yet. Do not merge without John's S5 decision.
-- **Last updated:** 2026-09-14 by Claude (independent review pass)
+- **Status:** Phase 1A/1B/1C, the Phase 2 preflight, Phase 2 PR 1, and **Phase 2 PR 2 (Firestore data model and rules) are merged to `main`.** PR 2 was independently reviewed and approved with two narrow remediations (see `docs/reviews/2026-09-14-phase-2-pr2-independent-review.md`); John chose this candidate over the competing draft PR #10 (`claude/phase-2-pr-2-firestore-159rmr`), which should now be closed or rebased (review finding S5). The Phase 2 decision brief records John's code-plus-passphrase admission policy and 90-day manual-retention policy.
+- **Branch:** `main` (PR 2 landed via `worktree-phase2-pr2`, which carried the review branch `claude/phase2-pr2-security-review-lexa32` merged through PR #11)
+- **PR:** PR #11 (review into `worktree-phase2-pr2`) and the PR 2 merge into `main` are both merged on John's instruction.
+- **Last updated:** 2026-09-14 by Claude (independent review pass, then merge)
 
 ## Mission
 
@@ -253,7 +253,7 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-1. John decides between the two PR 2 candidates (review finding S5): merge the review branch into `worktree-phase2-pr2` and open/merge that as PR 2, closing draft PR #10; or choose PR #10, give it its own independent pass, and port S2 (reserved-viewer guard) and the S1 matrix additions to it. Do not merge either without that decision.
+1. Close draft PR #10 (`claude/phase-2-pr-2-firestore-159rmr`) or rebase it onto `main`; PR 2 has merged from `worktree-phase2-pr2` (review finding S5). Its typed document contracts (`packages/contracts/src/room.ts`) are the natural candidate for the S6 item below.
 2. Before PR 3 writes `uidBindings`/`bindings`/`members`/`receipts`, land typed document shapes for the section 8 documents (S6). Carry S3 (pending-receipt read) into PR 7's design and S4 (`.validate`, write-grant level) into PR 5.
 3. After PR 2 merges, begin PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim) only from updated `main`. It requires the already-selected join policy plus explicit staging/production project identifiers and a Firebase region; do not invent either identifier or create a real project without them.
 4. Keep `packages/testing/vitest.emulator.config.ts` opt-in via `npm run test:emulator`; it must not join the default test project list. The emulator command requires a JDK on `PATH`.
