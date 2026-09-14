@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A/1B/1C, the Phase 2 preflight, Phase 2 PR 1, and **Phase 2 PR 2 (Firestore data model and rules) are merged to `main`.** PR 2 was independently reviewed and approved with two narrow remediations (see `docs/reviews/2026-09-14-phase-2-pr2-independent-review.md`); John chose this candidate over the competing draft PR #10 (`claude/phase-2-pr-2-firestore-159rmr`), which should now be closed or rebased (review finding S5). The Phase 2 decision brief records John's code-plus-passphrase admission policy and 90-day manual-retention policy.
-- **Branch:** `main` (PR 2 landed via `worktree-phase2-pr2`, which carried the review branch `claude/phase2-pr2-security-review-lexa32` merged through PR #11)
-- **PR:** PR #11 (review into `worktree-phase2-pr2`) and the PR 2 merge into `main` are both merged on John's instruction.
-- **Last updated:** 2026-09-14 by Claude (independent review pass, then merge)
+- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **Phase 2 PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim) has started on this branch:** its typed Firestore document contracts are landed locally, but Firebase CLI authentication is required before staging-project configuration or deployment can proceed.
+- **Branch:** `worktree-phase2-pr3` (from `origin/main` at PR #12)
+- **PR:** not yet opened; do not open until the admission slice has emulator coverage and is ready for independent review.
+- **Last updated:** 2026-09-14 by Codex
 
 ## Mission
 
@@ -254,7 +254,7 @@ When pausing or finishing a material unit:
 ## Next action
 
 1. Close draft PR #10 (`claude/phase-2-pr-2-firestore-159rmr`) or rebase it onto `main`; PR 2 has merged from `worktree-phase2-pr2` (review finding S5). Its typed document contracts (`packages/contracts/src/room.ts`) are the natural candidate for the S6 item below.
-2. Before PR 3 writes `uidBindings`/`bindings`/`members`/`receipts`, land typed document shapes for the section 8 documents (S6). Carry S3 (pending-receipt read) into PR 7's design and S4 (`.validate`, write-grant level) into PR 5.
-3. After PR 2 merges, begin PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim) only from updated `main`. It requires the already-selected join policy plus explicit staging/production project identifiers and a Firebase region; do not invent either identifier or create a real project without them.
+2. The typed document-shape prerequisite from S6 is now implemented in `packages/contracts/src/room.ts`; reuse those types for every PR 3 writer rather than spelling rules-sensitive field names ad hoc. Carry S3 (pending-receipt read) into PR 7's design and S4 (`.validate`, write-grant level) into PR 5.
+3. Authenticate the Firebase CLI (`npx firebase login`) before staging configuration or deployment. A read-only `npx firebase projects:list` check on 2026-09-14 returned “Failed to authenticate”; do not create or guess project resources. Once authenticated, verify access to the approved staging project `powerglove-1cd23`, keep Functions/Firestore in `us-west1` and RTDB in `us-central1`, and keep production separate/uncreated.
 4. Keep `packages/testing/vitest.emulator.config.ts` opt-in via `npm run test:emulator`; it must not join the default test project list. The emulator command requires a JDK on `PATH`.
 5. Do not pull forward the trusted command Function (PR 4), RTDB client presence wiring (PR 5), recovery (PR 6), reconnect/outbox (PR 7), campaign tooling, safety controls, 3D, or a second template.
