@@ -19,10 +19,11 @@ const THREE_RESTRICTED_IMPORT = {
 };
 
 // Phase 2 has begun (docs/PHASE_2_PLAN.md): Firebase packages are now allowed, but only in the
-// emulator harness (packages/testing/src/emulator.ts, packages/testing/test-emulator/**) and,
-// from Phase 2 PR 7, FirebaseRoomRepository — never in the pure engine/contracts/templates
-// packages or the rest of apps/web. `paths` catches the bare "firebase" specifier; `patterns`
-// catches every "firebase/*"/"@firebase/*" subpath import too.
+// emulator harness (packages/testing/src/emulator.ts, packages/testing/test-emulator/**), the
+// Phase 2 PR 3 anonymous-auth seam (apps/web/src/firebase/**), and from Phase 2 PR 7,
+// FirebaseRoomRepository — never in the pure engine/contracts/templates packages or the rest
+// of apps/web. `paths` catches the bare "firebase" specifier; `patterns` catches every
+// "firebase/*"/"@firebase/*" subpath import too.
 const FIREBASE_RESTRICTED_IMPORTS = [
   {
     name: "firebase",
@@ -102,6 +103,14 @@ export default tseslint.config(
     // stays banned everywhere else in packages/ (the override above) until a repository
     // implementation needs it (Phase 2 PR 7).
     files: ["packages/testing/src/emulator.ts", "packages/testing/test-emulator/**/*.ts"],
+    rules: {
+      "no-restricted-imports": ["error", { paths: [THREE_RESTRICTED_IMPORT] }],
+    },
+  },
+  {
+    // PR 3's anonymous-auth bootstrap is the only browser Firebase seam before
+    // FirebaseRoomRepository arrives in PR 7.
+    files: ["apps/web/src/firebase/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": ["error", { paths: [THREE_RESTRICTED_IMPORT] }],
     },

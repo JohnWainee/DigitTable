@@ -14,6 +14,8 @@ export const STABLE_ERROR_CODES = [
   "PAYLOAD_TOO_LARGE",
   "UNKNOWN_ACTION",
   "INVALID_ALLOCATION",
+  "ROOM_FULL",
+  "ADMISSION_CLOSED",
 ] as const;
 
 export type StableErrorCode = (typeof STABLE_ERROR_CODES)[number];
