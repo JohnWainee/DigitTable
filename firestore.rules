@@ -1,20 +1,72 @@
 rules_version = '2';
 
-// PLACEHOLDER — Phase 2 PR 1 (repository interface + emulator harness) only.
-// This default-deny rule set exists solely so the Firestore emulator can boot
-// for this PR's connectivity smoke test (docs/PHASE_2_PLAN.md, PR 1). It is
-// not the room data model's real security rule set — that is Phase 2 PR 2
-// ("Firestore data model and rules"), which implements the uidBindings-based
-// membership/own-projection/gm/table checks from docs/ARCHITECTURE.md
-// section 8/11. The smoke test in packages/testing/test-emulator exercises
-// this default-deny behavior directly, then separately proves a read/write
-// round-trip using @firebase/rules-unit-testing's rules-disabled test
-// context (a supported, testing-only escape hatch), never by relaxing this
-// rule set to "allow all".
+// Phase 2 PR 2: clients have a read-only, viewer-scoped Firestore surface.
+// The uidBindings reverse index is deliberately service-only: rules use its
+// existence and fields but never expose it, bindings, authority, snapshots,
+// or room-code indices to clients. All accepted-command writes arrive later
+// through the trusted Function (PR 4).
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if false;
+    function signedIn() {
+      return request.auth != null;
     }
+
+    function binding(roomId) {
+      return get(/databases/$(database)/documents/rooms/$(roomId)/uidBindings/$(request.auth.uid));
+    }
+
+    function isMember(roomId) {
+      return signedIn() && exists(/databases/$(database)/documents/rooms/$(roomId)/uidBindings/$(request.auth.uid));
+    }
+
+    function isOwnMember(roomId, memberId) {
+      return isMember(roomId) && binding(roomId).data.memberId == memberId;
+    }
+
+    function hasCapability(roomId, capability) {
+      return isMember(roomId) && binding(roomId).data.capability == capability;
+    }
+
+    match /rooms/{roomId} {
+      allow read, write: if false;
+
+      match /meta/current {
+        allow read: if isMember(roomId);
+        allow write: if false;
+      }
+      match /authority/current { allow read, write: if false; }
+      match /members/{memberId} {
+        allow read: if isMember(roomId);
+        allow write: if false;
+      }
+      match /bindings/{memberId} { allow read, write: if false; }
+      match /uidBindings/{uid} { allow read, write: if false; }
+      match /projections/{viewerId} {
+        allow read: if isOwnMember(roomId, viewerId)
+          || (viewerId == "gm" && hasCapability(roomId, "gm"))
+          || (viewerId == "table" && hasCapability(roomId, "table"));
+        allow write: if false;
+      }
+      match /receipts/{receiptId} {
+        allow read: if isOwnMember(roomId, resource.data.memberId);
+        allow write: if false;
+      }
+      match /snapshots/{sequence} { allow read, write: if false; }
+      match /events/shared/items/{sequence} {
+        allow read: if isMember(roomId);
+        allow write: if false;
+      }
+      match /events/gm/items/{sequence} {
+        allow read: if hasCapability(roomId, "gm");
+        allow write: if false;
+      }
+      match /events/{partition}/items/{sequence} {
+        allow read: if isMember(roomId)
+          && partition == "member-" + binding(roomId).data.memberId;
+        allow write: if false;
+      }
+    }
+
+    match /roomCodes/{code} { allow read, write: if false; }
   }
 }

@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A/1B/1C, the Phase 2 preflight, and **Phase 2 PR 1 (repository interface + Firebase emulator harness) are merged to `main`**. Phase 2 PR 2 (Firestore data model and rules) is the next implementation slice on this branch. The Phase 2 decision brief now records John's code-plus-passphrase admission policy and 90-day manual-retention policy.
-- **Branch:** `worktree-phase2-pr1`
-- **PR:** not yet opened; open as a draft PR for independent review, do not merge without review.
-- **Last updated:** 2026-09-13 by Claude (Sonnet 5)
+- **Status:** Phase 1A/1B/1C, the Phase 2 preflight, and Phase 2 PR 1 are merged to `main`. **Phase 2 PR 2 (Firestore data model and rules) is implemented on this branch and awaits independent review; it has not been merged.** The Phase 2 decision brief records John's code-plus-passphrase admission policy and 90-day manual-retention policy.
+- **Branch:** `worktree-phase2-pr2`
+- **PR:** not yet opened; open a draft PR for independent review, do not merge without review.
+- **Last updated:** 2026-09-13 by Codex
 
 ## Mission
 
@@ -30,6 +30,7 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
 - **Phase 1C (GM and shared views) is merged to `main`** (PR #5), scoped exactly to `docs/IMPLEMENTATION_ROADMAP.md`'s Phase 1C and `docs/ARCHITECTURE.md` section 17's PR 3, per `docs/PHASE_1C_PLAN.md`. See "Third implementation PR: GM and shared views (Phase 1C)" below for the full description, design decisions, and verification commands. Its independent review is recorded in [`docs/reviews/2026-09-13-phase-1c-implementation-review.md`](docs/reviews/2026-09-13-phase-1c-implementation-review.md): approved for merge, no blocking or non-blocking code findings.
 - **Phase 2 preflight is complete on `main`** (merged from `worktree-phase2-preflight`), per `docs/ARCHITECTURE.md` section 17 step 4. See "Phase 2 preflight: contract re-evaluation before persistence" below.
 - **Phase 2 PR 1 (repository interface + Firebase emulator harness) is complete on this branch** (`worktree-phase2-pr1`), scoped exactly to `docs/PHASE_2_PLAN.md`'s PR 1. See "Fourth implementation PR: repository interface and Firebase emulator harness (Phase 2 PR 1)" below.
+- **Phase 2 PR 2 (Firestore data model and rules) is implemented on this branch** (`worktree-phase2-pr2`) and awaits its required independent review. It adds the authority lifecycle fields, client-read security rules, and emulator allow/deny matrix described below; it does not add Functions, admission, or client reconnect/outbox behavior.
 
 ## Read in this order
 
@@ -196,6 +197,27 @@ Scope was exactly `docs/PHASE_2_PLAN.md`'s PR 1: extract an explicit, async `Roo
 - No Firestore data model, security rules beyond the explicitly-labeled PR 1 placeholder, Cloud Functions, auth/admission, RTDB presence, recovery-code redemption, or client reconnect/outbox implementation were introduced. `packages/engine` and `templates/eat-the-reich`'s pure functions are byte-for-byte unchanged.
 - Not independently verified in a real browser this session (no browser tool available); `apps/web`'s existing `jest-axe`/`@testing-library/react` suite (now exercising the async dispatch path throughout) substitutes for, but does not replace, a manual pass.
 
+## Fifth implementation PR: Firestore data model and security rules (Phase 2 PR 2) — IMPLEMENTED, AWAITING INDEPENDENT REVIEW
+
+Scope is exactly `docs/PHASE_2_PLAN.md` PR 2. This change replaces PR 1's default-deny placeholders with the resolved, read-only client access model. It does not introduce a Cloud Function, anonymous-auth admission flow, a real Firebase project, or a Firebase-backed client repository.
+
+1. `AuthorityRecord` now carries `roomStatus` (`active` or `archived`) and `gmMemberId`, making the architecture's transaction serialization requirement compiler-visible. All representative authority fixtures and the local repository's initial record include these fields, so the existing budget tests continue to cover the persisted shape.
+2. `firestore.rules` implements the resolved `uidBindings/{uid}` reverse-index check. A signed-in member can read the public room mirror, roster, shared events, and only their own member projection, receipt, and private event partition. GM and table reserved projections/event partitions require their matching capability. `authority`, bindings, reverse bindings, snapshots, room codes, and all direct client writes are denied.
+3. `database.rules.json` permits authenticated reads of opaque room-level presence and permits writes only at `presence/{roomId}/{auth.uid}/{connectionId}`. It intentionally does not duplicate Firestore membership data, preserving the documented limited-presence-disclosure residual.
+4. `packages/testing/test-emulator/roomRules.test.ts` adds the PR 2 emulator matrix: own-versus-other player projection/receipt/private-event isolation, GM/table capability isolation, authorized shared reads, service-only path denial, universal direct-Firestore-write denial (including a table-attributed command surrogate), and UID-owned RTDB presence writes. Together with the harness smoke suite, this is **10/10** emulator tests.
+
+### Required checks — all pass locally
+
+- `npm run check` — formatting, lint (zero warnings), typecheck, and **157/157** default tests across 28 files passed.
+- `npm run build` — passed (`vite build`).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **10/10** tests passed against the local `demo-digitable` Auth, Firestore, and RTDB emulators.
+- `git diff --check origin/main...HEAD` — clean before the handoff update; rerun before commit.
+- `npm install` repaired a pre-existing lockfile omission for `packages/testing`'s declared `vitest` devDependency; it did not change requested dependency versions.
+
+### Independent-review requirement
+
+This is a material persistence/security change and is **not complete until a second pass independently reviews it**. The review must inspect the rules against `docs/ARCHITECTURE.md` section 8/13, run the full gate and emulator suite, verify no Firestore path is unintentionally client-writable/readable, and record the outcome under `docs/reviews/` before merge.
+
 ## Definition of first playable
 
 After the later realtime PR, two players and one GM can join a room, load the sample encounter, resolve an opposed action, receive correctly isolated projections, reconnect without duplicating it, invoke anonymous safety controls, and review the timeline.
@@ -217,11 +239,7 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-1. **Phase 2 PR 1 is independently reviewed and approved** in [`docs/reviews/2026-09-13-phase-2-pr1-independent-review.md`](docs/reviews/2026-09-13-phase-2-pr1-independent-review.md). PR #9 remains a clean draft and must merge before starting PR 2.
-2. **Start `docs/PHASE_2_PLAN.md`'s PR 2 (Firestore data model + security rules) once PR 1 is reviewed and landed.** It needs none of the three pending decisions and runs entirely against the emulator harness this PR added — `packages/testing/src/emulator.ts`'s `createEmulatorTestEnvironment()` is ready to load PR 2's real `firestore.rules`/`database.rules.json` in place of this PR's placeholders. PR 2 replaces the `RoomRepository` shape's remaining gaps as needed (e.g. `AuthorityRecord` gaining `roomStatus`/`gmMemberId`, per the preflight review's R2), not by reinterpreting this PR's interface.
-3. **PR 3 onward still waits on `docs/PHASE_2_DECISION_BRIEF.md`** — anonymous auth/admission/GM claim (PR 3) needs the join-policy decision and is the first PR that creates a real Firebase project, which needs the region/project decision. Get John's decisions on that brief before PR 3 starts, in parallel with PR 2.
-4. **Firebase Admin/App tooling to install once PR 2/3 need it:** this PR only added `firebase-tools` (CLI, root) and `firebase`/`@firebase/rules-unit-testing` (client SDK + test harness, `packages/testing`). No `firebase-admin` package exists yet — PR 4 (the trusted transactional Function) is where that first becomes necessary.
-5. Do not pull forward encounter authoring, safety controls, GM overrides, 3D, or a second template ahead of their place in the roadmap.
-6. Keep `apps/web/vitest.config.ts` listed in the root `vitest.config.ts` projects array so its jsdom environment and setup file remain active. Keep `packages/testing/vitest.emulator.config.ts` **out** of that array — it must stay opt-in via `npm run test:emulator`, never part of the default `npm run test`.
-7. Phase 1C was not verified in a real browser during its own review (no browser tool available in that session) — still worth a manual pass across the Player/GM/Table tab switcher in `apps/web/src/App.tsx` at some point before Phase 2 replaces `InMemoryRoomRepository`, even though the automated `jest-axe` + `@testing-library/react` suite already exercises the full rendered DOM for all three surfaces (now including the async dispatch path this PR added).
-8. `npm run test:emulator` requires a JDK on `PATH` (Firestore/RTDB emulators are Java-based; the Auth emulator is not) — this sandbox had none and one was installed via `brew install openjdk` with John's explicit approval this session. CI and any other dev machine running this script will need the same prerequisite; document it in a CI setup step when PR 2 wires emulator tests into CI.
+1. Independently review Phase 2 PR 2. Inspect every Firestore/RTDB allow rule against the section 8 path contract and the section 13 path/role matrix; run `npm run check`, `npm run build`, and `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator`. Record the outcome under `docs/reviews/`, remediate any findings, and only then open/merge the PR.
+2. After PR 2 merges, begin PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim) only from updated `main`. It requires the already-selected join policy plus explicit staging/production project identifiers and a Firebase region; do not invent either identifier or create a real project without them.
+3. Keep `packages/testing/vitest.emulator.config.ts` opt-in via `npm run test:emulator`; it must not join the default test project list. The emulator command requires a JDK on `PATH`.
+4. Do not pull forward the trusted command Function (PR 4), RTDB client presence wiring (PR 5), recovery (PR 6), reconnect/outbox (PR 7), campaign tooling, safety controls, 3D, or a second template.

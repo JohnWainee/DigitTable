@@ -32,6 +32,8 @@ export function freshAuthority(
     schemaVersion: 1,
     roomRevision: 0,
     nextSequence: 1,
+    roomStatus: "active",
+    gmMemberId: GM_MEMBER_ID,
     state,
   };
 }
