@@ -20,6 +20,7 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:emulator": "firebase emulators:exec --project demo-digitable \"npm run test:emulator --workspace @digitable/testing\"",
     "build": "npm run build --workspaces --if-present",
     "check": "npm run format && npm run lint && npm run typecheck && npm run test"
   },
@@ -32,6 +33,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react-hooks": "^7.1.1",
     "fast-check": "^3.23.1",
+    "firebase-tools": "^15.30.0",
     "prettier": "^3.3.3",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.12.2",

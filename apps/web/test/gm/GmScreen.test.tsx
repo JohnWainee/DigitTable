@@ -1,6 +1,7 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
+import { asCommandId, type CommandId } from "@digitable/contracts";
 import { THREAT_ID } from "@digitable/template-eat-the-reich";
 import { beforeEach, describe, expect, it } from "vitest";
 import { GmScreen } from "../../src/gm/GmScreen.js";
@@ -8,6 +9,10 @@ import { InMemoryRoomRepository } from "../../src/repository/InMemoryRoomReposit
 
 const PHONE_WIDTH = 375;
 const DESKTOP_WIDTH = 1280;
+
+function newCommandId(): CommandId {
+  return asCommandId(globalThis.crypto.randomUUID());
+}
 
 function renderGmScreen(
   repository: InMemoryRoomRepository = new InMemoryRoomRepository(),
@@ -34,9 +39,9 @@ describe("GmScreen", () => {
     expect(screen.queryByRole("button", { name: /submit opposition/i })).not.toBeInTheDocument();
   });
 
-  it("reveals the un-redacted player faces and hidden roll modifier once a roll is active", () => {
+  it("reveals the un-redacted player faces and hidden roll modifier once a roll is active", async () => {
     const repository = new InMemoryRoomRepository();
-    repository.beginAction("enforcer", "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), "enforcer", "strong-arm-the-enforcer", []);
     renderGmScreen(repository);
 
     expect(screen.getByText(/player faces:/i)).toBeInTheDocument();
@@ -45,16 +50,16 @@ describe("GmScreen", () => {
     ).toBeInTheDocument();
   });
 
-  it("reflects activeRoll.status from the engine rather than a locally invented state", () => {
+  it("reflects activeRoll.status from the engine rather than a locally invented state", async () => {
     const repository = new InMemoryRoomRepository();
-    repository.beginAction(THREAT_ID, "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), THREAT_ID, "strong-arm-the-enforcer", []);
     const { rerender, repository: sameRepository } = renderGmScreen(repository);
 
     expect(screen.getByRole("button", { name: /submit opposition/i })).toBeInTheDocument();
 
     const rollId = sameRepository.getGmProjection().view.activeRoll?.rollId;
     if (!rollId) throw new Error("expected an active roll");
-    sameRepository.submitOpposition(rollId, 0);
+    await sameRepository.submitOpposition(newCommandId(), rollId, 0);
     rerender(<GmScreen repository={sameRepository} />);
 
     expect(screen.queryByRole("button", { name: /submit opposition/i })).not.toBeInTheDocument();
@@ -65,7 +70,7 @@ describe("GmScreen", () => {
   it("submits opposition through the shared dispatch path using only the keyboard", async () => {
     const user = userEvent.setup();
     const repository = new InMemoryRoomRepository();
-    repository.beginAction(THREAT_ID, "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), THREAT_ID, "strong-arm-the-enforcer", []);
     renderGmScreen(repository);
 
     const spinbutton = screen.getByRole("spinbutton");
@@ -77,13 +82,15 @@ describe("GmScreen", () => {
     submitButton.focus();
     await user.keyboard("{Enter}");
 
-    expect(repository.getGmProjection().view.activeRoll?.status).toBe("awaiting_allocation");
+    await waitFor(() =>
+      expect(repository.getGmProjection().view.activeRoll?.status).toBe("awaiting_allocation"),
+    );
     expect(repository.getGmProjection().view.activeRoll?.pushDice).toBe(1);
   });
 
-  it("announces pending opposition via a polite live region", () => {
+  it("announces pending opposition via a polite live region", async () => {
     const repository = new InMemoryRoomRepository();
-    repository.beginAction(THREAT_ID, "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), THREAT_ID, "strong-arm-the-enforcer", []);
     renderGmScreen(repository);
 
     const liveRegion = screen.getByRole("status");
@@ -93,7 +100,7 @@ describe("GmScreen", () => {
 
   it("has no detectable accessibility violations at phone width", async () => {
     const repository = new InMemoryRoomRepository();
-    repository.beginAction(THREAT_ID, "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), THREAT_ID, "strong-arm-the-enforcer", []);
     const { container } = renderGmScreen(repository);
     expect(await axe(container)).toHaveNoViolations();
   });
@@ -102,7 +109,7 @@ describe("GmScreen", () => {
     window.innerWidth = DESKTOP_WIDTH;
     window.innerHeight = 800;
     const repository = new InMemoryRoomRepository();
-    repository.beginAction(THREAT_ID, "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), THREAT_ID, "strong-arm-the-enforcer", []);
     const { container } = renderGmScreen(repository);
     expect(await axe(container)).toHaveNoViolations();
   });
