@@ -49,6 +49,8 @@ export function makeAuthority<TState>(
     schemaVersion: 1,
     roomRevision: 0,
     nextSequence: 1,
+    roomStatus: "active",
+    gmMemberId: null,
     ...overrides,
     state,
   };

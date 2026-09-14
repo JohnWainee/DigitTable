@@ -1,6 +1,16 @@
 {
   "rules": {
     ".read": false,
-    ".write": false
+    ".write": false,
+    "presence": {
+      "$roomId": {
+        ".read": "auth != null",
+        "$uid": {
+          "$connectionId": {
+            ".write": "auth != null && auth.uid === $uid"
+          }
+        }
+      }
+    }
   }
 }

@@ -44,7 +44,11 @@ Three decisions block parts of Phase 2 (`docs/PHASE_2_PLAN.md`); none blocks sta
 
 **Recommendation:** open code, matching Signal Bleed's reference behavior and the architecture's existing threat-model assumptions (rotatable codes, per-room/IP throttling, capacity caps at 8 participants + 1 table seat, App Check monitoring). Revisit if playtesting surfaces actual unwanted joins — the code-rotation and kick commands already planned (`docs/PHASE_2_PLAN.md` PR 3/PR 6) are the intended remedy, not a stronger join policy.
 
-**What I need from you:** confirm open code, or pick one of the alternatives — this is a product-feel decision (friction vs. control) I can't make for you.
+**Decision (2026-09-13):** **code + passphrase.** The recorded reply said
+"Code and paraphrase"; this is treated as *passphrase*, the named admission
+option in this brief. PR 3 must require both secrets, keep neither in a URL or
+client-readable room document, and retain the baseline code rotation,
+per-room/per-IP throttling, capacity, and App Check monitoring controls.
 
 ---
 
@@ -70,10 +74,19 @@ Three decisions block parts of Phase 2 (`docs/PHASE_2_PLAN.md`); none blocks sta
 
 **Recommendation:** accept the proposed values, with deletion staying **manual/GM-initiated** (not automatic) until at least one real campaign has gone through the archive/export flow once and you've seen what "nobody responded to the prompt" actually looks like in practice.
 
-**What I need from you:** approve, adjust, or reject the proposed values, and answer the three open questions above — particularly the auto-delete-after-silence question, since building automated deletion versus a manual-only flow changes what Phase 2 PR 6 has to implement.
+**Decision (2026-09-13):** approve the proposed values: archived campaigns
+remain readable for 90 days, then show an in-app prompt offering export,
+delete, or retention. There is **no automatic deletion** if nobody responds;
+data remains retained until a user initiates deletion. Export format remains a
+later product decision and must not be invented by the retention work.
 
 ---
 
 ## Summary for quick reply
 
-If you're comfortable with the recommendations above, a one-line "go with your recommendations on all three" is enough to unblock Phase 2 PR 3 onward. If you want to change any of them, tell me which and how — each is independent of the others.
+Decision status: the join and retention decisions are resolved above. Staging is
+configured in the `powerglove-1cd23` Firebase project with Firestore in
+`us-west1`; production remains a separate, deliberately uncreated project.
+Before PR 3 deploys staging resources, record the Functions region alongside
+Firestore (`us-west1`) and keep RTDB in its existing `us-central1` location,
+where Firebase's available RTDB locations require that separation.

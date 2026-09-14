@@ -4,6 +4,10 @@ import {
   jsonByteSize,
 } from "./size.js";
 import type { VersionedTemplateRecord } from "./versions.js";
+import type { MemberId } from "./ids.js";
+
+/** Lifecycle state kept on the transaction serialization record. */
+export type RoomStatus = "active" | "archived";
 
 /**
  * `authority/current`: the sole live source of full template state
@@ -14,6 +18,10 @@ import type { VersionedTemplateRecord } from "./versions.js";
 export interface AuthorityRecord<TState> extends VersionedTemplateRecord {
   readonly roomRevision: number;
   readonly nextSequence: number;
+  /** Kept here (not only in meta/current) so command transactions serialize lifecycle changes. */
+  readonly roomStatus: RoomStatus;
+  /** The bound GM seat, or null before a GM has claimed the room. */
+  readonly gmMemberId: MemberId | null;
   readonly state: TState;
 }
 
