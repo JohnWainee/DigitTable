@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   AUTHORITY_WORKING_BUDGET_BYTES,
   type AuthorityRecord,
+  asMemberId,
   asTemplateId,
   checkAuthorityBudget,
 } from "../src/index.js";
@@ -18,6 +19,8 @@ function record(state: SampleState): AuthorityRecord<SampleState> {
     schemaVersion: 1,
     roomRevision: 1,
     nextSequence: 1,
+    roomStatus: "active",
+    gmMemberId: asMemberId("member-gm"),
     state,
   };
 }

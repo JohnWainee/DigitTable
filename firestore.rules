@@ -1,18 +1,136 @@
 rules_version = '2';
 
-// PLACEHOLDER — Phase 2 PR 1 (repository interface + emulator harness) only.
-// This default-deny rule set exists solely so the Firestore emulator can boot
-// for this PR's connectivity smoke test (docs/PHASE_2_PLAN.md, PR 1). It is
-// not the room data model's real security rule set — that is Phase 2 PR 2
-// ("Firestore data model and rules"), which implements the uidBindings-based
-// membership/own-projection/gm/table checks from docs/ARCHITECTURE.md
-// section 8/11. The smoke test in packages/testing/test-emulator exercises
-// this default-deny behavior directly, then separately proves a read/write
-// round-trip using @firebase/rules-unit-testing's rules-disabled test
-// context (a supported, testing-only escape hatch), never by relaxing this
-// rule set to "allow all".
+// Phase 2 PR 2 (docs/PHASE_2_PLAN.md): the real room data model's Firestore
+// security rules, replacing Phase 2 PR 1's default-deny placeholder. This
+// implements docs/ARCHITECTURE.md section 8's authorization model exactly as
+// resolved by the third-pass architecture review's finding R1: Firestore
+// rules cannot establish "is this UID a member of this room" from
+// `bindings/{memberId}` alone (bindings are keyed by member ID, and rules
+// cannot query a collection to find the matching one), so
+// `rooms/{roomId}/uidBindings/{uid}` is a service-only reverse index,
+// `{ memberId, capability }`, and every membership-shaped check below is one
+// `get()` of it.
+//
+// No Cloud Function exists yet (Phase 2 PR 4). Every write below is
+// therefore denied for every client, service included — only a privileged
+// Admin SDK context (or, in tests, `withSecurityRulesDisabled`) can write
+// any room document at this stage. Reads are gated by the viewer's bound
+// capability and member ID, matching the allow/deny matrix in
+// docs/ARCHITECTURE.md section 13 and docs/PHASE_2_PLAN.md's PR 2 scope.
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function uidBindingRef(roomId) {
+      return /databases/$(database)/documents/rooms/$(roomId)/uidBindings/$(request.auth.uid);
+    }
+
+    // Room membership can only be established through the reverse index
+    // (R1) — there is no other client-verifiable path from a UID to a seat.
+    function isMember(roomId) {
+      return signedIn() && exists(uidBindingRef(roomId));
+    }
+
+    function uidBinding(roomId) {
+      return get(uidBindingRef(roomId)).data;
+    }
+
+    function hasCapability(roomId, capability) {
+      return isMember(roomId) && uidBinding(roomId).capability == capability;
+    }
+
+    // "Own projection/receipt/event-partition" checks compare the caller's
+    // bound member ID against the path's memberId (docs/ARCHITECTURE.md
+    // section 8).
+    function isOwnMemberId(roomId, memberId) {
+      return isMember(roomId) && uidBinding(roomId).memberId == memberId;
+    }
+
+    match /rooms/{roomId} {
+
+      // Service-only, client-unreadable and client-unwritable at every
+      // phase of Phase 2 (docs/ARCHITECTURE.md section 8). No Function
+      // exists yet to write any of these; that lands in PR 3/PR 4.
+      match /authority/current {
+        allow read, write: if false;
+      }
+
+      match /bindings/{memberId} {
+        allow read, write: if false;
+      }
+
+      match /uidBindings/{uid} {
+        allow read, write: if false;
+      }
+
+      match /snapshots/{sequence} {
+        allow read, write: if false;
+      }
+
+      // Denormalized, client-readable mirror of `authority/current`'s
+      // `roomStatus`/`gmMemberId` (docs/ARCHITECTURE.md section 8). Readable
+      // by any bound member — display of room status/template is not
+      // capability-scoped.
+      match /meta/current {
+        allow read: if isMember(roomId);
+        allow write: if false;
+      }
+
+      // The roster. Readable by any bound member; carries no UID and no
+      // private per-member data (that lives in bindings/uidBindings and
+      // each member's own projection), so shared readability is safe.
+      match /members/{memberId} {
+        allow read: if isMember(roomId);
+        allow write: if false;
+      }
+
+      // One complete projection document per viewer: a member's own view,
+      // the reserved `gm` viewer, or the reserved `table` viewer
+      // (docs/ARCHITECTURE.md section 8). A member never reads another
+      // member's projection, and only the bound GM/table seat reads the
+      // `gm`/`table` reserved documents.
+      match /projections/{viewerId} {
+        allow read: if isOwnMemberId(roomId, viewerId)
+          || (viewerId == 'gm' && hasCapability(roomId, 'gm'))
+          || (viewerId == 'table' && hasCapability(roomId, 'table'));
+        allow write: if false;
+      }
+
+      // `receiptId` is `${memberId}_${commandId}` (third-pass review R6),
+      // and the document repeats `memberId` so a reader's own bound member
+      // ID can be checked directly without parsing the ID. Every member,
+      // GM included, reads only their own receipts — the GM has no
+      // special-case access to another member's receipt (required proof:
+      // docs/ARCHITECTURE.md section 13, "The GM cannot read another
+      // member's receipt").
+      match /receipts/{receiptId} {
+        allow read: if isMember(roomId) && uidBinding(roomId).memberId == resource.data.memberId;
+        allow write: if false;
+      }
+
+      // Event visibility is a physical partition, not a filtered query
+      // (docs/ARCHITECTURE.md section 8): `shared` is readable by every
+      // bound member (the `table` seat's shared-read capability included);
+      // `gm` only by the bound GM; each `member-{memberId}` partition only
+      // by that member.
+      match /events/{partitionId}/items/{sequence} {
+        allow read: if (partitionId == 'shared' && isMember(roomId))
+          || (partitionId == 'gm' && hasCapability(roomId, 'gm'))
+          || (isMember(roomId) && partitionId == 'member-' + uidBinding(roomId).memberId);
+        allow write: if false;
+      }
+    }
+
+    // Human room codes are locators, not secrets (docs/ARCHITECTURE.md
+    // section 8), but resolving one into a room is a trusted Function's job
+    // (Phase 2 PR 3) — no client reads this collection directly.
+    match /roomCodes/{code} {
+      allow read, write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

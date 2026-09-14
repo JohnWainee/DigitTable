@@ -14,6 +14,7 @@ export const FIXTURE_ROOM_ID = asRoomId("room-fixture-0001");
 export const FIXTURE_TEMPLATE_ID = asTemplateId("eat-the-reich");
 export const FIXTURE_TEMPLATE_VERSION = "0.0.0";
 export const FIXTURE_PLATFORM_VERSION = "0.0.0";
+export const FIXTURE_GM_MEMBER_ID = asMemberId("member-fixture-gm");
 
 /** A fixed seed for deterministic-dice tests. Never used outside tests. */
 export const FIXTURE_SEED = "digitable-fixture-seed-v1";
@@ -49,6 +50,8 @@ export function makeAuthority<TState>(
     schemaVersion: 1,
     roomRevision: 0,
     nextSequence: 1,
+    roomStatus: "active",
+    gmMemberId: FIXTURE_GM_MEMBER_ID,
     ...overrides,
     state,
   };

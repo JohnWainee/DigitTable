@@ -31,9 +31,9 @@ const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 
 /**
  * Opens a rules-unit-testing environment against the already-running
- * Firestore and RTDB emulators, loading the placeholder rule sets at the
- * repo root (see `firestore.rules`/`database.rules.json` — real room rules
- * arrive in Phase 2 PR 2). Callers must call `testEnv.cleanup()` when done.
+ * Firestore and RTDB emulators, loading the room data model's rule sets at
+ * the repo root (`firestore.rules`/`database.rules.json`, Phase 2 PR 2).
+ * Callers must call `testEnv.cleanup()` when done.
  */
 export function createEmulatorTestEnvironment(): Promise<RulesTestEnvironment> {
   return initializeTestEnvironment({

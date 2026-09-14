@@ -313,6 +313,8 @@ function createInitialAuthority(): AuthorityRecord<EatTheReichState> {
     schemaVersion: eatTheReichTemplate.manifest.currentSchemaVersion,
     roomRevision: 0,
     nextSequence: 1,
+    roomStatus: "active",
+    gmMemberId: GM_MEMBER_ID,
     state,
   };
 }
