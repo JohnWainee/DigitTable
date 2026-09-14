@@ -2,7 +2,7 @@
 
 - **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **Phase 2 PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim) is implemented on this branch, with emulator coverage, and is ready for independent review.**
 - **Branch:** `worktree-phase2-pr3-admission` (from `origin/main` at PR #12)
-- **PR:** opened as a draft; do not merge until independently reviewed.
+- **PR:** [#13](https://github.com/JohnWainee/DigitTable/pull/13), opened as a draft; do not merge until independently reviewed.
 - **Last updated:** 2026-09-13 by Claude (Sonnet 5)
 
 ## Mission
