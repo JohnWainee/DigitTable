@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A/1B/1C, the Phase 2 preflight, Phase 2 PR 1, and **Phase 2 PR 2 (Firestore data model and rules) are merged to `main`.** PR 2 was independently reviewed and approved with two narrow remediations (see `docs/reviews/2026-09-14-phase-2-pr2-independent-review.md`); John chose this candidate over the competing draft PR #10 (`claude/phase-2-pr-2-firestore-159rmr`), which should now be closed or rebased (review finding S5). The Phase 2 decision brief records John's code-plus-passphrase admission policy and 90-day manual-retention policy.
-- **Branch:** `main` (PR 2 landed via `worktree-phase2-pr2`, which carried the review branch `claude/phase2-pr2-security-review-lexa32` merged through PR #11)
-- **PR:** PR #11 (review into `worktree-phase2-pr2`) and the PR 2 merge into `main` are both merged on John's instruction.
-- **Last updated:** 2026-09-14 by Claude (independent review pass, then merge)
+- **Status:** Phase 1A/1B/1C, the Phase 2 preflight, Phase 2 PR 1, and **Phase 2 PR 2 (Firestore data model and rules) are merged to `main`.** PR 2 was independently reviewed and approved with two narrow remediations (see `docs/reviews/2026-09-14-phase-2-pr2-independent-review.md`); John chose this candidate over the competing draft PR #10 (`claude/phase-2-pr-2-firestore-159rmr`), which should now be closed or rebased (review finding S5). The Phase 2 decision brief records John's code-plus-passphrase admission policy and 90-day manual-retention policy. **Phase 2 PR 5 (RTDB presence) has a complete, implementation-ready design at `docs/PHASE_2_PR5_PLAN.md`, but is plan-only and dependency-blocked on PR 3 and PR 4, neither of which has merged.** No RTDB client code, rule file changes, or Functions were added for this.
+- **Branch:** `main` for everything merged so far; this plan was written on `worktree-phase2-pr5-presence-plan`.
+- **PR:** PR #11 (review into `worktree-phase2-pr2`) and the PR 2 merge into `main` are both merged on John's instruction. No PR opened yet for the PR 5 plan document.
+- **Last updated:** 2026-09-13 by Claude (Phase 2 PR 5 planning pass)
 
 ## Mission
 
@@ -232,6 +232,65 @@ Recorded in [`docs/reviews/2026-09-14-phase-2-pr2-independent-review.md`](docs/r
 
 Review-branch gate (after remediations): `npm run check` — **157/157** tests across 28 files, zero lint warnings, typecheck clean; `npm run build` — passed; `npm run test:emulator` — **16/16** (5 harness + 11 rules); `git diff --check origin/main...HEAD` — clean. In the Linux review sandbox, `firebase-tools` routed its loopback RTDB rules upload through the egress proxy (it ignores `NO_PROXY`), so the emulator suite was run with the `*_PROXY` variables unset for that one invocation only; no repository file was changed for it.
 
+## Sixth item: RTDB presence plan (Phase 2 PR 5) — PLAN ONLY, DEPENDENCY-BLOCKED
+
+Scope is exactly `docs/PHASE_2_PLAN.md` PR 5, produced as a design document
+rather than code because PR 3 (anonymous auth, admission, GM claim) and PR 4
+(trusted command authority) have not merged. Presence is UID-keyed
+(`docs/ARCHITECTURE.md` section 8), so it has no authenticated member to test
+against until PR 3's join flow exists; per `AGENTS.md`'s scope discipline,
+this plan does not fake that binding to justify writing real client code
+early.
+
+The full design is [`docs/PHASE_2_PR5_PLAN.md`](docs/PHASE_2_PR5_PLAN.md). It
+resolves both parts of `docs/reviews/2026-09-14-phase-2-pr2-independent-review.md`
+finding S4 (no `.validate`; unargued write-grant level) and covers:
+
+1. A closed-shape `.validate` design for `database.rules.json` bounding the
+   connection payload to a single `connectedAt` server timestamp — deliberately
+   minimal, since presence has no moderation layer the way Firestore writes
+   do (they go through the trusted Function).
+2. A confirmed, reasoned write-grant level: `presence/{roomId}/{uid}/{connectionId}`
+   (already PR 2's shape), chosen over a `{uid}`-level grant specifically
+   because the latter silently breaks multi-tab/multi-device presence
+   (closing one tab would delete the whole UID's presence, including a
+   still-open sibling tab's).
+3. The connect/`onDisconnect`/reconnect lifecycle, including the
+   register-before-write ordering and the requirement to re-arm `onDisconnect`
+   on every reconnect, not just the first connect.
+4. A client member-display design constrained to already-authorized Firestore
+   data only: a new `uid` field on the existing, already-member-readable
+   `members/{memberId}` roster document (no rule change, no new read grant),
+   joined client-side against the live presence UID set for display purposes
+   only, never for authorization.
+5. Both disclosure residuals (room-ID-keyed presence read; non-member UID
+   visibility) restated precisely and bounded, matching
+   `docs/ARCHITECTURE.md` section 8's already-accepted design and its stated
+   escalation path (signed room claims) if the residual ever becomes
+   unacceptable.
+6. An emulator allow/deny matrix (16 rows) and a separate cleanup/reconnect/
+   failure-injection matrix (7 rows, including a flagged tooling question
+   about whether `@firebase/rules-unit-testing`'s database context exposes
+   enough of the `.info/connected`/`onDisconnect` protocol for the
+   implementation PR, or whether it needs the plain client SDK against the
+   emulator instead).
+7. An explicit obligation for PR 3 and PR 6 to carry forward: the new
+   `members/{memberId}.uid` field must be written by PR 3's seat-creation
+   transaction and kept in sync by PR 6's rebind/kick transactions. This is
+   the one Firestore-adjacent touch PR 5's design requires from PRs it does
+   not itself implement.
+
+No `database.rules.json`, `firestore.rules`, RTDB client code, or Function
+code changed on this branch. `npm run format`/`lint`/`typecheck`/`test` are
+unaffected by a documentation-only addition; `*.md` is prettier-ignored
+repository-wide (`.prettierignore`) and there is no markdown linter
+configured, so the applicable check for this change was a manual
+cross-reference pass against `docs/ARCHITECTURE.md` sections 8 and 11–13 and
+`docs/reviews/2026-09-14-phase-2-pr2-independent-review.md`, not an automated
+gate. `npm run check` was still run to confirm the existing suite is
+untouched: **157/157** tests across 28 files, zero lint warnings, typecheck
+clean.
+
 ## Definition of first playable
 
 After the later realtime PR, two players and one GM can join a room, load the sample encounter, resolve an opposed action, receive correctly isolated projections, reconnect without duplicating it, invoke anonymous safety controls, and review the timeline.
@@ -254,7 +313,7 @@ When pausing or finishing a material unit:
 ## Next action
 
 1. Close draft PR #10 (`claude/phase-2-pr-2-firestore-159rmr`) or rebase it onto `main`; PR 2 has merged from `worktree-phase2-pr2` (review finding S5). Its typed document contracts (`packages/contracts/src/room.ts`) are the natural candidate for the S6 item below.
-2. Before PR 3 writes `uidBindings`/`bindings`/`members`/`receipts`, land typed document shapes for the section 8 documents (S6). Carry S3 (pending-receipt read) into PR 7's design and S4 (`.validate`, write-grant level) into PR 5.
-3. After PR 2 merges, begin PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim) only from updated `main`. It requires the already-selected join policy plus explicit staging/production project identifiers and a Firebase region; do not invent either identifier or create a real project without them.
+2. Before PR 3 writes `uidBindings`/`bindings`/`members`/`receipts`, land typed document shapes for the section 8 documents (S6). Carry S3 (pending-receipt read) into PR 7's design; S4 (`.validate`, write-grant level) is now resolved in `docs/PHASE_2_PR5_PLAN.md`.
+3. Begin PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim) from `main`. It requires the already-selected join policy plus explicit staging/production project identifiers and a Firebase region; do not invent either identifier or create a real project without them. **PR 3's seat-creation transaction must also write the `members/{memberId}.uid` field** that `docs/PHASE_2_PR5_PLAN.md` section 4.1/12 requires — do not let this slip since PR 5's client-display design depends on it.
 4. Keep `packages/testing/vitest.emulator.config.ts` opt-in via `npm run test:emulator`; it must not join the default test project list. The emulator command requires a JDK on `PATH`.
-5. Do not pull forward the trusted command Function (PR 4), RTDB client presence wiring (PR 5), recovery (PR 6), reconnect/outbox (PR 7), campaign tooling, safety controls, 3D, or a second template.
+5. Do not pull forward the trusted command Function (PR 4), RTDB client presence wiring (PR 5 — design is ready at `docs/PHASE_2_PR5_PLAN.md`, but do not implement it before PR 3 and PR 4 merge), recovery (PR 6 — must also keep `members/{memberId}.uid` in sync on rebind/kick per the PR 5 plan), reconnect/outbox (PR 7), campaign tooling, safety controls, 3D, or a second template.
