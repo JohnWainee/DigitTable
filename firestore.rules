@@ -27,6 +27,14 @@ service cloud.firestore {
       return isMember(roomId) && binding(roomId).data.capability == capability;
     }
 
+    // `gm` and `table` are reserved viewer IDs (packages/contracts RESERVED_VIEWER_IDS),
+    // never member IDs. Excluding them from the own-member branch means a
+    // mis-minted binding whose memberId collides with a reserved ID cannot
+    // read a reserved projection without the matching capability.
+    function isReservedViewer(viewerId) {
+      return viewerId == "gm" || viewerId == "table";
+    }
+
     match /rooms/{roomId} {
       allow read, write: if false;
 
@@ -42,7 +50,7 @@ service cloud.firestore {
       match /bindings/{memberId} { allow read, write: if false; }
       match /uidBindings/{uid} { allow read, write: if false; }
       match /projections/{viewerId} {
-        allow read: if isOwnMember(roomId, viewerId)
+        allow read: if (!isReservedViewer(viewerId) && isOwnMember(roomId, viewerId))
           || (viewerId == "gm" && hasCapability(roomId, "gm"))
           || (viewerId == "table" && hasCapability(roomId, "table"));
         allow write: if false;

@@ -7,6 +7,15 @@ const playerUid = "uid-player";
 const otherUid = "uid-other";
 const gmUid = "uid-gm";
 const tableUid = "uid-table";
+/** Signed in, but bound to no seat in `room`. */
+const outsiderUid = "uid-outsider";
+/**
+ * A deliberately mis-minted binding whose member ID collides with the
+ * reserved `table` viewer ID while holding only player capability. Member IDs
+ * are service-minted and must never equal a reserved viewer ID; the rules
+ * still refuse to let such a binding reach the reserved projection.
+ */
+const collidingUid = "uid-colliding";
 
 describe("Phase 2 Firestore and RTDB room rules", () => {
   let testEnv: RulesTestEnvironment;
@@ -19,6 +28,7 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
         await db.doc(path).set(value);
       };
       await Promise.all([
+        set(`rooms/${room}`, { createdAt: 1 }),
         set(`rooms/${room}/uidBindings/${playerUid}`, {
           memberId: "player-a",
           capability: "player",
@@ -32,6 +42,11 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
           memberId: "table-seat",
           capability: "table",
         }),
+        set(`rooms/${room}/uidBindings/${collidingUid}`, {
+          memberId: "table",
+          capability: "player",
+        }),
+        set(`rooms/${room}/bindings/player-a`, { uid: playerUid }),
         set(`rooms/${room}/meta/current`, { roomStatus: "active", gmMemberId: "gm-seat" }),
         set(`rooms/${room}/members/player-a`, { displayName: "Player A" }),
         set(`rooms/${room}/projections/player-a`, { viewerId: "player-a" }),
@@ -46,10 +61,13 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
           memberId: "player-b",
           commandId: "command-1",
         }),
+        set(`rooms/${room}/snapshots/1`, { sequence: 1 }),
         set(`rooms/${room}/events/shared/items/1`, { sequence: 1 }),
         set(`rooms/${room}/events/gm/items/1`, { sequence: 1 }),
         set(`rooms/${room}/events/member-player-a/items/1`, { sequence: 1 }),
+        set(`rooms/${room}/events/member-player-b/items/1`, { sequence: 1 }),
         set(`rooms/${room}/authority/current`, { roomStatus: "active" }),
+        set(`roomCodes/CODE-1`, { roomId: room }),
       ]);
     });
   });
@@ -61,6 +79,8 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
   const context = (uid: string): RulesTestContext => testEnv.authenticatedContext(uid);
   const get = (uid: string, path: string): Promise<unknown> =>
     context(uid).firestore().doc(path).get();
+  const list = (uid: string, path: string): Promise<unknown> =>
+    context(uid).firestore().collection(path).get();
 
   it("permits only each member's own projection, receipt, and private events", async () => {
     await assertSucceeds(get(playerUid, `rooms/${room}/projections/player-a`));
@@ -81,13 +101,94 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
     await assertFails(get(tableUid, `rooms/${room}/events/gm/items/1`));
   });
 
+  it("denies the GM and table seats another member's projection, receipt, and private events", async () => {
+    // docs/ARCHITECTURE.md section 13: "The GM cannot read another member's receipt."
+    await assertFails(get(gmUid, `rooms/${room}/receipts/player-a_command-1`));
+    await assertFails(get(gmUid, `rooms/${room}/projections/player-a`));
+    await assertFails(get(gmUid, `rooms/${room}/events/member-player-a/items/1`));
+    await assertFails(get(tableUid, `rooms/${room}/receipts/player-a_command-1`));
+    await assertFails(get(tableUid, `rooms/${room}/projections/player-a`));
+    await assertFails(get(tableUid, `rooms/${room}/events/member-player-a/items/1`));
+    await assertFails(get(gmUid, `rooms/${room}/projections/table`));
+    await assertFails(get(tableUid, `rooms/${room}/projections/gm`));
+  });
+
+  it("refuses a binding whose member ID collides with a reserved viewer ID", async () => {
+    await assertFails(get(collidingUid, `rooms/${room}/projections/table`));
+    await assertFails(get(collidingUid, `rooms/${room}/projections/gm`));
+    // The colliding binding is still an ordinary member for shared reads.
+    await assertSucceeds(get(collidingUid, `rooms/${room}/events/shared/items/1`));
+  });
+
   it("lets any room member read the client mirror, roster, and shared event stream only", async () => {
     await assertSucceeds(get(playerUid, `rooms/${room}/meta/current`));
     await assertSucceeds(get(playerUid, `rooms/${room}/members/player-a`));
     await assertSucceeds(get(playerUid, `rooms/${room}/events/shared/items/1`));
+    await assertSucceeds(get(tableUid, `rooms/${room}/meta/current`));
+    await assertSucceeds(get(tableUid, `rooms/${room}/events/shared/items/1`));
     await assertFails(get(playerUid, `rooms/${room}/authority/current`));
     await assertFails(get(playerUid, `rooms/${room}/uidBindings/${playerUid}`));
-    await assertFails(get("outsider", `rooms/${room}/meta/current`));
+    await assertFails(get(outsiderUid, `rooms/${room}/meta/current`));
+  });
+
+  it("keeps service-only paths unreadable for every capability", async () => {
+    for (const uid of [playerUid, gmUid, tableUid]) {
+      await assertFails(get(uid, `rooms/${room}`));
+      await assertFails(get(uid, `rooms/${room}/authority/current`));
+      await assertFails(get(uid, `rooms/${room}/bindings/player-a`));
+      await assertFails(get(uid, `rooms/${room}/uidBindings/${uid}`));
+      await assertFails(get(uid, `rooms/${room}/snapshots/1`));
+      await assertFails(get(uid, `roomCodes/CODE-1`));
+    }
+  });
+
+  it("denies signed-in non-members and unauthenticated clients every room read", async () => {
+    for (const path of [
+      `rooms/${room}/meta/current`,
+      `rooms/${room}/members/player-a`,
+      `rooms/${room}/projections/player-a`,
+      `rooms/${room}/projections/gm`,
+      `rooms/${room}/projections/table`,
+      `rooms/${room}/receipts/player-a_command-1`,
+      `rooms/${room}/events/shared/items/1`,
+      `rooms/${room}/events/gm/items/1`,
+      `rooms/${room}/events/member-player-a/items/1`,
+    ]) {
+      await assertFails(get(outsiderUid, path));
+      await assertFails(testEnv.unauthenticatedContext().firestore().doc(path).get());
+    }
+  });
+
+  it("scopes collection queries the same way as single-document reads", async () => {
+    await assertFails(list(playerUid, `rooms/${room}/projections`));
+    await assertFails(list(gmUid, `rooms/${room}/projections`));
+    await assertFails(list(playerUid, `rooms/${room}/receipts`));
+    await assertFails(list(gmUid, `rooms/${room}/receipts`));
+    await assertSucceeds(
+      context(playerUid)
+        .firestore()
+        .collection(`rooms/${room}/receipts`)
+        .where("memberId", "==", "player-a")
+        .get(),
+    );
+    await assertFails(
+      context(gmUid)
+        .firestore()
+        .collection(`rooms/${room}/receipts`)
+        .where("memberId", "==", "player-a")
+        .get(),
+    );
+    await assertSucceeds(list(playerUid, `rooms/${room}/events/shared/items`));
+    await assertSucceeds(list(playerUid, `rooms/${room}/events/member-player-a/items`));
+    await assertFails(list(playerUid, `rooms/${room}/events/member-player-b/items`));
+    await assertFails(list(playerUid, `rooms/${room}/events/gm/items`));
+    await assertSucceeds(list(gmUid, `rooms/${room}/events/gm/items`));
+    await assertFails(list(gmUid, `rooms/${room}/events/member-player-a/items`));
+    await assertFails(list(outsiderUid, `rooms/${room}/events/shared/items`));
+    await assertFails(list(gmUid, `rooms/${room}/uidBindings`));
+    await assertFails(list(gmUid, `rooms/${room}/bindings`));
+    await assertFails(list(gmUid, `rooms/${room}/snapshots`));
+    await assertFails(list(gmUid, `roomCodes`));
   });
 
   it("denies all direct Firestore writes, including a table-attributed command surrogate", async () => {
@@ -106,6 +207,34 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
     await assertFails(
       context(gmUid).firestore().doc(`rooms/${room}/members/player-a`).set({ capability: "gm" }),
     );
+    await assertFails(
+      context(gmUid).firestore().doc(`rooms/${room}/authority/current`).set({ roomRevision: 99 }),
+    );
+    await assertFails(
+      context(gmUid)
+        .firestore()
+        .doc(`rooms/${room}/meta/current`)
+        .update({ roomStatus: "archived" }),
+    );
+    await assertFails(
+      context(playerUid)
+        .firestore()
+        .doc(`rooms/${room}/uidBindings/${playerUid}`)
+        .set({ memberId: "player-a", capability: "gm" }),
+    );
+    await assertFails(
+      context(playerUid).firestore().doc(`rooms/${room}/receipts/player-a_command-1`).delete(),
+    );
+    await assertFails(
+      context(playerUid)
+        .firestore()
+        .doc(`rooms/${room}/receipts/player-a_command-2`)
+        .set({ memberId: "player-a", commandId: "command-2" }),
+    );
+    await assertFails(context(gmUid).firestore().doc(`roomCodes/CODE-2`).set({ roomId: room }));
+    await assertFails(
+      testEnv.unauthenticatedContext().firestore().doc(`rooms/${room}/meta/current`).set({}),
+    );
   });
 
   it("allows authenticated UID-owned RTDB presence writes and rejects every other UID", async () => {
@@ -113,9 +242,29 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
     const other = context(playerUid).database().ref(`presence/${room}/${otherUid}/connection-1`);
     await assertSucceeds(own.set({ online: true }));
     await assertFails(other.set({ online: true }));
+    await assertFails(
+      context(gmUid).database().ref(`presence/${room}/${playerUid}/connection-1`).set(null),
+    );
+    await assertFails(
+      testEnv
+        .unauthenticatedContext()
+        .database()
+        .ref(`presence/${room}/${playerUid}/connection-2`)
+        .set({ online: true }),
+    );
+    await assertSucceeds(own.set(null));
+  });
+
+  it("preserves the documented RTDB presence-read residual and nothing wider", async () => {
+    // docs/ARCHITECTURE.md section 8: room presence "is readable to an
+    // authenticated user who knows the room ID" — including a non-member.
     await assertSucceeds(context(gmUid).database().ref(`presence/${room}`).once("value"));
+    await assertSucceeds(context(outsiderUid).database().ref(`presence/${room}`).once("value"));
     await assertFails(
       testEnv.unauthenticatedContext().database().ref(`presence/${room}`).once("value"),
     );
+    // Room IDs cannot be enumerated: the presence root itself stays unreadable.
+    await assertFails(context(gmUid).database().ref(`presence`).once("value"));
+    await assertFails(context(gmUid).database().ref(`/`).once("value"));
   });
 });
