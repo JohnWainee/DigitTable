@@ -7,3 +7,10 @@ npm-debug.log*
 .env
 .env.*
 !.env.example
+
+# Firebase Emulator Suite (Phase 2 PR 1): local-only logs and downloaded emulator binaries.
+firebase-debug.log
+firestore-debug.log
+database-debug.log
+ui-debug.log
+.firebase/

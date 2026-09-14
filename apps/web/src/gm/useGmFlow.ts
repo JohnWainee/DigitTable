@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { asCommandId } from "@digitable/contracts";
 import type { InMemoryRoomRepository } from "../repository/InMemoryRoomRepository.js";
 
 export interface GmFlow {
@@ -25,10 +26,12 @@ export function useGmFlow(repository: InMemoryRoomRepository): GmFlow {
   const submitOpposition = useCallback(
     (rollId: string, pushDice: number) => {
       setErrorMessage(null);
-      const result = repository.submitOpposition(rollId, pushDice);
-      if (!result.ok) {
-        setErrorMessage(result.message ?? "Could not submit the opposition roll.");
-      }
+      const commandId = asCommandId(globalThis.crypto.randomUUID());
+      void repository.submitOpposition(commandId, rollId, pushDice).then((result) => {
+        if (result.status === "rejected") {
+          setErrorMessage(result.message);
+        }
+      });
     },
     [repository],
   );

@@ -1,13 +1,18 @@
-import { act, renderHook } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
+import { asCommandId, type CommandId } from "@digitable/contracts";
 import { THREAT_ID } from "@digitable/template-eat-the-reich";
 import { describe, expect, it } from "vitest";
 import { InMemoryRoomRepository } from "../../src/repository/InMemoryRoomRepository.js";
 import { useGmFlow } from "../../src/gm/useGmFlow.js";
 
+function newCommandId(): CommandId {
+  return asCommandId(globalThis.crypto.randomUUID());
+}
+
 describe("useGmFlow", () => {
-  it("submits opposition through the shared repository and reflects the resulting projection", () => {
+  it("submits opposition through the shared repository and reflects the resulting projection", async () => {
     const repository = new InMemoryRoomRepository();
-    repository.beginAction(THREAT_ID, "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), THREAT_ID, "strong-arm-the-enforcer", []);
     const rollId = repository.getGmProjection().view.activeRoll?.rollId;
     if (!rollId) throw new Error("expected an active roll");
 
@@ -17,13 +22,15 @@ describe("useGmFlow", () => {
       result.current.submitOpposition(rollId, 1);
     });
 
-    expect(result.current.projection.view.activeRoll?.status).toBe("awaiting_allocation");
+    await waitFor(() =>
+      expect(result.current.projection.view.activeRoll?.status).toBe("awaiting_allocation"),
+    );
     expect(result.current.errorMessage).toBeNull();
   });
 
-  it("surfaces a rejected dispatch instead of failing silently", () => {
+  it("surfaces a rejected dispatch instead of failing silently", async () => {
     const repository = new InMemoryRoomRepository();
-    repository.beginAction(THREAT_ID, "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), THREAT_ID, "strong-arm-the-enforcer", []);
     const rollId = repository.getGmProjection().view.activeRoll?.rollId;
     if (!rollId) throw new Error("expected an active roll");
 
@@ -35,7 +42,7 @@ describe("useGmFlow", () => {
       result.current.submitOpposition(rollId, 99);
     });
 
-    expect(result.current.errorMessage).toMatch(/push dice/i);
+    await waitFor(() => expect(result.current.errorMessage).toMatch(/push dice/i));
     // The roll itself is untouched: a rejected command never mutates the shared room.
     expect(repository.getGmProjection().view.activeRoll?.status).toBe("awaiting_opposition");
   });

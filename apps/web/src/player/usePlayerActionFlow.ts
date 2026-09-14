@@ -1,12 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
-import type {
-  AllocationOption,
-  PoolExplanation,
-  PoolInput,
-  VisibleRoll,
+import {
+  asCommandId,
+  type AllocationOption,
+  type CommandId,
+  type PoolExplanation,
+  type PoolInput,
+  type VisibleRoll,
 } from "@digitable/contracts";
 import type { EatTheReichEvent, RollAllocation } from "@digitable/template-eat-the-reich";
 import type { InMemoryRoomRepository } from "../repository/InMemoryRoomRepository.js";
+
+function newCommandId(): CommandId {
+  return asCommandId(globalThis.crypto.randomUUID());
+}
 
 export interface ActionResolvedSummary {
   readonly threatStatus: "active" | "defeated";
@@ -81,10 +87,12 @@ export function usePlayerActionFlow(repository: InMemoryRoomRepository): PlayerA
     (threatId: string, actionId: string, gearIds: readonly string[]) => {
       setErrorMessage(null);
       setResolvedSummary(null);
-      const result = repository.beginAction(threatId, actionId, gearIds);
-      if (!result.ok) {
-        setErrorMessage(result.message ?? "Could not begin the action.");
-      }
+      const commandId = newCommandId();
+      void repository.beginAction(commandId, threatId, actionId, gearIds).then((result) => {
+        if (result.status === "rejected") {
+          setErrorMessage(result.message);
+        }
+      });
     },
     [repository],
   );
@@ -96,20 +104,22 @@ export function usePlayerActionFlow(repository: InMemoryRoomRepository): PlayerA
         return;
       }
       setErrorMessage(null);
-      const result = repository.allocateResults(rollId, allocations);
-      if (!result.ok) {
-        setErrorMessage(result.message ?? "Could not confirm that allocation.");
-        return;
-      }
-      const resolved = findEvent(result.sharedEvents, "ActionResolved");
-      if (resolved) {
-        setResolvedSummary({
-          threatStatus: resolved.threatStatus,
-          objectiveStatus: resolved.objectiveStatus,
-          threatResolveRemaining: resolved.threatResolveRemaining,
-          objectiveAdvancesRemaining: resolved.objectiveAdvancesRemaining,
-        });
-      }
+      const commandId = newCommandId();
+      void repository.allocateResults(commandId, rollId, allocations).then((result) => {
+        if (result.status === "rejected") {
+          setErrorMessage(result.message);
+          return;
+        }
+        const resolved = findEvent(result.sharedEvents, "ActionResolved");
+        if (resolved) {
+          setResolvedSummary({
+            threatStatus: resolved.threatStatus,
+            objectiveStatus: resolved.objectiveStatus,
+            threatResolveRemaining: resolved.threatResolveRemaining,
+            objectiveAdvancesRemaining: resolved.objectiveAdvancesRemaining,
+          });
+        }
+      });
     },
     [repository, projection],
   );

@@ -2,7 +2,7 @@
   "name": "@digitable/testing",
   "version": "0.0.0",
   "private": true,
-  "description": "Fixtures, builders, and reusable contract-test helpers (e.g. projection-isolation checks) shared by engine and template test suites. Fixture-only until the realtime milestone adds emulator helpers.",
+  "description": "Fixtures, builders, and reusable contract-test helpers (e.g. projection-isolation checks) shared by engine and template test suites, plus a thin Firebase Emulator Suite harness (src/emulator.ts) used only by test-emulator/'s opt-in smoke tests.",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -10,13 +10,17 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test:emulator": "vitest run --config vitest.emulator.config.ts"
   },
   "dependencies": {
     "@digitable/contracts": "*",
     "@digitable/engine": "*"
   },
   "devDependencies": {
-    "typescript": "^5.6.3"
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "firebase": "^12.19.0",
+    "typescript": "^5.6.3",
+    "vitest": "^5.0.0"
   }
 }

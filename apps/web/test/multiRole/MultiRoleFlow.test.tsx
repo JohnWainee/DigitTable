@@ -1,10 +1,15 @@
 import { act, render, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { asCommandId, type CommandId } from "@digitable/contracts";
 import { describe, expect, it } from "vitest";
 import { GmScreen } from "../../src/gm/GmScreen.js";
 import { PlayerScreen } from "../../src/player/PlayerScreen.js";
 import { InMemoryRoomRepository } from "../../src/repository/InMemoryRoomRepository.js";
 import { TableScreen } from "../../src/table/TableScreen.js";
+
+function newCommandId(): CommandId {
+  return asCommandId(globalThis.crypto.randomUUID());
+}
 
 /**
  * Drives one full opposed action across all three surfaces mounted
@@ -98,30 +103,31 @@ describe("multi-role opposed action (player, GM, table on one shared room)", () 
     ).not.toBeInTheDocument();
   });
 
-  it("a table-attributed command is rejected even while a player has an unresolved roll", () => {
+  it("a table-attributed command is rejected even while a player has an unresolved roll", async () => {
     const repository = new InMemoryRoomRepository();
-    repository.beginAction("enforcer", "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), "enforcer", "strong-arm-the-enforcer", []);
     const rollId = repository.getPlayerProjection().view.activeRoll?.rollId;
     if (!rollId) throw new Error("expected an active roll");
 
-    const result = repository.attemptCommandAsTable({
+    const result = await repository.attemptCommandAsTable(newCommandId(), {
       type: "SubmitOpposition",
       rollId,
       pushDice: 0,
     });
 
-    expect(result.ok).toBe(false);
+    expect(result.status).toBe("rejected");
+    if (result.status !== "rejected") throw new Error("expected rejection");
     expect(result.code).toBe("ROLE_FORBIDDEN");
     expect(repository.getPlayerProjection().view.activeRoll?.status).toBe("awaiting_opposition");
   });
 
-  it("a table/GM surface mounted mid-flow reflects the current state, not a stale initial one", () => {
+  it("a table/GM surface mounted mid-flow reflects the current state, not a stale initial one", async () => {
     const repository = new InMemoryRoomRepository();
-    repository.beginAction("enforcer", "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), "enforcer", "strong-arm-the-enforcer", []);
     const rollId = repository.getPlayerProjection().view.activeRoll?.rollId;
     if (!rollId) throw new Error("expected an active roll");
-    act(() => {
-      repository.submitOpposition(rollId, 0);
+    await act(async () => {
+      await repository.submitOpposition(newCommandId(), rollId, 0);
     });
 
     const gm = render(<GmScreen repository={repository} />);

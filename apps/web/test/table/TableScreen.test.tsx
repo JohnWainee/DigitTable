@@ -1,5 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import { axe } from "jest-axe";
+import { asCommandId, type CommandId } from "@digitable/contracts";
 import { THREAT_ID } from "@digitable/template-eat-the-reich";
 import { beforeEach, describe, expect, it } from "vitest";
 import { TableScreen } from "../../src/table/TableScreen.js";
@@ -7,6 +8,10 @@ import { InMemoryRoomRepository } from "../../src/repository/InMemoryRoomReposit
 
 const PHONE_WIDTH = 375;
 const DESKTOP_WIDTH = 1280;
+
+function newCommandId(): CommandId {
+  return asCommandId(globalThis.crypto.randomUUID());
+}
 
 describe("TableScreen", () => {
   beforeEach(() => {
@@ -23,18 +28,18 @@ describe("TableScreen", () => {
     expect(container.textContent).toMatch(/The Enforcer/);
   });
 
-  it("never renders the threat's hidden difficulty modifier or hidden intel", () => {
+  it("never renders the threat's hidden difficulty modifier or hidden intel", async () => {
     const repository = new InMemoryRoomRepository();
-    repository.beginAction(THREAT_ID, "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), THREAT_ID, "strong-arm-the-enforcer", []);
     const { container } = render(<TableScreen repository={repository} />);
 
     expect(container.textContent).not.toMatch(/hidden difficulty modifier/i);
     expect(container.textContent).not.toMatch(/hidden wrist relay/i);
   });
 
-  it("renders no interactive controls (no buttons or inputs)", () => {
+  it("renders no interactive controls (no buttons or inputs)", async () => {
     const repository = new InMemoryRoomRepository();
-    repository.beginAction(THREAT_ID, "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), THREAT_ID, "strong-arm-the-enforcer", []);
     render(<TableScreen repository={repository} />);
 
     expect(screen.queryAllByRole("button")).toHaveLength(0);
@@ -52,9 +57,9 @@ describe("TableScreen", () => {
     expect(screen.queryByText(/skip/i)).not.toBeInTheDocument();
   });
 
-  it("reflects the current roll status via a polite live region announced once", () => {
+  it("reflects the current roll status via a polite live region announced once", async () => {
     const repository = new InMemoryRoomRepository();
-    repository.beginAction(THREAT_ID, "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), THREAT_ID, "strong-arm-the-enforcer", []);
     render(<TableScreen repository={repository} />);
 
     const liveRegion = screen.getByRole("status");
@@ -62,12 +67,12 @@ describe("TableScreen", () => {
     expect(liveRegion).toHaveTextContent(/waiting on the opposition/i);
   });
 
-  it("reflects state committed before mount, not a stale snapshot", () => {
+  it("reflects state committed before mount, not a stale snapshot", async () => {
     const repository = new InMemoryRoomRepository();
-    repository.beginAction(THREAT_ID, "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), THREAT_ID, "strong-arm-the-enforcer", []);
     const rollId = repository.getPlayerProjection().view.activeRoll?.rollId;
     if (!rollId) throw new Error("expected an active roll");
-    repository.submitOpposition(rollId, 0);
+    await repository.submitOpposition(newCommandId(), rollId, 0);
 
     // Mounted only after both BeginAction and SubmitOpposition have already been accepted.
     render(<TableScreen repository={repository} />);
@@ -80,7 +85,7 @@ describe("TableScreen", () => {
 
   it("has no detectable accessibility violations at phone width", async () => {
     const repository = new InMemoryRoomRepository();
-    repository.beginAction(THREAT_ID, "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), THREAT_ID, "strong-arm-the-enforcer", []);
     const { container } = render(<TableScreen repository={repository} />);
     expect(await axe(container)).toHaveNoViolations();
   });
@@ -89,7 +94,7 @@ describe("TableScreen", () => {
     window.innerWidth = DESKTOP_WIDTH;
     window.innerHeight = 800;
     const repository = new InMemoryRoomRepository();
-    repository.beginAction(THREAT_ID, "strong-arm-the-enforcer", []);
+    await repository.beginAction(newCommandId(), THREAT_ID, "strong-arm-the-enforcer", []);
     const { container } = render(<TableScreen repository={repository} />);
     expect(await axe(container)).toHaveNoViolations();
   });
