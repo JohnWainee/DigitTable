@@ -49,6 +49,12 @@ service cloud.firestore {
       }
       match /bindings/{memberId} { allow read, write: if false; }
       match /uidBindings/{uid} { allow read, write: if false; }
+      // Phase 2 PR 3: room passphrase hash, the separate table-code hash, and
+      // per-seat recovery-code hashes. Only the trusted admission authority
+      // (apps/functions) reads or writes any of these paths.
+      match /admission/secret { allow read, write: if false; }
+      match /admission/tableSecret { allow read, write: if false; }
+      match /recovery/{memberId} { allow read, write: if false; }
       match /projections/{viewerId} {
         allow read: if (!isReservedViewer(viewerId) && isOwnMember(roomId, viewerId))
           || (viewerId == "gm" && hasCapability(roomId, "gm"))
@@ -73,8 +79,28 @@ service cloud.firestore {
           && partition == "member-" + binding(roomId).data.memberId;
         allow write: if false;
       }
+      // Board task A06: GM-visible audit trail (docs/ARCHITECTURE.md section 8's
+      // "Redemption" flow, "a GM-visible audit event naming only the seat").
+      // Written only by the trusted recoverSeat transaction.
+      match /audit/{auditId} {
+        allow read: if hasCapability(roomId, "gm");
+        allow write: if false;
+      }
     }
 
     match /roomCodes/{code} { allow read, write: if false; }
+    // Phase 2 PR 3: admission throttle counters (per code+IP, per IP, per
+    // UID; document IDs are hashes), kept outside rooms/ so guesses at codes
+    // that resolve to no room are bounded too. Service-only for the whole
+    // tree; a client that could read or reset them could defeat the throttle.
+    match /admissionThrottle/{document=**} { allow read, write: if false; }
+    // Board task A03: createRoom's idempotency receipt (keyed by the
+    // client-chosen requestId, never a secret itself, but it names a real
+    // roomId/roomCode/memberId, so it stays service-only like every other
+    // index above) and its own per-UID/per-IP throttle counters.
+    match /createRoomReceipts/{requestId} { allow read, write: if false; }
+    match /createRoomThrottle/{document=**} { allow read, write: if false; }
+    // Board task A06: recoverSeat's own per-room-code+IP / per-IP throttle counters.
+    match /recoveryThrottle/{document=**} { allow read, write: if false; }
   }
 }

@@ -21,6 +21,9 @@ function record(state: SampleState): AuthorityRecord<SampleState> {
     nextSequence: 1,
     roomStatus: "active",
     gmMemberId: asMemberId("member-gm"),
+    admissionStatus: "open",
+    participantCount: 1,
+    tableSeatClaimed: false,
     state,
   };
 }
