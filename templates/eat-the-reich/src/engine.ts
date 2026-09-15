@@ -2228,6 +2228,14 @@ function theatre(event: EatTheReichEvent, prefs: PresentationPreferences): Theat
   }
 }
 
+/**
+ * B02-B05's real roster/scene engine. `input.memberIds` is not consumed
+ * here (unlike the earlier placeholder engine A03 was written against):
+ * characters are claimed via `ClaimCharacter`, not pre-assigned at room
+ * creation, and no scene is loaded until the GM's `LoadScene` (B04) — a
+ * room starts with an unclaimed roster and no active scene, matching
+ * `docs/ETR_SESSION_FLOW.md` sections 4.3 and 5.
+ */
 function initialState(_input: InitialCampaignInput): EatTheReichState {
   const characters = Object.fromEntries(
     ORIGINAL_ROSTER.map((character) => [
