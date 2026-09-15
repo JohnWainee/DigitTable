@@ -14,3 +14,7 @@ firestore-debug.log
 database-debug.log
 ui-debug.log
 .firebase/
+
+# Eat the Reich (B01/B05, docs/ETR_RULES_MATRIX.md §5): a GM's own private,
+# licensed rulebook content pack, loaded locally only, never committed.
+content/private/

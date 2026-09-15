@@ -1,95 +1,150 @@
 import { describe, expect, it } from "vitest";
-import { ACTION_ID, THREAT_ID } from "../src/content.js";
 import { eatTheReichTemplate } from "../src/engine.js";
-import { PLAYER_MEMBER_ID, freshState } from "./fixtures.js";
+import { PLAYER_MEMBER_ID, ROOK_ID, freshState, stateWithClaim } from "./fixtures.js";
 
 describe("reduce", () => {
-  it("ActionRolled creates an awaiting_opposition roll and bumps nextRollSequence", () => {
-    const state = freshState();
-    const next = eatTheReichTemplate.reduce(state, {
+  it("CharacterClaimed binds the character to the member", () => {
+    const state = eatTheReichTemplate.reduce(freshState(), {
+      type: "CharacterClaimed",
+      characterId: ROOK_ID,
+      memberId: PLAYER_MEMBER_ID,
+    });
+    expect(state.characters[ROOK_ID]?.claimedByMemberId).toBe(PLAYER_MEMBER_ID);
+  });
+
+  it("CharacterReleased clears the binding", () => {
+    const claimed = stateWithClaim(ROOK_ID, PLAYER_MEMBER_ID);
+    const state = eatTheReichTemplate.reduce(claimed, {
+      type: "CharacterReleased",
+      characterId: ROOK_ID,
+      memberId: PLAYER_MEMBER_ID,
+    });
+    expect(state.characters[ROOK_ID]?.claimedByMemberId).toBeNull();
+  });
+
+  it("an event for an unknown character is a no-op", () => {
+    const before = freshState();
+    const after = eatTheReichTemplate.reduce(before, {
+      type: "CharacterClaimed",
+      characterId: "not-a-character",
+      memberId: PLAYER_MEMBER_ID,
+    });
+    expect(after).toEqual(before);
+  });
+
+  it("InjuryHealed clears exactly the named box and spends Blood, clamped at 0", () => {
+    const base = stateWithClaim(ROOK_ID, PLAYER_MEMBER_ID, { blood: 2 });
+    const character = base.characters[ROOK_ID];
+    if (!character) throw new Error("fixture missing rook");
+    const categoryId = character.injuries[0]?.id;
+    if (!categoryId) throw new Error("fixture missing category");
+    const markedCategory = character.injuries[0];
+    if (!markedCategory) throw new Error("fixture missing category");
+    const state = {
+      ...base,
+      characters: {
+        ...base.characters,
+        [ROOK_ID]: {
+          ...character,
+          injuries: character.injuries.map((c, i) =>
+            i === 0 ? { ...c, boxes: [{ marked: true }, c.boxes[1]] as typeof c.boxes } : c,
+          ),
+        },
+      },
+    };
+    const after = eatTheReichTemplate.reduce(state, {
+      type: "InjuryHealed",
+      characterId: ROOK_ID,
+      categoryId,
+      boxIndex: 0,
+      bloodSpent: 3,
+    });
+    expect(after.characters[ROOK_ID]?.injuries[0]?.boxes[0].marked).toBe(false);
+    // Blood was 2 and the spend is 3; reduce never trusts an un-vetted event's
+    // arithmetic to go negative (decide already rejects this in practice).
+    expect(after.characters[ROOK_ID]?.blood).toBe(0);
+  });
+
+  it("InjuryHealed only clears the named box, not its sibling", () => {
+    const base = stateWithClaim(ROOK_ID, PLAYER_MEMBER_ID, { blood: 10 });
+    const character = base.characters[ROOK_ID];
+    if (!character) throw new Error("fixture missing rook");
+    const categoryId = character.injuries[0]?.id;
+    if (!categoryId) throw new Error("fixture missing category");
+    const state = {
+      ...base,
+      characters: {
+        ...base.characters,
+        [ROOK_ID]: {
+          ...character,
+          injuries: character.injuries.map((c, i) =>
+            i === 0
+              ? {
+                  ...c,
+                  boxes: [{ marked: true }, { ...c.boxes[1], marked: true }] as typeof c.boxes,
+                }
+              : c,
+          ),
+        },
+      },
+    };
+    const after = eatTheReichTemplate.reduce(state, {
+      type: "InjuryHealed",
+      characterId: ROOK_ID,
+      categoryId,
+      boxIndex: 0,
+      bloodSpent: 3,
+    });
+    expect(after.characters[ROOK_ID]?.injuries[0]?.boxes[0].marked).toBe(false);
+    expect(after.characters[ROOK_ID]?.injuries[0]?.boxes[1].marked).toBe(true);
+  });
+
+  it("ActionRolled decrements exactly the charged items' usesRemaining and spends/gains Blood (matrix P2)", () => {
+    const base = stateWithClaim(ROOK_ID, PLAYER_MEMBER_ID, { blood: 5 });
+    const character = base.characters[ROOK_ID];
+    if (!character) throw new Error("fixture missing rook");
+    const declared = {
+      ...base,
+      rolls: {
+        "roll-1": {
+          id: "roll-1",
+          characterId: ROOK_ID,
+          actorMemberId: PLAYER_MEMBER_ID,
+          status: "declared" as const,
+          declaredStat: "SNEAK" as const,
+          declaredItemIds: [],
+          declaredAbilityIds: [],
+          declaredBonusClaimIds: [],
+          declaredEngagedThreatIds: [],
+          note: null,
+        },
+      },
+    };
+    const after = eatTheReichTemplate.reduce(declared, {
       type: "ActionRolled",
       rollId: "roll-1",
-      actorMemberId: PLAYER_MEMBER_ID,
-      threatId: THREAT_ID,
-      actionId: ACTION_ID,
-      faces: [5, 6],
-      hits: 2,
-      poolComponents: { nerve: 2, gear: 0, hiddenModifier: -1 },
-      hiddenAdjustmentApplied: true,
+      characterId: ROOK_ID,
+      approvedBonusClaims: [],
+      engagedThreatIds: [],
+      primaryEngagedThreatId: null,
+      playerFaces: [4],
+      keptDice: [{ faceIndex: 0, face: 4, result: "success", points: 1 }],
+      attackDiceRolled: 0,
+      attackFaces: [],
+      attackSuccessesRolled: 0,
+      itemIdsCharged: ["rook-silenced-pistol"],
+      bloodSpent: 2,
+      passiveBloodGained: 1,
     });
-
-    expect(next.rolls["roll-1"]).toMatchObject({
-      status: "awaiting_opposition",
-      playerFaces: [5, 6],
-      playerHits: 2,
-    });
-    expect(next.nextRollSequence).toBe(state.nextRollSequence + 1);
-    expect(state.rolls["roll-1"]).toBeUndefined(); // reduce does not mutate its input
-  });
-
-  it("OppositionRolled moves the roll to awaiting_allocation with opposition data", () => {
-    const withRoll = eatTheReichTemplate.reduce(freshState(), {
-      type: "ActionRolled",
-      rollId: "roll-1",
-      actorMemberId: PLAYER_MEMBER_ID,
-      threatId: THREAT_ID,
-      actionId: ACTION_ID,
-      faces: [5],
-      hits: 1,
-      poolComponents: { nerve: 2, gear: 0, hiddenModifier: -1 },
-      hiddenAdjustmentApplied: true,
-    });
-
-    const next = eatTheReichTemplate.reduce(withRoll, {
-      type: "OppositionRolled",
-      rollId: "roll-1",
-      threatId: THREAT_ID,
-      pushDice: 1,
-      faces: [3, 4, 2, 1],
-      hits: 0,
-      netSuccesses: 1,
-    });
-
-    expect(next.rolls["roll-1"]).toMatchObject({
-      status: "awaiting_allocation",
-      pushDice: 1,
-      oppositionHits: 0,
-      netSuccesses: 1,
-    });
-  });
-
-  it("ActionResolved marks the roll resolved and applies consequences to threat and objective", () => {
-    const state = freshState();
-    const next = eatTheReichTemplate.reduce(state, {
-      type: "ActionResolved",
-      rollId: "roll-1",
-      allocations: [{ optionId: "damage-threat", uses: 2 }],
-      threatId: THREAT_ID,
-      threatResolveRemaining: 1,
-      threatStatus: "active",
-      objectiveAdvancesRemaining: 2,
-      objectiveStatus: "active",
-    });
-
-    expect(next.threats[THREAT_ID]).toMatchObject({ resolveRemaining: 1, status: "active" });
-    expect(next.objective).toMatchObject({ advancesRemaining: 2, status: "active" });
-  });
-
-  it("ActionResolved is a no-op on rolls/threats that no longer exist (defensive)", () => {
-    const state = freshState();
-    const next = eatTheReichTemplate.reduce(state, {
-      type: "ActionResolved",
-      rollId: "no-such-roll",
-      allocations: [],
-      threatId: "no-such-threat",
-      threatResolveRemaining: 0,
-      threatStatus: "defeated",
-      objectiveAdvancesRemaining: 0,
-      objectiveStatus: "complete",
-    });
-    expect(next.rolls).toEqual(state.rolls);
-    expect(next.threats).toEqual(state.threats);
-    // objective is always updated: it's tracked independently of any one threat/roll.
-    expect(next.objective).toMatchObject({ advancesRemaining: 0, status: "complete" });
+    expect(
+      after.characters[ROOK_ID]?.items.find((i) => i.id === "rook-silenced-pistol")?.usesRemaining,
+    ).toBe(2);
+    // Every other item is untouched.
+    expect(
+      after.characters[ROOK_ID]?.items.find((i) => i.id === "rook-forged-papers")?.usesRemaining,
+    ).toBe(3);
+    expect(after.characters[ROOK_ID]?.blood).toBe(4); // 5 - 2 + 1
+    expect(after.rolls["roll-1"]?.status).toBe("awaiting_allocation");
+    expect(after.rolls["roll-1"]?.keptDice).toHaveLength(1);
   });
 });
