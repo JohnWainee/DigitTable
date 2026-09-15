@@ -1,88 +1,58 @@
 import { describe, expect, it } from "vitest";
-import { ACTION_ID, THREAT_ID } from "../src/content.js";
 import { eatTheReichTemplate } from "../src/engine.js";
-import { GM_CTX, GM_MEMBER_ID, PLAYER_CTX, PLAYER_MEMBER_ID, TABLE_CTX } from "./fixtures.js";
+import { GM_CTX, PLAYER_CTX, ROOK_ID, TABLE_CTX } from "./fixtures.js";
 
 describe("authorizeGameAction", () => {
-  it("allows a player to begin an action as themselves", () => {
+  it("allows a player to claim a character", () => {
     const result = eatTheReichTemplate.authorizeGameAction(PLAYER_CTX, {
-      type: "BeginAction",
-      actorMemberId: PLAYER_MEMBER_ID,
-      threatId: THREAT_ID,
-      actionId: ACTION_ID,
-      gearIds: [],
+      type: "ClaimCharacter",
+      characterId: ROOK_ID,
     });
     expect(result).toEqual({ allowed: true });
   });
 
-  it("denies a player beginning an action as a different member", () => {
-    const result = eatTheReichTemplate.authorizeGameAction(PLAYER_CTX, {
-      type: "BeginAction",
-      actorMemberId: GM_MEMBER_ID,
-      threatId: THREAT_ID,
-      actionId: ACTION_ID,
-      gearIds: [],
-    });
-    expect(result.allowed).toBe(false);
-  });
-
-  it("denies the GM from beginning an action", () => {
+  it("denies the GM from claiming a character", () => {
     const result = eatTheReichTemplate.authorizeGameAction(GM_CTX, {
-      type: "BeginAction",
-      actorMemberId: PLAYER_MEMBER_ID,
-      threatId: THREAT_ID,
-      actionId: ACTION_ID,
-      gearIds: [],
-    });
-    expect(result.allowed).toBe(false);
-  });
-
-  it("allows the GM to submit opposition", () => {
-    const result = eatTheReichTemplate.authorizeGameAction(GM_CTX, {
-      type: "SubmitOpposition",
-      rollId: "roll-1",
-      pushDice: 0,
-    });
-    expect(result).toEqual({ allowed: true });
-  });
-
-  it("denies a player from submitting opposition", () => {
-    const result = eatTheReichTemplate.authorizeGameAction(PLAYER_CTX, {
-      type: "SubmitOpposition",
-      rollId: "roll-1",
-      pushDice: 0,
+      type: "ClaimCharacter",
+      characterId: ROOK_ID,
     });
     expect(result.allowed).toBe(false);
   });
 
   it("denies the table seat from every game command", () => {
-    const begin = eatTheReichTemplate.authorizeGameAction(TABLE_CTX, {
-      type: "BeginAction",
-      actorMemberId: PLAYER_MEMBER_ID,
-      threatId: THREAT_ID,
-      actionId: ACTION_ID,
-      gearIds: [],
+    const claim = eatTheReichTemplate.authorizeGameAction(TABLE_CTX, {
+      type: "ClaimCharacter",
+      characterId: ROOK_ID,
     });
-    const oppose = eatTheReichTemplate.authorizeGameAction(TABLE_CTX, {
-      type: "SubmitOpposition",
-      rollId: "roll-1",
-      pushDice: 0,
+    const release = eatTheReichTemplate.authorizeGameAction(TABLE_CTX, {
+      type: "ReleaseCharacter",
+      characterId: ROOK_ID,
     });
-    const allocate = eatTheReichTemplate.authorizeGameAction(TABLE_CTX, {
-      type: "AllocateResults",
-      rollId: "roll-1",
-      allocations: [],
+    const heal = eatTheReichTemplate.authorizeGameAction(TABLE_CTX, {
+      type: "HealInjury",
+      characterId: ROOK_ID,
+      categoryId: "rook-papers-burned",
+      boxIndex: 0,
     });
-    expect(begin.allowed).toBe(false);
-    expect(oppose.allowed).toBe(false);
-    expect(allocate.allowed).toBe(false);
+    expect(claim.allowed).toBe(false);
+    expect(release.allowed).toBe(false);
+    expect(heal.allowed).toBe(false);
   });
 
-  it("allows a player to allocate results", () => {
+  it("allows a player to release a character", () => {
     const result = eatTheReichTemplate.authorizeGameAction(PLAYER_CTX, {
-      type: "AllocateResults",
-      rollId: "roll-1",
-      allocations: [],
+      type: "ReleaseCharacter",
+      characterId: ROOK_ID,
+    });
+    expect(result).toEqual({ allowed: true });
+  });
+
+  it("allows a player to heal an injury", () => {
+    const result = eatTheReichTemplate.authorizeGameAction(PLAYER_CTX, {
+      type: "HealInjury",
+      characterId: ROOK_ID,
+      categoryId: "rook-papers-burned",
+      boxIndex: 0,
     });
     expect(result).toEqual({ allowed: true });
   });

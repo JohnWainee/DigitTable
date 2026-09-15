@@ -37,3 +37,24 @@ The platform owns infrastructure and interaction primitives. The template owns t
 The first milestone is zone/scene based, not tactical-grid play. Do not build line of sight, measuring tools, initiative automation, or a generic rules scripting language. Do not automate away judgment or dice allocation.
 
 Use placeholder content until licensing is documented. Content ingestion must not couple copyrighted text to the engine.
+
+## Licensing and content policy (B01, 2026-09-14)
+
+Per `docs/ETR_RULES_MATRIX.md` §5 and `AGENTS.md` "Non-negotiable boundaries": ordinary
+game-mechanical structure and short field labels — the seven stat names (BRAWL, CON, FIX,
+SEARCH, SHOOT, SNEAK, TERRIFY), Blood, Objective/Threat/Challenge/Attack ratings, the
+success/critical thresholds, injury category names, Downed, Last Stand, Loot, and Flashback —
+may be implemented in code and shown in the UI. This is ordinary game-mechanical vocabulary,
+not the rulebook's expression of it.
+
+What must never be committed to this repository, in any form: rulebook prose, character sheet
+text, location entries, enemy/NPC entries, tables of flavour text, or artwork from the
+published book. `templates/eat-the-reich`'s roster, scenes, items, abilities, and injury
+flavour text are original creations (see `docs/ETR_RULES_MATRIX.md` Appendices A–C); they
+follow the book's structural shape (stat spread, item/ability counts, scene pacing bands) but
+reuse no licensed name, entry, or sentence.
+
+A GM who owns a copy of the rulebook may play with their own book's content by loading a
+private, git-ignored owner content pack from their own machine
+(`content/private/*.json` — see `.gitignore`). That pack is never committed, never uploaded to
+shared Firestore documents another room could read, and is not part of any release build.

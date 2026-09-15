@@ -19,27 +19,29 @@ const THREE_RESTRICTED_IMPORT = {
 };
 
 // Phase 2 has begun (docs/PHASE_2_PLAN.md): Firebase packages are now allowed, but only in the
-// emulator harness (packages/testing/src/emulator.ts, packages/testing/test-emulator/**) and,
-// from Phase 2 PR 7, FirebaseRoomRepository — never in the pure engine/contracts/templates
-// packages or the rest of apps/web. `paths` catches the bare "firebase" specifier; `patterns`
-// catches every "firebase/*"/"@firebase/*" subpath import too.
+// emulator harness (packages/testing/src/emulator.ts, packages/testing/test-emulator/**), the
+// client Firebase seams (apps/web/src/firebase/**, apps/web/src/repository/
+// FirebaseRoomRepository.ts, apps/web/src/session/**, board tasks A01/A05), and the trusted
+// Cloud Functions codebase (apps/functions/**, Admin SDK + firebase-functions) — never in the
+// pure engine/contracts/templates packages or the rest of apps/web. `paths` catches the bare
+// "firebase" specifier; `patterns` catches every "firebase/*"/"@firebase/*" subpath import too.
 const FIREBASE_RESTRICTED_IMPORTS = [
   {
     name: "firebase",
     message:
-      "Firebase belongs only in the emulator harness (packages/testing/src/emulator.ts) and a future FirebaseRoomRepository — not here.",
+      "Firebase belongs only in the emulator harness (packages/testing/src/emulator.ts) and the client's own Firebase/repository/session seams (apps/web/src/firebase/**, apps/web/src/repository/FirebaseRoomRepository.ts, apps/web/src/session/**) — not here.",
   },
   {
     name: "firebase-admin",
     message:
-      "No Firebase Admin SDK; privileged server code only runs inside a trusted Cloud Function (Phase 2 PR 4+).",
+      "No Firebase Admin SDK outside apps/functions; privileged server code only runs inside the trusted Cloud Functions codebase (Phase 2 PR 3+).",
   },
 ];
 const FIREBASE_RESTRICTED_PATTERNS = [
   {
     group: ["firebase/*", "@firebase/*"],
     message:
-      "Firebase belongs only in the emulator harness (packages/testing/src/emulator.ts) and a future FirebaseRoomRepository — not here.",
+      "Firebase belongs only in the emulator harness (packages/testing/src/emulator.ts) and the client's own Firebase/repository/session seams (apps/web/src/firebase/**, apps/web/src/repository/FirebaseRoomRepository.ts, apps/web/src/session/**) — not here.",
   },
 ];
 
@@ -98,10 +100,35 @@ export default tseslint.config(
     },
   },
   {
-    // The one sanctioned Firebase seam so far (Phase 2 PR 1): the emulator test harness. Firebase
-    // stays banned everywhere else in packages/ (the override above) until a repository
-    // implementation needs it (Phase 2 PR 7).
+    // The sanctioned Firebase seam in packages/: the emulator test harness (Phase 2 PR 1) and
+    // its rules tests. Firebase stays banned everywhere else in packages/ (the override above)
+    // until a repository implementation needs it (Phase 2 PR 7).
     files: ["packages/testing/src/emulator.ts", "packages/testing/test-emulator/**/*.ts"],
+    rules: {
+      "no-restricted-imports": ["error", { paths: [THREE_RESTRICTED_IMPORT] }],
+    },
+  },
+  {
+    // The trusted Cloud Functions codebase (docs/ARCHITECTURE.md ADR-001): the only place the
+    // Admin SDK and firebase-functions may be imported. Phase 2 PR 3 hosts the admission
+    // callables here; PR 4 adds the gameplay command authority.
+    files: ["apps/functions/**/*.ts"],
+    rules: {
+      "no-restricted-imports": ["error", { paths: [THREE_RESTRICTED_IMPORT] }],
+    },
+  },
+  {
+    // Board task A05: the client's remaining Firebase seams —
+    // FirebaseRoomRepository (real callable/Firestore transport for game
+    // commands) and FirebaseSessionClient (create/join/claim), alongside
+    // PR 3's anonymous-auth bootstrap. Firebase stays banned everywhere
+    // else in apps/web.
+    files: [
+      "apps/web/src/firebase/**/*.{ts,tsx}",
+      "apps/web/src/repository/FirebaseRoomRepository.ts",
+      "apps/web/src/session/**/*.{ts,tsx}",
+      "apps/web/test-emulator/**/*.{ts,tsx}",
+    ],
     rules: {
       "no-restricted-imports": ["error", { paths: [THREE_RESTRICTED_IMPORT] }],
     },
