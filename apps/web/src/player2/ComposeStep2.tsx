@@ -63,6 +63,11 @@ export function ComposeStep2({
   }
 
   const stat: Stat | "none" = statIndex === null ? "none" : STATS[statIndex]!;
+  // c07 P1: the engine already rejects a second `BeginAction` from a
+  // character who's acted this round (matrix S5's `actedThisRound`,
+  // enforced server-side); pre-disable here so the rejection never
+  // actually fires from this screen.
+  const actedThisRound = projection.view.scene?.actedThisRound.includes(character.id) ?? false;
 
   // Real explainPool (packages/contracts) is still shaped for the old
   // placeholder (`actionId`/`gearIds`, no ability/bonus preview — see
@@ -85,7 +90,7 @@ export function ComposeStep2({
     }, 0);
   const estimatedTotal = basePool.total + abilityDice + claimedBonusDice;
 
-  const canDeclare = !character.downed && !character.retired;
+  const canDeclare = !character.downed && !character.retired && !actedThisRound;
 
   function handleDeclare(): void {
     onDeclare({
@@ -251,6 +256,9 @@ export function ComposeStep2({
       </button>
       {character.downed && <p role="alert">You&rsquo;re down. A teammate must rescue you.</p>}
       {character.retired && <p role="alert">Your story is told.</p>}
+      {actedThisRound && !character.downed && !character.retired && (
+        <p role="alert">You&rsquo;ve acted this round. Wait for the GM to end the round.</p>
+      )}
     </section>
   );
 }

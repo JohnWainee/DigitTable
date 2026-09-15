@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { navigate } from "../router.js";
-import {
-  ConnectionStatusStrip,
-  useFixtureConnectionState,
-} from "../shell/ConnectionStatusStrip.js";
+import { ConnectionStatusStrip, useFixtureConnectionState } from "../shell/ConnectionStatusStrip.js";
 import { FixtureModeBanner } from "../shell/FixtureModeBanner.js";
 import { readOwnershipRecord } from "../session/ownership.js";
 import { useRoomProjection } from "../session/useRoomProjection.js";
 import { asCommandId } from "@digitable/contracts";
 import type {
+  CharacterCorrectionPatch,
   EatTheReichCommand,
   RollView,
   RollViewFull,
@@ -19,6 +17,7 @@ import { InvitePanel } from "./InvitePanel.js";
 import { SceneDirector } from "./SceneDirector.js";
 import { PendingActionsPanel } from "./PendingActionsPanel.js";
 import { RosterPanel } from "./RosterPanel.js";
+import { GmToolsPanel } from "./GmToolsPanel.js";
 import { CorrectionDialog } from "./CorrectionDialog.js";
 
 export interface GmDirectorScreenProps {
@@ -29,7 +28,7 @@ function isFullRoll(view: RollView): view is RollViewFull {
   return "declaredStat" in view;
 }
 
-/** docs/ETR_SESSION_FLOW.md section 1: `/room/:roomId/gm` — the director console, driven entirely by the real projection (C06). */
+/** docs/ETR_SESSION_FLOW.md section 1: `/room/:roomId/gm` — the director console, driven entirely by the real projection (C06/C07). */
 export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element {
   const connection = useFixtureConnectionState();
   const ownership = readOwnershipRecord();
@@ -37,6 +36,7 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
   const isGm = ownership?.roomId === roomId && ownership.capability === "gm";
   const { status, projection, dispatch } = useRoomProjection(roomId, memberId, "gm");
   const [correctingCharacterId, setCorrectingCharacterId] = useState<string | null>(null);
+  const [missionEndReason, setMissionEndReason] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   if (!isGm) {
@@ -84,6 +84,7 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
   const view = projection.view;
   const pending = view.rolls.filter(isFullRoll).filter((r) => r.status === "declared");
   const claimedCount = view.roster.filter((c) => c.claimedByMemberId !== null).length;
+  const primaryComplete = view.objectives.some((o) => o.kind === "primary" && o.status === "complete");
 
   const correctingCharacter = correctingCharacterId
     ? view.gmSheets.find((c) => c.id === correctingCharacterId)
@@ -105,6 +106,41 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
           {error}
         </p>
       )}
+      {view.paused && (
+        <p role="status" className="form-hint">
+          Session paused.
+        </p>
+      )}
+      {view.missionEnded && (
+        <p role="status" className="form-hint">
+          Mission ended.
+        </p>
+      )}
+
+      <div className="landing-actions">
+        {view.paused ? (
+          <button
+            type="button"
+            className="secondary-action"
+            onClick={() => {
+              void send({ type: "Resume" });
+            }}
+          >
+            Resume
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="secondary-action"
+            onClick={() => {
+              void send({ type: "Pause" });
+            }}
+          >
+            Pause
+          </button>
+        )}
+      </div>
+
       <InvitePanel
         roomCode={ownership.roomCode}
         claimedCount={claimedCount}
@@ -125,6 +161,27 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
         onRevealThreat={(threatId) => {
           void send({ type: "RevealThreat", threatId });
         }}
+        onEndRound={() => {
+          void send({ type: "EndRound" });
+        }}
+        onSetSceneRules={(reinforcements, reason) => {
+          void send({ type: "SetSceneRules", reinforcements, reason });
+        }}
+        onEditRating={(target, fields, reason) => {
+          if (target.kind === "objective") {
+            void send({
+              type: "EditScene",
+              reason,
+              updateObjectives: [{ objectiveId: target.id, ...fields }],
+            });
+          } else {
+            void send({
+              type: "EditScene",
+              reason,
+              updateThreats: [{ threatId: target.id, ...fields }],
+            });
+          }
+        }}
       />
       <PendingActionsPanel
         pending={pending}
@@ -135,17 +192,65 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
         }}
       />
       <RosterPanel gmSheets={view.gmSheets} onOpenCorrection={setCorrectingCharacterId} />
+      <GmToolsPanel
+        gmSheets={view.gmSheets}
+        rolls={view.rolls}
+        onVoidRoll={(rollId, reason) => {
+          void send({ type: "VoidRoll", rollId, reason });
+        }}
+        onGrantItem={(characterId, item, reason) => {
+          void send({ type: "GrantItem", characterId, item, reason });
+        }}
+        onUnlockAdvance={(characterId, advanceId, reason) => {
+          void send({ type: "UnlockAdvance", characterId, advanceId, reason });
+        }}
+        onReassignCharacter={(characterId, memberIdInput, reason) => {
+          void send({ type: "ReassignCharacter", characterId, memberId: memberIdInput, reason });
+        }}
+      />
+
+      {!view.missionEnded && (
+        <fieldset>
+          <legend>End mission</legend>
+          {!primaryComplete && (
+            <div className="form-field">
+              <label htmlFor="mission-end-reason">
+                Reason (required — the final Objective isn&rsquo;t complete)
+              </label>
+              <input
+                id="mission-end-reason"
+                type="text"
+                value={missionEndReason}
+                onChange={(e) => setMissionEndReason(e.target.value)}
+              />
+            </div>
+          )}
+          <button
+            type="button"
+            className="secondary-action"
+            disabled={!primaryComplete && missionEndReason.trim() === ""}
+            onClick={() => {
+              void send({
+                type: "EndMission",
+                reason: primaryComplete ? null : missionEndReason,
+              });
+              setMissionEndReason("");
+            }}
+          >
+            End mission
+          </button>
+        </fieldset>
+      )}
+
       {correctingCharacter && (
         <CorrectionDialog
-          characterName={correctingCharacter.name}
-          currentBlood={correctingCharacter.blood}
-          onApply={(delta, reason) => {
-            const next = Math.max(0, Math.min(10, correctingCharacter.blood + delta));
+          character={correctingCharacter}
+          onApply={(patch: CharacterCorrectionPatch, reason: string) => {
             void send({
               type: "CorrectCharacter",
               characterId: correctingCharacter.id,
               reason,
-              patch: { blood: next },
+              patch,
             });
             setCorrectingCharacterId(null);
           }}

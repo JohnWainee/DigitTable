@@ -475,6 +475,15 @@ input:focus-visible {
   overflow: hidden;
 }
 
+/* c07 P1: the scene's longer location sentence, shown once beneath the
+   short title — never rendered at all when they're identical (an unknown
+   scene id has no separate description), so the two never duplicate. */
+.scene-card-description {
+  margin: 0;
+  color: var(--ash, #6e6a66);
+  font-style: italic;
+}
+
 /* docs/ETR_ART_BRIEF.md section 5: bone paper texture with a faint noise
    grain, the scene title in condensed type — the default until the real
    image loads, and permanent if it never does. */

@@ -28,8 +28,11 @@ export function SceneCard({ scene, objectives, threats }: SceneCardProps): JSX.E
 
   return (
     <section className="scene-card" aria-labelledby="scene-heading">
-      <SceneArt sceneId={scene.id} location={scene.locationLabel} />
-      <h2 id="scene-heading">{scene.locationLabel}</h2>
+      <SceneArt sceneId={scene.id} title={scene.title} />
+      <h2 id="scene-heading">{scene.title}</h2>
+      {scene.locationLabel !== scene.title && (
+        <p className="scene-card-description">{scene.locationLabel}</p>
+      )}
       <p className="form-hint">
         Round {scene.round}
         {scene.reinforcementsMode === "simplified" ? " · simplified reinforcements" : ""}
