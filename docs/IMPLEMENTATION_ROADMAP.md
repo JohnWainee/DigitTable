@@ -1,5 +1,33 @@
 # Implementation roadmap
 
+## 2026-09-14 milestone adjustment: Eat the Reich three-day release
+
+John's 2026-09-14 direction (GitHub issue #14) reprioritizes this roadmap for
+a three-day push to a private playable Eat the Reich session: **scene and
+character tools are pulled forward into this sprint, ahead of the rest of
+Phase 3**, running alongside Phase 2's realtime-room work instead of waiting
+for it to fully close. Specifically, out of Phase 3's list below, this sprint
+includes:
+
+- Character claims, verified sheet fields, Blood/injuries, gear/abilities,
+  and resource effects (board task B02).
+- Consecutive-scene GM tooling: load/edit a scene, multiple
+  objectives/threats, reveal/progress/complete transitions, and mission
+  ending, with resources carrying between scenes (board task B04).
+- A non-tactical SVG Paris route map with scene nodes for GM/table display
+  (board task C03) — explicitly **not** the tactical grid/fog/measurement
+  system Phase 3/4 might otherwise imply; that remains deferred (see
+  "Later", below, and the board's "Defer" section).
+
+Everything else in Phase 3 (encounter library/builder, dossiers, difficulty
+presets, broadcasts, private messages, lore, safety tooling, timeline) and
+all of Phase 4 stay in their original sequence and are **not** pulled
+forward. Phase 2's realtime-room scope (room admission, GM claim, idempotent
+commands, reconnect, multi-device tests) is unchanged and remains this
+sprint's other concurrent track (board tasks A01–A07). This note is the
+canonical record of the adjustment; day-by-day execution and status live on
+issue #14, not here.
+
 ## Phase 0 — rights and decisions
 
 - Document what game content may be stored and distributed.
