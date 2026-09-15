@@ -14,6 +14,33 @@ export const STABLE_ERROR_CODES = [
   "PAYLOAD_TOO_LARGE",
   "UNKNOWN_ACTION",
   "INVALID_ALLOCATION",
+  // Sonnet B's contract proposal (GitHub issue #14, B02/B03), reconciled
+  // against docs/ETR_SESSION_FLOW.md §9/§12: Eat the Reich character claim,
+  // declare, resource-spend, and round/scene-transition rejections.
+  /** `claimCharacter`/reassign: the character is already bound to another member. */
+  "CHARACTER_TAKEN",
+  /** `declareAction`: the actor already acted this round (`actedThisRound`). */
+  "NOT_YOUR_TURN",
+  /** `declareAction`: the actor's character is downed, awaiting rescue. */
+  "CHARACTER_DOWNED",
+  /** `declareAction`: the actor's character has completed a Last Stand. */
+  "CHARACTER_RETIRED",
+  /** Ability use / heal / feed: the spend exceeds the character's available Blood. */
+  "INSUFFICIENT_BLOOD",
+  /** An item/gear option was selected with zero uses remaining. */
+  "ITEM_DEPLETED",
+  /** GM `EndRound` with one or more rolls still open (unresolved). */
+  "ROUND_HAS_OPEN_ROLLS",
+  /** GM `NextScene`/`EndMission` with one or more rolls still open (unresolved). */
+  "SCENE_HAS_OPEN_ROLLS",
+  /**
+   * Sonnet B's third contract proposal (GitHub issue #14, B04, matrix T1):
+   * `BeginAction`/`ReviewAction`/`AllocateResults` rejected because the
+   * session is currently paused (`Pause`/`Resume`, the anonymous safety
+   * interrupt — carries no actor identity in state or events at all, per
+   * B04's own design; anonymity is the trusted handler's responsibility).
+   */
+  "SESSION_PAUSED",
 ] as const;
 
 export type StableErrorCode = (typeof STABLE_ERROR_CODES)[number];
