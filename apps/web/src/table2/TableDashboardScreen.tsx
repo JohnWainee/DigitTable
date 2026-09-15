@@ -97,6 +97,11 @@ export function TableDashboardScreen({ roomId }: TableDashboardScreenProps): JSX
       <ConnectionStatusStrip state={connection} />
       <FixtureModeBanner />
       <h1>Eat the Reich</h1>
+      {view.paused && (
+        <p role="status" className="form-hint">
+          Paused
+        </p>
+      )}
       <RouteMap currentSceneId={view.scene?.id ?? null} clearedSceneIds={clearedSceneIds(view)} />
       <SceneCard scene={view.scene} objectives={view.objectives} threats={view.threats} />
       <PartyStrip roster={view.roster} />

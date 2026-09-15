@@ -16,7 +16,9 @@ export interface SceneDirectorProps {
   readonly onEndRound: () => void;
   readonly onSetSceneRules: (reinforcements: "book" | "simplified", reason: string) => void;
   readonly onEditRating: (
-    target: { readonly kind: "objective"; readonly id: string } | { readonly kind: "threat"; readonly id: string },
+    target:
+      | { readonly kind: "objective"; readonly id: string }
+      | { readonly kind: "threat"; readonly id: string },
     fields: { readonly rating?: number; readonly attack?: number; readonly challenge?: number },
     reason: string,
   ) => void;
@@ -83,8 +85,10 @@ export function SceneDirector({
     ...threats.map((t): EditableTarget => ({ kind: "threat", id: t.id })),
   ];
   const editTarget = editTargets.find((t) => `${t.kind}:${t.id}` === editTargetKey) ?? null;
-  const editObjective = editTarget?.kind === "objective" ? objectives.find((o) => o.id === editTarget.id) : null;
-  const editThreat = editTarget?.kind === "threat" ? threats.find((t) => t.id === editTarget.id) : null;
+  const editObjective =
+    editTarget?.kind === "objective" ? objectives.find((o) => o.id === editTarget.id) : null;
+  const editThreat =
+    editTarget?.kind === "threat" ? threats.find((t) => t.id === editTarget.id) : null;
 
   function loadEditTargetDefaults(key: string): void {
     setEditTargetKey(key);
@@ -106,7 +110,8 @@ export function SceneDirector({
     if (!editTarget) return;
     const fields: { rating?: number; attack?: number; challenge?: number } = {};
     if (editRating.trim() !== "") fields.rating = Number(editRating);
-    if (editTarget.kind === "threat" && editAttack.trim() !== "") fields.attack = Number(editAttack);
+    if (editTarget.kind === "threat" && editAttack.trim() !== "")
+      fields.attack = Number(editAttack);
     if (editChallenge.trim() !== "") fields.challenge = Number(editChallenge);
     onEditRating(editTarget, fields, editReason);
     setEditReason("");
@@ -236,7 +241,10 @@ export function SceneDirector({
             className="secondary-action"
             disabled={rulesReason.trim() === ""}
             onClick={() => {
-              onSetSceneRules(scene.reinforcementsMode === "book" ? "simplified" : "book", rulesReason);
+              onSetSceneRules(
+                scene.reinforcementsMode === "book" ? "simplified" : "book",
+                rulesReason,
+              );
               setRulesReason("");
             }}
           >
@@ -249,7 +257,11 @@ export function SceneDirector({
         <fieldset>
           <legend>Edit an Objective or Threat</legend>
           <label htmlFor="edit-target">Target</label>
-          <select id="edit-target" value={editTargetKey} onChange={(e) => loadEditTargetDefaults(e.target.value)}>
+          <select
+            id="edit-target"
+            value={editTargetKey}
+            onChange={(e) => loadEditTargetDefaults(e.target.value)}
+          >
             <option value="">Choose one&hellip;</option>
             {objectives.map((o) => (
               <option key={`objective:${o.id}`} value={`objective:${o.id}`}>

@@ -14,6 +14,8 @@ export interface ConfirmSummary2Props {
   readonly character: CharacterFullSheet;
   readonly objectives: EatTheReichView["objectives"];
   readonly threats: EatTheReichView["threats"];
+  /** The roll's `attackSuccessesRolled`, captured before allocation cleared it from view — lets a Defend-only line report how many were removed. */
+  readonly attackSuccessesRolled: number;
   readonly onContinue: () => void;
 }
 
@@ -55,9 +57,25 @@ export function ConfirmSummary2({
   character,
   objectives,
   threats,
+  attackSuccessesRolled,
   onContinue,
 }: ConfirmSummary2Props): JSX.Element {
   const lines: { readonly label: string; readonly detail: string }[] = [];
+  // c07 P1: a Defend-only line — every attack success that was rolled got
+  // absorbed (by `defend` and/or a SPECIAL's `removeAttackSuccesses`) and
+  // no injury resulted, so nothing else in `resolved` otherwise says so.
+  const removedAttackSuccesses =
+    attackSuccessesRolled - resolved.remainingAttackSuccessesAfterAllocation;
+  if (
+    removedAttackSuccesses > 0 &&
+    resolved.remainingAttackSuccessesAfterAllocation === 0 &&
+    !resolved.injuryMark
+  ) {
+    lines.push({
+      label: "Defended",
+      detail: `Removed ${removedAttackSuccesses} attack success${removedAttackSuccesses === 1 ? "" : "es"}, no injury.`,
+    });
+  }
 
   for (const delta of resolved.objectiveDeltas) {
     const objective = objectives.find((o) => o.id === delta.objectiveId);

@@ -7,11 +7,21 @@ export interface GmToolsPanelProps {
   readonly onVoidRoll: (rollId: string, reason: string) => void;
   readonly onGrantItem: (
     characterId: string,
-    item: { id: string; name: string; bonusRequirement: string; bonusPlus: number; maxUses: number },
-    reason: string,
+    item: {
+      id: string;
+      name: string;
+      bonusRequirement: string;
+      bonusPlus: number;
+      maxUses: number;
+    },
+    reason: string | null,
   ) => void;
-  readonly onUnlockAdvance: (characterId: string, advanceId: string, reason: string) => void;
-  readonly onReassignCharacter: (characterId: string, memberId: string | null, reason: string) => void;
+  readonly onUnlockAdvance: (characterId: string, advanceId: string, reason: string | null) => void;
+  readonly onReassignCharacter: (
+    characterId: string,
+    memberId: string | null,
+    reason: string | null,
+  ) => void;
 }
 
 function isFullRoll(roll: RollView): roll is RollViewFull {
@@ -73,7 +83,9 @@ export function GmToolsPanel({
                   id={`void-reason-${roll.rollId}`}
                   type="text"
                   value={reasonValue}
-                  onChange={(e) => setVoidReasons((prev) => ({ ...prev, [roll.rollId]: e.target.value }))}
+                  onChange={(e) =>
+                    setVoidReasons((prev) => ({ ...prev, [roll.rollId]: e.target.value }))
+                  }
                 />
                 <button
                   type="button"
@@ -95,7 +107,11 @@ export function GmToolsPanel({
       <fieldset>
         <legend>Grant an item</legend>
         <label htmlFor="grant-character">Character</label>
-        <select id="grant-character" value={grantCharacterId} onChange={(e) => setGrantCharacterId(e.target.value)}>
+        <select
+          id="grant-character"
+          value={grantCharacterId}
+          onChange={(e) => setGrantCharacterId(e.target.value)}
+        >
           {gmSheets.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
@@ -104,11 +120,21 @@ export function GmToolsPanel({
         </select>
         <div className="form-field">
           <label htmlFor="grant-item-id">Item id</label>
-          <input id="grant-item-id" type="text" value={itemId} onChange={(e) => setItemId(e.target.value)} />
+          <input
+            id="grant-item-id"
+            type="text"
+            value={itemId}
+            onChange={(e) => setItemId(e.target.value)}
+          />
         </div>
         <div className="form-field">
           <label htmlFor="grant-item-name">Name</label>
-          <input id="grant-item-name" type="text" value={itemName} onChange={(e) => setItemName(e.target.value)} />
+          <input
+            id="grant-item-name"
+            type="text"
+            value={itemName}
+            onChange={(e) => setItemName(e.target.value)}
+          />
         </div>
         <div className="form-field">
           <label htmlFor="grant-bonus-requirement">Bonus requirement</label>
@@ -142,7 +168,12 @@ export function GmToolsPanel({
         </div>
         <div className="form-field">
           <label htmlFor="grant-reason">Reason</label>
-          <input id="grant-reason" type="text" value={grantReason} onChange={(e) => setGrantReason(e.target.value)} />
+          <input
+            id="grant-reason"
+            type="text"
+            value={grantReason}
+            onChange={(e) => setGrantReason(e.target.value)}
+          />
         </div>
         <button
           type="button"
@@ -190,7 +221,11 @@ export function GmToolsPanel({
             ))}
           </select>
           <label htmlFor="advance-select">Advance</label>
-          <select id="advance-select" value={advanceId} onChange={(e) => setAdvanceId(e.target.value)}>
+          <select
+            id="advance-select"
+            value={advanceId}
+            onChange={(e) => setAdvanceId(e.target.value)}
+          >
             {(advanceCharacter?.advances ?? []).map((a) => (
               <option key={a.id} value={a.id}>
                 {a.label}
@@ -212,7 +247,11 @@ export function GmToolsPanel({
             className="secondary-action"
             disabled={!advanceId}
             onClick={() => {
-              onUnlockAdvance(advanceCharacterId, advanceId, advanceReason.trim() === "" ? null : advanceReason);
+              onUnlockAdvance(
+                advanceCharacterId,
+                advanceId,
+                advanceReason.trim() === "" ? null : advanceReason,
+              );
               setAdvanceReason("");
             }}
           >

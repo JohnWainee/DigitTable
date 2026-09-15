@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { navigate } from "../router.js";
-import { ConnectionStatusStrip, useFixtureConnectionState } from "../shell/ConnectionStatusStrip.js";
+import {
+  ConnectionStatusStrip,
+  useFixtureConnectionState,
+} from "../shell/ConnectionStatusStrip.js";
 import { FixtureModeBanner } from "../shell/FixtureModeBanner.js";
 import { readOwnershipRecord } from "../session/ownership.js";
 import { useRoomProjection } from "../session/useRoomProjection.js";
@@ -84,7 +87,9 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
   const view = projection.view;
   const pending = view.rolls.filter(isFullRoll).filter((r) => r.status === "declared");
   const claimedCount = view.roster.filter((c) => c.claimedByMemberId !== null).length;
-  const primaryComplete = view.objectives.some((o) => o.kind === "primary" && o.status === "complete");
+  const primaryComplete = view.objectives.some(
+    (o) => o.kind === "primary" && o.status === "complete",
+  );
 
   const correctingCharacter = correctingCharacterId
     ? view.gmSheets.find((c) => c.id === correctingCharacterId)

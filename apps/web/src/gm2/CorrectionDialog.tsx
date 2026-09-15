@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import type { CharacterCorrectionPatch, CharacterFullSheet } from "@digitable/template-eat-the-reich";
+import type {
+  CharacterCorrectionPatch,
+  CharacterFullSheet,
+} from "@digitable/template-eat-the-reich";
 
 export interface CorrectionDialogProps {
   readonly character: CharacterFullSheet;
@@ -27,7 +30,11 @@ const FOCUSABLE_SELECTOR =
  * under one accessible label instead of a `<label>` pointing at a
  * non-control `<span>`.
  */
-export function CorrectionDialog({ character, onApply, onClose }: CorrectionDialogProps): JSX.Element {
+export function CorrectionDialog({
+  character,
+  onApply,
+  onClose,
+}: CorrectionDialogProps): JSX.Element {
   const [bloodDelta, setBloodDelta] = useState(0);
   const [itemUses, setItemUses] = useState<Record<string, number>>({});
   const [boxOverrides, setBoxOverrides] = useState<Record<string, boolean>>({});
@@ -98,17 +105,30 @@ export function CorrectionDialog({ character, onApply, onClose }: CorrectionDial
   const downedChanged = downed !== character.downed;
   const retiredChanged = retired !== character.retired;
   const bloodChanged = bloodDelta !== 0;
-  const anyChange = bloodChanged || itemUsesChanged || boxesChanged || downedChanged || retiredChanged;
+  const anyChange =
+    bloodChanged || itemUsesChanged || boxesChanged || downedChanged || retiredChanged;
   const canApply = reason.trim().length > 0 && anyChange;
 
   function handleApply(): void {
-    const patch: CharacterCorrectionPatch = {};
+    const patch: {
+      blood?: number;
+      downed?: boolean;
+      retired?: boolean;
+      itemUses?: { readonly itemId: string; readonly usesRemaining: number }[];
+      injuryBoxes?: {
+        readonly categoryId: string;
+        readonly boxIndex: 0 | 1;
+        readonly marked: boolean;
+      }[];
+    } = {};
     if (bloodChanged) patch.blood = nextBlood;
     if (downedChanged) patch.downed = downed;
     if (retiredChanged) patch.retired = retired;
     if (itemUsesChanged) {
       patch.itemUses = Object.entries(itemUses)
-        .filter(([itemId, uses]) => uses !== character.items.find((i) => i.id === itemId)?.usesRemaining)
+        .filter(
+          ([itemId, uses]) => uses !== character.items.find((i) => i.id === itemId)?.usesRemaining,
+        )
         .map(([itemId, usesRemaining]) => ({ itemId, usesRemaining }));
     }
     if (boxesChanged) {
@@ -144,7 +164,9 @@ export function CorrectionDialog({ character, onApply, onClose }: CorrectionDial
               >
                 −
               </button>
-              <span className="stepper-value">{bloodDelta > 0 ? `+${bloodDelta}` : bloodDelta}</span>
+              <span className="stepper-value">
+                {bloodDelta > 0 ? `+${bloodDelta}` : bloodDelta}
+              </span>
               <button
                 type="button"
                 onClick={() => setBloodDelta((d) => d + 1)}
@@ -165,7 +187,12 @@ export function CorrectionDialog({ character, onApply, onClose }: CorrectionDial
             {character.items.map((item) => {
               const value = itemUses[item.id] ?? item.usesRemaining;
               return (
-                <div key={item.id} role="group" aria-label={`${item.name} uses`} className="form-field">
+                <div
+                  key={item.id}
+                  role="group"
+                  aria-label={`${item.name} uses`}
+                  className="form-field"
+                >
                   <span>{item.name}</span>
                   <div className="stepper-controls">
                     <button
@@ -233,7 +260,11 @@ export function CorrectionDialog({ character, onApply, onClose }: CorrectionDial
             Downed
           </label>
           <label className="gear-option">
-            <input type="checkbox" checked={retired} onChange={(e) => setRetired(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={retired}
+              onChange={(e) => setRetired(e.target.checked)}
+            />
             Retired
           </label>
         </fieldset>
@@ -249,7 +280,12 @@ export function CorrectionDialog({ character, onApply, onClose }: CorrectionDial
           />
         </div>
         <div className="landing-actions">
-          <button type="button" className="primary-action" disabled={!canApply} onClick={handleApply}>
+          <button
+            type="button"
+            className="primary-action"
+            disabled={!canApply}
+            onClick={handleApply}
+          >
             Apply correction
           </button>
           <button type="button" className="secondary-action" onClick={onClose}>

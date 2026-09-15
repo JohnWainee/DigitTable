@@ -27,6 +27,7 @@ export function CreateSessionScreen(): JSX.Element {
     status: "idle",
   });
   const [wroteDownSecrets, setWroteDownSecrets] = useState(false);
+  const [readyAcknowledged, setReadyAcknowledged] = useState(false);
   const requestIdRef = useRef(getOrMintCreateRequestId());
 
   const accepted = request.status === "accepted" ? request.result : null;
@@ -48,6 +49,9 @@ export function CreateSessionScreen(): JSX.Element {
   function handleAcknowledgeSecrets(): void {
     if (!accepted) return;
     writeOwnershipRecord(ownershipFromAcceptedWithNames(accepted, creatorDisplayName, sessionName));
+    // c07 P1: the secrets card (passphrase/recovery/table code) never
+    // renders again after this — nothing here re-shows a shown-once secret.
+    setReadyAcknowledged(true);
   }
 
   return (
@@ -126,7 +130,7 @@ export function CreateSessionScreen(): JSX.Element {
         }
       />
 
-      {accepted && (
+      {accepted && !readyAcknowledged && (
         <section className="reveal-card" aria-labelledby="reveal-heading">
           <h2 id="reveal-heading">Write these down — shown once</h2>
           <dl>
@@ -159,7 +163,7 @@ export function CreateSessionScreen(): JSX.Element {
         </section>
       )}
 
-      {accepted && wroteDownSecrets && (
+      {accepted && readyAcknowledged && (
         <>
           <InvitePanel roomCode={accepted.roomCode} />
           <button
