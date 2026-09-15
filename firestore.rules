@@ -49,6 +49,12 @@ service cloud.firestore {
       }
       match /bindings/{memberId} { allow read, write: if false; }
       match /uidBindings/{uid} { allow read, write: if false; }
+      // Phase 2 PR 3: room passphrase hash, the separate table-code hash, and
+      // per-seat recovery-code hashes. Only the trusted admission authority
+      // (apps/functions) reads or writes any of these paths.
+      match /admission/secret { allow read, write: if false; }
+      match /admission/tableSecret { allow read, write: if false; }
+      match /recovery/{memberId} { allow read, write: if false; }
       match /projections/{viewerId} {
         allow read: if (!isReservedViewer(viewerId) && isOwnMember(roomId, viewerId))
           || (viewerId == "gm" && hasCapability(roomId, "gm"))
@@ -76,5 +82,10 @@ service cloud.firestore {
     }
 
     match /roomCodes/{code} { allow read, write: if false; }
+    // Phase 2 PR 3: admission throttle counters (per code+IP, per IP, per
+    // UID; document IDs are hashes), kept outside rooms/ so guesses at codes
+    // that resolve to no room are bounded too. Service-only for the whole
+    // tree; a client that could read or reset them could defeat the throttle.
+    match /admissionThrottle/{document=**} { allow read, write: if false; }
   }
 }

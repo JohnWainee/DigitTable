@@ -1,6 +1,6 @@
 # Phase 2 implementation plan — realtime room
 
-- **Status:** Planning. No implementation has started; this document precedes it per `docs/ARCHITECTURE.md` section 17, step 4/5.
+- **Status:** In progress. PRs 1–2 merged; PR 3 implemented and twice independently reviewed (see `docs/reviews/2026-09-14-phase-2-pr3-*.md`), awaiting merge; PR 4 onward not started. Originally written before implementation per `docs/ARCHITECTURE.md` section 17, step 4/5.
 - **Scope authority:** `docs/IMPLEMENTATION_ROADMAP.md` Phase 2; `docs/ARCHITECTURE.md` section 17, steps 5–6.
 - **Preceded by:** [`docs/reviews/2026-09-13-phase-2-preflight-review.md`](reviews/2026-09-13-phase-2-preflight-review.md) (contract re-evaluation; findings P1–P9).
 - **Depends on:** [`docs/PHASE_2_DECISION_BRIEF.md`](PHASE_2_DECISION_BRIEF.md) for the three decisions John must make before PR 3 can start (region/projects, join policy, retention).
@@ -40,12 +40,14 @@ Each PR is independently reviewable per `AGENTS.md`'s workflow expectations (own
 - Anonymous Firebase Authentication wiring.
 - The join flow (`docs/ARCHITECTURE.md`, "Join and GM claim"): room-code resolution, capacity/admission-policy checks, per-IP/per-room throttling, seat creation transaction (writes `bindings`, `uidBindings`, `members`, initial recovery code).
 - GM claim as a transactional, member-seat-bound operation.
+- **Revision after the PR 3 independent review (2026-09-14):** the join flow is hosted as operable callables (`admitMember`, `claimSeat`) in the trusted Cloud Functions codebase `apps/functions` (ADR-001's layout) in *this* PR, not deferred to PR 4 — a throttle needs request metadata, and a boundary that only tests can call is not the join flow. The table seat is admitted by a separate table code (`admission/tableSecret`), a wrong secret denies reclaim, and every persisted read fails closed. PR 3 still does not deploy: the codebase is bundled by `npm run build` and proven against the Firestore emulator through the same handlers a deployed request reaches.
 - New command/event types for this family (finding P6): `ClaimSeat`, `AdmitMember`, and their events, plus new stable error codes (finding P7): `ROOM_FULL`, `ADMISSION_CLOSED`.
 - App Check added in **monitoring mode only** (not enforced) per `docs/ARCHITECTURE.md` section 11 — enforcement is a "before public preview" gate, not Phase 2.
 - **Decisions needed:** room join policy (open code / code + passphrase / invites) — this PR's admission-policy check branches directly on it. Firebase region/project — this is the first PR that provisions anything real.
 
 ### PR 4 — Trusted command authority (the transactional Function)
 
+- Lands in the same `apps/functions` codebase PR 3 established (which already hosts the admission callables), reusing its Admin-SDK transaction shape, stable-error → `HttpsError` mapping, and emulator harness.
 - The Cloud Function that wraps `@digitable/engine`'s `runCommand`/`projectViewer` in one Firestore transaction: resolve `uidBindings` → capability (finding P4), read `authority/current` + binding + receipt, run platform authorization → template authorization → `decide` → `reduce`, then atomically write authority, receipt, ordered events, and every affected viewer projection (finding P3 confirms this is effectively "every live viewer" for the current template).
 - One `crypto.randomBytes` seed per invocation, injected as `DecisionContext.random`, never persisted (already implemented in `packages/engine`'s deterministic generator — this PR only adds the seed-generation and transaction-retry wiring around it).
 - Concurrent-invocation and retry tests: two simultaneous calls with one `commandId` produce one event and identical responses; a retried transaction reproduces the same dice faces without re-drawing.

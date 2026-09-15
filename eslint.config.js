@@ -19,10 +19,12 @@ const THREE_RESTRICTED_IMPORT = {
 };
 
 // Phase 2 has begun (docs/PHASE_2_PLAN.md): Firebase packages are now allowed, but only in the
-// emulator harness (packages/testing/src/emulator.ts, packages/testing/test-emulator/**) and,
-// from Phase 2 PR 7, FirebaseRoomRepository — never in the pure engine/contracts/templates
-// packages or the rest of apps/web. `paths` catches the bare "firebase" specifier; `patterns`
-// catches every "firebase/*"/"@firebase/*" subpath import too.
+// emulator harness (packages/testing/src/emulator.ts, packages/testing/test-emulator/**), the
+// Phase 2 PR 3 client seams (apps/web/src/firebase/**), the trusted Cloud Functions codebase
+// (apps/functions/**, Admin SDK + firebase-functions), and from Phase 2 PR 7,
+// FirebaseRoomRepository — never in the pure engine/contracts/templates packages or the rest
+// of apps/web. `paths` catches the bare "firebase" specifier; `patterns` catches every
+// "firebase/*"/"@firebase/*" subpath import too.
 const FIREBASE_RESTRICTED_IMPORTS = [
   {
     name: "firebase",
@@ -32,7 +34,7 @@ const FIREBASE_RESTRICTED_IMPORTS = [
   {
     name: "firebase-admin",
     message:
-      "No Firebase Admin SDK; privileged server code only runs inside a trusted Cloud Function (Phase 2 PR 4+).",
+      "No Firebase Admin SDK outside apps/functions; privileged server code only runs inside the trusted Cloud Functions codebase (Phase 2 PR 3+).",
   },
 ];
 const FIREBASE_RESTRICTED_PATTERNS = [
@@ -98,10 +100,27 @@ export default tseslint.config(
     },
   },
   {
-    // The one sanctioned Firebase seam so far (Phase 2 PR 1): the emulator test harness. Firebase
-    // stays banned everywhere else in packages/ (the override above) until a repository
-    // implementation needs it (Phase 2 PR 7).
+    // The sanctioned Firebase seam in packages/: the emulator test harness (Phase 2 PR 1) and
+    // its rules tests. Firebase stays banned everywhere else in packages/ (the override above)
+    // until a repository implementation needs it (Phase 2 PR 7).
     files: ["packages/testing/src/emulator.ts", "packages/testing/test-emulator/**/*.ts"],
+    rules: {
+      "no-restricted-imports": ["error", { paths: [THREE_RESTRICTED_IMPORT] }],
+    },
+  },
+  {
+    // The trusted Cloud Functions codebase (docs/ARCHITECTURE.md ADR-001): the only place the
+    // Admin SDK and firebase-functions may be imported. Phase 2 PR 3 hosts the admission
+    // callables here; PR 4 adds the gameplay command authority.
+    files: ["apps/functions/**/*.ts"],
+    rules: {
+      "no-restricted-imports": ["error", { paths: [THREE_RESTRICTED_IMPORT] }],
+    },
+  },
+  {
+    // PR 3's anonymous-auth bootstrap is the only browser Firebase seam before
+    // FirebaseRoomRepository arrives in PR 7.
+    files: ["apps/web/src/firebase/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": ["error", { paths: [THREE_RESTRICTED_IMPORT] }],
     },

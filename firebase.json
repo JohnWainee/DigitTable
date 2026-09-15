@@ -1,4 +1,10 @@
 {
+  "functions": {
+    "source": "apps/functions",
+    "codebase": "digitable",
+    "runtime": "nodejs22",
+    "predeploy": ["npm run build --workspace @digitable/functions"]
+  },
   "firestore": {
     "rules": "firestore.rules"
   },

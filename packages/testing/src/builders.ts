@@ -51,6 +51,9 @@ export function makeAuthority<TState>(
     nextSequence: 1,
     roomStatus: "active",
     gmMemberId: null,
+    admissionStatus: "open",
+    participantCount: 0,
+    tableSeatClaimed: false,
     ...overrides,
     state,
   };

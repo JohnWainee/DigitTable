@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A/1B/1C, the Phase 2 preflight, Phase 2 PR 1, and **Phase 2 PR 2 (Firestore data model and rules) are merged to `main`.** PR 2 was independently reviewed and approved with two narrow remediations (see `docs/reviews/2026-09-14-phase-2-pr2-independent-review.md`); John chose this candidate over the competing draft PR #10 (`claude/phase-2-pr-2-firestore-159rmr`), which should now be closed or rebased (review finding S5). The Phase 2 decision brief records John's code-plus-passphrase admission policy and 90-day manual-retention policy.
-- **Branch:** `main` (PR 2 landed via `worktree-phase2-pr2`, which carried the review branch `claude/phase2-pr2-security-review-lexa32` merged through PR #11)
-- **PR:** PR #11 (review into `worktree-phase2-pr2`) and the PR 2 merge into `main` are both merged on John's instruction.
-- **Last updated:** 2026-09-14 by Claude (independent review pass, then merge)
+- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **Phase 2 PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim) is implemented on this branch, its first-review blockers are remediated, a second independent pass (two reviewers) found no blocking issue with six Medium findings fixed, and a third independent pass (board task A01) re-verified the boundary against every item A01 names, found no blocking issue, and fixed one Low cosmetic finding (a recovery-code alphabet comment miscount)** (`docs/reviews/2026-09-14-phase-2-pr3-third-pass-independent-review.md`). **Ready for John's merge decision.**
+- **Branch:** `worktree-phase2-pr3-admission` (from `origin/main` at PR #12)
+- **PR:** [#13](https://github.com/JohnWainee/DigitTable/pull/13), draft until John merges.
+- **Last updated:** 2026-09-14 by Sonnet A (task A01: third-pass independent review and fix)
 
 ## Mission
 
@@ -31,6 +31,7 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
 - **Phase 2 preflight is complete on `main`** (merged from `worktree-phase2-preflight`), per `docs/ARCHITECTURE.md` section 17 step 4. See "Phase 2 preflight: contract re-evaluation before persistence" below.
 - **Phase 2 PR 1 (repository interface + Firebase emulator harness) is complete on this branch** (`worktree-phase2-pr1`), scoped exactly to `docs/PHASE_2_PLAN.md`'s PR 1. See "Fourth implementation PR: repository interface and Firebase emulator harness (Phase 2 PR 1)" below.
 - **Phase 2 PR 2 (Firestore data model and rules) is implemented on `worktree-phase2-pr2` and independently reviewed on this branch** (`claude/phase2-pr2-security-review-lexa32`). It adds the authority lifecycle fields, client-read security rules, and emulator allow/deny matrix described below; it does not add Functions, admission, or client reconnect/outbox behavior. The review approved it and applied two narrow remediations here (reserved-viewer hardening in `firestore.rules`; a fuller emulator matrix).
+- **Phase 2 PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim) is implemented on this branch** (`worktree-phase2-pr3-admission`), scoped exactly to `docs/PHASE_2_PLAN.md`'s PR 3. See "Sixth implementation PR: anonymous auth, admission, and GM claim (Phase 2 PR 3)" below for the full description, design decisions, and verification commands. Firebase CLI authentication previously verified access to staging project `powerglove-1cd23` and its `digitable-staging-web` app, with Anonymous sign-in already enabled in that project's console; this PR does not deploy to it (see that section's scope note on why a real deploy is not yet required).
 
 ## Read in this order
 
@@ -197,7 +198,7 @@ Scope was exactly `docs/PHASE_2_PLAN.md`'s PR 1: extract an explicit, async `Roo
 - No Firestore data model, security rules beyond the explicitly-labeled PR 1 placeholder, Cloud Functions, auth/admission, RTDB presence, recovery-code redemption, or client reconnect/outbox implementation were introduced. `packages/engine` and `templates/eat-the-reich`'s pure functions are byte-for-byte unchanged.
 - Not independently verified in a real browser this session (no browser tool available); `apps/web`'s existing `jest-axe`/`@testing-library/react` suite (now exercising the async dispatch path throughout) substitutes for, but does not replace, a manual pass.
 
-## Fifth implementation PR: Firestore data model and security rules (Phase 2 PR 2) — IMPLEMENTED AND INDEPENDENTLY REVIEWED (not yet merged)
+## Fifth implementation PR: Firestore data model and security rules (Phase 2 PR 2) — MERGED to `main` (PR #12)
 
 Scope is exactly `docs/PHASE_2_PLAN.md` PR 2. This change replaces PR 1's default-deny placeholders with the resolved, read-only client access model. It does not introduce a Cloud Function, anonymous-auth admission flow, a real Firebase project, or a Firebase-backed client repository.
 
@@ -214,23 +215,25 @@ Scope is exactly `docs/PHASE_2_PLAN.md` PR 2. This change replaces PR 1's defaul
 - `git diff --check origin/main...HEAD` — clean before the handoff update; rerun before commit.
 - `npm install` repaired a pre-existing lockfile omission for `packages/testing`'s declared `vitest` devDependency; it did not change requested dependency versions.
 
-### Independent-review requirement
+## Sixth implementation PR: anonymous auth, admission, and GM claim (Phase 2 PR 3) — READY FOR JOHN'S MERGE DECISION (this branch)
 
-This is a material persistence/security change and is **not complete until a second pass independently reviews it**. The review must inspect the rules against `docs/ARCHITECTURE.md` section 8/13, run the full gate and emulator suite, verify no Firestore path is unintentionally client-writable/readable, and record the outcome under `docs/reviews/` before merge.
+Scope is exactly `docs/PHASE_2_PLAN.md` PR 3, revised during review to also host the trusted `apps/functions` codebase (ADR-001) rather than deferring it to PR 4. Two `onCall` callables, `admitMember` and `claimSeat` (`apps/functions/src/callables.ts`), wrap an Admin-SDK transaction (`apps/functions/src/admissionAuthority.ts`) behind the pipeline App Check monitoring → auth required → payload validation → per-IP/per-UID throttle → transaction. A separate `admission/tableSecret` document is the only secret that admits the table seat; the general room passphrase can never satisfy it. Every persisted document the transaction reads (authority, room-code index, uid binding, secret hash, throttle counter) is runtime-validated and fails closed (`ROOM_DATA_INVALID`) rather than defaulting. A bound UID must still present the current secret before a reclaim is honored, including after rotation. `apps/web/src/firebase/appCheck.ts` uses the Enterprise reCAPTCHA provider, wired from a new `apps/web/src/firebase/bootstrap.ts` startup seam; a local-only build without Firebase config touches no Firebase service. Room creation itself (minting the initial code/passphrase/table code and the empty GM seat) is not in this PR's scope — see board task A03.
 
-### Independent review outcome (2026-09-14)
+### Required checks — all pass locally
 
-Recorded in [`docs/reviews/2026-09-14-phase-2-pr2-independent-review.md`](docs/reviews/2026-09-14-phase-2-pr2-independent-review.md). Verdict: approved for merge with the review branch's remediations applied. Every allow rule was checked against section 8's path contract and section 11/13's role matrix, then probed adversarially against the emulator before findings were written.
+- `npm run check` — formatting, lint (zero warnings), typecheck, and **283/283** default tests across 38 files passed.
+- `npm run build` — passed (`apps/functions` esbuild bundle, 23.1kb; `apps/web` vite build).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **54/54** tests passed (16 in `packages/testing`, 38 in `apps/functions`) against the local `demo-digitable` Auth, Firestore, and RTDB emulators.
+- `git diff --check origin/main...HEAD` — clean.
+- `npm audit` — 13 moderate advisories repository-wide, none high/critical, all in the `firebase-tools`/`firebase-admin` dependency trees (see the second-pass review's residual R6 for the one advisory genuinely reachable from the Function's dependency tree).
 
-- **S1 (Medium, fixed here):** the original five-test matrix omitted PR 2's own P0 proofs (GM/table reading another member's receipt, projection, or private partition; non-member and unauthenticated reads; `bindings`/`snapshots`/`roomCodes`/room-document denial; collection `list` queries; `update`/`delete` writes; unauthenticated RTDB writes). The rules already denied all of them; `roomRules.test.ts` now has 11 tests covering every section 8 path × role.
-- **S2 (Low, fixed here):** the own-member projection branch did not exclude the reserved `gm`/`table` viewer IDs, so a mis-minted binding with `memberId: "table"` could read `projections/table` (probe-confirmed). `firestore.rules` now guards that branch with `isReservedViewer`, with a regression test.
-- **S3 (Medium, deferred to PR 7 with an architecture touch):** the receipt rule reads `resource.data.memberId`, so a member cannot `get`/listen on their own not-yet-written receipt (denied, not "missing"). PR 7's pending-outbox reconciliation must either add a path-prefix own check alongside the data check or reconcile without reading the receipt before it exists; record the choice in section 8.
-- **S4 (Low, PR 5):** RTDB presence has no `.validate`, and any authenticated UID can write under its own UID in any room ID (the documented residual, write side). PR 5 should bound the payload and decide the `{uid}`- vs `{connectionId}`-level write grant.
-- **S5 (Process, needs John):** two divergent PR 2 candidates exist: `worktree-phase2-pr2` (`a40e7dc`, reviewed here) and open draft PR #10 (`claude/phase-2-pr-2-firestore-159rmr`, `92be020`, broader: typed document contracts in `packages/contracts/src/room.ts`, 46-test matrix). Only one may merge; if PR #10 is chosen it needs its own independent pass, and S2/S3 apply to it verbatim.
-- **S6 (Low, before PR 3/4):** the rules depend on `uidBindings.{memberId,capability}` and `receipts.memberId` field names that no contract type declares; this PR types only `AuthorityRecord`, so "implements the data model" overstates it. Land typed document shapes (PR #10's `room.ts` is a candidate) before PR 3 writes these documents.
-- **S7/S8 (Informational):** the decision brief records the staging project identifier and regions as a decision; no config, code, or credential references it (`.firebaserc` remains `demo-digitable`). The emulator command's Homebrew `PATH` prefix is macOS-specific; a JDK on `PATH` is the actual requirement.
+### Independent reviews
 
-Review-branch gate (after remediations): `npm run check` — **157/157** tests across 28 files, zero lint warnings, typecheck clean; `npm run build` — passed; `npm run test:emulator` — **16/16** (5 harness + 11 rules); `git diff --check origin/main...HEAD` — clean. In the Linux review sandbox, `firebase-tools` routed its loopback RTDB rules upload through the egress proxy (it ignores `NO_PROXY`), so the emulator suite was run with the `*_PROXY` variables unset for that one invocation only; no repository file was changed for it.
+1. First independent review: five blockers, dispositioned in [`docs/reviews/2026-09-14-phase-2-pr3-review-resolution.md`](docs/reviews/2026-09-14-phase-2-pr3-review-resolution.md) (residuals R1–R7).
+2. Second independent pass over the remediation (two reviewers in fresh contexts, with emulator probes): [`docs/reviews/2026-09-14-phase-2-pr3-second-pass-review.md`](docs/reviews/2026-09-14-phase-2-pr3-second-pass-review.md). No blocking finding; six Medium findings (spoofable IP key, no enumeration bound, absent `gmMemberId` reopening the GM seat, unconstrained room-code characters, deploy manifest, `meta/current` merge) and the Low ones are fixed on this branch with tests.
+3. Third independent pass (board task A01, a fresh reviewer subagent given only the branch and the architecture invariants): [`docs/reviews/2026-09-14-phase-2-pr3-third-pass-independent-review.md`](docs/reviews/2026-09-14-phase-2-pr3-third-pass-independent-review.md). Re-verified callable auth/throttle ordering, fail-closed persisted-data validation, separate table admission, secret-on-reclaim ordering, and Enterprise App Check monitoring against the actual code (not just the prior reviews' claims) — no blocking finding. One Low, non-blocking, cosmetic finding (a recovery-code alphabet comment claimed 32 symbols; the literal alphabet is 31, still ~64.4 bits, clearing the required >=64-bit floor) fixed on this branch with no behavior change.
+
+Merge remains John's decision.
 
 ## Definition of first playable
 
@@ -253,8 +256,9 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-1. Close draft PR #10 (`claude/phase-2-pr-2-firestore-159rmr`) or rebase it onto `main`; PR 2 has merged from `worktree-phase2-pr2` (review finding S5). Its typed document contracts (`packages/contracts/src/room.ts`) are the natural candidate for the S6 item below.
-2. Before PR 3 writes `uidBindings`/`bindings`/`members`/`receipts`, land typed document shapes for the section 8 documents (S6). Carry S3 (pending-receipt read) into PR 7's design and S4 (`.validate`, write-grant level) into PR 5.
-3. After PR 2 merges, begin PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim) only from updated `main`. It requires the already-selected join policy plus explicit staging/production project identifiers and a Firebase region; do not invent either identifier or create a real project without them.
-4. Keep `packages/testing/vitest.emulator.config.ts` opt-in via `npm run test:emulator`; it must not join the default test project list. The emulator command requires a JDK on `PATH`.
-5. Do not pull forward the trusted command Function (PR 4), RTDB client presence wiring (PR 5), recovery (PR 6), reconnect/outbox (PR 7), campaign tooling, safety controls, 3D, or a second template.
+1. **John decides whether to merge PR #13.** Both independent passes are recorded; the gate and emulator suite are green on the branch head. Merge via the PR (squash or merge commit, either is fine); then delete the `worktree-phase2-pr3-admission` branch and its worktree.
+2. Before a staging playtest, decide: (a) whether to encode the staging region (`us-west1` per the decision brief) in `firebase.json`/function options; (b) which PR owns **room creation** — minting the code, passphrase, table code, and empty GM seat (the GM cannot issue a table code today); (c) enabling the Firestore TTL policy on `admissionThrottle`'s `byIp`/`scope` collection groups.
+3. PR 4 (the trusted gameplay command authority) lands in `apps/functions` alongside the admission callables, reusing the Admin-SDK transaction shape, `httpsErrors.ts`, the throttle, and the emulator harness. Before App Check enforcement, verify on staging that `rawRequest.ip` resolves to the client (residual R2); until then the per-UID throttle bucket is the trustworthy bound.
+4. Keep both emulator projects opt-in via `npm run test:emulator` (`--workspaces --if-present` runs `packages/testing` and `apps/functions`); neither joins the default test project list. The command requires a JDK on `PATH`.
+5. Firebase CLI authentication was previously verified against staging project `powerglove-1cd23` (Functions/Firestore in `us-west1`, RTDB in `us-central1`, Anonymous sign-in enabled); this PR deploys nothing to it. Keep production uncreated.
+6. Do not pull forward RTDB client presence wiring (PR 5), recovery (PR 6), reconnect/outbox (PR 7), App Check enforcement, campaign tooling, safety controls, 3D, or a second template.
