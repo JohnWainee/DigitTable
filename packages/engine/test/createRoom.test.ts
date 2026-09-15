@@ -6,6 +6,7 @@ const receipt: CreateRoomReceiptDocument = {
   roomId: asRoomId("room-fixture"),
   roomCode: "ABCDE-FGHJK",
   memberId: "member-gm-fixture",
+  uid: "uid-fixture",
 };
 
 describe("decideCreateRoom", () => {

@@ -132,11 +132,21 @@ export type ClaimGmSeatResult = RoomAdmissionAccepted | RoomAdmissionRejected;
  * must be recoverable without ever storing plaintext in shared data; a
  * replay's `CreateRoomAccepted.recoveryCode`/`tableCode` are `null`, exactly
  * like an admission reclaim never re-exposing a credential.
+ *
+ * `uid` scopes the receipt to the caller who actually created the room — a
+ * third-pass independent review of A03 found the original shape let *any*
+ * caller who somehow learned/reused another identity's `requestId` replay
+ * that identity's create outcome (in practice, learn a room's `roomId`/
+ * `roomCode`/`memberId`, though never a secret). `createRoomAuthority.ts`
+ * denies `ROLE_FORBIDDEN` on a UID mismatch rather than either silently
+ * replaying across identities or silently provisioning a second room under
+ * a colliding `requestId`.
  */
 export interface CreateRoomReceiptDocument {
   readonly roomId: RoomId;
   readonly roomCode: RoomCode;
   readonly memberId: string;
+  readonly uid: string;
 }
 
 function isRecordValue(value: unknown): value is Record<string, unknown> {
@@ -154,7 +164,7 @@ export function parseCreateRoomReceiptDocument(data: unknown): CreateRoomReceipt
   if (!isRecordValue(data)) {
     throw new RoomDataError("room data: createRoomReceipts/{requestId}: malformed or missing");
   }
-  const { roomId, roomCode, memberId } = data;
+  const { roomId, roomCode, memberId, uid } = data;
   if (typeof roomId !== "string" || roomId.length === 0) {
     throw new RoomDataError(
       "room data: createRoomReceipts/{requestId}.roomId: malformed or missing",
@@ -170,7 +180,10 @@ export function parseCreateRoomReceiptDocument(data: unknown): CreateRoomReceipt
       "room data: createRoomReceipts/{requestId}.memberId: malformed or missing",
     );
   }
-  return { roomId: asRoomId(roomId), roomCode, memberId };
+  if (typeof uid !== "string" || uid.length === 0) {
+    throw new RoomDataError("room data: createRoomReceipts/{requestId}.uid: malformed or missing");
+  }
+  return { roomId: asRoomId(roomId), roomCode, memberId, uid };
 }
 
 /**

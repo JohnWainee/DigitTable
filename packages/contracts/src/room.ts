@@ -12,6 +12,13 @@ export interface RoomMetaDocument extends VersionedTemplateRecord {
   readonly gmMemberId: MemberId | null;
   readonly createdAtServer: string;
   readonly updatedAtServer: string;
+  /**
+   * The creator-supplied session name (board task A03's `CreateRoomInput.
+   * sessionName`), so it can actually be displayed on the roster/table
+   * screens — a third-pass independent review of A03 found this value was
+   * validated and accepted but then silently discarded (A03 follow-up).
+   */
+  readonly sessionName: string;
 }
 
 /** Client-readable roster entry at `members/{memberId}`. */

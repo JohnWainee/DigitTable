@@ -72,19 +72,19 @@ describe("createRoom (apps/functions, board task A03)", () => {
       });
 
       const meta = (await db.doc(`rooms/${seat.roomId}/meta/current`).get()).data();
-      expect(meta).toMatchObject({ roomStatus: "active", gmMemberId: seat.memberId });
+      expect(meta).toMatchObject({
+        roomStatus: "active",
+        gmMemberId: seat.memberId,
+        sessionName: "Paris Cell",
+      });
 
-      const binding = (
-        await db.doc(`rooms/${seat.roomId}/uidBindings/uid-create-1`).get()
-      ).data();
+      const binding = (await db.doc(`rooms/${seat.roomId}/uidBindings/uid-create-1`).get()).data();
       expect(binding).toEqual({ memberId: seat.memberId, capability: "gm" });
 
       const member = (await db.doc(`rooms/${seat.roomId}/members/${seat.memberId}`).get()).data();
       expect(member).toMatchObject({ capability: "gm", displayName: "Rook" });
 
-      const projection = (
-        await db.doc(`rooms/${seat.roomId}/projections/gm`).get()
-      ).data();
+      const projection = (await db.doc(`rooms/${seat.roomId}/projections/gm`).get()).data();
       expect(projection).toMatchObject({ viewerId: seat.memberId, roomRevision: 0 });
       expect(projection?.view).toBeDefined();
 
@@ -95,9 +95,11 @@ describe("createRoom (apps/functions, board task A03)", () => {
     it("stores only a hash of the creator-supplied passphrase, never plaintext", async () => {
       const input = createInput({ passphrase: "totally-secret-phrase" });
       const seat = accepted(await createRoom(db, "uid-create-2", input));
-      const secretDoc = (
-        await db.doc(`rooms/${seat.roomId}/admission/secret`).get()
-      ).data() as { hash: string; salt: string; iterations: number };
+      const secretDoc = (await db.doc(`rooms/${seat.roomId}/admission/secret`).get()).data() as {
+        hash: string;
+        salt: string;
+        iterations: number;
+      };
       expect(secretDoc.hash).not.toContain("totally-secret-phrase");
       expect(await verifySecret("totally-secret-phrase", secretDoc)).toBe(true);
       expect(await verifySecret("wrong phrase", secretDoc)).toBe(false);
@@ -161,11 +163,18 @@ describe("createRoom (apps/functions, board task A03)", () => {
       expect(membersSnap.size).toBe(1);
     });
 
-    it("N concurrent identical requests (same requestId) all resolve to the same single room", async () => {
+    it("N concurrent identical requests (same requestId, same identity) all resolve to the same single room", async () => {
+      // A real double-click/network-retry always comes from the *same*
+      // authenticated identity's browser tab; a different UID sharing a
+      // requestId is not a retry at all (see the "different identity"
+      // ROLE_FORBIDDEN test above, added after an independent review found
+      // the original version of this test — which used a distinct uid per
+      // attempt — was inadvertently exercising an insecure cross-identity
+      // replay as if it were the happy path).
       const input = createInput();
       const attempts = 8;
       const results = await Promise.all(
-        Array.from({ length: attempts }, (_, i) => createRoom(db, `uid-concurrent-${i}`, input)),
+        Array.from({ length: attempts }, () => createRoom(db, "uid-concurrent-same", input)),
       );
       const seats = results.map((result) => accepted(result));
       const roomIds = new Set(seats.map((seat) => seat.roomId));
@@ -188,6 +197,32 @@ describe("createRoom (apps/functions, board task A03)", () => {
       );
       expect(second.roomId).not.toBe(first.roomId);
       expect(second.roomCode).not.toBe(first.roomCode);
+    });
+
+    it("denies ROLE_FORBIDDEN when a different identity reuses another identity's requestId (independent review finding)", async () => {
+      const input = createInput();
+      const first = accepted(await createRoom(db, "uid-owner", input));
+
+      const result = await createRoom(db, "uid-attacker", input);
+      expect(result).toMatchObject({ ok: false, code: "ROLE_FORBIDDEN" });
+
+      // Nothing changed: still exactly the original room and its one member.
+      const membersSnap = await db.collection(`rooms/${first.roomId}/members`).get();
+      expect(membersSnap.size).toBe(1);
+      expect(await docExists(`rooms/${first.roomId}/uidBindings/uid-attacker`)).toBe(false);
+    });
+
+    it("a sequential replay returns the room's live roomRevision, not a hardcoded 0 (independent review finding)", async () => {
+      const input = createInput();
+      const first = accepted(await createRoom(db, "uid-revision-1", input));
+      expect(first.roomRevision).toBe(0);
+
+      // Simulate a later game command having advanced the room (board task
+      // A04 is what actually does this outside this test).
+      await db.doc(`rooms/${first.roomId}/authority/current`).update({ roomRevision: 5 });
+
+      const replay = accepted(await createRoom(db, "uid-revision-1", input));
+      expect(replay.roomRevision).toBe(5);
     });
   });
 

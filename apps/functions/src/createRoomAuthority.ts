@@ -86,6 +86,15 @@ async function roomCodeIsTaken(txn: Transaction, ref: DocumentReference): Promis
   return snapshot.exists;
 }
 
+/** Fails closed on a malformed/missing `roomRevision` rather than defaulting to 0 (which would just be wrong, not merely permissive, once A04 lands). */
+function readRoomRevision(data: unknown): number {
+  const roomRevision = (data as { readonly roomRevision?: unknown } | null)?.roomRevision;
+  if (typeof roomRevision !== "number" || !Number.isInteger(roomRevision) || roomRevision < 0) {
+    throw new RoomDataError("room data: authority/current.roomRevision: malformed or missing");
+  }
+  return roomRevision;
+}
+
 /**
  * Finds a collision-free room code inside the transaction (so the
  * check-then-reserve is atomic with every other concurrent `createRoom`),
@@ -149,8 +158,31 @@ export async function createRoom(
       ? parseCreateRoomReceiptDocument(receiptSnap.data())
       : null;
 
+    // A third-pass independent review of A03 found the original shape let
+    // any caller who learned/reused another identity's `requestId` replay
+    // that identity's outcome. `requestId` reuse across identities is never
+    // legitimate — it either indicates a naming collision (extremely
+    // unlikely for a client-generated unique ID) or an attempt to read
+    // another identity's create outcome, and both are safest denied rather
+    // than replayed or silently provisioned as a second room under the
+    // same `requestId`.
+    if (existingReceipt !== null && existingReceipt.uid !== uid) {
+      return denied(
+        "ROLE_FORBIDDEN",
+        "This request has already been used by a different identity.",
+      );
+    }
+
     const decision = decideCreateRoom(existingReceipt);
     if (decision.outcome === "replay") {
+      // Read the room's live revision rather than assuming 0: correct today
+      // (no game command exists yet to advance it) and still correct once
+      // board task A04 lands and a late retry of `createRoom` might arrive
+      // after other commands have already run.
+      const authoritySnap = await txn.get(
+        db.doc(`rooms/${decision.receipt.roomId}/authority/current`),
+      );
+      if (!authoritySnap.exists) throw new RoomDataError("room data: authority/current: missing");
       return {
         ok: true,
         accepted: {
@@ -161,7 +193,7 @@ export async function createRoom(
           capability: "gm",
           recoveryCode: null,
           tableCode: null,
-          roomRevision: 0,
+          roomRevision: readRoomRevision(authoritySnap.data()),
         },
       };
     }
@@ -192,7 +224,7 @@ export async function createRoom(
     });
     const manifest = eatTheReichTemplate.manifest;
 
-    txn.set(receiptRef, { roomId, roomCode, memberId: gmMemberId });
+    txn.set(receiptRef, { roomId, roomCode, memberId: gmMemberId, uid });
     txn.set(db.doc(`roomCodes/${roomCode}`), { roomId });
     txn.set(db.doc(`rooms/${roomId}/admission/secret`), hashedPassphrase);
     txn.set(db.doc(`rooms/${roomId}/admission/tableSecret`), hashedTableCode);
@@ -219,6 +251,7 @@ export async function createRoom(
       gmMemberId,
       createdAtServer: now,
       updatedAtServer: now,
+      sessionName: input.sessionName,
     };
     txn.set(db.doc(`rooms/${roomId}/meta/current`), meta);
 
