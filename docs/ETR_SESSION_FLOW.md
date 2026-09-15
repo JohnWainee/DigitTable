@@ -37,19 +37,21 @@ Command (outbox) states, shown on the control that issued the command:
 | `pending` | sent, no receipt yet | control disabled, spinner, "Sending…" (never optimistic domain updates) |
 | `accepted` | receipt accepted | control clears; projection update renders the result |
 | `rejected(code)` | stable error | inline message from the table in §9; control re-enabled |
-| `unknown` | disconnect after send, before response | on reconnect, reconcile via receipt; show "Checking whether your last action went through…" then resolve to accepted/rejected; **never resend a new commandId for the same intent** |
+| `disconnected` | disconnect after send, before response (A02 `SessionRequestState`) | on reconnect, reconcile via receipt; show "Checking whether your last action went through…" then resolve to accepted/rejected; **never mint a new requestId/commandId for the same intent** |
+
+These are A02's `SessionRequestState` statuses (`idle | pending | accepted | rejected | disconnected`, `packages/contracts/src/session.ts`), reused unchanged for pre-membership requests and game commands.
 
 ## 3. Create session (GM)
 
 **Precondition:** none (anyone can create; anonymous identity is obtained on submit).
 
-Form fields (bounded per `packages/contracts/src/admission.ts`): session name (1–40 chars, visible characters), passphrase (4–128), your display name (1–40). Template is fixed to Eat the Reich and shown, not selectable. Reinforcements mode defaults to "book" (F01 S7).
+Form fields (bounded per A02's `parseCreateRoomInput`, `packages/contracts/src/session.ts`): session name (`sessionName`, 1–60 chars), passphrase (4–128), your display name (`creatorDisplayName`, 1–40, at least one visible character). Template is fixed to Eat the Reich and shown, not selectable. Reinforcements mode (F01 S7) is **not** a creation field; it is a GM console setting (§7) defaulting to "book".
 
 Client behaviour:
 
-1. On first render mint `createRequestId` (UUID) and persist it in local storage keyed by the form instance; reuse it on every retry of this form until success.
-2. Submit → `createRoom` callable `{ requestId, sessionName, passphrase, displayName, reinforcementsMode }` → state `pending`. Double-click cannot mint a second request.
-3. Success returns `{ roomId, roomCode, tableCode, gmMemberId, gmRecoveryCode }`. The client shows the **reveal card** once:
+1. On first render mint `requestId` (UUID, 8–128 chars) and persist it in local storage keyed by the form instance; reuse it on every retry of this form until success (A02 `RequestId`).
+2. Submit → `createRoom` callable with `CreateRoomInput { requestId, sessionName, passphrase, creatorDisplayName }` → state `pending`. Double-click cannot mint a second request.
+3. Success returns A02's `RoomAdmissionAccepted { ok, roomId, roomCode, memberId, capability: "gm", recoveryCode, roomRevision }`. **Gap for A03:** the flow also needs the distinct **table code** shown once at creation; A03 must either add `tableCode: string | null` to the createRoom result (non-null only on first acceptance) or provide a GM-only `rotateTableCode` command whose result reveals it once. The client shows the **reveal card** once:
    - Room code (locator, can be re-shown later from the GM console),
    - Passphrase (echo of what they typed; never returned by the server; not stored in shared docs),
    - Table code (shown once; GM can rotate later),
@@ -176,6 +178,7 @@ Summary from the projection (never local arithmetic): dice, what changed on each
 | Reassign / release character | `ReassignCharacter{characterId, memberId?}` | — | shared |
 | Pause / Resume | `Pause`, `Resume` | anyone (player or GM) may pause; only GM resumes | shared event with anonymous actor; **no** actor in any client path |
 | Kick member / rotate codes | PR #13 + A06 commands | — | GM event |
+| Reinforcements mode | `SetSceneRules{ reinforcements: "book" \| "simplified", reason }` | scene not mid-round-end | shared "The GM changed the reinforcement rule" |
 
 The GM console also shows: every character's full sheet (Blood, injuries, items, abilities, advances), each threat's `notes` and unrevealed threats (GM-only), round number, and who has acted.
 
@@ -219,6 +222,16 @@ Shows: session name, scene title and art, route map with the current node highli
 
 With no Firebase configuration the app runs the in-memory repository. It must: label itself "Local fixture" in the header and title; expose the Phase 1C role switcher; drive the identical screens and commands. Nothing else may differ, so C's screens are testable before A05 lands.
 
-## 12. Dependencies on A02 contracts
+## 12. Reconciliation with A02 (PR #15, `sonnet-a/a02` @ af20261)
 
-This spec expects A02 to publish: `createRoom` request/response and receipt shape; `AdmissionAccepted` reuse for join; `ClaimCharacter`/`ReleaseCharacter`/`ReassignCharacter` as platform-or-template commands (recommend template, with platform membership guard); the presence-derived `online` flag per member in projections; connection/outbox state enums exactly as §2; the stable error additions in §9 (`CHARACTER_TAKEN`, `NOT_YOUR_TURN`, `CHARACTER_DOWNED`, `CHARACTER_RETIRED`, `INSUFFICIENT_BLOOD`, `ITEM_DEPLETED`, `ROUND_HAS_OPEN_ROLLS`, `SCENE_HAS_OPEN_ROLLS`). Where A02 differs, A02 wins and this document is updated in the same PR.
+Adopted from A02 as published: `CreateRoomInput`/`JoinRoomInput`/`ClaimGmSeatInput` (with `requestId`), `RoomAdmissionAccepted`/`RoomAdmissionRejected`, `ViewerRoute`/`viewerRouteForCapability` (matches §1), `SessionRequestState` (§2), `SessionOwnershipRecord` (client-local resume record), `queryProjection` selectors, and the fixture builders in `packages/testing/src/builders.ts`.
+
+Still open, owned as noted:
+
+- **Table code at creation** (§3 gap) — A03.
+- **Stable error additions** from §9 (`CHARACTER_TAKEN`, `NOT_YOUR_TURN`, `CHARACTER_DOWNED`, `CHARACTER_RETIRED`, `INSUFFICIENT_BLOOD`, `ITEM_DEPLETED`, `ROUND_HAS_OPEN_ROLLS`, `SCENE_HAS_OPEN_ROLLS`) — B proposes, A merges into `errors.ts`.
+- `ClaimCharacter`/`ReleaseCharacter`/`ReassignCharacter` — template commands (B02) behind the platform membership guard.
+- Presence-derived `online` per member in projections — A05/A06.
+- `SessionOwnershipRecord.recoveryCode` is held in local storage until A06 consumes it; A's independent review should weigh that against the "shown once" rule (an XSS on the origin would read it). Not blocking.
+
+Where a later A slice differs from this document, A's contract wins and this document is updated in the same PR.
