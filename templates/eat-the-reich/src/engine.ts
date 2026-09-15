@@ -1,10 +1,10 @@
 import {
   allow,
-  broadcastEvent,
-  decided,
   deny,
+  decided,
   rejected,
   stableError,
+  broadcastEvent,
   type AllocationOption,
   type AuthorizationResult,
   type AuthorizedMemberContext,
@@ -22,224 +22,161 @@ import {
   type ViewerProjection,
   type VisibleRoll,
 } from "@digitable/contracts";
-import {
-  ADVANCE_OBJECTIVE_OPTION_ID,
-  DAMAGE_THREAT_OPTION_ID,
-  allocationOptionsFor,
-} from "./allocations.js";
 import type { EatTheReichCommand } from "./commands.js";
-import {
-  ACTION_ID,
-  PLACEHOLDER_LOCATION,
-  PLACEHOLDER_OBJECTIVE,
-  PLACEHOLDER_THREAT,
-  placeholderCharacter,
-} from "./content.js";
 import type { EatTheReichEvent } from "./events.js";
 import { EAT_THE_REICH_MANIFEST } from "./manifest.js";
-import { computeVisiblePool, rollPool } from "./pool.js";
-import { DICE_SIDES, SUCCESS_THRESHOLD } from "./content.js";
+import { buildPool, DICE_SIDES, SUCCESS_THRESHOLD } from "./pool.js";
+import { ORIGINAL_ROSTER } from "./roster.js";
 import { parseCommand, parseEvent, parseState, parseView } from "./schemas.js";
-import type { EatTheReichState, RollState } from "./state.js";
-import type {
-  ActiveRollView,
-  CharacterFullView,
-  CharacterPublicSummary,
-  EatTheReichView,
-  ThreatGmSummary,
-  ThreatPublicSummary,
-} from "./view.js";
+import {
+  isStat,
+  type CharacterState,
+  type EatTheReichState,
+  type InjuryPenaltyTag,
+} from "./state.js";
+import type { CharacterFullSheet, CharacterPartySummary, EatTheReichView } from "./view.js";
 
-/** The GM's opposition push-dice input is bounded to this range (0..MAX_PUSH_DICE), inclusive. */
-export const MAX_PUSH_DICE = 2;
+const HEAL_INJURY_BLOOD_COST = 3;
+const MAX_BLOOD = 10;
 
-function decideBeginAction(
-  ctx: DecisionContext<EatTheReichState>,
-  command: Extract<EatTheReichCommand, { type: "BeginAction" }>,
-): Decision<EatTheReichEvent> {
-  const character = ctx.state.characters[command.actorMemberId];
-  if (!character) {
-    return rejected(stableError("UNKNOWN_ACTION", "No character is bound to this member."));
-  }
-  const threat = ctx.state.threats[command.threatId];
-  if (!threat || threat.status !== "active") {
-    return rejected(stableError("UNKNOWN_ACTION", "No such active threat."));
-  }
-  if (command.actionId !== ACTION_ID) {
-    return rejected(stableError("UNKNOWN_ACTION", "Unknown action."));
-  }
-  const hasUnresolvedRoll = Object.values(ctx.state.rolls).some(
-    (roll) => roll.actorMemberId === command.actorMemberId && roll.status !== "resolved",
+function injuryBoxesMarked(character: CharacterState): number {
+  return character.injuries.reduce(
+    (sum, category) => sum + category.boxes.filter((box) => box.marked).length,
+    0,
   );
-  if (hasUnresolvedRoll) {
-    return rejected(
-      stableError("ROLL_ALREADY_RESOLVED", "Resolve your current action before starting another."),
-    );
-  }
-
-  const visible = computeVisiblePool(character, command.actionId, command.gearIds);
-  const totalPool = visible.total + threat.hiddenDifficultyModifier;
-  const { faces, hits } = rollPool(ctx.random, totalPool);
-
-  const rollId = `roll-${ctx.state.nextRollSequence}`;
-  const hiddenAdjustmentApplied = threat.hiddenDifficultyModifier !== 0;
-  const poolComponents = {
-    nerve: visible.nerve,
-    gear: visible.gear,
-    hiddenModifier: threat.hiddenDifficultyModifier,
-  };
-
-  const fullEvent: EatTheReichEvent = {
-    type: "ActionRolled",
-    rollId,
-    actorMemberId: command.actorMemberId,
-    threatId: command.threatId,
-    actionId: command.actionId,
-    faces,
-    hits,
-    poolComponents,
-    hiddenAdjustmentApplied,
-  };
-  const redactedForPlayers: EatTheReichEvent = {
-    ...fullEvent,
-    faces: hiddenAdjustmentApplied ? null : faces,
-    poolComponents: { ...poolComponents, hiddenModifier: null },
-  };
-
-  return decided([
-    {
-      eventId: rollId,
-      event: fullEvent,
-      effects: [
-        { destination: { kind: "shared" }, payload: redactedForPlayers },
-        { destination: { kind: "gm" }, payload: fullEvent },
-      ],
-    },
-  ]);
 }
 
-function decideSubmitOpposition(
+function toPartySummary(character: CharacterState): CharacterPartySummary {
+  return {
+    id: character.id,
+    name: character.name,
+    concept: character.concept,
+    portraitId: character.portraitId,
+    claimedByMemberId: character.claimedByMemberId,
+    stats: character.stats,
+    blood: character.blood,
+    injuryBoxesMarked: injuryBoxesMarked(character),
+    downed: character.downed,
+    retired: character.retired,
+  };
+}
+
+function toFullSheet(character: CharacterState): CharacterFullSheet {
+  return {
+    ...toPartySummary(character),
+    items: character.items,
+    abilities: character.abilities,
+    advances: character.advances,
+    injuries: character.injuries,
+    lastStand: character.lastStand,
+    activeLootId: character.activeLootId,
+  };
+}
+
+function decideClaimCharacter(
   ctx: DecisionContext<EatTheReichState>,
-  command: Extract<EatTheReichCommand, { type: "SubmitOpposition" }>,
+  command: Extract<EatTheReichCommand, { type: "ClaimCharacter" }>,
 ): Decision<EatTheReichEvent> {
-  const roll = ctx.state.rolls[command.rollId];
-  if (!roll) {
-    return rejected(stableError("UNKNOWN_ACTION", "No such roll."));
+  const character = ctx.state.characters[command.characterId];
+  if (!character) {
+    return rejected(stableError("UNKNOWN_ACTION", "No such character."));
   }
-  if (roll.status !== "awaiting_opposition") {
-    return rejected(stableError("ROLL_ALREADY_RESOLVED", "This roll is not awaiting opposition."));
+  if (character.claimedByMemberId !== null) {
+    return rejected(
+      stableError("CHARACTER_TAKEN", `${character.name} was just claimed by someone else.`),
+    );
   }
-  const threat = ctx.state.threats[roll.threatId];
-  if (!threat) {
-    return rejected(stableError("UNKNOWN_ACTION", "No such threat."));
-  }
-  if (
-    !Number.isInteger(command.pushDice) ||
-    command.pushDice < 0 ||
-    command.pushDice > MAX_PUSH_DICE
-  ) {
+  const alreadyHeld = Object.values(ctx.state.characters).find(
+    (candidate) => candidate.claimedByMemberId === ctx.actor.memberId,
+  );
+  if (alreadyHeld) {
     return rejected(
       stableError(
-        "INVALID_ALLOCATION",
-        `Push dice must be an integer between 0 and ${MAX_PUSH_DICE}.`,
+        "ROLE_FORBIDDEN",
+        `You already hold ${alreadyHeld.name}; release them before claiming another character.`,
       ),
     );
   }
-
-  const { faces, hits } = rollPool(ctx.random, threat.basePool + command.pushDice);
-  const netSuccesses = Math.max(0, roll.playerHits - hits);
-
   const event: EatTheReichEvent = {
-    type: "OppositionRolled",
-    rollId: roll.id,
-    threatId: roll.threatId,
-    pushDice: command.pushDice,
-    faces,
-    hits,
-    netSuccesses,
+    type: "CharacterClaimed",
+    characterId: character.id,
+    memberId: ctx.actor.memberId,
   };
-
-  return decided([broadcastEvent(`${roll.id}-opposition`, event, [{ kind: "shared" }])]);
+  return decided([broadcastEvent(`${character.id}-claimed`, event, [{ kind: "shared" }])]);
 }
 
-function decideAllocateResults(
+function decideReleaseCharacter(
   ctx: DecisionContext<EatTheReichState>,
-  command: Extract<EatTheReichCommand, { type: "AllocateResults" }>,
+  command: Extract<EatTheReichCommand, { type: "ReleaseCharacter" }>,
 ): Decision<EatTheReichEvent> {
-  const roll = ctx.state.rolls[command.rollId];
-  if (!roll) {
-    return rejected(stableError("UNKNOWN_ACTION", "No such roll."));
+  const character = ctx.state.characters[command.characterId];
+  if (!character) {
+    return rejected(stableError("UNKNOWN_ACTION", "No such character."));
   }
-  if (roll.actorMemberId !== ctx.actor.memberId) {
-    return rejected(stableError("ROLE_FORBIDDEN", "You may only allocate your own roll."));
+  if (character.claimedByMemberId !== ctx.actor.memberId) {
+    return rejected(stableError("ROLE_FORBIDDEN", "You may only release your own character."));
   }
-  if (roll.status !== "awaiting_allocation" || roll.netSuccesses === undefined) {
-    return rejected(stableError("ROLL_ALREADY_RESOLVED", "This roll is not awaiting allocation."));
-  }
-  const threat = ctx.state.threats[roll.threatId];
-  if (!threat) {
-    return rejected(stableError("UNKNOWN_ACTION", "No such threat."));
-  }
+  const event: EatTheReichEvent = {
+    type: "CharacterReleased",
+    characterId: character.id,
+    memberId: ctx.actor.memberId,
+  };
+  return decided([broadcastEvent(`${character.id}-released`, event, [{ kind: "shared" }])]);
+}
 
-  const options = allocationOptionsFor(threat, ctx.state.objective, roll.netSuccesses);
-  const optionById = new Map(options.map((option) => [option.id, option]));
-
-  let totalCost = 0;
-  const seenOptionIds = new Set<string>();
-  for (const allocation of command.allocations) {
-    if (seenOptionIds.has(allocation.optionId)) {
-      return rejected(
-        stableError("INVALID_ALLOCATION", `Duplicate allocation option "${allocation.optionId}".`),
-      );
-    }
-    seenOptionIds.add(allocation.optionId);
-    const option = optionById.get(allocation.optionId);
-    if (!option || !Number.isInteger(allocation.uses) || allocation.uses < 0) {
-      return rejected(
-        stableError(
-          "INVALID_ALLOCATION",
-          `Unknown or invalid allocation option "${allocation.optionId}".`,
-        ),
-      );
-    }
-    if (allocation.uses > option.maxUses) {
-      return rejected(
-        stableError("INVALID_ALLOCATION", `"${allocation.optionId}" exceeds its available uses.`),
-      );
-    }
-    totalCost += allocation.uses * option.costPerUse;
+function decideHealInjury(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "HealInjury" }>,
+): Decision<EatTheReichEvent> {
+  const character = ctx.state.characters[command.characterId];
+  if (!character) {
+    return rejected(stableError("UNKNOWN_ACTION", "No such character."));
   }
-  if (totalCost > roll.netSuccesses) {
+  if (character.claimedByMemberId !== ctx.actor.memberId) {
+    return rejected(stableError("ROLE_FORBIDDEN", "You may only heal your own character."));
+  }
+  if (character.retired) {
     return rejected(
-      stableError("INVALID_ALLOCATION", "Allocation spends more successes than were earned."),
+      stableError("CHARACTER_RETIRED", "Your story is told; there is nothing left to heal."),
     );
   }
-
-  const damageUses =
-    command.allocations.find((a) => a.optionId === DAMAGE_THREAT_OPTION_ID)?.uses ?? 0;
-  const advanceUses =
-    command.allocations.find((a) => a.optionId === ADVANCE_OBJECTIVE_OPTION_ID)?.uses ?? 0;
-
-  const threatResolveRemaining = Math.max(0, threat.resolveRemaining - damageUses);
-  const threatStatus = threatResolveRemaining <= 0 ? "defeated" : "active";
-  const objectiveAdvancesRemaining = Math.max(
-    0,
-    ctx.state.objective.advancesRemaining - advanceUses,
-  );
-  const objectiveStatus = objectiveAdvancesRemaining <= 0 ? "complete" : "active";
-
+  const category = character.injuries.find((candidate) => candidate.id === command.categoryId);
+  if (!category) {
+    return rejected(stableError("UNKNOWN_ACTION", "No such injury category."));
+  }
+  const box = category.boxes[command.boxIndex];
+  if (!box.marked) {
+    return rejected(stableError("UNKNOWN_ACTION", "That injury box is not marked."));
+  }
+  const penaltyTags: readonly InjuryPenaltyTag[] = character.injuries
+    .flatMap((c) => c.boxes)
+    .filter((b) => b.marked && b.penalty)
+    .map((b) => b.penalty as InjuryPenaltyTag);
+  if (penaltyTags.some((tag) => tag.kind === "noBloodSpend")) {
+    return rejected(
+      stableError("INSUFFICIENT_BLOOD", "An injury forbids spending Blood right now."),
+    );
+  }
+  if (character.blood < HEAL_INJURY_BLOOD_COST) {
+    return rejected(
+      stableError(
+        "INSUFFICIENT_BLOOD",
+        `Healing costs ${HEAL_INJURY_BLOOD_COST} Blood; you have ${character.blood}.`,
+      ),
+    );
+  }
   const event: EatTheReichEvent = {
-    type: "ActionResolved",
-    rollId: roll.id,
-    allocations: command.allocations,
-    threatId: roll.threatId,
-    threatResolveRemaining,
-    threatStatus,
-    objectiveAdvancesRemaining,
-    objectiveStatus,
+    type: "InjuryHealed",
+    characterId: character.id,
+    categoryId: category.id,
+    boxIndex: command.boxIndex,
+    bloodSpent: HEAL_INJURY_BLOOD_COST,
   };
-
-  return decided([broadcastEvent(`${roll.id}-resolved`, event, [{ kind: "shared" }])]);
+  return decided([
+    broadcastEvent(`${character.id}-healed-${category.id}-${command.boxIndex}`, event, [
+      { kind: "shared" },
+    ]),
+  ]);
 }
 
 function authorizeGameAction(
@@ -247,22 +184,19 @@ function authorizeGameAction(
   command: EatTheReichCommand,
 ): AuthorizationResult {
   switch (command.type) {
-    case "BeginAction":
+    case "ClaimCharacter":
       if (ctx.capability !== "player") {
-        return deny(stableError("ROLE_FORBIDDEN", "Only a player may begin an action."));
-      }
-      if (ctx.memberId !== command.actorMemberId) {
-        return deny(stableError("ROLE_FORBIDDEN", "A player may only act as themselves."));
+        return deny(stableError("ROLE_FORBIDDEN", "Only a player may claim a character."));
       }
       return allow();
-    case "SubmitOpposition":
-      if (ctx.capability !== "gm") {
-        return deny(stableError("ROLE_FORBIDDEN", "Only the GM may submit opposition."));
+    case "ReleaseCharacter":
+      if (ctx.capability !== "player") {
+        return deny(stableError("ROLE_FORBIDDEN", "Only a player may release a character."));
       }
       return allow();
-    case "AllocateResults":
+    case "HealInjury":
       if (ctx.capability !== "player") {
-        return deny(stableError("ROLE_FORBIDDEN", "Only a player may allocate results."));
+        return deny(stableError("ROLE_FORBIDDEN", "Only a player may heal an injury."));
       }
       return allow();
   }
@@ -273,86 +207,60 @@ function decide(
   command: EatTheReichCommand,
 ): Decision<EatTheReichEvent> {
   switch (command.type) {
-    case "BeginAction":
-      return decideBeginAction(ctx, command);
-    case "SubmitOpposition":
-      return decideSubmitOpposition(ctx, command);
-    case "AllocateResults":
-      return decideAllocateResults(ctx, command);
+    case "ClaimCharacter":
+      return decideClaimCharacter(ctx, command);
+    case "ReleaseCharacter":
+      return decideReleaseCharacter(ctx, command);
+    case "HealInjury":
+      return decideHealInjury(ctx, command);
   }
 }
 
 function reduce(state: EatTheReichState, event: EatTheReichEvent): EatTheReichState {
   switch (event.type) {
-    case "ActionRolled": {
-      if (event.faces === null || event.poolComponents.hiddenModifier === null) {
-        throw new Error("reduce requires the full-fidelity ActionRolled event");
-      }
-      const roll: RollState = {
-        id: event.rollId,
-        actorMemberId: event.actorMemberId,
-        threatId: event.threatId,
-        actionId: event.actionId,
-        status: "awaiting_opposition",
-        playerFaces: event.faces,
-        playerHits: event.hits,
-        poolComponents: {
-          nerve: event.poolComponents.nerve,
-          gear: event.poolComponents.gear,
-          hiddenModifier: event.poolComponents.hiddenModifier,
+    case "CharacterClaimed": {
+      const character = state.characters[event.characterId];
+      if (!character) return state;
+      return {
+        ...state,
+        characters: {
+          ...state.characters,
+          [character.id]: { ...character, claimedByMemberId: event.memberId },
         },
-        hiddenAdjustmentApplied: event.hiddenAdjustmentApplied,
-      };
-      return {
-        ...state,
-        rolls: { ...state.rolls, [roll.id]: roll },
-        nextRollSequence: state.nextRollSequence + 1,
       };
     }
-    case "OppositionRolled": {
-      const existing = state.rolls[event.rollId];
-      if (!existing) return state;
-      const updated: RollState = {
-        ...existing,
-        status: "awaiting_allocation",
-        pushDice: event.pushDice,
-        oppositionFaces: event.faces,
-        oppositionHits: event.hits,
-        netSuccesses: event.netSuccesses,
-      };
-      return { ...state, rolls: { ...state.rolls, [updated.id]: updated } };
-    }
-    case "ActionResolved": {
-      const existingRoll = state.rolls[event.rollId];
-      const rolls = existingRoll
-        ? {
-            ...state.rolls,
-            [existingRoll.id]: {
-              ...existingRoll,
-              status: "resolved" as const,
-              allocations: event.allocations,
-            },
-          }
-        : state.rolls;
-      const existingThreat = state.threats[event.threatId];
-      const threats = existingThreat
-        ? {
-            ...state.threats,
-            [existingThreat.id]: {
-              ...existingThreat,
-              resolveRemaining: event.threatResolveRemaining,
-              status: event.threatStatus,
-            },
-          }
-        : state.threats;
+    case "CharacterReleased": {
+      const character = state.characters[event.characterId];
+      if (!character) return state;
       return {
         ...state,
-        rolls,
-        threats,
-        objective: {
-          ...state.objective,
-          advancesRemaining: event.objectiveAdvancesRemaining,
-          status: event.objectiveStatus,
+        characters: {
+          ...state.characters,
+          [character.id]: { ...character, claimedByMemberId: null },
+        },
+      };
+    }
+    case "InjuryHealed": {
+      const character = state.characters[event.characterId];
+      if (!character) return state;
+      const injuries = character.injuries.map((category) => {
+        if (category.id !== event.categoryId) return category;
+        const boxes = [...category.boxes] as [
+          (typeof category.boxes)[0],
+          (typeof category.boxes)[1],
+        ];
+        boxes[event.boxIndex] = { ...boxes[event.boxIndex], marked: false };
+        return { ...category, boxes };
+      });
+      return {
+        ...state,
+        characters: {
+          ...state.characters,
+          [character.id]: {
+            ...character,
+            injuries,
+            blood: Math.max(0, character.blood - event.bloodSpent),
+          },
         },
       };
     }
@@ -360,85 +268,16 @@ function reduce(state: EatTheReichState, event: EatTheReichEvent): EatTheReichSt
 }
 
 function project(state: EatTheReichState, viewer: ViewerContext): EatTheReichView {
+  const roster = Object.values(state.characters).map(toPartySummary);
   const isGm = viewer.capability === "gm";
-
-  const characters: CharacterPublicSummary[] = Object.values(state.characters).map((character) => ({
-    memberId: character.memberId,
-    name: character.name,
-    wounds: character.wounds,
-    maxWounds: character.maxWounds,
-  }));
-
-  const ownCharacter = state.characters[viewer.viewerId];
-  const self: CharacterFullView | null = ownCharacter
-    ? {
-        memberId: ownCharacter.memberId,
-        name: ownCharacter.name,
-        wounds: ownCharacter.wounds,
-        maxWounds: ownCharacter.maxWounds,
-        attributes: ownCharacter.attributes,
-        gear: ownCharacter.gear,
-      }
-    : null;
-
-  const threats: (ThreatPublicSummary | ThreatGmSummary)[] = Object.values(state.threats).map(
-    (threat) => {
-      const summary: ThreatPublicSummary = {
-        id: threat.id,
-        name: threat.name,
-        description: threat.description,
-        resolveRemaining: threat.resolveRemaining,
-        maxResolve: threat.maxResolve,
-        status: threat.status,
-      };
-      return isGm
-        ? {
-            ...summary,
-            hiddenDifficultyModifier: threat.hiddenDifficultyModifier,
-            hiddenIntel: threat.hiddenIntel,
-          }
-        : summary;
-    },
-  );
-
-  const activeRollState = Object.values(state.rolls).find((roll) => roll.status !== "resolved");
-  const activeRoll: ActiveRollView | null = activeRollState
-    ? {
-        rollId: activeRollState.id,
-        actorMemberId: activeRollState.actorMemberId,
-        threatId: activeRollState.threatId,
-        actionId: activeRollState.actionId,
-        status: activeRollState.status,
-        playerFaces:
-          !isGm && activeRollState.hiddenAdjustmentApplied ? null : activeRollState.playerFaces,
-        playerHits: activeRollState.playerHits,
-        hiddenAdjustmentApplied: activeRollState.hiddenAdjustmentApplied,
-        ...(isGm
-          ? { hiddenDifficultyModifier: activeRollState.poolComponents.hiddenModifier }
-          : {}),
-        ...(activeRollState.pushDice !== undefined ? { pushDice: activeRollState.pushDice } : {}),
-        ...(activeRollState.oppositionFaces !== undefined
-          ? { oppositionFaces: activeRollState.oppositionFaces }
-          : {}),
-        ...(activeRollState.oppositionHits !== undefined
-          ? { oppositionHits: activeRollState.oppositionHits }
-          : {}),
-        ...(activeRollState.netSuccesses !== undefined
-          ? { netSuccesses: activeRollState.netSuccesses }
-          : {}),
-        ...(activeRollState.allocations !== undefined
-          ? { allocations: activeRollState.allocations }
-          : {}),
-      }
-    : null;
-
+  const ownCharacter =
+    viewer.capability === "player"
+      ? Object.values(state.characters).find((c) => c.claimedByMemberId === viewer.viewerId)
+      : undefined;
   return {
-    location: state.location,
-    objective: state.objective,
-    self,
-    characters,
-    threats,
-    activeRoll,
+    self: ownCharacter ? toFullSheet(ownCharacter) : null,
+    roster,
+    gmSheets: isGm ? Object.values(state.characters).map(toFullSheet) : [],
   };
 }
 
@@ -449,83 +288,69 @@ const EMPTY_POOL_EXPLANATION: PoolExplanation = {
   successThreshold: SUCCESS_THRESHOLD,
 };
 
+/**
+ * `PoolInput` (packages/contracts) is still shaped for the old placeholder
+ * (`actionId`, `gearIds`). Until it is extended for the new pool model
+ * (stat/items/abilities — a follow-up contract proposal to Sonnet A, not
+ * blocking), this adapts it: `actionId` doubles as the chosen stat name (or
+ * `"none"`), and `gearIds` doubles as `itemIds`. Ability-die preview is not
+ * yet representable and is simply omitted from this preview; B03's `decide`
+ * is not constrained by `PoolInput` and computes the real pool in full.
+ */
 function explainPool(
   projection: ViewerProjection<EatTheReichView>,
   input: PoolInput,
 ): PoolExplanation {
   const self = projection.view.self;
-  if (!self || input.actionId !== ACTION_ID) {
-    return EMPTY_POOL_EXPLANATION;
-  }
-  const visible = computeVisiblePool(self, input.actionId, input.gearIds);
+  if (!self) return EMPTY_POOL_EXPLANATION;
+  const stat = isStat(input.actionId) ? input.actionId : "none";
+  const outcome = buildPool(self, { stat, itemIds: input.gearIds, abilityIds: [] });
+  if (!outcome.ok) return EMPTY_POOL_EXPLANATION;
   return {
-    components: [
-      { label: "Nerve", value: visible.nerve },
-      ...(visible.gear > 0 ? [{ label: "Gear", value: visible.gear }] : []),
-    ],
-    total: visible.total,
+    components: outcome.result.components,
+    total: outcome.result.total,
     diceSides: DICE_SIDES,
     successThreshold: SUCCESS_THRESHOLD,
   };
 }
 
+/** No active-roll concept exists until B03; there are never valid allocation targets yet. */
 function validAllocations(
-  projection: ViewerProjection<EatTheReichView>,
-  roll: VisibleRoll,
+  _projection: ViewerProjection<EatTheReichView>,
+  _roll: VisibleRoll,
 ): readonly AllocationOption[] {
-  const activeRoll = projection.view.activeRoll;
-  if (!activeRoll || activeRoll.rollId !== roll.rollId) {
-    return [];
-  }
-  if (roll.status !== "awaiting_allocation" || roll.netSuccesses === null) {
-    return [];
-  }
-  const threat = projection.view.threats.find((candidate) => candidate.id === activeRoll.threatId);
-  if (!threat) {
-    return [];
-  }
-  return allocationOptionsFor(threat, projection.view.objective, roll.netSuccesses).map(
-    (option) => ({
-      id: option.id,
-      label: option.label,
-      costPerUse: option.costPerUse,
-      maxUses: option.maxUses,
-    }),
-  );
+  return [];
 }
 
 function theatre(event: EatTheReichEvent, prefs: PresentationPreferences): TheatreScene | null {
-  const durationHintMs = prefs.reducedMotion ? 0 : 900;
-  const cues = prefs.reducedMotion ? [] : [{ kind: "dice-roll", atMs: 0 }];
-
+  const durationHintMs = prefs.reducedMotion ? 0 : 500;
   switch (event.type) {
-    case "ActionRolled": {
-      const announcement = `Rolled ${event.hits} success${event.hits === 1 ? "" : "es"}.`;
+    case "CharacterClaimed": {
+      const announcement = "A character was claimed.";
       return {
-        id: `${event.rollId}-rolled`,
+        id: `${event.characterId}-claimed`,
         semanticLabel: announcement,
-        priority: "result",
+        priority: "ambient",
         durationHintMs,
-        cues,
+        cues: [],
         fallback: { announcement },
       };
     }
-    case "OppositionRolled": {
-      const announcement = `Opposition rolled ${event.hits} success${event.hits === 1 ? "" : "es"}.`;
+    case "CharacterReleased": {
+      const announcement = "A character was released.";
       return {
-        id: `${event.rollId}-opposition`,
+        id: `${event.characterId}-released`,
         semanticLabel: announcement,
-        priority: "result",
+        priority: "ambient",
         durationHintMs,
-        cues,
+        cues: [],
         fallback: { announcement },
       };
     }
-    case "ActionResolved": {
-      const announcement =
-        event.threatStatus === "defeated" ? "The Enforcer is defeated." : "The action resolves.";
+    case "InjuryHealed": {
+      const announcement = "An injury was healed.";
       return {
-        id: `${event.rollId}-resolved`,
+        id: `${event.characterId}-healed`,
         semanticLabel: announcement,
         priority: "result",
         durationHintMs,
@@ -536,23 +361,14 @@ function theatre(event: EatTheReichEvent, prefs: PresentationPreferences): Theat
   }
 }
 
-function initialState(input: InitialCampaignInput): EatTheReichState {
-  const [firstMemberId] = input.memberIds;
-  if (firstMemberId === undefined) {
-    throw new Error(
-      "eat-the-reich initialState requires at least one player member to assign the placeholder character",
-    );
-  }
-  const character = placeholderCharacter(firstMemberId);
-  return {
-    schemaVersion: 1,
-    location: PLACEHOLDER_LOCATION,
-    objective: PLACEHOLDER_OBJECTIVE,
-    characters: { [character.memberId]: character },
-    threats: { [PLACEHOLDER_THREAT.id]: PLACEHOLDER_THREAT },
-    rolls: {},
-    nextRollSequence: 1,
-  };
+function initialState(_input: InitialCampaignInput): EatTheReichState {
+  const characters = Object.fromEntries(
+    ORIGINAL_ROSTER.map((character) => [
+      character.id,
+      { ...character, claimedByMemberId: null, blood: Math.min(MAX_BLOOD, character.blood) },
+    ]),
+  );
+  return { schemaVersion: 2, characters };
 }
 
 function migrate(
@@ -561,10 +377,13 @@ function migrate(
   if (record.templateId !== EAT_THE_REICH_MANIFEST.templateId) {
     return { ok: false, reason: `Unexpected templateId "${record.templateId}".` };
   }
-  if (record.schemaVersion !== 1) {
-    return { ok: false, reason: `No migration path from schemaVersion ${record.schemaVersion}.` };
+  if (record.schemaVersion !== 2) {
+    return {
+      ok: false,
+      reason: `No migration path from schemaVersion ${record.schemaVersion} (docs/ETR_RULES_IMPLEMENTATION_PLAN.md §1: fresh start, no live rooms exist under the old shape).`,
+    };
   }
-  return { ok: true, state: parseState(record.state), schemaVersion: 1 };
+  return { ok: true, state: parseState(record.state), schemaVersion: 2 };
 }
 
 export const eatTheReichTemplate: GameTemplate<
