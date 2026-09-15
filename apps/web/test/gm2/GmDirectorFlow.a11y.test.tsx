@@ -145,9 +145,9 @@ describe("GM director console and table display (C03)", () => {
     const rollSection = rollHeading.closest("section")!;
     const kept = within(rollSection).getAllByLabelText(/kept dice/i);
     const discarded = within(rollSection).queryAllByLabelText(/discarded dice/i);
-    const keptCount = kept.length > 0 ? within(kept[0]!).getAllByRole("listitem").length : 0;
+    const keptCount = kept.length > 0 ? within(kept[0]!).queryAllByRole("listitem").length : 0;
     const discardedCount =
-      discarded.length > 0 ? within(discarded[0]!).getAllByRole("listitem").length : 0;
+      discarded.length > 0 ? within(discarded[0]!).queryAllByRole("listitem").length : 0;
     expect(keptCount + discardedCount).toBe(5);
   });
 
@@ -161,13 +161,17 @@ describe("GM director console and table display (C03)", () => {
     await screen.findByRole("heading", { name: /^roster$/i });
 
     const rookRow = screen.getByText(/^rook/i).closest("li")!;
-    await user.click(within(rookRow).getByRole("button", { name: /correct/i }));
+    const correctButton = within(rookRow).getByRole("button", { name: /correct/i });
+    await user.click(correctButton);
 
     const dialog = screen.getByRole("dialog", { name: /correct rook/i });
+    // C05: focus moves into the dialog on open, not left behind on the trigger.
+    expect(within(dialog).getByRole("heading", { name: /correct rook/i })).toHaveFocus();
+
     const applyButton = within(dialog).getByRole("button", { name: /apply correction/i });
     expect(applyButton).toBeDisabled(); // no reason yet, delta is 0
 
-    await user.click(within(dialog).getByRole("button", { name: /^increase$/i }));
+    await user.click(within(dialog).getByRole("button", { name: /^increase blood change$/i }));
     expect(applyButton).toBeDisabled(); // delta != 0 but reason is still empty
     await user.type(within(dialog).getByLabelText(/reason/i), "Fed off-screen between scenes");
     expect(applyButton).not.toBeDisabled();
@@ -175,6 +179,28 @@ describe("GM director console and table display (C03)", () => {
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(screen.getByText(/blood 1\/10/i)).toBeInTheDocument();
+    // C05: focus returns to whatever triggered the dialog once it closes.
+    expect(correctButton).toHaveFocus();
+  });
+
+  it("closes the correction dialog on Escape without applying anything, returning focus to the trigger", async () => {
+    const user = userEvent.setup();
+    const { roomCode, roomId, gmOwnership } = await createSessionAsGm(user);
+    await joinAndClaimRook(user, roomCode);
+
+    writeOwnershipRecord(gmOwnership);
+    goTo(`#/room/${roomId}/gm`);
+    await screen.findByRole("heading", { name: /^roster$/i });
+
+    const rookRow = screen.getByText(/^rook/i).closest("li")!;
+    const correctButton = within(rookRow).getByRole("button", { name: /correct/i });
+    await user.click(correctButton);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(correctButton).toHaveFocus();
+    expect(within(rookRow).getByText(/blood 0\/10/i)).toBeInTheDocument(); // unchanged
   });
 
   it("table display shows the route map and party strip with no form controls and no secrets", async () => {
@@ -198,6 +224,10 @@ describe("GM director console and table display (C03)", () => {
     // Never a code/passphrase on the table.
     expect(screen.queryByText(roomCode)).not.toBeInTheDocument();
     expect(screen.queryByText(/wolfbane/i)).not.toBeInTheDocument();
+
+    expect(await axe(document.body)).toHaveNoViolations();
+    setViewport(1920, 1080);
+    expect(await axe(document.body)).toHaveNoViolations();
   });
 
   it("has no detectable accessibility violations on the GM console at 375x812, 1280x800, and 1920x1080", async () => {

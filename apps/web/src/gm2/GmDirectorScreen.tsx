@@ -13,6 +13,7 @@ import { PendingActionsPanel } from "./PendingActionsPanel.js";
 import { RosterPanel } from "./RosterPanel.js";
 import { CorrectionDialog } from "./CorrectionDialog.js";
 import { useGmDirectorFixture } from "./useGmDirectorFixture.js";
+import { LiveRegion } from "../accessibility/LiveRegion.js";
 
 export interface GmDirectorScreenProps {
   readonly roomId: string;
@@ -53,11 +54,17 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
     ? fixture.characterStates.get(correctingCharacterId)
     : null;
 
+  const pendingAnnouncement =
+    fixture.pending.length === 0
+      ? "No pending actions."
+      : `${fixture.pending.length} action${fixture.pending.length === 1 ? "" : "s"} waiting for review.`;
+
   return (
     <main className="gm-screen">
       <ConnectionStatusStrip state={connection} />
       <FixtureModeBanner />
       <h1>Director console</h1>
+      <LiveRegion politeness="polite" message={pendingAnnouncement} />
       <InvitePanel roomId={roomId} roomCode={ownership.roomCode} />
       <SceneDirector scene={fixture.scene} onRevealThreat={fixture.revealThreat} />
       <PendingActionsPanel

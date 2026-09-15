@@ -56,13 +56,16 @@ describe("Landing / create / join / claim (C01)", () => {
     window.location.hash = "";
   });
 
-  it("shows the fixture-mode label on the landing screen and has no axe violations at 375x812 and 1280x800", async () => {
+  it("shows the fixture-mode label on the landing screen and has no axe violations at 375x812, 1280x800, and 1920x1080", async () => {
     setViewport(375, 812);
     const { container } = renderApp("#/");
     expect(screen.getByText(/local fixture — not a live room/i)).toBeInTheDocument();
     expect(await axe(container)).toHaveNoViolations();
 
     setViewport(1280, 800);
+    expect(await axe(container)).toHaveNoViolations();
+
+    setViewport(1920, 1080);
     expect(await axe(container)).toHaveNoViolations();
   });
 

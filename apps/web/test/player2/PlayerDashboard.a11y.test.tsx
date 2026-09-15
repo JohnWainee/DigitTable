@@ -140,7 +140,7 @@ describe("Player dashboard (C02)", () => {
     expect(screen.getByRole("button", { name: /back to scene/i })).toBeInTheDocument();
   });
 
-  it("has no detectable accessibility violations on the compose step at 375x812 and 1280x800", async () => {
+  it("has no detectable accessibility violations on the compose step at 375x812, 1280x800, and 1920x1080", async () => {
     const user = userEvent.setup();
     const { container } = await (async () => {
       await reachDashboardAsRook(user);
@@ -151,6 +151,9 @@ describe("Player dashboard (C02)", () => {
     expect(await axe(container)).toHaveNoViolations();
 
     setViewport(1280, 800);
+    expect(await axe(container)).toHaveNoViolations();
+
+    setViewport(1920, 1080);
     expect(await axe(container)).toHaveNoViolations();
   });
 });
