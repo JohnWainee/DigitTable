@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **PR #13 (admission), #15 (A02 contracts), #18 (A03 createRoom), #23 (A04 game commands), and #27 (A05 client repository) are all implemented and ready for John's merge decision**, each after its own independent review round with findings fixed and tests added (none blocking; see each PR's own review doc under `docs/reviews/`).
-- **Branch:** `sonnet-a/a05` (from `sonnet-a/a04`, itself from `sonnet-a/a03`, itself from `worktree-phase2-pr3-admission`/PR #13's branch with `sonnet-a/a02` merged in)
-- **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository, stacked on the other four — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-14 by Sonnet A (task A05: independent review and fixes)
+- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **PR #13 (admission), #15 (A02 contracts), #18 (A03 createRoom), #23 (A04 game commands), #27 (A05 client repository), and #30 (A06 partial: seat recovery) are all implemented and ready for John's merge decision**, each after its own independent review round with findings fixed and tests added (none blocking; see each PR's own review doc under `docs/reviews/`).
+- **Branch:** `sonnet-a/a06` (from `sonnet-a/a05`, itself from `sonnet-a/a04`, itself from `sonnet-a/a03`, itself from `worktree-phase2-pr3-admission`/PR #13's branch with `sonnet-a/a02` merged in)
+- **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery, stacked on the other five — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
+- **Last updated:** 2026-09-14 by Sonnet A (task A06: seat recovery, independent review, and rules-matrix-coverage fix)
 
 ## Mission
 
@@ -294,6 +294,28 @@ Known, documented, out-of-scope gap (not fixed here): the current pre-B02 templa
 ### Independent review
 
 One round: [`docs/reviews/2026-09-14-a05-client-repository-independent-review.md`](docs/reviews/2026-09-14-a05-client-repository-independent-review.md). No hard-blocking finding. One Medium finding (the client-side `roomRevision` approximation's stated reasoning was factually wrong — fixed properly with a small server-side change, `AdmissionAccepted` now echoes the transaction's real `authority.roomRevision`, rather than left as a documented limitation) and two Low findings (a duplicated error-mapping helper, a missing `onSnapshot` error callback), all fixed with tests.
+
+Merge remains John's decision.
+
+## Twelfth implementation PR: seat recovery / redemption (board task A06, partial) — READY FOR JOHN'S MERGE DECISION
+
+`sonnet-a/a06`, PR #30, commit `78a2d94` (stacked on PR #27's branch; retarget to `main` once #13, #15, #18, #23, #27 merge). Board task A06's full scope (outbox persistence/reconciliation, seat recovery/rotation/rebind, old-UID revocation, kick, bounded RTDB presence, reload/identity-loss tests) is large. This PR delivers the first-named, fully-specified item — seat recovery ("Redemption," `docs/ARCHITECTURE.md` section 8) — as its own reviewable slice.
+
+A fifth callable, `recoverSeat`: proves seat ownership by presenting a room code plus recovery code (never a client-asserted `memberId`) — the transaction scans every seated member's binding (bounded at `MAX_PARTICIPANT_SEATS + 1`) and checks the candidate code against each seat's `recovery/{memberId}` hash with no early exit. On match, in one transaction: revokes the old UID's `uidBindings` entry (skipped when the caller already holds it — the self-rotate case), binds the caller's UID to the seat, replaces the spent code with a freshly minted one (redemption invalidates it), and writes a GM-visible audit entry (`rooms/{roomId}/audit/{id}`, `memberId` only — no UID, no secret material). New independent throttle (`recoveryThrottle`, per-room-code+IP and per-IP) and stable error code (`INVALID_RECOVERY_CODE`).
+
+Explicitly deferred (see PR #30's description for the full list): client-side outbox persistence/reconciliation, a rotation command distinct from redemption, kick, and bounded RTDB presence (its own large plan-only subsystem, `docs/PHASE_2_PR5_PLAN.md`, still dependency-blocked on PR 3/4 merging). Reload-during-roll/identity-loss test scenarios not exercised (no outbox/reconnect machinery yet to test against).
+
+### Required checks — all pass locally
+
+- `npm run check` — formatting, lint (zero warnings), typecheck, and **325/325** default tests across 43 files passed.
+- `npm run build` — passed (`apps/functions` esbuild bundle 100.0kb; `apps/web` vite build, 79 modules).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **106/106** tests passed (17 `packages/testing`, 86 `apps/functions`, 3 `apps/web`).
+- `npm audit` — unchanged from A05's baseline.
+- `git diff --check` — clean.
+
+### Independent review
+
+One round: [`docs/reviews/2026-09-14-a06-recoverseat-independent-review.md`](docs/reviews/2026-09-14-a06-recoverseat-independent-review.md). No blocking finding. One Low finding — `packages/testing/test-emulator/roomRules.test.ts` had no rules-matrix coverage for the two new Firestore paths (`rooms/{roomId}/audit/{auditId}`, `recoveryThrottle/{document=**}`) — fixed with new/extended tests (GM-only audit read, no client write, fully service-only throttle tree). One Low documentation nuance noted (architecture doc says "deletes the old UID's presence"; the implementation deletes the Firestore `uidBindings` entry, since RTDB presence isn't implemented yet — tracked under the existing R5 residual, not a defect).
 
 Merge remains John's decision.
 
