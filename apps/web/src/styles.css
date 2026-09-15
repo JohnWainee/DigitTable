@@ -1,5 +1,15 @@
 :root {
-  color-scheme: light dark;
+  /* `light dark` was declared here with no dark-mode CSS actually
+     implemented, so a browser in dark mode picked its own dark default
+     colors for unstyled form controls (white button text on our
+     explicit white button backgrounds — invisible; found live-testing
+     C01 in a real browser, not caught by jsdom/axe). Pinned to `light`
+     until C04/C05 implement the art brief's real dark palette
+     (docs/ETR_ART_BRIEF.md palette table) with matching
+     `@media (prefers-color-scheme: dark)` rules; every custom button
+     class below also sets `color` explicitly so this isn't the only
+     guard. */
+  color-scheme: light;
   --bg: #f5f0e6;
   --fg: #1b1b1b;
   --accent: #8a1f1f;
@@ -40,6 +50,7 @@ body {
   border-radius: 0.5rem;
   border: 1px solid var(--border);
   background: white;
+  color: var(--fg);
   cursor: pointer;
 }
 
@@ -162,6 +173,7 @@ fieldset {
   border-radius: 0.5rem;
   border: 1px solid var(--border);
   background: white;
+  color: var(--fg);
   cursor: pointer;
 }
 
@@ -248,6 +260,7 @@ input:focus-visible {
   border-radius: 0.5rem;
   border: 1px solid var(--border);
   background: white;
+  color: var(--fg);
   cursor: pointer;
 }
 
@@ -294,6 +307,8 @@ input:focus-visible {
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   font-size: 1rem;
+  background: white;
+  color: var(--fg);
 }
 
 .form-field--checkbox {
