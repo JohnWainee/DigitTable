@@ -1,6 +1,6 @@
 # Phase 2 implementation plan — realtime room
 
-- **Status:** Planning. No implementation has started; this document precedes it per `docs/ARCHITECTURE.md` section 17, step 4/5.
+- **Status:** In progress. PRs 1–2 merged; PR 3 implemented and twice independently reviewed (see `docs/reviews/2026-09-14-phase-2-pr3-*.md`), awaiting merge; PR 4 onward not started. Originally written before implementation per `docs/ARCHITECTURE.md` section 17, step 4/5.
 - **Scope authority:** `docs/IMPLEMENTATION_ROADMAP.md` Phase 2; `docs/ARCHITECTURE.md` section 17, steps 5–6.
 - **Preceded by:** [`docs/reviews/2026-09-13-phase-2-preflight-review.md`](reviews/2026-09-13-phase-2-preflight-review.md) (contract re-evaluation; findings P1–P9).
 - **Depends on:** [`docs/PHASE_2_DECISION_BRIEF.md`](PHASE_2_DECISION_BRIEF.md) for the three decisions John must make before PR 3 can start (region/projects, join policy, retention).

@@ -83,7 +83,9 @@ function parseInput<TInput>(parse: (value: unknown) => TInput, data: unknown): T
     return parse(data);
   } catch (error) {
     if (error instanceof AdmissionInputError) {
-      throw new HttpsError("invalid-argument", "The join request was malformed.");
+      // Stable code, fixed message: the parser's detail string (which echoes
+      // the offending value's shape) never reaches the client or a log.
+      throw toHttpsError("INVALID_REQUEST", "The join request was malformed.");
     }
     throw error;
   }
@@ -93,6 +95,7 @@ async function requireThrottle(
   deps: AdmissionCallableDependencies,
   request: CallableRequest<unknown>,
   roomCode: string,
+  uid: string,
 ): Promise<void> {
   // Typed locally: the throttle key needs only these two request fields, and
   // `@types/express` is deliberately not a dependency of this codebase.
@@ -100,7 +103,11 @@ async function requireThrottle(
   const ip = clientIpFrom({ ip: raw.ip, forwardedFor: raw.headers["x-forwarded-for"] });
   let allowed: boolean;
   try {
-    ({ allowed } = await checkAndConsumeAdmissionThrottle(deps.db, roomCode, ip, deps.now()));
+    ({ allowed } = await checkAndConsumeAdmissionThrottle(
+      deps.db,
+      { roomCode, ip, uid },
+      deps.now(),
+    ));
   } catch (error) {
     // A malformed counter fails closed as a stable denial, never as an
     // unmapped internal error (which would also skip the throttle).
@@ -116,10 +123,11 @@ async function requireThrottle(
 
 /**
  * The shared callable pipeline: App Check monitoring → auth → payload
- * validation → per-IP/per-room-code throttle → one Firestore transaction.
- * The throttle runs after validation so its key is a bounded, validated
- * room code, and before the transaction so a throttled caller never reads
- * `authority/current` or a secret hash.
+ * validation → throttle (per code+IP, per IP, per UID) → one Firestore
+ * transaction. The throttle runs after auth and validation so its keys are
+ * a verified UID and a bounded, validated room code, and before the
+ * transaction so a throttled caller never reads `authority/current` or a
+ * secret hash.
  */
 async function handleAdmission<TInput extends { readonly roomCode: string }>(
   deps: AdmissionCallableDependencies,
@@ -131,7 +139,7 @@ async function handleAdmission<TInput extends { readonly roomCode: string }>(
   logAppCheckStatus(deps, request, name);
   const uid = requireAuth(request);
   const input = parseInput(parse, request.data);
-  await requireThrottle(deps, request, input.roomCode);
+  await requireThrottle(deps, request, input.roomCode, uid);
 
   const result = await run(deps.db, uid, input);
   if (!result.ok) {

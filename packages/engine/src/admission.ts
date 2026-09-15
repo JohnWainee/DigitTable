@@ -126,9 +126,9 @@ export function decideAdmitMember(
  * purity and ordering discipline as `decideAdmitMember`: the passphrase is
  * checked first, before an already-bound GM's reconnect is honored (Phase 2
  * PR 3 review — a stale identity must not bypass a rotated passphrase by
- * reclaiming instead of joining fresh). A non-null `gmMemberId` that does
- * not match the caller's own binding always denies `GM_SEAT_TAKEN`,
- * regardless of capacity — the GM seat is exclusive, not capacity-limited in
+ * reclaiming instead of joining fresh). A `gmMemberId` that does
+ * not match the caller's own GM binding — or any seated GM when the caller
+ * is unbound — always denies `GM_SEAT_TAKEN`, regardless of capacity — the GM seat is exclusive, not capacity-limited in
  * the way player seats are.
  */
 export function decideClaimSeat(
@@ -153,6 +153,14 @@ export function decideClaimSeat(
     if (snapshot.existingBinding.capability !== "gm") {
       return deniedFrom(
         stableError("ROLE_FORBIDDEN", "This identity already holds a different seat in this room."),
+      );
+    }
+    // A GM binding that does not match the authority's seated GM is
+    // inconsistent data (a stale binding after a transfer, or corruption);
+    // it never reclaims the seat (second pass, C7).
+    if (snapshot.gmMemberId !== snapshot.existingBinding.memberId) {
+      return deniedFrom(
+        stableError("GM_SEAT_TAKEN", "This room's GM seat has already been claimed."),
       );
     }
     return {

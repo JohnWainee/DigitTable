@@ -231,6 +231,21 @@ describe("decideClaimSeat", () => {
     });
   });
 
+  it("denies GM_SEAT_TAKEN when a gm binding does not match the authority's seated GM (second pass C7)", () => {
+    const decision = decideClaimSeat(claimSeatInput, {
+      ...baseSnapshot,
+      gmMemberId: asMemberId("member-other-gm"),
+      existingBinding: { memberId: asMemberId("member-gm"), capability: "gm" },
+    });
+    expect(decision).toMatchObject({ outcome: "denied", code: "GM_SEAT_TAKEN" });
+    const openSeat = decideClaimSeat(claimSeatInput, {
+      ...baseSnapshot,
+      gmMemberId: null,
+      existingBinding: { memberId: asMemberId("member-gm"), capability: "gm" },
+    });
+    expect(openSeat).toMatchObject({ outcome: "denied", code: "GM_SEAT_TAKEN" });
+  });
+
   it("denies a GM reclaim when the passphrase is now wrong, even for the already-bound GM", () => {
     const decision = decideClaimSeat(claimSeatInput, {
       ...baseSnapshot,

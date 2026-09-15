@@ -5,6 +5,7 @@ import {
   generateRecoveryCode,
   hashSecret,
   verifySecret,
+  type HashedSecret,
   type RoomAdmissionSnapshot,
 } from "@digitable/engine";
 import {
@@ -84,6 +85,7 @@ async function resolveRoomId(
 interface ResolvedRoomContext {
   readonly roomId: string;
   readonly authorityRef: DocumentReference;
+  readonly metaRef: DocumentReference;
   readonly authority: AuthorityAdmissionFields;
   readonly snapshot: RoomAdmissionSnapshot;
 }
@@ -95,11 +97,13 @@ interface ResolvedRoomContext {
  * invocations (the transaction retries automatically if another commit
  * changes `authority/current` first).
  *
- * Both secrets are verified on every request: the general room passphrase
- * (`admission/secret`, gating `player`/`gm`) and the separate table code
- * (`admission/tableSecret`, gating `table`; docs/ARCHITECTURE.md section 8).
- * The pure decision picks the one the *requested* capability requires, so
- * knowing one never satisfies the other.
+ * Only the secret the *requested* capability needs is verified — the room
+ * passphrase (`admission/secret`) for `player`/`gm`, the separate table code
+ * (`admission/tableSecret`) for `table` (docs/ARCHITECTURE.md section 8) —
+ * so one PBKDF2 run happens per request, not two (second pass, C10). The
+ * other flag on the snapshot is simply `false`; the pure decision never
+ * consults it for that capability, so knowing one secret never satisfies
+ * the other.
  */
 async function resolveRoomContext(
   txn: Transaction,
@@ -107,6 +111,7 @@ async function resolveRoomContext(
   uid: string,
   roomCode: string,
   passphrase: string,
+  requestedCapability: Capability,
 ): Promise<ResolvedRoomContext | { readonly deniedResult: AdmissionResult }> {
   const roomId = await resolveRoomId(txn, db, roomCode);
   if (roomId === null) {
@@ -114,23 +119,32 @@ async function resolveRoomContext(
   }
 
   const authorityRef = db.doc(`rooms/${roomId}/authority/current`);
-  const [authoritySnap, passphraseValid, tablePassphraseValid, existingBinding] = await Promise.all(
-    [
-      txn.get(authorityRef),
-      readSecretValid(txn, db.doc(`rooms/${roomId}/admission/secret`), passphrase),
-      readSecretValid(txn, db.doc(`rooms/${roomId}/admission/tableSecret`), passphrase),
-      readExistingBinding(txn, db.doc(`rooms/${roomId}/uidBindings/${uid}`)),
-    ],
+  const metaRef = db.doc(`rooms/${roomId}/meta/current`);
+  const secretRef = db.doc(
+    requestedCapability === "table"
+      ? `rooms/${roomId}/admission/tableSecret`
+      : `rooms/${roomId}/admission/secret`,
   );
+  const [authoritySnap, metaSnap, secretValid, existingBinding] = await Promise.all([
+    txn.get(authorityRef),
+    txn.get(metaRef),
+    readSecretValid(txn, secretRef, passphrase),
+    readExistingBinding(txn, db.doc(`rooms/${roomId}/uidBindings/${uid}`)),
+  ]);
 
   if (!authoritySnap.exists) {
     return { deniedResult: denied("ROOM_NOT_FOUND", "The room code was not recognized.") };
   }
   const authority = parseAuthorityAdmissionFields(authoritySnap.data());
+  // `meta/current` is the client-readable mirror every GM claim updates; a
+  // room without one is inconsistent data, denied rather than silently
+  // created as a partial document (second pass, T6).
+  if (!metaSnap.exists) throw new RoomDataError("room data: meta/current: missing");
 
   return {
     roomId,
     authorityRef,
+    metaRef,
     authority,
     snapshot: {
       roomStatus: authority.roomStatus,
@@ -138,26 +152,47 @@ async function resolveRoomContext(
       participantCount: authority.participantCount,
       tableSeatClaimed: authority.tableSeatClaimed,
       gmMemberId: authority.gmMemberId,
-      passphraseValid,
-      tablePassphraseValid,
+      passphraseValid: requestedCapability === "table" ? false : secretValid,
+      tablePassphraseValid: requestedCapability === "table" ? secretValid : false,
       existingBinding,
     },
   };
 }
 
+/** A freshly minted seat identity and one-time recovery credential. */
+interface SeatCredential {
+  readonly memberId: MemberId;
+  readonly recoveryCode: string;
+  readonly hashedRecovery: HashedSecret;
+}
+
+/**
+ * Minted once per request, *outside* the transaction, so the slow PBKDF2
+ * hash is never redone on a transaction retry and never runs while the
+ * `authority/current` lock is held (second pass, C10). Simply unused when
+ * the decision is a denial or a reclaim.
+ */
+async function mintSeatCredential(): Promise<SeatCredential> {
+  const recoveryCode = generateRecoveryCode();
+  return {
+    memberId: asMemberId(crypto.randomUUID()),
+    recoveryCode,
+    hashedRecovery: await hashSecret(recoveryCode),
+  };
+}
+
 /** Writes a newly-created seat's documents and returns its one-time recovery code. */
-async function createSeat(
+function createSeat(
   txn: Transaction,
   db: Firestore,
   roomId: string,
   uid: string,
   capability: Capability,
   displayName: string,
-): Promise<AdmissionAccepted> {
-  const memberId = asMemberId(crypto.randomUUID());
-  const recoveryCode = generateRecoveryCode();
-  const hashedRecovery = await hashSecret(recoveryCode);
-  const now = new Date().toISOString();
+  credential: SeatCredential,
+  now: string,
+): AdmissionAccepted {
+  const { memberId, recoveryCode, hashedRecovery } = credential;
 
   const binding: MemberBindingDocument = { memberId, uid, capability };
   const uidBinding: UidBindingDocument = { memberId, capability };
@@ -197,13 +232,21 @@ async function runAdmissionTransaction(
  * `admitMember` callable (`src/index.ts`) — the operable boundary the
  * platform's join flow actually calls.
  */
-export function admitMember(
+export async function admitMember(
   db: Firestore,
   uid: string,
   input: AdmitMemberInput,
 ): Promise<AdmissionResult> {
+  const credential = await mintSeatCredential();
   return runAdmissionTransaction(db, async (txn) => {
-    const context = await resolveRoomContext(txn, db, uid, input.roomCode, input.passphrase);
+    const context = await resolveRoomContext(
+      txn,
+      db,
+      uid,
+      input.roomCode,
+      input.passphrase,
+      input.requestedCapability,
+    );
     if ("deniedResult" in context) return context.deniedResult;
 
     const decision = decideAdmitMember(input, context.snapshot);
@@ -221,13 +264,15 @@ export function admitMember(
       };
     }
 
-    const accepted = await createSeat(
+    const accepted = createSeat(
       txn,
       db,
       context.roomId,
       uid,
       decision.capability,
       input.displayName,
+      credential,
+      new Date().toISOString(),
     );
     txn.update(
       context.authorityRef,
@@ -243,13 +288,14 @@ export function admitMember(
  * Resolves a `ClaimSeat` (GM) request inside one Firestore transaction. See
  * `admitMember` for the shared transaction/trust-boundary shape.
  */
-export function claimSeat(
+export async function claimSeat(
   db: Firestore,
   uid: string,
   input: ClaimSeatInput,
 ): Promise<AdmissionResult> {
+  const credential = await mintSeatCredential();
   return runAdmissionTransaction(db, async (txn) => {
-    const context = await resolveRoomContext(txn, db, uid, input.roomCode, input.passphrase);
+    const context = await resolveRoomContext(txn, db, uid, input.roomCode, input.passphrase, "gm");
     if ("deniedResult" in context) return context.deniedResult;
 
     const decision = decideClaimSeat(input, context.snapshot);
@@ -263,16 +309,24 @@ export function claimSeat(
       };
     }
 
-    const accepted = await createSeat(txn, db, context.roomId, uid, "gm", input.displayName);
+    const now = new Date().toISOString();
+    const accepted = createSeat(
+      txn,
+      db,
+      context.roomId,
+      uid,
+      "gm",
+      input.displayName,
+      credential,
+      now,
+    );
     txn.update(context.authorityRef, {
       participantCount: context.authority.participantCount + 1,
       gmMemberId: accepted.memberId,
     });
-    txn.set(
-      db.doc(`rooms/${context.roomId}/meta/current`),
-      { gmMemberId: accepted.memberId },
-      { merge: true },
-    );
+    // The client-readable mirror was read above (it must exist), so this is a
+    // field update on a complete document, never the creation of a partial one.
+    txn.update(context.metaRef, { gmMemberId: accepted.memberId, updatedAtServer: now });
     return { ok: true, accepted };
   });
 }

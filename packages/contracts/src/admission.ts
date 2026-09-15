@@ -11,6 +11,18 @@ const MAX_DISPLAY_NAME_LENGTH = 40;
 const ADMIT_MEMBER_CAPABILITIES = ["player", "table"] as const;
 
 /**
+ * Room codes are locators typed by humans (docs/ARCHITECTURE.md section 8):
+ * letters, digits, and hyphens only. Anything else (a `/`, a lone `.`, a
+ * `__name__` form) would otherwise reach a Firestore path unsanitized and
+ * surface as an unmapped error carrying the submitted code (second pass,
+ * T3/C2).
+ */
+const ROOM_CODE_PATTERN = /^[A-Za-z0-9-]+$/;
+
+/** Control and invisible-formatting characters never belong in a roster name (second pass, T8). */
+const DISALLOWED_DISPLAY_NAME_CHARACTERS = /[\p{Cc}\p{Cf}]/u;
+
+/**
  * Untrusted join input submitted to the admission authority. The authority
  * resolves the room code and creates the stable seat; neither a room ID nor a
  * member ID is client-asserted here.
@@ -80,6 +92,24 @@ function expectBoundedString(
   return value;
 }
 
+function expectRoomCode(value: unknown): string {
+  const code = expectBoundedString(value, "roomCode", {
+    min: MIN_SECRET_LENGTH,
+    max: MAX_ROOM_CODE_LENGTH,
+  });
+  if (!ROOM_CODE_PATTERN.test(code)) fail("roomCode", "expected letters, digits, and hyphens only");
+  return code;
+}
+
+function expectDisplayName(value: unknown): string {
+  const name = expectBoundedString(value, "displayName", { min: 1, max: MAX_DISPLAY_NAME_LENGTH });
+  if (DISALLOWED_DISPLAY_NAME_CHARACTERS.test(name)) {
+    fail("displayName", "control or formatting characters are not allowed");
+  }
+  if (name.trim().length === 0) fail("displayName", "expected a visible character");
+  return name;
+}
+
 function expectAdmitCapability(value: unknown, where: string): Exclude<Capability, "gm"> {
   if (
     typeof value !== "string" ||
@@ -102,19 +132,13 @@ function expectAdmitCapability(value: unknown, where: string): Exclude<Capabilit
 export function parseAdmitMemberInput(value: unknown): AdmitMemberInput {
   if (!isRecord(value)) fail("root", "expected an object");
   return {
-    roomCode: expectBoundedString(value.roomCode, "roomCode", {
-      min: MIN_SECRET_LENGTH,
-      max: MAX_ROOM_CODE_LENGTH,
-    }),
+    roomCode: expectRoomCode(value.roomCode),
     passphrase: expectBoundedString(value.passphrase, "passphrase", {
       min: MIN_SECRET_LENGTH,
       max: MAX_PASSPHRASE_LENGTH,
     }),
     requestedCapability: expectAdmitCapability(value.requestedCapability, "requestedCapability"),
-    displayName: expectBoundedString(value.displayName, "displayName", {
-      min: 1,
-      max: MAX_DISPLAY_NAME_LENGTH,
-    }),
+    displayName: expectDisplayName(value.displayName),
   };
 }
 
@@ -122,17 +146,11 @@ export function parseAdmitMemberInput(value: unknown): AdmitMemberInput {
 export function parseClaimSeatInput(value: unknown): ClaimSeatInput {
   if (!isRecord(value)) fail("root", "expected an object");
   return {
-    roomCode: expectBoundedString(value.roomCode, "roomCode", {
-      min: MIN_SECRET_LENGTH,
-      max: MAX_ROOM_CODE_LENGTH,
-    }),
+    roomCode: expectRoomCode(value.roomCode),
     passphrase: expectBoundedString(value.passphrase, "passphrase", {
       min: MIN_SECRET_LENGTH,
       max: MAX_PASSPHRASE_LENGTH,
     }),
-    displayName: expectBoundedString(value.displayName, "displayName", {
-      min: 1,
-      max: MAX_DISPLAY_NAME_LENGTH,
-    }),
+    displayName: expectDisplayName(value.displayName),
   };
 }

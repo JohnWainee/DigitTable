@@ -34,6 +34,7 @@ export function grpcCodeFor(code: StableErrorCode): FunctionsErrorCode {
     case "PAYLOAD_TOO_LARGE":
     case "UNKNOWN_ACTION":
     case "INVALID_ALLOCATION":
+    case "INVALID_REQUEST":
       return "invalid-argument";
     default: {
       const unmapped: never = code;

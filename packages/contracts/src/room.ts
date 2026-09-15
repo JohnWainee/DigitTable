@@ -93,15 +93,22 @@ export interface RecoveryCredentialDocument extends HashedSecretDocument {
   readonly memberId: MemberId;
 }
 
+/** Upper bound accepted for a stored PBKDF2 iteration count (the authority hashes at 210,000). */
+export const MAX_SECRET_ITERATIONS = 1_000_000;
+
 /**
- * Service-only per-IP/per-room-code admission rate-limit counter at
- * `admissionThrottle/{roomCode}/byIp/{ip}` (Phase 2 PR 3 review: "meaningful
- * per-IP/per-room throttling"). Keyed by the submitted room *code* rather
- * than a resolved room ID so it also bounds attempts against codes that
- * never resolve to a room (docs/ARCHITECTURE.md section 11's "Room-code
- * guessing" mitigation), and lives outside `rooms/{roomId}` for the same
- * reason. A fixed-window counter, not a token bucket: simple enough to
- * reason about correctness under concurrent transactions.
+ * Service-only admission rate-limit counter (Phase 2 PR 3 review:
+ * "meaningful per-IP/per-room throttling"). Three fixed-window buckets live
+ * under the `admissionThrottle` collection, keyed by SHA-256 of the untrusted
+ * value so no submitted code or address is stored as a document ID:
+ * per `(submitted room code, caller IP)` — passphrase brute force against
+ * one code; per caller IP — code enumeration; and per verified anonymous
+ * UID — an unspoofable bound that holds even where the IP is not
+ * trustworthy (second pass, T1/C1/C6). Kept outside `rooms/{roomId}` so
+ * guesses at codes that resolve to no room are bounded too. A fixed-window
+ * counter, not a token bucket: simple enough to reason about correctness
+ * under concurrent transactions. The authority also writes an `expiresAt`
+ * timestamp (not part of this contract) for a Firestore TTL policy.
  */
 export interface AdmissionThrottleDocument {
   readonly windowStartMs: number;
@@ -166,7 +173,12 @@ export function parseAuthorityAdmissionFields(data: unknown): AuthorityAdmission
   if (typeof tableSeatClaimed !== "boolean") {
     fail("authority/current.tableSeatClaimed");
   }
-  if (gmMemberId !== null && gmMemberId !== undefined && typeof gmMemberId !== "string") {
+  // The key must be present: an *absent* `gmMemberId` must never read as "no
+  // GM seated" — that would let a corrupted authority document reopen the
+  // exclusive GM seat (Phase 2 PR 3 second pass, T2/C4). Only `null` (seat
+  // open) or a non-empty member ID is accepted.
+  if (!("gmMemberId" in data)) fail("authority/current.gmMemberId");
+  if (gmMemberId !== null && (typeof gmMemberId !== "string" || gmMemberId.length === 0)) {
     fail("authority/current.gmMemberId");
   }
   return {
@@ -217,7 +229,14 @@ export function parseHashedSecretDocument(data: unknown): HashedSecretDocument {
   const { hash, salt, iterations } = data;
   if (typeof hash !== "string" || hash.length === 0) fail("secret.hash");
   if (typeof salt !== "string" || salt.length === 0) fail("secret.salt");
-  if (typeof iterations !== "number" || !Number.isInteger(iterations) || iterations <= 0) {
+  // Bounded above as well as below: a corrupted iteration count must not be
+  // able to pin the authority's CPU on one verification (second pass, C10).
+  if (
+    typeof iterations !== "number" ||
+    !Number.isInteger(iterations) ||
+    iterations <= 0 ||
+    iterations > MAX_SECRET_ITERATIONS
+  ) {
     fail("secret.iterations");
   }
   return { hash, salt, iterations };

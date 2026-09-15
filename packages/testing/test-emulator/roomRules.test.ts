@@ -144,7 +144,9 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
       await assertFails(get(uid, `rooms/${room}/admission/secret`));
       await assertFails(get(uid, `rooms/${room}/admission/tableSecret`));
       await assertFails(get(uid, `rooms/${room}/recovery/player-a`));
-      await assertFails(get(uid, `admissionThrottle/CODE-1/byIp/203.0.113.5`));
+      await assertFails(get(uid, `admissionThrottle/code-abc/byIp/def`));
+      await assertFails(get(uid, `admissionThrottle/ip-def/scope/all`));
+      await assertFails(get(uid, `admissionThrottle/uid-ghi/scope/all`));
     }
   });
 
@@ -253,11 +255,17 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
     await assertFails(
       context(playerUid)
         .firestore()
-        .doc(`admissionThrottle/CODE-1/byIp/203.0.113.5`)
+        .doc(`admissionThrottle/code-abc/byIp/def`)
         .set({ windowStartMs: 0, count: 0 }),
     );
     await assertFails(
-      context(playerUid).firestore().doc(`admissionThrottle/CODE-1/byIp/203.0.113.5`).delete(),
+      context(playerUid).firestore().doc(`admissionThrottle/code-abc/byIp/def`).delete(),
+    );
+    await assertFails(
+      context(playerUid)
+        .firestore()
+        .doc(`admissionThrottle/uid-${playerUid}/scope/all`)
+        .set({ windowStartMs: 0, count: 0 }),
     );
     await assertFails(
       context(playerUid)

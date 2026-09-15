@@ -74,6 +74,43 @@ describe("parseAdmitMemberInput", () => {
   });
 });
 
+describe("room code and display name content (second pass T3/C2, T8)", () => {
+  const base = {
+    roomCode: "ABCD-1234",
+    passphrase: "private phrase",
+    requestedCapability: "player",
+    displayName: "Rook",
+  };
+
+  it.each(["ab/cd", "a/../b", "....", "__id__", "AB CD", "ＡＢＣＤ", "abc\u0000d"])(
+    "rejects a room code that is not letters, digits, and hyphens: %j",
+    (roomCode) => {
+      expect(() => parseAdmitMemberInput({ ...base, roomCode })).toThrow("roomCode");
+      expect(() => parseClaimSeatInput({ ...base, roomCode })).toThrow("roomCode");
+    },
+  );
+
+  it("accepts hyphenated alphanumeric codes of either case", () => {
+    expect(parseAdmitMemberInput({ ...base, roomCode: "abcd-EFGH-01" }).roomCode).toBe(
+      "abcd-EFGH-01",
+    );
+  });
+
+  it.each(["\u202Eevil", "a\u0000b", "line\nbreak", "tab\tname", "   ", "\u200B"])(
+    "rejects a display name with control/format characters or no visible character: %j",
+    (displayName) => {
+      expect(() => parseAdmitMemberInput({ ...base, displayName })).toThrow("displayName");
+      expect(() => parseClaimSeatInput({ ...base, displayName })).toThrow("displayName");
+    },
+  );
+
+  it("accepts ordinary unicode display names", () => {
+    expect(parseAdmitMemberInput({ ...base, displayName: "Zoë Ångström 🎲" }).displayName).toBe(
+      "Zoë Ångström 🎲",
+    );
+  });
+});
+
 describe("parseClaimSeatInput", () => {
   const valid = { roomCode: "ABCD-1234", passphrase: "correct horse", displayName: "Director" };
 

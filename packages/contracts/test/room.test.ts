@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   asCommandId,
   asMemberId,
+  MAX_SECRET_ITERATIONS,
   parseAdmissionThrottleDocument,
   parseAuthorityAdmissionFields,
   parseHashedSecretDocument,
@@ -34,17 +35,25 @@ const validAuthority = {
  * "valid secret"/"fresh window") a defensive default would produce.
  */
 describe("parseAuthorityAdmissionFields (fails closed)", () => {
-  it("accepts a well-formed document and normalizes an absent GM to null", () => {
+  it("accepts a well-formed document with a seated GM or an explicitly open (null) GM seat", () => {
     expect(parseAuthorityAdmissionFields(validAuthority)).toEqual({
       ...validAuthority,
       gmMemberId: asMemberId("member-gm"),
     });
     expect(
-      parseAuthorityAdmissionFields({ ...validAuthority, gmMemberId: undefined }).gmMemberId,
-    ).toBeNull();
-    expect(
       parseAuthorityAdmissionFields({ ...validAuthority, gmMemberId: null }).gmMemberId,
     ).toBeNull();
+  });
+
+  it("an absent gmMemberId key never reads as an open GM seat (second pass T2/C4)", () => {
+    const { gmMemberId: _dropped, ...withoutGm } = validAuthority;
+    expect(() => parseAuthorityAdmissionFields(withoutGm)).toThrow(RoomDataError);
+    expect(() =>
+      parseAuthorityAdmissionFields({ ...validAuthority, gmMemberId: undefined }),
+    ).toThrow(RoomDataError);
+    expect(() => parseAuthorityAdmissionFields({ ...validAuthority, gmMemberId: "" })).toThrow(
+      RoomDataError,
+    );
   });
 
   it.each([
@@ -120,8 +129,18 @@ describe("parseHashedSecretDocument (fails closed)", () => {
     ["zero iterations", { ...valid, iterations: 0 }],
     ["string iterations", { ...valid, iterations: "210000" }],
     ["fractional iterations", { ...valid, iterations: 1.5 }],
+    [
+      "iterations above the ceiling (CPU pinning)",
+      { ...valid, iterations: MAX_SECRET_ITERATIONS + 1 },
+    ],
   ])("throws RoomDataError for %s", (_label, data) => {
     expect(() => parseHashedSecretDocument(data)).toThrow(RoomDataError);
+  });
+
+  it("accepts an iteration count exactly at the ceiling", () => {
+    expect(
+      parseHashedSecretDocument({ ...valid, iterations: MAX_SECRET_ITERATIONS }).iterations,
+    ).toBe(MAX_SECRET_ITERATIONS);
   });
 });
 

@@ -26,6 +26,8 @@ export const STABLE_ERROR_CODES = [
    * capacity); the request is denied instead (Phase 2 PR 3 review).
    */
   "ROOM_DATA_INVALID",
+  /** The untrusted request payload failed runtime validation before any read (Phase 2 PR 3 second pass). */
+  "INVALID_REQUEST",
 ] as const;
 
 export type StableErrorCode = (typeof STABLE_ERROR_CODES)[number];

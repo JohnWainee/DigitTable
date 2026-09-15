@@ -1,102 +1,149 @@
-import type { Firestore } from "firebase-admin/firestore";
+import { createHash } from "node:crypto";
+import { Timestamp, type Firestore } from "firebase-admin/firestore";
 import {
   parseAdmissionThrottleDocument,
   type AdmissionThrottleDocument,
 } from "@digitable/contracts";
 
 /**
- * Fixed-window per-IP/per-room-code admission rate limit. `docs/PHASE_2_PLAN.md`
- * names per-IP/per-room throttling as part of PR 3's join flow, and the
- * independent review requires it to be meaningful — it must bound attempts,
- * not merely record them.
+ * Fixed-window admission rate limits. `docs/PHASE_2_PLAN.md` names per-IP/
+ * per-room throttling as part of PR 3's join flow, and the independent
+ * reviews require it to be meaningful — it must bound attempts, not merely
+ * record them. Three buckets, all consumed in one transaction before the
+ * admission transaction (second pass, T1/C1/C6):
+ *
+ * - `code`: per (submitted room code, caller IP) — passphrase brute force
+ *   against one code.
+ * - `ip`: per caller IP across every code — room-code enumeration from one
+ *   address.
+ * - `uid`: per verified anonymous UID — an unspoofable bound that holds even
+ *   where the resolved IP is not trustworthy (residual R2); a scripted
+ *   attacker must mint a fresh anonymous identity every `uid` cap attempts,
+ *   which App Check enforcement later gates.
  *
  * A fixed window (not a token bucket or sliding log) is deliberately the
  * simplest structure that is still correct under Firestore's transaction
- * retry semantics: one document, one read-modify-write, and no cleanup job
- * for expired entries (a stale window is simply reset the next time it is
- * read after expiry).
+ * retry semantics: one document per bucket, one read-modify-write each, no
+ * cleanup job (a stale window is reset the next time it is read after
+ * expiry; a TTL policy on `expiresAt` reclaims abandoned documents).
  */
 export const ADMISSION_THROTTLE_WINDOW_MS = 60_000;
-export const ADMISSION_THROTTLE_MAX_ATTEMPTS = 20;
+
+export const ADMISSION_THROTTLE_LIMITS = {
+  code: 20,
+  ip: 100,
+  uid: 60,
+} as const;
+
+export type ThrottleBucket = keyof typeof ADMISSION_THROTTLE_LIMITS;
+
+/** Kept for one extra window past expiry so an in-flight reset never races the TTL. */
+const TTL_GRACE_MS = ADMISSION_THROTTLE_WINDOW_MS;
 
 export interface ThrottleDecision {
   readonly allowed: boolean;
-  /** Attempts left in the window after this one (0 when denied). */
-  readonly remaining: number;
   /** The document to persist, or `null` when the request is denied and nothing changes. */
   readonly next: AdmissionThrottleDocument | null;
 }
 
 /**
- * Pure window arithmetic, separated from Firestore so the boundary
- * conditions (exactly at the cap, exactly at window expiry) are unit-tested
- * without an emulator.
+ * Pure window arithmetic for one bucket, separated from Firestore so the
+ * boundary conditions (exactly at the cap, exactly at window expiry) are
+ * unit-tested without an emulator.
  */
 export function decideThrottle(
   existing: AdmissionThrottleDocument | null,
   now: number,
+  maxAttempts: number,
 ): ThrottleDecision {
   if (existing === null || now - existing.windowStartMs >= ADMISSION_THROTTLE_WINDOW_MS) {
-    return {
-      allowed: true,
-      remaining: ADMISSION_THROTTLE_MAX_ATTEMPTS - 1,
-      next: { windowStartMs: now, count: 1 },
-    };
+    return { allowed: true, next: { windowStartMs: now, count: 1 } };
   }
-  if (existing.count >= ADMISSION_THROTTLE_MAX_ATTEMPTS) {
-    return { allowed: false, remaining: 0, next: null };
+  if (existing.count >= maxAttempts) {
+    return { allowed: false, next: null };
   }
-  const count = existing.count + 1;
   return {
     allowed: true,
-    remaining: ADMISSION_THROTTLE_MAX_ATTEMPTS - count,
-    next: { windowStartMs: existing.windowStartMs, count },
+    next: { windowStartMs: existing.windowStartMs, count: existing.count + 1 },
   };
 }
 
 /**
- * Makes an untrusted string safe as a single Firestore document-ID segment:
- * no `/` (a path separator), not solely `.`/`..`, and not the reserved
- * `__name__` form. The room code is bounds-checked upstream
- * (`parseAdmitMemberInput`), but its characters are not otherwise
- * constrained; the IP comes from request metadata. A malformed value must
- * never become an invalid path that throws mid-request (which would fail
- * open by skipping the throttle).
+ * Fixed-length, path-safe document ID for an untrusted value: SHA-256 hex.
+ * No submitted room code or caller address is ever stored as a document ID,
+ * an oversized header cannot exceed Firestore's ID limit, and no value can
+ * form an invalid path segment (second pass, T5).
  */
-export function throttleSegment(value: string): string {
-  const flattened = value.replace(/\//g, "_");
-  if (flattened.length === 0) return "empty";
-  if (/^\.{1,2}$/.test(flattened) || /^__.*__$/.test(flattened)) return `x_${flattened}`;
-  return flattened;
+export function throttleKey(value: string): string {
+  return createHash("sha256").update(value, "utf8").digest("hex");
 }
 
-/** Service-only path; explicitly denied to clients in `firestore.rules`. */
-export function throttleDocumentPath(roomCode: string, ip: string): string {
-  return `admissionThrottle/${throttleSegment(roomCode)}/byIp/${throttleSegment(ip)}`;
+export interface ThrottleSubject {
+  readonly roomCode: string;
+  readonly ip: string;
+  readonly uid: string;
 }
+
+/** Service-only paths; the whole `admissionThrottle` tree is denied to clients in `firestore.rules`. */
+export function throttleDocumentPaths(
+  subject: ThrottleSubject,
+): Readonly<Record<ThrottleBucket, string>> {
+  const ip = throttleKey(subject.ip);
+  return {
+    code: `admissionThrottle/code-${throttleKey(subject.roomCode)}/byIp/${ip}`,
+    ip: `admissionThrottle/ip-${ip}/scope/all`,
+    uid: `admissionThrottle/uid-${throttleKey(subject.uid)}/scope/all`,
+  };
+}
+
+export interface ThrottleResult {
+  readonly allowed: boolean;
+  /** Which bucket denied the request, when one did. */
+  readonly limitedBy: ThrottleBucket | null;
+}
+
+const BUCKETS: readonly ThrottleBucket[] = ["code", "ip", "uid"];
 
 /**
- * Checks and atomically consumes one admission attempt for `(roomCode, ip)`.
- * Keyed by the room *code* the caller submitted rather than a resolved room
- * ID, so throttling also bounds guessing against codes that resolve to no
- * room (docs/ARCHITECTURE.md section 11, "Room-code guessing"). Runs in its
- * own transaction, before the admission transaction, so a throttled request
- * never reads `authority/current` or a secret hash at all.
+ * Checks and atomically consumes one admission attempt across all three
+ * buckets. Denied by any bucket → nothing is written (the attempt is not
+ * consumed elsewhere). Runs in its own transaction, before the admission
+ * transaction, so a throttled request never reads `authority/current` or a
+ * secret hash at all.
  */
 export async function checkAndConsumeAdmissionThrottle(
   db: Firestore,
-  roomCode: string,
-  ip: string,
+  subject: ThrottleSubject,
   now: number,
-): Promise<ThrottleDecision> {
-  const ref = db.doc(throttleDocumentPath(roomCode, ip));
+): Promise<ThrottleResult> {
+  const paths = throttleDocumentPaths(subject);
+  const refs = BUCKETS.map((bucket) => db.doc(paths[bucket]));
   return db.runTransaction(async (txn) => {
-    const snapshot = await txn.get(ref);
-    // A malformed counter fails closed via RoomDataError (→ ROOM_DATA_INVALID at
-    // the callable), never as a fresh window.
-    const existing = snapshot.exists ? parseAdmissionThrottleDocument(snapshot.data()) : null;
-    const decision = decideThrottle(existing, now);
-    if (decision.next !== null) txn.set(ref, decision.next);
-    return decision;
+    const snapshots = await txn.getAll(...refs);
+    const decisions = BUCKETS.map((bucket, index) => {
+      const snapshot = snapshots[index];
+      // A malformed counter fails closed via RoomDataError (→ ROOM_DATA_INVALID
+      // at the callable), never as a fresh window.
+      const existing =
+        snapshot !== undefined && snapshot.exists
+          ? parseAdmissionThrottleDocument(snapshot.data())
+          : null;
+      return { bucket, decision: decideThrottle(existing, now, ADMISSION_THROTTLE_LIMITS[bucket]) };
+    });
+    const denied = decisions.find(({ decision }) => !decision.allowed);
+    if (denied !== undefined) {
+      return { allowed: false, limitedBy: denied.bucket };
+    }
+    decisions.forEach(({ decision }, index) => {
+      const ref = refs[index];
+      if (decision.next === null || ref === undefined) return;
+      txn.set(ref, {
+        ...decision.next,
+        expiresAt: Timestamp.fromMillis(
+          decision.next.windowStartMs + ADMISSION_THROTTLE_WINDOW_MS + TTL_GRACE_MS,
+        ),
+      });
+    });
+    return { allowed: true, limitedBy: null };
   });
 }
