@@ -36,6 +36,14 @@ export const STABLE_ERROR_CODES = [
    * code instead of an unmapped internal error.
    */
   "ROOM_CREATION_FAILED",
+  /**
+   * Board task A06: `recoverSeat`'s candidate code matched no seat's
+   * `recovery/{memberId}` hash in the room. Deliberately distinct from
+   * `INVALID_PASSPHRASE` (the room's code-plus-passphrase secret) so a
+   * client never conflates "wrong recovery code" with "wrong room
+   * passphrase" — they gate different flows.
+   */
+  "INVALID_RECOVERY_CODE",
 ] as const;
 
 export type StableErrorCode = (typeof STABLE_ERROR_CODES)[number];

@@ -31,6 +31,7 @@ const callables = createAdmissionCallables({
 export const admitMember = callables.admitMember;
 export const claimSeat = callables.claimSeat;
 export const createRoom = callables.createRoom;
+export const recoverSeat = callables.recoverSeat;
 
 const gameCallables = createGameCallables({ db: getFirestore(), logger });
 export const submitRoomCommand = gameCallables.submitRoomCommand;

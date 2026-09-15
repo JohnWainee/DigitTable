@@ -143,6 +143,19 @@ export function receiptIdFor(memberId: MemberId, commandId: CommandId): ReceiptI
 }
 
 /**
+ * GM-visible audit trail at `rooms/{roomId}/audit/{auditId}` (board task
+ * A06). `docs/ARCHITECTURE.md` section 8: redemption "emits a GM-visible
+ * audit event naming only the seat" — this document is exactly that:
+ * `memberId` identifies the affected seat, never a UID or a secret.
+ * Read-only to the bound GM; written only by the trusted authority.
+ */
+export interface SeatRecoveredAuditDocument {
+  readonly type: "SeatRecovered";
+  readonly memberId: MemberId;
+  readonly occurredAtServer: string;
+}
+
+/**
  * Thrown by the `parse*Document` functions below when a persisted document
  * exists but fails runtime validation. Every reader of a persisted
  * authority/room-code/binding/secret document must treat this as a deny,

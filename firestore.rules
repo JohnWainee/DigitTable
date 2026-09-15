@@ -79,6 +79,13 @@ service cloud.firestore {
           && partition == "member-" + binding(roomId).data.memberId;
         allow write: if false;
       }
+      // Board task A06: GM-visible audit trail (docs/ARCHITECTURE.md section 8's
+      // "Redemption" flow, "a GM-visible audit event naming only the seat").
+      // Written only by the trusted recoverSeat transaction.
+      match /audit/{auditId} {
+        allow read: if hasCapability(roomId, "gm");
+        allow write: if false;
+      }
     }
 
     match /roomCodes/{code} { allow read, write: if false; }
@@ -93,5 +100,7 @@ service cloud.firestore {
     // index above) and its own per-UID/per-IP throttle counters.
     match /createRoomReceipts/{requestId} { allow read, write: if false; }
     match /createRoomThrottle/{document=**} { allow read, write: if false; }
+    // Board task A06: recoverSeat's own per-room-code+IP / per-IP throttle counters.
+    match /recoveryThrottle/{document=**} { allow read, write: if false; }
   }
 }

@@ -18,6 +18,7 @@ export function grpcCodeFor(code: StableErrorCode): FunctionsErrorCode {
     case "ADMISSION_CLOSED":
     case "GM_SEAT_TAKEN":
     case "INVALID_PASSPHRASE":
+    case "INVALID_RECOVERY_CODE":
       return "permission-denied";
     case "RATE_LIMITED":
     case "ROOM_FULL":
