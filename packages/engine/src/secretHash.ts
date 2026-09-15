@@ -74,8 +74,10 @@ export async function verifySecret(secret: string, hashed: HashedSecret): Promis
 }
 
 /**
- * A 13-character code from a 32-symbol unambiguous alphabet is >64 bits of
- * entropy (docs/ARCHITECTURE.md section 8's worked example). Excludes
+ * A 13-character code from this 31-symbol unambiguous alphabet is ~64.4
+ * bits of entropy (13 * log2(31)), clearing the >=64-bit floor
+ * docs/ARCHITECTURE.md section 8 requires; that section's "32-symbol"
+ * phrasing is an illustrative example, not this exact alphabet. Excludes
  * visually-confusable characters (0/O, 1/I/L).
  */
 const RECOVERY_CODE_ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";

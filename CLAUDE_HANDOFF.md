@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **Phase 2 PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim) is implemented on this branch, its first-review blockers are remediated, and a second independent pass (two reviewers) found no blocking issue; its six Medium findings are fixed on the branch** (`docs/reviews/2026-09-14-phase-2-pr3-second-pass-review.md`). **Ready for John's merge decision.**
+- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **Phase 2 PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim) is implemented on this branch, its first-review blockers are remediated, a second independent pass (two reviewers) found no blocking issue with six Medium findings fixed, and a third independent pass (board task A01) re-verified the boundary against every item A01 names, found no blocking issue, and fixed one Low cosmetic finding (a recovery-code alphabet comment miscount)** (`docs/reviews/2026-09-14-phase-2-pr3-third-pass-independent-review.md`). **Ready for John's merge decision.**
 - **Branch:** `worktree-phase2-pr3-admission` (from `origin/main` at PR #12)
 - **PR:** [#13](https://github.com/JohnWainee/DigitTable/pull/13), draft until John merges.
-- **Last updated:** 2026-09-14 by Claude (second-pass review and fixes)
+- **Last updated:** 2026-09-14 by Sonnet A (task A01: third-pass independent review and fix)
 
 ## Mission
 
@@ -198,7 +198,7 @@ Scope was exactly `docs/PHASE_2_PLAN.md`'s PR 1: extract an explicit, async `Roo
 - No Firestore data model, security rules beyond the explicitly-labeled PR 1 placeholder, Cloud Functions, auth/admission, RTDB presence, recovery-code redemption, or client reconnect/outbox implementation were introduced. `packages/engine` and `templates/eat-the-reich`'s pure functions are byte-for-byte unchanged.
 - Not independently verified in a real browser this session (no browser tool available); `apps/web`'s existing `jest-axe`/`@testing-library/react` suite (now exercising the async dispatch path throughout) substitutes for, but does not replace, a manual pass.
 
-## Fifth implementation PR: Firestore data model and security rules (Phase 2 PR 2) — IMPLEMENTED AND INDEPENDENTLY REVIEWED (not yet merged)
+## Fifth implementation PR: Firestore data model and security rules (Phase 2 PR 2) — MERGED to `main` (PR #12)
 
 Scope is exactly `docs/PHASE_2_PLAN.md` PR 2. This change replaces PR 1's default-deny placeholders with the resolved, read-only client access model. It does not introduce a Cloud Function, anonymous-auth admission flow, a real Firebase project, or a Firebase-backed client repository.
 
@@ -215,10 +215,25 @@ Scope is exactly `docs/PHASE_2_PLAN.md` PR 2. This change replaces PR 1's defaul
 - `git diff --check origin/main...HEAD` — clean before the handoff update; rerun before commit.
 - `npm install` repaired a pre-existing lockfile omission for `packages/testing`'s declared `vitest` devDependency; it did not change requested dependency versions.
 
+## Sixth implementation PR: anonymous auth, admission, and GM claim (Phase 2 PR 3) — READY FOR JOHN'S MERGE DECISION (this branch)
+
+Scope is exactly `docs/PHASE_2_PLAN.md` PR 3, revised during review to also host the trusted `apps/functions` codebase (ADR-001) rather than deferring it to PR 4. Two `onCall` callables, `admitMember` and `claimSeat` (`apps/functions/src/callables.ts`), wrap an Admin-SDK transaction (`apps/functions/src/admissionAuthority.ts`) behind the pipeline App Check monitoring → auth required → payload validation → per-IP/per-UID throttle → transaction. A separate `admission/tableSecret` document is the only secret that admits the table seat; the general room passphrase can never satisfy it. Every persisted document the transaction reads (authority, room-code index, uid binding, secret hash, throttle counter) is runtime-validated and fails closed (`ROOM_DATA_INVALID`) rather than defaulting. A bound UID must still present the current secret before a reclaim is honored, including after rotation. `apps/web/src/firebase/appCheck.ts` uses the Enterprise reCAPTCHA provider, wired from a new `apps/web/src/firebase/bootstrap.ts` startup seam; a local-only build without Firebase config touches no Firebase service. Room creation itself (minting the initial code/passphrase/table code and the empty GM seat) is not in this PR's scope — see board task A03.
+
+### Required checks — all pass locally
+
+- `npm run check` — formatting, lint (zero warnings), typecheck, and **283/283** default tests across 38 files passed.
+- `npm run build` — passed (`apps/functions` esbuild bundle, 23.1kb; `apps/web` vite build).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **54/54** tests passed (16 in `packages/testing`, 38 in `apps/functions`) against the local `demo-digitable` Auth, Firestore, and RTDB emulators.
+- `git diff --check origin/main...HEAD` — clean.
+- `npm audit` — 13 moderate advisories repository-wide, none high/critical, all in the `firebase-tools`/`firebase-admin` dependency trees (see the second-pass review's residual R6 for the one advisory genuinely reachable from the Function's dependency tree).
+
 ### Independent reviews
 
 1. First independent review: five blockers, dispositioned in [`docs/reviews/2026-09-14-phase-2-pr3-review-resolution.md`](docs/reviews/2026-09-14-phase-2-pr3-review-resolution.md) (residuals R1–R7).
-2. Second independent pass over the remediation (two reviewers in fresh contexts, with emulator probes): [`docs/reviews/2026-09-14-phase-2-pr3-second-pass-review.md`](docs/reviews/2026-09-14-phase-2-pr3-second-pass-review.md). No blocking finding; six Medium findings (spoofable IP key, no enumeration bound, absent `gmMemberId` reopening the GM seat, unconstrained room-code characters, deploy manifest, `meta/current` merge) and the Low ones are fixed on this branch with tests. Merge is John's decision.
+2. Second independent pass over the remediation (two reviewers in fresh contexts, with emulator probes): [`docs/reviews/2026-09-14-phase-2-pr3-second-pass-review.md`](docs/reviews/2026-09-14-phase-2-pr3-second-pass-review.md). No blocking finding; six Medium findings (spoofable IP key, no enumeration bound, absent `gmMemberId` reopening the GM seat, unconstrained room-code characters, deploy manifest, `meta/current` merge) and the Low ones are fixed on this branch with tests.
+3. Third independent pass (board task A01, a fresh reviewer subagent given only the branch and the architecture invariants): [`docs/reviews/2026-09-14-phase-2-pr3-third-pass-independent-review.md`](docs/reviews/2026-09-14-phase-2-pr3-third-pass-independent-review.md). Re-verified callable auth/throttle ordering, fail-closed persisted-data validation, separate table admission, secret-on-reclaim ordering, and Enterprise App Check monitoring against the actual code (not just the prior reviews' claims) — no blocking finding. One Low, non-blocking, cosmetic finding (a recovery-code alphabet comment claimed 32 symbols; the literal alphabet is 31, still ~64.4 bits, clearing the required >=64-bit floor) fixed on this branch with no behavior change.
+
+Merge remains John's decision.
 
 ## Definition of first playable
 
