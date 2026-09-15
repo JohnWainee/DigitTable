@@ -165,7 +165,7 @@ Start with React context/hooks and an explicit external-store adapter. Add a bro
 
 ### Stable errors
 
-`AUTH_REQUIRED`, `ROLE_FORBIDDEN`, `REVISION_CONFLICT`, `ROLL_ALREADY_RESOLVED`, `TEMPLATE_VERSION_MISMATCH`, `ROOM_ARCHIVED`, and `RATE_LIMITED` map to actionable client states. Never expose stack traces or hidden payload details.
+`AUTH_REQUIRED`, `ROLE_FORBIDDEN`, `REVISION_CONFLICT`, `ROLL_ALREADY_RESOLVED`, `TEMPLATE_VERSION_MISMATCH`, `ROOM_ARCHIVED`, `RATE_LIMITED`, `PAYLOAD_TOO_LARGE`, `UNKNOWN_ACTION`, `INVALID_ALLOCATION`, and the admission family added in Phase 2 PR 3 (`ROOM_FULL`, `ADMISSION_CLOSED`, `ROOM_NOT_FOUND`, `INVALID_PASSPHRASE`, `GM_SEAT_TAKEN`, `ROOM_DATA_INVALID` for a persisted document that fails runtime validation, and `INVALID_REQUEST` for an untrusted payload that fails validation before any read) map to actionable client states — kept in sync with `packages/contracts/src/errors.ts`'s `STABLE_ERROR_CODES`, the canonical list. Never expose stack traces or hidden payload details.
 
 ## 7. Contracts
 
@@ -257,10 +257,14 @@ Only scene transitions, encounter loads, GM-seat administration, and other expli
 ```text
 rooms/{roomId}/
   meta/current                template, status, gmMemberId, timestamps; denormalized, client-readable mirror
-  authority/current           full TState, roomRevision, nextSequence, roomStatus, gmMemberId, versions; service-only
+  authority/current           full TState, roomRevision, nextSequence, roomStatus, gmMemberId,
+                               admissionStatus, participantCount, tableSeatClaimed, versions; service-only
   members/{memberId}          capabilities, display name, join/last-seen times
   bindings/{memberId}         uid binding; service-only and client-unreadable
   uidBindings/{uid}           { memberId, capability } reverse index; service-only and client-unreadable
+  admission/secret            room passphrase hash+salt+iterations (player/GM admission); service-only
+  admission/tableSecret       separate table-code hash+salt+iterations (table admission); service-only
+  recovery/{memberId}         per-seat recovery-code hash+salt+iterations; service-only
   projections/{viewerId}      one full document for memberId, gm, or table
   receipts/{receiptId}        memberId, commandId, status, accepted sequence, stable result
   snapshots/{sequence}        archival authority copy, checksum, versions; service-only
@@ -268,6 +272,9 @@ rooms/{roomId}/
   events/gm/items/{sequence}
   events/member-{memberId}/items/{sequence}
 roomCodes/{code}               roomId; service-only, rotatable
+admissionThrottle/code-{h}/byIp/{h}  fixed-window join-attempt counters (per code+IP, per IP,
+admissionThrottle/ip-{h}/scope/all     per verified UID); document IDs are SHA-256 hashes,
+admissionThrottle/uid-{h}/scope/all    never the submitted value; service-only
 
 RTDB:
 presence/{roomId}/{uid}/{connectionId}/
@@ -282,6 +289,14 @@ Every accepted-command transaction reads `authority/current`, the actor's `bindi
 Firestore rules cannot establish "is this UID a member of this room" from `bindings/{memberId}` alone, because bindings are keyed by member ID and rules cannot query a collection to find the matching one (third-pass review R1). `rooms/{roomId}/uidBindings/{uid}` is a service-only reverse index, `{ memberId, capability }`, written in the same transaction as `bindings/{memberId}` on join, rebind, and kick. Rules use one `get()` of `uidBindings/$(request.auth.uid)` for every membership-shaped check: room membership is `exists(...)`, a member's own projection/receipt/event-partition reads compare `.data.memberId` to the path's `{memberId}`, and `gm`/`table` projection and event-partition reads compare `.data.capability` to `'gm'`/`'table'`. `bindings/{memberId}` remains the service-only, member-keyed record Functions use to resolve a member's UID (for example, to validate `uidBindings` stays in sync). Functions use privileged service access but still execute platform authorization before template code.
 
 RTDB rules enforce `$uid === auth.uid` for presence writes. RTDB cannot verify a Firestore binding, so room presence is deliberately limited to opaque room IDs plus online/offline connection state and is readable to an authenticated user who knows the room ID. Clients map UIDs to displayable members through authorized Firestore data. If that residual disclosure becomes unacceptable, replace presence tokens with short-lived signed room claims rather than duplicating authorization state across databases.
+
+`admissionStatus`, `participantCount`, and `tableSeatClaimed` (Phase 2 PR 3) live directly on `authority/current` for the same reason `roomStatus`/`gmMemberId` do: the admission transaction already reads and writes this document as its serialization point, so a concurrent `AdmitMember`/`ClaimSeat` race against it rather than a second document that could drift. `admissionStatus` is independent of `roomStatus` — a GM can close admission to new joiners without archiving the room, and an already-bound identity reconnecting is never blocked by either check (it is still blocked by a wrong secret; see below). Cap participant seats (players plus the GM) at eight; the table seat is exclusive (at most one per room), tracked separately since it does not consume a participant slot. `rooms/{roomId}/admission/secret` holds the room's code-plus-passphrase secret as a salted PBKDF2 hash (join policy decision, `docs/PHASE_2_DECISION_BRIEF.md`) and gates `player` admission and the GM claim; `rooms/{roomId}/admission/tableSecret` holds the *separate* table code the GM issues, in the same shape, and is the only secret that admits the `table` seat — the general passphrase never self-claims the table capability, and the table code never admits a player or the GM (Phase 2 PR 3 review, finding 2). A room whose GM has not issued a table code simply has no `tableSecret` document and admits no table seat. `rooms/{roomId}/recovery/{memberId}` holds each seat's recovery-code hash in the same shape. All are service-only paths no client rule grants access to; the admission callables in `apps/functions` are their only reader or writer. Room *creation* — minting the initial code, passphrase, table code, and empty GM seat — is out of PR 3's scope; it assumes a room, its code, and its hashed secrets already exist.
+
+Every admission request, including a reconnecting already-bound identity, must present the correct current secret for the capability it requests before the reclaim path is honored (Phase 2 PR 3 review, finding 4): rotating a passphrase or table code therefore locks out a stale identity, which cannot bypass the rotation by reclaiming instead of joining fresh. Reclaim then skips only the capacity and admission-closure checks, which apply to new occupants.
+
+Every persisted document the admission authority reads — `roomCodes/{code}`, `authority/current`, `uidBindings/{uid}`, the secret hashes, and the throttle counters — is runtime-validated and fails closed (Phase 2 PR 3 review, finding 3): a document that exists but is malformed (an unrecognized `roomStatus`/`admissionStatus`, a non-integer or negative `participantCount`, a non-boolean `tableSeatClaimed`, an absent or empty `gmMemberId` key — absence must never read as an open GM seat — an empty `memberId`, an `iterations` outside 1–1,000,000) denies the request with `ROOM_DATA_INVALID` and writes nothing; so does a room whose client-readable `meta/current` mirror is missing, since a GM claim updates it and must never create a partial one. Malformed data never reads as `active`, `open`, zero occupancy, "no binding", "verified", or a fresh throttle window. Only a genuinely absent document carries the narrower meaning of "not found", "no binding", or "no secret to verify against".
+
+The `admissionThrottle` tree holds the join throttle (section 11): three fixed 60-second-window counters consumed together in one transaction before the admission transaction, so a throttled caller never reads `authority/current` or a secret hash — at most 20 attempts per (submitted room code, caller IP), which bounds passphrase brute force against one code; 100 per caller IP across all codes, which bounds room-code enumeration from one address; and 60 per verified anonymous UID, an unspoofable bound that holds even where the resolved client IP cannot be trusted (Phase 2 PR 3 second pass, T1/C1/C6). A request denied by any bucket consumes nothing. Document IDs are SHA-256 hashes of the submitted code, address, and UID, so no untrusted value is stored as a path segment or can exceed Firestore's ID limit; each document carries an `expiresAt` timestamp for a Firestore TTL policy (enable it on the `byIp` and `scope` collection groups before public preview). Keyed on the submitted code rather than a resolved room ID, and kept outside `rooms/`, so guesses at codes that resolve to no room are bounded too. Callers whose IP cannot be resolved share one `unknown` bucket rather than being exempt; the UID bucket still bounds each of them individually. Room codes are validated to letters, digits, and hyphens before any of this runs, and display names to visible, non-control text.
 
 - Clients read only authorized projection/event/receipt paths. Firestore rules compare the service-only seat binding with `auth.uid`.
 - Game commands go through Functions; direct client writes are limited to presence and explicitly safe preferences/drafts.
@@ -315,7 +330,7 @@ Because anonymous users have no contact channel, retention prompts are in-app on
 
 1. Obtain anonymous Firebase identity.
 2. Submit room code and requested capability.
-3. Function resolves the service-only code index, enforces App Check, validates room/template status, capacity, and admission policy, and applies IP/room throttles.
+3. The `admitMember`/`claimSeat` callables in `apps/functions` require a signed-in identity, validate the payload, apply the throttle (per code+IP, per IP, per verified UID), then in one transaction resolve the service-only code index, verify only the secret the requested capability needs (room passphrase for players and the GM claim, the separate table code for the table seat), and validate room status, capacity, and admission policy. The seat's recovery credential is minted and hashed before the transaction so no slow hash runs while `authority/current` is locked. App Check is monitored, not yet enforced (section 11).
 4. Create a stable member seat or transactionally claim the empty/same-member GM seat; show its initial rotatable recovery code once.
 5. Subscribe only to authorized paths.
 
@@ -384,7 +399,7 @@ Browser inputs, cache, room codes, roles, timestamps, and calculated pools are u
 
 Complete a focused threat model before public release, especially recovery, moderation, deletion, and denial-of-service cost.
 
-Before public preview, enable Firebase App Check with the web reCAPTCHA Enterprise provider for callable Functions, Firestore, RTDB, and Authentication after monitoring legitimate traffic. App Check reduces automated abuse but is not user authorization. Cap room membership at eight participant seats plus one table seat. Realtime milestone commands include kick, code rotation, and admission closure; anonymous bans are not durable and therefore do not replace code rotation.
+Before public preview, enable Firebase App Check with the web reCAPTCHA Enterprise provider for callable Functions, Firestore, RTDB, and Authentication after monitoring legitimate traffic. The monitoring half is wired from Phase 2 PR 3: the client initializes App Check with the reCAPTCHA Enterprise provider at application startup (`apps/web/src/firebase/bootstrap.ts`, only when a site key is configured, never a guessed one), and the admission callables run with `enforceAppCheck: false`, logging a content-free event for requests without a token instead of rejecting them. Enforcement itself remains a console-side toggle no repository code flips. Verify against real staging traffic, before enforcement, that the callables' resolved client IP is the caller and not a client-supplied `X-Forwarded-For` entry or the load balancer; until then the per-UID bucket is the throttle's trustworthy bound and the IP buckets are best-effort. App Check reduces automated abuse but is not user authorization. Cap room membership at eight participant seats plus one table seat. Realtime milestone commands include kick, code rotation, and admission closure; anonymous bans are not durable and therefore do not replace code rotation.
 
 ## 12. Reliability, scale, and cost
 

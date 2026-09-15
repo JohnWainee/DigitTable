@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "demo-digitable"
+    "default": "demo-digitable",
+    "staging": "powerglove-1cd23"
   }
 }

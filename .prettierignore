@@ -10,3 +10,4 @@ assets/generated
 # Prose docs predate this scaffold's formatting setup and are out of scope
 # for this PR; format/lint/typecheck here targets the TypeScript engine.
 *.md
+.vitest

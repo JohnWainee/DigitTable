@@ -1,10 +1,33 @@
 :root {
-  color-scheme: light dark;
+  /* `light dark` was declared here with no dark-mode CSS actually
+     implemented, so a browser in dark mode picked its own dark default
+     colors for unstyled form controls (white button text on our
+     explicit white button backgrounds — invisible; found live-testing
+     C01 in a real browser, not caught by jsdom/axe). Pinned to `light`
+     until C04/C05 implement the art brief's real dark palette
+     (docs/ETR_ART_BRIEF.md palette table) with matching
+     `@media (prefers-color-scheme: dark)` rules; every custom button
+     class below also sets `color` explicitly so this isn't the only
+     guard. */
+  color-scheme: light;
   --bg: #f5f0e6;
   --fg: #1b1b1b;
   --accent: #8a1f1f;
   --border: #3a3a3a;
   --focus: #1a6fbf;
+
+  /* docs/ETR_ART_BRIEF.md section 2 palette table (C04). --bg/--fg/--accent
+     above are Phase 1's names for --bone/--charcoal/--crimson and stay as
+     the primary tokens already used throughout; these add the brief's
+     exact names/hexes (--crimson matches --accent) and the four colors
+     Phase 1 never needed. */
+  --bone: var(--bg);
+  --charcoal: var(--fg);
+  --crimson: var(--accent);
+  --crimson-hot: #c42b2b;
+  --cyan: #4fc3e8;
+  --amber: #d9a441;
+  --ash: #6e6a66;
 }
 
 * {
@@ -40,6 +63,7 @@ body {
   border-radius: 0.5rem;
   border: 1px solid var(--border);
   background: white;
+  color: var(--fg);
   cursor: pointer;
 }
 
@@ -162,6 +186,7 @@ fieldset {
   border-radius: 0.5rem;
   border: 1px solid var(--border);
   background: white;
+  color: var(--fg);
   cursor: pointer;
 }
 
@@ -193,6 +218,634 @@ input:focus-visible {
 .error-message {
   color: var(--accent);
   font-weight: 600;
+}
+
+/* C01: landing / create / join / claim / table-join screens
+   (docs/ETR_SESSION_FLOW.md sections 1, 3, 4). */
+
+.landing-screen {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.fixture-banner {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--amber, #d9a441);
+  border-radius: 0.5rem;
+  background: rgba(217, 164, 65, 0.15);
+  font-weight: 600;
+}
+
+.connection-status {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.connection-status--reconnecting,
+.connection-status--signed-out {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.landing-hero p {
+  max-width: 32rem;
+}
+
+.landing-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.landing-actions--primary {
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+.secondary-action {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.link-button {
+  min-height: 44px;
+  padding: 0.5rem 0;
+  border: none;
+  background: none;
+  color: var(--focus);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.landing-resume {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.landing-resume-caveat {
+  font-size: 0.85rem;
+  color: var(--ash, #6e6a66);
+}
+
+.session-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.form-field input[type="text"],
+.form-field input[type="password"] {
+  min-height: 44px;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  background: white;
+  color: var(--fg);
+}
+
+.form-field--checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-field--checkbox input {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.form-hint {
+  font-size: 0.85rem;
+  color: var(--ash, #6e6a66);
+  margin: 0;
+}
+
+.reveal-card,
+.invite-panel {
+  border: 2px solid var(--accent);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.reveal-card dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 1rem;
+  margin: 0;
+}
+
+.reveal-card dt {
+  font-weight: 600;
+}
+
+.reveal-card dd {
+  margin: 0;
+  font-family: ui-monospace, "SFMono-Regular", monospace;
+}
+
+.reveal-code {
+  font-family: ui-monospace, "SFMono-Regular", monospace;
+  font-size: 1.25rem;
+  letter-spacing: 0.1em;
+}
+
+.roster-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 1rem;
+}
+
+.roster-card {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.roster-card-portrait {
+  position: relative;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  overflow: hidden;
+  flex: none;
+}
+
+.roster-card-portrait--downed {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.roster-card-portrait--card {
+  width: 5rem;
+  height: 5rem;
+}
+
+.portrait-image-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--fg, #1b1b1b);
+  color: var(--bg, #f5f0e6);
+  font-weight: 700;
+}
+
+.portrait-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portrait-image {
+    transition: none;
+  }
+}
+
+.stat-line {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.stat-label {
+  font-weight: 600;
+}
+
+.roster-status {
+  font-weight: 600;
+}
+
+.roster-status--mine {
+  color: var(--accent);
+}
+
+/* C02: player dashboard (scene card, party strip, compose/allocate/confirm). */
+
+.scene-card {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.scene-card-art {
+  position: relative;
+  height: 10rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* c07 P1: the scene's longer location sentence, shown once beneath the
+   short title — never rendered at all when they're identical (an unknown
+   scene id has no separate description), so the two never duplicate. */
+.scene-card-description {
+  margin: 0;
+  color: var(--ash, #6e6a66);
+  font-style: italic;
+}
+
+/* docs/ETR_ART_BRIEF.md section 5: bone paper texture with a faint noise
+   grain, the scene title in condensed type — the default until the real
+   image loads, and permanent if it never does. */
+.scene-card-art-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: 700;
+  font-family: "Oswald", "Arial Narrow", system-ui, sans-serif;
+  color: var(--bg, #f5f0e6);
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0 2px, transparent 2px 4px),
+    linear-gradient(135deg, var(--fg, #1b1b1b), var(--accent));
+}
+
+.scene-card-art-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-card-art-image {
+    transition: none;
+  }
+}
+
+.threat-beaten {
+  text-decoration: line-through;
+  color: var(--ash, #6e6a66);
+}
+
+.threat-token {
+  position: relative;
+  display: inline-flex;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.3rem;
+  overflow: hidden;
+  vertical-align: -0.4rem;
+  margin-right: 0.4rem;
+  background: var(--fg, #1b1b1b);
+  flex: none;
+}
+
+.threat-token-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bg, #f5f0e6);
+}
+
+.threat-token-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.threat-token--beaten .threat-token-image,
+.threat-token--beaten .threat-token-fallback {
+  opacity: 0.5;
+}
+
+.threat-token-cross {
+  position: absolute;
+  inset: 0;
+}
+
+.threat-token-cross::before,
+.threat-token-cross::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: var(--crimson-hot, var(--accent));
+}
+
+.threat-token-cross::before {
+  transform: rotate(45deg);
+}
+
+.threat-token-cross::after {
+  transform: rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .threat-token-image {
+    transition: none;
+  }
+}
+
+.party-strip ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.party-member {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+}
+
+.party-member--self {
+  border-color: var(--accent);
+}
+
+.party-member-details {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.party-member-stats {
+  font-size: 0.75rem;
+  color: var(--ash, #6e6a66);
+}
+
+.party-portrait {
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.75rem;
+}
+
+.dice-chip-row {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.die-chip {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  border: 2px solid var(--border);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.die-chip--success {
+  border-color: var(--focus);
+}
+
+.die-chip--critical {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.die-chip--discard {
+  border-color: var(--ash, #6e6a66);
+  color: var(--ash, #6e6a66);
+  opacity: 0.7;
+}
+
+/* C03: GM director console and table display. */
+
+.pending-actions-list,
+.roster-panel-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pending-action-card {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.roster-panel-list li {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 10;
+}
+
+.modal {
+  background: var(--bg, #f5f0e6);
+  color: var(--fg, #1b1b1b);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  max-width: 24rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.route-map {
+  width: 100%;
+  max-width: 32rem;
+  height: auto;
+  background: var(--bg, #f5f0e6);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+.route-map-river {
+  stroke: var(--cyan, #4fc3e8);
+  stroke-width: 2;
+  opacity: 0.5;
+}
+
+.route-map-route {
+  stroke: var(--ash, #6e6a66);
+  stroke-width: 0.6;
+  stroke-dasharray: 2 1.5;
+}
+
+.route-map-node {
+  stroke: var(--fg, #1b1b1b);
+  stroke-width: 1;
+  fill: var(--bg, #f5f0e6);
+}
+
+.route-map-node--current {
+  fill: var(--accent);
+}
+
+.route-map-node--cleared {
+  fill: var(--bg, #f5f0e6);
+}
+
+/* F05 P1: distance-to-objective sector rings, behind the route. */
+.route-map-sector-ring {
+  stroke: var(--border);
+  stroke-width: 0.4;
+  opacity: 0.35;
+}
+
+/* F05 P1: replaces the earlier plain cross-out on a cleared node. */
+.route-map-cleared-stamp rect {
+  fill: var(--bg, #f5f0e6);
+  stroke: var(--accent);
+  stroke-width: 0.6;
+}
+
+.route-map-cleared-stamp text {
+  font-size: 3.2px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  fill: var(--accent);
+}
+
+.route-map-label {
+  font-size: 4px;
+  fill: var(--fg, #1b1b1b);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .route-map-node--current {
+    animation: route-map-pulse 2s ease-in-out infinite;
+  }
+}
+
+@keyframes route-map-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* F05 P1: the shared-table display gets a two-column layout once there's
+   room for it (docs/ARCHITECTURE.md section 6: table is a large/desktop
+   display); a CSS multi-column flow keeps `TableDashboardScreen`'s DOM
+   order (and reading order for a screen reader) unchanged. */
+@media (min-width: 1280px) {
+  .table-screen {
+    display: block;
+    column-count: 2;
+    column-gap: 2rem;
+  }
+
+  .table-screen > * {
+    break-inside: avoid;
+  }
+
+  .table-screen > h1 {
+    column-span: all;
+  }
+}
+
+/* C04: icon sprite (docs/ETR_ART_BRIEF.md section 3.5). */
+
+.etr-icon {
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: -0.15em;
+  flex: none;
+}
+
+.stat-icon {
+  margin-right: 0.3em;
+}
+
+.connection-status-icon {
+  margin-right: 0.35em;
+  color: var(--ash, #6e6a66);
+}
+
+.connection-status--live .connection-status-icon {
+  color: var(--cyan, #4fc3e8);
+}
+
+.connection-status--reconnecting .connection-status-icon,
+.connection-status--signed-out .connection-status-icon {
+  color: var(--accent);
+}
+
+.party-member-stats .etr-icon {
+  margin: 0 0.2em 0 0.5em;
+}
+
+.party-member-stats .etr-icon:first-child {
+  margin-left: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
