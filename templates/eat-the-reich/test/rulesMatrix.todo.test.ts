@@ -14,22 +14,34 @@ import { describe, test } from "vitest";
  */
 
 describe("B02 — characters and pool (matrix 3.1, 3.2 P1-P3/P7)", () => {
-  test.todo("C1: pool base equals chosen stat; 'none' gives base 2");
-  test.todo("C2: roster has exactly six claimable characters");
-  test.todo("C2: second claim of a taken character is rejected (CHARACTER_TAKEN)");
-  test.todo("C2: concurrent claim retried with stale revision is rejected (REVISION_CONFLICT)");
-  test.todo("C3: each roster entry matches the book's custom-character shape");
-  test.todo("C4: blood gain past 10 clamps at 10");
-  test.todo("C4: blood spend below 0 is rejected (INSUFFICIENT_BLOOD)");
-  test.todo("C6: heal injury clears exactly one box for 3 blood");
-  test.todo("C6: heal injury rejected below cost / during Last Stand");
-  test.todo("P2: item use adds one die and decrements uses once, even on retry");
-  test.todo("P2: depleted item cannot be selected (ITEM_DEPLETED)");
-  test.todo("P3: ability use adds one die and charges blood exactly once");
-  test.todo("P3: insufficient blood for ability is rejected (INSUFFICIENT_BLOOD)");
-  test.todo("P7: injury tag noBonusDice forbids bonus claims");
-  test.todo("P7: injury tag oneItemPerTurn limits selection to one item");
-  test.todo("P7: injury tag statDelta adjusts the chosen stat's pool base");
+  // Landed in B02 (real assertions, not listed here): C1 (test/pool.test.ts),
+  // C2 six-character roster and second-claim rejection (test/roster.test.ts,
+  // test/decide.test.ts), C3 shape (test/roster.test.ts), C6 heal cost/reject
+  // (test/decide.test.ts), P7 oneItemPerTurn/statDelta/allStatsDelta/
+  // noBloodSpend (test/pool.test.ts). C2's "concurrent claim retried with a
+  // stale revision" row is resolved by design, not by that literal test:
+  // ClaimCharacter is entity-scoped (docs/ETR_RULES_IMPLEMENTATION_PLAN.md,
+  // packages/contracts/src/command.ts's `expectedRevision` doc comment) and
+  // relies on the CHARACTER_TAKEN precondition instead, covered in
+  // test/decide.test.ts and test/lifecycle.integration.test.ts.
+  test.todo(
+    "C4: blood gain past 10 clamps at 10 (no command grants Blood until B03's Feed/gainBlood)",
+  );
+  test.todo(
+    "P2: item use adds one die and decrements `usesRemaining` once, even on retry — buildPool (B02) only previews this; B03's BeginAction/ReviewAction must actually charge it",
+  );
+  test.todo(
+    "P2: depleted item cannot be selected (ITEM_DEPLETED) at declare time, not just in buildPool's preview",
+  );
+  test.todo(
+    "P3: ability use adds one die and charges Blood exactly once — buildPool (B02) only previews this; B03 must actually charge it",
+  );
+  test.todo(
+    "P7: injury tag noBonusDice forbids bonus claims (bonus claims do not exist until B03's P4)",
+  );
+  test.todo(
+    "P7: injury tag noSpecials forbids SPECIAL activation (SPECIALs are not usable until B03's A6)",
+  );
 });
 
 describe("B03 — rolling and pool completion (matrix 3.2 P4-P6, 3.3)", () => {

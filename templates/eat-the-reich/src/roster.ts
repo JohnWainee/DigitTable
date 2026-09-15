@@ -30,11 +30,7 @@ function item(
   return { id, name, bonusRequirement, bonusPlus, maxUses, usesRemaining: maxUses };
 }
 
-function specialAbility(
-  id: string,
-  name: string,
-  effect: AbilityState["effect"],
-): AbilityState {
+function specialAbility(id: string, name: string, effect: AbilityState["effect"]): AbilityState {
   return { id, name, trigger: "special", effect };
 }
 

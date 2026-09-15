@@ -1,72 +1,280 @@
 import { describe, expect, it } from "vitest";
-import type { RandomSource } from "@digitable/contracts";
-import { ACTION_ID, GEAR_SILENCED_TOOL } from "../src/content.js";
-import { computeVisiblePool, rollPool } from "../src/pool.js";
+import { buildPool, NO_STAT_BASE, type PoolEligibleCharacter } from "../src/pool.js";
+import type {
+  AbilityState,
+  InjuryCategoryState,
+  InjuryPenaltyTag,
+  ItemState,
+  Stat,
+} from "../src/state.js";
 
-class FixedSequenceRandom implements RandomSource {
-  private index = 0;
-  constructor(private readonly faces: readonly number[]) {}
-  rollDie(): number {
-    const face = this.faces[this.index];
-    if (face === undefined) throw new Error("exhausted");
-    this.index += 1;
-    return face;
-  }
+function makeItem(overrides: Partial<ItemState> = {}): ItemState {
+  return {
+    id: "item-1",
+    name: "Test Item",
+    bonusRequirement: "a test condition",
+    bonusPlus: 1,
+    maxUses: 3,
+    usesRemaining: 3,
+    ...overrides,
+  };
 }
 
-describe("rollPool: dice interpretation", () => {
-  it("counts only faces at or above the success threshold (5 or 6) as hits", () => {
-    const outcome = rollPool(new FixedSequenceRandom([1, 2, 3, 4, 5, 6]), 6);
-    expect(outcome.faces).toEqual([1, 2, 3, 4, 5, 6]);
-    expect(outcome.hits).toBe(2);
+function makeAbility(overrides: Partial<AbilityState> = {}): AbilityState {
+  return {
+    id: "ability-1",
+    name: "Test Ability",
+    trigger: "other",
+    effect: { kind: "none" },
+    ...overrides,
+  };
+}
+
+function makeCharacter(overrides: Partial<PoolEligibleCharacter> = {}): PoolEligibleCharacter {
+  const stats: Record<Stat, number> = {
+    BRAWL: 2,
+    CON: 2,
+    FIX: 2,
+    SEARCH: 2,
+    SHOOT: 2,
+    SNEAK: 3,
+    TERRIFY: 1,
+  };
+  return {
+    stats,
+    blood: 5,
+    items: [],
+    abilities: [],
+    injuries: [],
+    ...overrides,
+  };
+}
+
+function injuryWithSecondBoxPenalty(penalty: InjuryPenaltyTag): InjuryCategoryState {
+  return {
+    id: "cat-1",
+    label: "Test Category",
+    boxes: [{ marked: false }, { marked: true, penalty }],
+  };
+}
+
+describe("buildPool (matrix P1-P3, P7)", () => {
+  it("base equals the chosen stat's rating", () => {
+    const outcome = buildPool(makeCharacter(), { stat: "SNEAK", itemIds: [], abilityIds: [] });
+    expect(outcome.ok).toBe(true);
+    if (!outcome.ok) return;
+    expect(outcome.result.base).toBe(3);
+    expect(outcome.result.total).toBe(3);
   });
 
-  it("rolls zero dice for a pool of zero", () => {
-    const outcome = rollPool(new FixedSequenceRandom([]), 0);
-    expect(outcome).toEqual({ faces: [], hits: 0 });
+  it('"none" gives the 2-dice base', () => {
+    const outcome = buildPool(makeCharacter(), { stat: "none", itemIds: [], abilityIds: [] });
+    expect(outcome.ok).toBe(true);
+    if (!outcome.ok) return;
+    expect(outcome.result.base).toBe(NO_STAT_BASE);
   });
 
-  it("clamps a negative pool size to zero dice rather than throwing", () => {
-    const outcome = rollPool(new FixedSequenceRandom([]), -3);
-    expect(outcome).toEqual({ faces: [], hits: 0 });
+  it("an item use adds one die", () => {
+    const character = makeCharacter({ items: [makeItem({ id: "silenced-pistol" })] });
+    const outcome = buildPool(character, {
+      stat: "SNEAK",
+      itemIds: ["silenced-pistol"],
+      abilityIds: [],
+    });
+    expect(outcome.ok).toBe(true);
+    if (!outcome.ok) return;
+    expect(outcome.result.itemDice).toBe(1);
+    expect(outcome.result.total).toBe(4);
   });
 
-  it("counts zero hits when every face misses the threshold", () => {
-    const outcome = rollPool(new FixedSequenceRandom([1, 1, 4, 4]), 4);
-    expect(outcome.hits).toBe(0);
-  });
-});
-
-describe("computeVisiblePool", () => {
-  const character = { attributes: { nerve: 2 }, gear: [GEAR_SILENCED_TOOL] };
-
-  it("sums the attribute and carried, action-relevant gear", () => {
-    expect(computeVisiblePool(character, ACTION_ID, [GEAR_SILENCED_TOOL])).toEqual({
-      nerve: 2,
-      gear: 1,
-      total: 3,
+  it("a depleted item is rejected", () => {
+    const character = makeCharacter({
+      items: [makeItem({ id: "spent-item", usesRemaining: 0 })],
+    });
+    const outcome = buildPool(character, {
+      stat: "SNEAK",
+      itemIds: ["spent-item"],
+      abilityIds: [],
+    });
+    expect(outcome).toEqual({
+      ok: false,
+      rejection: { kind: "itemDepleted", itemId: "spent-item" },
     });
   });
 
-  it("ignores gear ids the character does not carry", () => {
-    expect(computeVisiblePool(character, ACTION_ID, ["someone-elses-gear"])).toEqual({
-      nerve: 2,
-      gear: 0,
-      total: 2,
+  it("an unknown item is rejected", () => {
+    const outcome = buildPool(makeCharacter(), {
+      stat: "SNEAK",
+      itemIds: ["nope"],
+      abilityIds: [],
+    });
+    expect(outcome).toEqual({ ok: false, rejection: { kind: "unknownItem", itemId: "nope" } });
+  });
+
+  it("duplicate item ids are deduplicated to one die", () => {
+    const character = makeCharacter({ items: [makeItem({ id: "one-item" })] });
+    const outcome = buildPool(character, {
+      stat: "SNEAK",
+      itemIds: ["one-item", "one-item"],
+      abilityIds: [],
+    });
+    expect(outcome.ok).toBe(true);
+    if (!outcome.ok) return;
+    expect(outcome.result.itemDice).toBe(1);
+  });
+
+  it("a blood-cost ability adds one die and charges Blood exactly once", () => {
+    const character = makeCharacter({
+      abilities: [makeAbility({ id: "surge", trigger: "blood", bloodCost: 1 })],
+    });
+    const outcome = buildPool(character, {
+      stat: "SNEAK",
+      itemIds: [],
+      abilityIds: ["surge", "surge"],
+    });
+    expect(outcome.ok).toBe(true);
+    if (!outcome.ok) return;
+    expect(outcome.result.abilityDice).toBe(1);
+    expect(outcome.result.bloodCost).toBe(1);
+  });
+
+  it("a free ('other') ability adds one die at no Blood cost", () => {
+    const character = makeCharacter({
+      abilities: [makeAbility({ id: "practiced", trigger: "other" })],
+    });
+    const outcome = buildPool(character, {
+      stat: "SNEAK",
+      itemIds: [],
+      abilityIds: ["practiced"],
+    });
+    expect(outcome.ok).toBe(true);
+    if (!outcome.ok) return;
+    expect(outcome.result.bloodCost).toBe(0);
+  });
+
+  it("insufficient Blood for a blood-cost ability is rejected", () => {
+    const character = makeCharacter({
+      blood: 0,
+      abilities: [makeAbility({ id: "surge", trigger: "blood", bloodCost: 1 })],
+    });
+    const outcome = buildPool(character, {
+      stat: "SNEAK",
+      itemIds: [],
+      abilityIds: ["surge"],
+    });
+    expect(outcome).toEqual({
+      ok: false,
+      rejection: { kind: "insufficientBlood", needed: 1, available: 0 },
     });
   });
 
-  it("counts a carried gear item at most once when its id is repeated", () => {
-    expect(
-      computeVisiblePool(character, ACTION_ID, [GEAR_SILENCED_TOOL, GEAR_SILENCED_TOOL]),
-    ).toEqual({ nerve: 2, gear: 1, total: 3 });
+  it("a special-trigger ability cannot be used to add a die", () => {
+    const character = makeCharacter({
+      abilities: [makeAbility({ id: "crit-only", trigger: "special" })],
+    });
+    const outcome = buildPool(character, {
+      stat: "SNEAK",
+      itemIds: [],
+      abilityIds: ["crit-only"],
+    });
+    expect(outcome).toEqual({
+      ok: false,
+      rejection: { kind: "abilityNotUsable", abilityId: "crit-only" },
+    });
   });
 
-  it("contributes nothing for an unrecognized action id", () => {
-    expect(computeVisiblePool(character, "not-a-real-action", [GEAR_SILENCED_TOOL])).toEqual({
-      nerve: 0,
-      gear: 0,
-      total: 0,
+  it("a passive-trigger ability cannot be used to add a die", () => {
+    const character = makeCharacter({
+      abilities: [makeAbility({ id: "on-ones", trigger: "passive" })],
+    });
+    const outcome = buildPool(character, {
+      stat: "SNEAK",
+      itemIds: [],
+      abilityIds: ["on-ones"],
+    });
+    expect(outcome.ok).toBe(false);
+  });
+
+  it("statDelta injury penalty lowers the chosen stat, floored at 0", () => {
+    const character = makeCharacter({
+      injuries: [injuryWithSecondBoxPenalty({ kind: "statDelta", deltas: { SNEAK: -5 } })],
+    });
+    const outcome = buildPool(character, { stat: "SNEAK", itemIds: [], abilityIds: [] });
+    expect(outcome.ok).toBe(true);
+    if (!outcome.ok) return;
+    expect(outcome.result.base).toBe(0);
+  });
+
+  it("statDelta only applies to its own stat, not others", () => {
+    const character = makeCharacter({
+      injuries: [injuryWithSecondBoxPenalty({ kind: "statDelta", deltas: { SNEAK: -5 } })],
+    });
+    const outcome = buildPool(character, { stat: "BRAWL", itemIds: [], abilityIds: [] });
+    expect(outcome.ok).toBe(true);
+    if (!outcome.ok) return;
+    expect(outcome.result.base).toBe(2);
+  });
+
+  it("allStatsDelta lowers whichever stat is chosen", () => {
+    const character = makeCharacter({
+      injuries: [injuryWithSecondBoxPenalty({ kind: "allStatsDelta", amount: -1 })],
+    });
+    const outcome = buildPool(character, { stat: "SNEAK", itemIds: [], abilityIds: [] });
+    expect(outcome.ok).toBe(true);
+    if (!outcome.ok) return;
+    expect(outcome.result.base).toBe(2);
+  });
+
+  it("an unmarked second box's penalty does not apply", () => {
+    const character = makeCharacter({
+      injuries: [
+        {
+          id: "cat-1",
+          label: "Test",
+          boxes: [
+            { marked: false },
+            { marked: false, penalty: { kind: "allStatsDelta", amount: -5 } },
+          ],
+        },
+      ],
+    });
+    const outcome = buildPool(character, { stat: "SNEAK", itemIds: [], abilityIds: [] });
+    expect(outcome.ok).toBe(true);
+    if (!outcome.ok) return;
+    expect(outcome.result.base).toBe(3);
+  });
+
+  it("oneItemPerTurn rejects selecting more than one item", () => {
+    const character = makeCharacter({
+      items: [makeItem({ id: "a" }), makeItem({ id: "b" })],
+      injuries: [injuryWithSecondBoxPenalty({ kind: "oneItemPerTurn" })],
+    });
+    const outcome = buildPool(character, { stat: "SNEAK", itemIds: ["a", "b"], abilityIds: [] });
+    expect(outcome).toEqual({
+      ok: false,
+      rejection: { kind: "oneItemPerTurn", selectedCount: 2 },
+    });
+  });
+
+  it("oneItemPerTurn allows exactly one item", () => {
+    const character = makeCharacter({
+      items: [makeItem({ id: "a" })],
+      injuries: [injuryWithSecondBoxPenalty({ kind: "oneItemPerTurn" })],
+    });
+    const outcome = buildPool(character, { stat: "SNEAK", itemIds: ["a"], abilityIds: [] });
+    expect(outcome.ok).toBe(true);
+  });
+
+  it("noBloodSpend rejects a blood-cost ability even if Blood is available", () => {
+    const character = makeCharacter({
+      blood: 5,
+      abilities: [makeAbility({ id: "surge", trigger: "blood", bloodCost: 1 })],
+      injuries: [injuryWithSecondBoxPenalty({ kind: "noBloodSpend" })],
+    });
+    const outcome = buildPool(character, { stat: "SNEAK", itemIds: [], abilityIds: ["surge"] });
+    expect(outcome).toEqual({
+      ok: false,
+      rejection: { kind: "bloodSpendForbidden", abilityId: "surge" },
     });
   });
 });

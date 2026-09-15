@@ -1,80 +1,71 @@
 import { describe, expect, it } from "vitest";
-import { THREAT_ID } from "../src/content.js";
 import { eatTheReichTemplate } from "../src/engine.js";
+import { ORIGINAL_ROSTER } from "../src/roster.js";
 import {
   GM_VIEWER,
   PLAYER_MEMBER_ID,
   PLAYER_VIEWER,
+  ROOK_ID,
+  SECOND_PLAYER_VIEWER,
   TABLE_VIEWER,
   freshState,
-  stateWithRoll,
+  stateWithClaim,
 } from "./fixtures.js";
-import { ACTION_ID } from "../src/content.js";
 
 describe("project", () => {
-  it("gives the player their own full character detail as `self`", () => {
-    const view = eatTheReichTemplate.project(freshState(), PLAYER_VIEWER);
-    expect(view.self).toMatchObject({
-      memberId: PLAYER_MEMBER_ID,
-      name: "Rook",
-      attributes: { nerve: 2 },
-    });
+  it("every viewer sees the full roster's public summary, unclaimed", () => {
+    const state = freshState();
+    for (const viewer of [PLAYER_VIEWER, GM_VIEWER, TABLE_VIEWER]) {
+      const view = eatTheReichTemplate.project(state, viewer);
+      expect(view.roster).toHaveLength(ORIGINAL_ROSTER.length);
+      expect(view.roster.every((c) => c.claimedByMemberId === null)).toBe(true);
+      expect(view.roster.every((c) => Object.keys(c.stats).length === 7)).toBe(true);
+    }
   });
 
-  it("gives the GM and table no character (`self` is null)", () => {
-    const state = freshState();
+  it("self is null for a player who has claimed nothing", () => {
+    const view = eatTheReichTemplate.project(freshState(), PLAYER_VIEWER);
+    expect(view.self).toBeNull();
+  });
+
+  it("self is null for GM and table viewers even when someone has claimed a character", () => {
+    const state = stateWithClaim(ROOK_ID, PLAYER_MEMBER_ID);
     expect(eatTheReichTemplate.project(state, GM_VIEWER).self).toBeNull();
     expect(eatTheReichTemplate.project(state, TABLE_VIEWER).self).toBeNull();
   });
 
-  it("never includes the threat's hidden fields in a player or table projection", () => {
-    const state = freshState();
-    const playerThreat = eatTheReichTemplate.project(state, PLAYER_VIEWER).threats[0];
-    const tableThreat = eatTheReichTemplate.project(state, TABLE_VIEWER).threats[0];
-    expect(playerThreat).not.toHaveProperty("hiddenDifficultyModifier");
-    expect(playerThreat).not.toHaveProperty("hiddenIntel");
-    expect(tableThreat).not.toHaveProperty("hiddenDifficultyModifier");
-    expect(tableThreat).not.toHaveProperty("hiddenIntel");
+  it("self is the claiming player's own full sheet", () => {
+    const state = stateWithClaim(ROOK_ID, PLAYER_MEMBER_ID);
+    const view = eatTheReichTemplate.project(state, PLAYER_VIEWER);
+    expect(view.self?.id).toBe(ROOK_ID);
+    expect(view.self?.items.length).toBeGreaterThan(0);
+    expect(view.self?.abilities.length).toBe(3);
+    expect(view.self?.injuries.length).toBe(3);
   });
 
-  it("includes the threat's hidden fields only in the GM projection", () => {
-    const state = freshState();
-    const gmThreat = eatTheReichTemplate.project(state, GM_VIEWER).threats[0];
-    expect(gmThreat).toMatchObject({
-      hiddenDifficultyModifier: state.threats[THREAT_ID]?.hiddenDifficultyModifier,
-      hiddenIntel: state.threats[THREAT_ID]?.hiddenIntel,
-    });
+  it("another player's projection never carries someone else's full sheet as self", () => {
+    const state = stateWithClaim(ROOK_ID, PLAYER_MEMBER_ID);
+    const view = eatTheReichTemplate.project(state, SECOND_PLAYER_VIEWER);
+    expect(view.self).toBeNull();
   });
 
-  it("exposes the active roll's hidden modifier magnitude only to the GM", () => {
-    const state = stateWithRoll({
-      id: "roll-1",
-      actorMemberId: PLAYER_MEMBER_ID,
-      threatId: THREAT_ID,
-      actionId: ACTION_ID,
-      status: "awaiting_opposition",
-      poolComponents: { nerve: 2, gear: 0, hiddenModifier: -1 },
-      hiddenAdjustmentApplied: true,
-    });
-
-    const playerRoll = eatTheReichTemplate.project(state, PLAYER_VIEWER).activeRoll;
-    const gmRoll = eatTheReichTemplate.project(state, GM_VIEWER).activeRoll;
-
-    expect(playerRoll).not.toHaveProperty("hiddenDifficultyModifier");
-    expect(playerRoll?.hiddenAdjustmentApplied).toBe(true);
-    expect(playerRoll?.playerFaces).toBeNull();
-    expect(gmRoll?.playerFaces).toEqual(state.rolls["roll-1"]?.playerFaces);
-    expect(gmRoll?.hiddenDifficultyModifier).toBe(-1);
+  it("the roster summary never includes item/ability/injury detail", () => {
+    const state = stateWithClaim(ROOK_ID, PLAYER_MEMBER_ID);
+    const view = eatTheReichTemplate.project(state, SECOND_PLAYER_VIEWER);
+    const rookSummary = view.roster.find((c) => c.id === ROOK_ID);
+    expect(rookSummary).toBeDefined();
+    expect(rookSummary).not.toHaveProperty("items");
+    expect(rookSummary).not.toHaveProperty("abilities");
+    expect(rookSummary).not.toHaveProperty("injuries");
+    expect(rookSummary?.claimedByMemberId).toBe(PLAYER_MEMBER_ID);
   });
 
-  it("reports no active roll once the only roll is resolved", () => {
-    const state = stateWithRoll({
-      id: "roll-1",
-      actorMemberId: PLAYER_MEMBER_ID,
-      threatId: THREAT_ID,
-      actionId: ACTION_ID,
-      status: "resolved",
-    });
-    expect(eatTheReichTemplate.project(state, PLAYER_VIEWER).activeRoll).toBeNull();
+  it("gmSheets is empty for a player or table viewer and full for the GM", () => {
+    const state = stateWithClaim(ROOK_ID, PLAYER_MEMBER_ID);
+    expect(eatTheReichTemplate.project(state, PLAYER_VIEWER).gmSheets).toEqual([]);
+    expect(eatTheReichTemplate.project(state, TABLE_VIEWER).gmSheets).toEqual([]);
+    const gmView = eatTheReichTemplate.project(state, GM_VIEWER);
+    expect(gmView.gmSheets).toHaveLength(ORIGINAL_ROSTER.length);
+    expect(gmView.gmSheets.find((c) => c.id === ROOK_ID)?.items.length).toBeGreaterThan(0);
   });
 });
