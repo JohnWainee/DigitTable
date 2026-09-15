@@ -139,6 +139,22 @@ function toThreatGmView(threat: ThreatState): ThreatGmView {
   return { ...toThreatPublicView(threat), revealed: threat.revealed, notes: threat.notes };
 }
 
+/**
+ * Independent review finding (2026-09-17, Critical): `SceneLoaded`/
+ * `SceneEdited` events were broadcasting the *full* `ThreatState[]` —
+ * including GM-only `notes` and unrevealed Threats — to the `"shared"`
+ * destination, the same leak `project()` already guards against but the
+ * raw event stream did not (docs/ARCHITECTURE.md §7: the destination
+ * partition is the real security boundary, not just a client convention).
+ * Mirrors `decideBeginAction`'s `ActionDeclared` redaction pattern: an
+ * unrevealed Threat is dropped entirely (matching `project()`'s filter),
+ * and a revealed Threat's `notes` is blanked (matching `toThreatPublicView`
+ * never carrying it).
+ */
+function redactThreatsForShared(threats: readonly ThreatState[]): readonly ThreatState[] {
+  return threats.filter((threat) => threat.revealed).map((threat) => ({ ...threat, notes: "" }));
+}
+
 function toObjectiveView(objective: ObjectiveState): ObjectiveView {
   return {
     id: objective.id,
@@ -975,8 +991,22 @@ function decideSceneTransition(
     objectives,
     threats,
   };
-  const event: EatTheReichEvent = { type: "SceneLoaded", scene, carriedRescueObjectives };
-  return decided([broadcastEvent(`scene-${command.sceneId}-loaded`, event, [{ kind: "shared" }])]);
+  const fullEvent: EatTheReichEvent = { type: "SceneLoaded", scene, carriedRescueObjectives };
+  const redactedForOthers: EatTheReichEvent = {
+    type: "SceneLoaded",
+    scene: { ...scene, threats: redactThreatsForShared(scene.threats) },
+    carriedRescueObjectives,
+  };
+  return decided([
+    {
+      eventId: `scene-${command.sceneId}-loaded`,
+      event: fullEvent,
+      effects: [
+        { destination: { kind: "gm" }, payload: fullEvent },
+        { destination: { kind: "shared" }, payload: redactedForOthers },
+      ],
+    },
+  ]);
 }
 
 function decideLoadScene(
@@ -1171,7 +1201,7 @@ function decideEditScene(
     }
   }
 
-  const event: EatTheReichEvent = {
+  const fullEvent: EatTheReichEvent = {
     type: "SceneEdited",
     reason: command.reason,
     addedObjectives,
@@ -1181,8 +1211,19 @@ function decideEditScene(
     removedObjectiveIds: command.removeObjectiveIds ?? [],
     removedThreatIds: command.removeThreatIds ?? [],
   };
+  const redactedForOthers: EatTheReichEvent = {
+    ...fullEvent,
+    addedThreats: redactThreatsForShared(addedThreats),
+  };
   return decided([
-    broadcastEvent(`scene-edited-${ctx.state.nextRollSequence}`, event, [{ kind: "shared" }]),
+    {
+      eventId: `scene-edited-${ctx.state.nextRollSequence}`,
+      event: fullEvent,
+      effects: [
+        { destination: { kind: "gm" }, payload: fullEvent },
+        { destination: { kind: "shared" }, payload: redactedForOthers },
+      ],
+    },
   ]);
 }
 
