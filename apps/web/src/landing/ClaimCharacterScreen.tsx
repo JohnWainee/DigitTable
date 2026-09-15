@@ -9,6 +9,8 @@ import { readOwnershipRecord, type RosterEntry } from "../session/FixtureSession
 import { fixtureSessionGateway as gateway } from "../session/gateway.js";
 import { ETR_STAT_LABELS } from "../../test/fixtures/etrTemp.js";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
+import { PortraitImage } from "../shared/PortraitImage.js";
+import { Icon, STAT_ICON_NAMES } from "../shared/Icon.js";
 
 export interface ClaimCharacterScreenProps {
   readonly roomId: string;
@@ -81,14 +83,13 @@ export function ClaimCharacterScreen({ roomId }: ClaimCharacterScreenProps): JSX
             const isTaken = character.claimedBy !== null && !isMine;
             return (
               <li key={character.id} className="roster-card">
-                <div className="roster-card-portrait" aria-hidden="true">
-                  {initials(character.name)}
-                </div>
+                <PortraitImage characterId={character.id} name={character.name} size="card" />
                 <h2>{character.name}</h2>
                 <p>{character.concept}</p>
                 <ul className="stat-line" aria-label={`${character.name} stats`}>
                   {ETR_STAT_LABELS.map((label, i) => (
                     <li key={label}>
+                      <Icon name={STAT_ICON_NAMES[i]!} />
                       <span className="stat-label">{label}</span> {character.stats[i]}
                     </li>
                   ))}
@@ -126,14 +127,4 @@ export function ClaimCharacterScreen({ roomId }: ClaimCharacterScreenProps): JSX
       )}
     </main>
   );
-}
-
-function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
 }

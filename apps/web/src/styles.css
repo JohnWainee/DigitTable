@@ -15,6 +15,19 @@
   --accent: #8a1f1f;
   --border: #3a3a3a;
   --focus: #1a6fbf;
+
+  /* docs/ETR_ART_BRIEF.md section 2 palette table (C04). --bg/--fg/--accent
+     above are Phase 1's names for --bone/--charcoal/--crimson and stay as
+     the primary tokens already used throughout; these add the brief's
+     exact names/hexes (--crimson matches --accent) and the four colors
+     Phase 1 never needed. */
+  --bone: var(--bg);
+  --charcoal: var(--fg);
+  --crimson: var(--accent);
+  --crimson-hot: #c42b2b;
+  --cyan: #4fc3e8;
+  --amber: #d9a441;
+  --ash: #6e6a66;
 }
 
 * {
@@ -379,15 +392,47 @@ input:focus-visible {
 }
 
 .roster-card-portrait {
+  position: relative;
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  background: var(--fg, #1b1b1b);
-  color: var(--bg, #f5f0e6);
+  overflow: hidden;
+  flex: none;
+}
+
+.roster-card-portrait--downed {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.roster-card-portrait--card {
+  width: 5rem;
+  height: 5rem;
+}
+
+.portrait-image-fallback {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--fg, #1b1b1b);
+  color: var(--bg, #f5f0e6);
   font-weight: 700;
+}
+
+.portrait-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portrait-image {
+    transition: none;
+  }
 }
 
 .stat-line {
@@ -424,16 +469,115 @@ input:focus-visible {
 }
 
 .scene-card-art {
-  height: 6rem;
+  position: relative;
+  height: 10rem;
   border-radius: 0.5rem;
-  background: linear-gradient(135deg, var(--fg, #1b1b1b), var(--accent));
-  color: var(--bg, #f5f0e6);
+  overflow: hidden;
+}
+
+/* docs/ETR_ART_BRIEF.md section 5: bone paper texture with a faint noise
+   grain, the scene title in condensed type — the default until the real
+   image loads, and permanent if it never does. */
+.scene-card-art-fallback {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  text-align: center;
   padding: 0.5rem;
+  text-align: center;
+  font-weight: 700;
+  font-family: "Oswald", "Arial Narrow", system-ui, sans-serif;
+  color: var(--bg, #f5f0e6);
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0 2px, transparent 2px 4px),
+    linear-gradient(135deg, var(--fg, #1b1b1b), var(--accent));
+}
+
+.scene-card-art-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-card-art-image {
+    transition: none;
+  }
+}
+
+.threat-beaten {
+  text-decoration: line-through;
+  color: var(--ash, #6e6a66);
+}
+
+.threat-token {
+  position: relative;
+  display: inline-flex;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.3rem;
+  overflow: hidden;
+  vertical-align: -0.4rem;
+  margin-right: 0.4rem;
+  background: var(--fg, #1b1b1b);
+  flex: none;
+}
+
+.threat-token-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bg, #f5f0e6);
+}
+
+.threat-token-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.threat-token--beaten .threat-token-image,
+.threat-token--beaten .threat-token-fallback {
+  opacity: 0.5;
+}
+
+.threat-token-cross {
+  position: absolute;
+  inset: 0;
+}
+
+.threat-token-cross::before,
+.threat-token-cross::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: var(--crimson-hot, var(--accent));
+}
+
+.threat-token-cross::before {
+  transform: rotate(45deg);
+}
+
+.threat-token-cross::after {
+  transform: rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .threat-token-image {
+    transition: none;
+  }
 }
 
 .party-strip ul {
@@ -473,10 +617,6 @@ input:focus-visible {
   width: 2rem;
   height: 2rem;
   font-size: 0.75rem;
-}
-
-.party-portrait--downed {
-  border: 2px solid var(--accent);
 }
 
 .dice-chip-row {
@@ -626,6 +766,41 @@ input:focus-visible {
   50% {
     opacity: 0.6;
   }
+}
+
+/* C04: icon sprite (docs/ETR_ART_BRIEF.md section 3.5). */
+
+.etr-icon {
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: -0.15em;
+  flex: none;
+}
+
+.stat-icon {
+  margin-right: 0.3em;
+}
+
+.connection-status-icon {
+  margin-right: 0.35em;
+  color: var(--ash, #6e6a66);
+}
+
+.connection-status--live .connection-status-icon {
+  color: var(--cyan, #4fc3e8);
+}
+
+.connection-status--reconnecting .connection-status-icon,
+.connection-status--signed-out .connection-status-icon {
+  color: var(--accent);
+}
+
+.party-member-stats .etr-icon {
+  margin: 0 0.2em 0 0.5em;
+}
+
+.party-member-stats .etr-icon:first-child {
+  margin-left: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

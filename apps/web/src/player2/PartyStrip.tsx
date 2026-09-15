@@ -1,20 +1,12 @@
 import type { RosterEntry } from "../session/FixtureSessionGateway.js";
 import { fixturePlayLoopStore as store } from "../session/fixturePlayLoopStore.js";
+import { Icon } from "../shared/Icon.js";
+import { PortraitImage } from "../shared/PortraitImage.js";
 
 export interface PartyStripProps {
   readonly roomId: string;
   readonly roster: readonly RosterEntry[];
   readonly selfCharacterId?: string;
-}
-
-function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
 }
 
 /** docs/ETR_SESSION_FLOW.md section 6/10: party strip — portrait, Blood, injury pips, downed, per claimed character. Shared by the player, GM, and table surfaces. */
@@ -38,16 +30,12 @@ export function PartyStrip({ roomId, roster, selfCharacterId }: PartyStripProps)
                   : "party-member"
               }
             >
-              <span
-                className={
-                  downed
-                    ? "roster-card-portrait party-portrait party-portrait--downed"
-                    : "roster-card-portrait party-portrait"
-                }
-                aria-hidden="true"
-              >
-                {initials(character.name)}
-              </span>
+              <PortraitImage
+                characterId={character.id}
+                name={character.name}
+                className="party-portrait"
+                downed={downed}
+              />
               <span className="party-member-details">
                 <span className="party-member-name">
                   {character.name}
@@ -55,7 +43,10 @@ export function PartyStrip({ roomId, roster, selfCharacterId }: PartyStripProps)
                   {downed ? " — downed" : ""}
                 </span>
                 <span className="party-member-stats">
-                  Blood {blood}/10 &middot; Injuries {injuriesMarked}/6
+                  <Icon name="blood" /> Blood {blood}/10 &middot;{" "}
+                  <Icon name={injuriesMarked > 0 ? "injury-marked" : "injury-empty"} /> Injuries{" "}
+                  {injuriesMarked}/6
+                  {downed && <Icon name="downed" label="Downed" />}
                 </span>
               </span>
             </li>

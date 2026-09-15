@@ -12,6 +12,7 @@ import { PlayerDashboardScreen } from "./player2/PlayerDashboardScreen.js";
 import { GmDirectorScreen } from "./gm2/GmDirectorScreen.js";
 import { TableDashboardScreen } from "./table2/TableDashboardScreen.js";
 import { useRoute } from "./router.js";
+import { IconSprite } from "./shared/IconSprite.js";
 import "./styles.css";
 
 /**
@@ -25,6 +26,15 @@ import "./styles.css";
 export function App(): JSX.Element {
   const route = useRoute();
 
+  return (
+    <>
+      <IconSprite />
+      <RouteScreen route={route} />
+    </>
+  );
+}
+
+function RouteScreen({ route }: { readonly route: ReturnType<typeof useRoute> }): JSX.Element {
   switch (route.name) {
     case "landing":
       return <LandingScreen />;

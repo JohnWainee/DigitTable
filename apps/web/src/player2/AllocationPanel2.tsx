@@ -1,4 +1,5 @@
 import { AllocationStepper } from "../shared/AllocationStepper.js";
+import { Icon } from "../shared/Icon.js";
 import {
   allocatedPoints,
   totalRollPoints,
@@ -36,6 +37,7 @@ export function AllocationPanel2({
       <ul className="dice-chip-row" aria-label="Kept dice">
         {roll.keptDice.map((die) => (
           <li key={die.id} className={`die-chip die-chip--${die.kind}`}>
+            <Icon name={die.kind === "critical" ? "die-critical" : "die-success"} />
             {die.face} {die.kind === "critical" ? "(critical)" : "(success)"}
           </li>
         ))}
@@ -44,6 +46,7 @@ export function AllocationPanel2({
         <ul className="dice-chip-row" aria-label="Discarded dice">
           {roll.discardedDice.map((die) => (
             <li key={die.id} className="die-chip die-chip--discard">
+              <Icon name="die-discard" />
               {die.face} (discarded)
             </li>
           ))}

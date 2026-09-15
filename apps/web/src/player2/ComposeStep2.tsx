@@ -5,6 +5,7 @@ import {
   type DeclareChoice,
   type FixtureCharacterState,
 } from "../session/fixturePlayLoop.js";
+import { Icon, STAT_ICON_NAMES } from "../shared/Icon.js";
 
 export interface ComposeStep2Props {
   readonly character: FixtureCharacterState;
@@ -63,6 +64,7 @@ export function ComposeStep2({ character, threats, onDeclare }: ComposeStep2Prop
               checked={statIndex === i}
               onChange={() => setStatIndex(i)}
             />
+            <Icon name={STAT_ICON_NAMES[i]!} className="stat-icon" />
             {label} ({character.stats[i]})
           </label>
         ))}

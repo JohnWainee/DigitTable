@@ -279,6 +279,8 @@ export interface SceneThreatFixture {
   readonly solo?: boolean;
   readonly elite?: boolean;
   readonly revealed: boolean;
+  /** Maps to the docs/ETR_ART_BRIEF.md section 3.4 asset manifest id, e.g. `/etr/<imageId>-128.webp`. */
+  readonly imageId: string;
 }
 
 export interface SceneFixture {
@@ -313,6 +315,7 @@ export const ETR_SCENE_FIXTURE: readonly SceneFixture[] = [
         attack: 2,
         challenge: 0,
         revealed: true,
+        imageId: "threat-patrol",
       },
       {
         id: "patrol-b",
@@ -321,6 +324,7 @@ export const ETR_SCENE_FIXTURE: readonly SceneFixture[] = [
         attack: 2,
         challenge: 0,
         revealed: true,
+        imageId: "threat-patrol",
       },
     ],
   },
@@ -341,6 +345,7 @@ export const ETR_SCENE_FIXTURE: readonly SceneFixture[] = [
         attack: 3,
         challenge: 1,
         revealed: true,
+        imageId: "threat-plated-squad",
       },
       {
         id: "the-enforcer",
@@ -351,6 +356,7 @@ export const ETR_SCENE_FIXTURE: readonly SceneFixture[] = [
         solo: true,
         elite: true,
         revealed: false,
+        imageId: "threat-enforcer",
       },
     ],
   },
@@ -371,6 +377,7 @@ export const ETR_SCENE_FIXTURE: readonly SceneFixture[] = [
         attack: 3,
         challenge: 0,
         revealed: true,
+        imageId: "threat-rifle-squad",
       },
       {
         id: "marksman-nest",
@@ -380,6 +387,7 @@ export const ETR_SCENE_FIXTURE: readonly SceneFixture[] = [
         challenge: 2,
         solo: true,
         revealed: true,
+        imageId: "threat-marksman-nest",
       },
     ],
   },
@@ -401,6 +409,7 @@ export const ETR_SCENE_FIXTURE: readonly SceneFixture[] = [
         challenge: 1,
         solo: true,
         revealed: true,
+        imageId: "threat-armoured-truck",
       },
       {
         id: "the-warden",
@@ -411,6 +420,7 @@ export const ETR_SCENE_FIXTURE: readonly SceneFixture[] = [
         solo: true,
         elite: true,
         revealed: false,
+        imageId: "threat-warden",
       },
     ],
   },
