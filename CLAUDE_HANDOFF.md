@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **PR #13 (admission), #15 (A02 contracts), #18 (A03 createRoom), #23 (A04 game commands), #27 (A05 client repository), and #30 (A06 partial: seat recovery) are all implemented and ready for John's merge decision**, each after its own independent review round with findings fixed and tests added (none blocking; see each PR's own review doc under `docs/reviews/`).
-- **Branch:** `sonnet-a/a06` (from `sonnet-a/a05`, itself from `sonnet-a/a04`, itself from `sonnet-a/a03`, itself from `worktree-phase2-pr3-admission`/PR #13's branch with `sonnet-a/a02` merged in)
-- **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery, stacked on the other five — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-14 by Sonnet A (task A06: seat recovery, independent review, and rules-matrix-coverage fix)
+- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **PR #13 (admission), #15 (A02 contracts), #18 (A03 createRoom), #23 (A04 game commands), #27 (A05 client repository), #30 (A06 partial: seat recovery), and #32 (A07 partial: region fix + runbook) are all implemented and ready for John's merge decision**, each after its own independent review round with findings fixed and tests added (none blocking; see each PR's own review doc under `docs/reviews/`).
+- **Branch:** `sonnet-a/a07` (from `sonnet-a/a06`, itself from `sonnet-a/a05`, itself from `sonnet-a/a04`, itself from `sonnet-a/a03`, itself from `worktree-phase2-pr3-admission`/PR #13's branch with `sonnet-a/a02` merged in)
+- **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
+- **Last updated:** 2026-09-15 by Sonnet A (task A07: region co-location fix, operations runbook, independent review, and this session's final report)
 
 ## Mission
 
@@ -316,6 +316,29 @@ Explicitly deferred (see PR #30's description for the full list): client-side ou
 ### Independent review
 
 One round: [`docs/reviews/2026-09-14-a06-recoverseat-independent-review.md`](docs/reviews/2026-09-14-a06-recoverseat-independent-review.md). No blocking finding. One Low finding — `packages/testing/test-emulator/roomRules.test.ts` had no rules-matrix coverage for the two new Firestore paths (`rooms/{roomId}/audit/{auditId}`, `recoveryThrottle/{document=**}`) — fixed with new/extended tests (GM-only audit read, no client write, fully service-only throttle tree). One Low documentation nuance noted (architecture doc says "deletes the old UID's presence"; the implementation deletes the Firestore `uidBindings` entry, since RTDB presence isn't implemented yet — tracked under the existing R5 residual, not a defect).
+
+Merge remains John's decision.
+
+## Thirteenth implementation PR: release integration, partial (board task A07) — READY FOR JOHN'S MERGE DECISION
+
+`sonnet-a/a07`, PR #32, commit `ef15eb2` plus a small post-review documentation fix (stacked on PR #30's branch; retarget to `main` once #13, #15, #18, #23, #27, #30 merge). A07's full board scope — full quality gates, emulator transport tests, privacy/security review, staging candidate prep, setup/resume/recovery/backup/restore runbook, verify configured regions, three-device rehearsal evidence — is not completable end-to-end from this branch alone: genuine rehearsal evidence needs `apps/web`'s production screens wired to the real backend, and they are not (Sonnet C's C01–C05 fixture engine lives on unmerged branches; a `sonnet-c/c06-integration` branch exists locally, unpushed, that appears to be exactly that integration in progress). Fabricating rehearsal evidence against a fixture engine would prove nothing about this backend, so none is included.
+
+What this PR does deliver:
+
+1. **A real, previously-unnoticed region-mismatch bug, fixed.** `docs/PHASE_2_DECISION_BRIEF.md` records staging Firestore in `us-west1` and directs recording the Functions region alongside it; neither the five `apps/functions` callables nor `apps/web`'s client SDK call had ever actually specified a region (both silently defaulted to `us-central1`, agreeing with each other locally but not by design). Added `FUNCTIONS_REGION = "us-west1"` to `packages/contracts/src/deployment.ts` (shared by both apps so they cannot drift apart independently again) and applied it everywhere. Verified live via the emulator's own registered function names (`us-west1-createRoom`, etc.), not just a type-level claim.
+2. **`docs/RUNBOOK.md`** — setup, resume-vs-recovery (with the architecture doc's R3/R4/R5 residuals stated as plain operational guidance), and backup/restore via standard `gcloud` tooling, explicitly marked unexercised against any real project. Includes the exact (unexecuted) staging deploy command sequence for John to run deliberately, region-verification steps, and an empty "deploy log" section never to be overwritten, only appended.
+
+### Required checks — all pass locally
+
+- `npm run check` — formatting, lint (zero warnings), typecheck, and **325/325** default tests across 43 files passed.
+- `npm run build` — passed (`apps/functions` esbuild bundle 100.2kb; `apps/web` vite build, 80 modules).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **106/106** tests passed (17 `packages/testing`, 86 `apps/functions`, 3 `apps/web`), with the emulator log confirming `us-west1`-qualified function names actually executing.
+- `npm audit` — unchanged from A06's baseline.
+- `git diff --check` — clean.
+
+### Independent review
+
+Two passes (the first stalled mid-run on a long-running background command and was re-run in the foreground to completion): [`docs/reviews/2026-09-14-a07-release-integration-independent-review.md`](docs/reviews/2026-09-14-a07-release-integration-independent-review.md). No blocking finding. One Low finding — `docs/RUNBOOK.md` section 8 imprecisely implied this branch's own `apps/web` held the fixture-engine files it named, when those files live only on Sonnet C's unmerged branches — fixed by clarifying that this branch's `apps/web` is a separate, more primitive, unrelated stub, and the cited files are cross-track information about Sonnet C's branches specifically.
 
 Merge remains John's decision.
 

@@ -223,8 +223,16 @@ without an actual export/import cycle against real data:
 As of this task, the production-facing screens in `apps/web` (Sonnet C's C01–C05) are wired to a `TEMPORARY`
 fixture engine (`FixtureSessionGateway.ts`, `fixturePlayLoop.ts`, `fixturePlayLoopStore.ts`, `etrTemp.ts` per
 C05's own status comment on issue #14), not to the real `FirebaseSessionClient`/`FirebaseRoomRepository` this
-runbook's setup/resume/recovery flow describes. A `sonnet-c/c06-integration` branch exists locally
-(unpushed as of this task) that appears to be exactly this integration work in progress.
+runbook's setup/resume/recovery flow describes. **Note (independent A07 review, Low finding):** those specific
+fixture-engine files live only on Sonnet C's own unmerged branches (confirmed via `git ls-tree -r
+sonnet-c/c06-integration`), not anywhere in this branch's (`sonnet-a/a07`'s) own `apps/web/src` tree — which is
+still the older Phase 1A/1C local-role-simulation harness (`InMemoryRoomRepository`), an even more primitive,
+unrelated stub that never reached the fixture-engine stage at all. The conclusion is the same either way (the
+production screens a rehearsal would exercise are not wired to the real backend), but the C01–C05 fixture engine
+itself is cross-track information about Sonnet C's branches, not something present in this checkout. A
+`sonnet-c/c06-integration` branch exists locally (unpushed as of this task, confirmed via `git branch -a` showing
+no matching `remotes/origin/sonnet-c/c06-integration`) that appears to be exactly this integration work in
+progress.
 
 **Consequence for A07's own acceptance criteria**: genuine three-device rehearsal evidence — real players, on
 real devices, driving the real screens through the real backend — is not honestly producible yet, because the
