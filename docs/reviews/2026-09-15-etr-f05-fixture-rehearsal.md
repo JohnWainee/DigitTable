@@ -45,6 +45,25 @@
 | Table display | pass | pass | Zero controls; passphrase, table code, and GM recovery code absent from the DOM; route map with CLEARED stamp. |
 | Seat authorization | pass | pass | Opening `/gm` with a player seat → "You can't do that from this seat." |
 
+## Re-review after c07 (2026-09-15, later)
+
+Candidate: the same build plus `origin/sonnet-c/c07-gm-controls` @ `7ea4033` (PR #35, stacked on #33). Re-run in fixture mode with the same harness: create → load scene → join → claim → declare → GM roll → allocate (Defend) → end round → declare again → pause → table → resume → end mission.
+
+| # | Status | Evidence |
+|---|---|---|
+| R1 End round | **resolved** | "End round 1" present; after it the console reads round 2, Station Patrol A's attack rose 2 → 3 (F01 S6 "+1 Attack to each active Threat"; no rating regain since none was at 0), and the player's Declare re-enabled. |
+| R2 Pause/Resume/End mission | **resolved** | Player "Pause" → player "Paused.", GM "Session paused." with Resume, table "Paused" with 0 controls, no actor named; Resume restores; "End mission" present and gated (disabled until the final objective completes or a reason is given). |
+| R3 GM ratings | **resolved** | Scene director lists "Objectives … (primary) — rating 8, challenge 0 — active" and every threat with rating, attack, challenge, active/revealed state. |
+| R4 pre-disable Declare | resolved | After acting: Declare disabled with "You've acted this round. Wait for the GM to end the round." |
+| R5 correction beyond Blood | resolved per author; not re-driven | Dialog now covers item uses, injury boxes, downed, retired. |
+| R6 remaining GM tools | resolved (minimal) | Buttons present: Switch to simplified (SetSceneRules), Grant item, Unlock advance, Reassign; EditScene/VoidRoll per author. |
+| R7 Defend-only line | resolved | "Defended: Removed 1 attack success, no injury." |
+| R8 secrets card | resolved | Card gone after "I'm ready". |
+| R9 duplicate title | partially | Scene card still shows the short title twice on the player screen before the description. P2. |
+| new P2 | — | The player's "Pause" button stays enabled while already paused; harmless (engine rejects), but disable it. |
+
+**Fixture-mode verdict: session-runnable.** The live (emulator/staging) path and the three-device rehearsal remain the open gate (R11), owned by Sonnet A's `sonnet-a/a08-integration-fixes`.
+
 ## Required before the 2026-09-17 session
 
 1. C: R1–R3 (End round, Pause/Resume, End mission, GM ratings/notes panel), then R4–R8 as time allows. These are UI wiring over commands the template already implements and tests.
