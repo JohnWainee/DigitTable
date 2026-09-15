@@ -238,11 +238,12 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
         <button
           type="button"
           className="secondary-action"
+          disabled={view.paused}
           onClick={() => {
             void handlePause();
           }}
         >
-          Pause
+          {view.paused ? "Paused" : "Pause"}
         </button>
       </div>
       <SceneCard scene={view.scene} objectives={view.objectives} threats={view.threats} />

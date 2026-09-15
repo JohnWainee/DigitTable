@@ -20,12 +20,18 @@ type LoadStatus = "loading" | "loaded" | "error";
 
 /**
  * docs/ETR_ART_BRIEF.md section 5: the scene image slot's CSS fallback
- * (bone paper texture, condensed title) is the default until the real
- * `<img>` finishes loading, and stays up if it never loads — missing or
- * not-yet-generated art never blocks play. `sceneId` maps to
- * `/etr/<sceneId>-640.webp` (C04's derivative naming convention);
- * unrecognised or not-yet-generated ids simply show the fallback forever,
- * which is correct, not a bug.
+ * (bone paper texture) is the default until the real `<img>` finishes
+ * loading, and stays up if it never loads — missing or not-yet-generated
+ * art never blocks play. `sceneId` maps to `/etr/<sceneId>-640.webp`
+ * (C04's derivative naming convention); unrecognised or not-yet-generated
+ * ids simply show the fallback forever, which is correct, not a bug.
+ *
+ * c07 P2: the fallback no longer repeats the scene's title as visible
+ * text — `SceneCard`'s own `<h2>` renders it immediately after this, so
+ * a duplicate line here (visible for the whole "loading" window, not
+ * just a flash) was pure repetition. The pattern alone is enough context
+ * for the art slot; the `<img>`'s `alt` still carries the real
+ * description for anyone using a screen reader once the image is present.
  */
 export function SceneArt({ sceneId, title }: SceneArtProps): JSX.Element {
   const [status, setStatus] = useState<LoadStatus>("loading");
@@ -33,9 +39,7 @@ export function SceneArt({ sceneId, title }: SceneArtProps): JSX.Element {
 
   return (
     <div className="scene-card-art">
-      <div className="scene-card-art-fallback" aria-hidden={status === "loaded"}>
-        {title}
-      </div>
+      <div className="scene-card-art-fallback" aria-hidden="true" />
       {status !== "error" && (
         <img
           src={`/etr/${sceneId}-640.webp`}

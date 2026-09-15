@@ -13,9 +13,12 @@ import { ThreatToken } from "../../src/shared/ThreatToken.js";
  * test limitation.
  */
 describe("art fallbacks (C04)", () => {
-  it("SceneArt shows its text fallback and gives the image real alt text", () => {
+  it("SceneArt shows a decorative fallback (no title text — SceneCard's own <h2> carries that) and gives the image real alt text", () => {
     const { container } = render(<SceneArt sceneId="drop-forecourt" title="Test Forecourt" />);
-    expect(screen.getByText("Test Forecourt")).toBeInTheDocument();
+    const fallback = container.querySelector(".scene-card-art-fallback")!;
+    expect(fallback).toBeInTheDocument();
+    expect(fallback.textContent).toBe("");
+    expect(screen.queryByText("Test Forecourt")).not.toBeInTheDocument();
     const img = container.querySelector("img")!;
     expect(img.alt.length).toBeGreaterThan(10);
     expect(img.getAttribute("src")).toBe("/etr/drop-forecourt-640.webp");
