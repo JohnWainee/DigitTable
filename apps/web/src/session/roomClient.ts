@@ -96,3 +96,22 @@ export function getRoomRepository(
 export function fixtureRoomExists(roomId: string): boolean {
   return !isLiveMode && roomEngineStore.roomExists(asRoomId(roomId));
 }
+
+/**
+ * Board task A08 live verification finding: on a full page load landing
+ * directly on a room route (a reload, a bookmark, `useRoomProjection`'s own
+ * effect firing on mount), nothing previously ensured Firebase Auth had
+ * finished restoring its persisted anonymous session before the first
+ * Firestore read fired — only `FirebaseSessionClient.ensureSignedIn()`
+ * (used by `createRoom`/`joinRoom`/`claimSeat`) had this discipline. A
+ * projection read fired in that window can reach Firestore before the
+ * SDK's auth context has propagated to it, denying with
+ * `permission-denied` — reproduced live: a REST call with the exact same
+ * UID and the exact same document succeeded immediately, confirming the
+ * rules and the data were both already correct and this was purely a
+ * client-side readiness race. No-ops in fixture mode.
+ */
+export async function ensureLiveAuthReady(): Promise<void> {
+  if (!isLiveMode) return;
+  await getLiveSessionClient().ensureSignedIn();
+}
