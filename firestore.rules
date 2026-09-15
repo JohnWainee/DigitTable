@@ -87,5 +87,11 @@ service cloud.firestore {
     // that resolve to no room are bounded too. Service-only for the whole
     // tree; a client that could read or reset them could defeat the throttle.
     match /admissionThrottle/{document=**} { allow read, write: if false; }
+    // Board task A03: createRoom's idempotency receipt (keyed by the
+    // client-chosen requestId, never a secret itself, but it names a real
+    // roomId/roomCode/memberId, so it stays service-only like every other
+    // index above) and its own per-UID/per-IP throttle counters.
+    match /createRoomReceipts/{requestId} { allow read, write: if false; }
+    match /createRoomThrottle/{document=**} { allow read, write: if false; }
   }
 }

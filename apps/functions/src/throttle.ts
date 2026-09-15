@@ -147,3 +147,74 @@ export async function checkAndConsumeAdmissionThrottle(
     return { allowed: true, limitedBy: null };
   });
 }
+
+/**
+ * Board task A03: `createRoom` has no room code yet (it is about to mint
+ * one), so it cannot use the `code` bucket above — only `uid` (unspoofable)
+ * and `ip` (best-effort, same caveat as admission's `clientIpFrom`). Kept in
+ * its own `createRoomThrottle` tree, not `admissionThrottle`, so the two
+ * limits are tuned and reasoned about independently; creation is rarer than
+ * joining, so its limits are tighter.
+ */
+export const CREATE_ROOM_THROTTLE_LIMITS = {
+  uid: 10,
+  ip: 30,
+} as const;
+
+export type CreateRoomThrottleBucket = keyof typeof CREATE_ROOM_THROTTLE_LIMITS;
+
+const CREATE_ROOM_BUCKETS: readonly CreateRoomThrottleBucket[] = ["uid", "ip"];
+
+export interface CreateRoomThrottleSubject {
+  readonly uid: string;
+  readonly ip: string;
+}
+
+/** Service-only paths; the whole `createRoomThrottle` tree is denied to clients in `firestore.rules`. */
+export function createRoomThrottleDocumentPaths(
+  subject: CreateRoomThrottleSubject,
+): Readonly<Record<CreateRoomThrottleBucket, string>> {
+  return {
+    uid: `createRoomThrottle/uid-${throttleKey(subject.uid)}/scope/all`,
+    ip: `createRoomThrottle/ip-${throttleKey(subject.ip)}/scope/all`,
+  };
+}
+
+/** Same shape and transaction discipline as `checkAndConsumeAdmissionThrottle`, over the `createRoom`-only bucket set. */
+export async function checkAndConsumeCreateRoomThrottle(
+  db: Firestore,
+  subject: CreateRoomThrottleSubject,
+  now: number,
+): Promise<ThrottleResult> {
+  const paths = createRoomThrottleDocumentPaths(subject);
+  const refs = CREATE_ROOM_BUCKETS.map((bucket) => db.doc(paths[bucket]));
+  return db.runTransaction(async (txn) => {
+    const snapshots = await txn.getAll(...refs);
+    const decisions = CREATE_ROOM_BUCKETS.map((bucket, index) => {
+      const snapshot = snapshots[index];
+      const existing =
+        snapshot !== undefined && snapshot.exists
+          ? parseAdmissionThrottleDocument(snapshot.data())
+          : null;
+      return {
+        bucket,
+        decision: decideThrottle(existing, now, CREATE_ROOM_THROTTLE_LIMITS[bucket]),
+      };
+    });
+    const denied = decisions.find(({ decision }) => !decision.allowed);
+    if (denied !== undefined) {
+      return { allowed: false, limitedBy: denied.bucket };
+    }
+    decisions.forEach(({ decision }, index) => {
+      const ref = refs[index];
+      if (decision.next === null || ref === undefined) return;
+      txn.set(ref, {
+        ...decision.next,
+        expiresAt: Timestamp.fromMillis(
+          decision.next.windowStartMs + ADMISSION_THROTTLE_WINDOW_MS + TTL_GRACE_MS,
+        ),
+      });
+    });
+    return { allowed: true, limitedBy: null };
+  });
+}

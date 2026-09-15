@@ -1,6 +1,7 @@
 import type { StableErrorCode } from "./errors.js";
 import type { Capability } from "./template.js";
-import type { RoomId } from "./ids.js";
+import { asRoomId, type RoomId } from "./ids.js";
+import { RoomDataError } from "./room.js";
 
 /**
  * A02 (docs/reviews issue #14 board): the client-facing integration contract
@@ -106,9 +107,71 @@ export interface RoomAdmissionRejected {
   readonly message: string;
 }
 
-export type CreateRoomResult = RoomAdmissionAccepted | RoomAdmissionRejected;
+/**
+ * A03's `createRoom` result. Extends `RoomAdmissionAccepted` with the
+ * separate, system-generated table credential (docs/ARCHITECTURE.md
+ * section 8's "separate table code" — never the creator's own passphrase).
+ * Shown once, exactly like `recoveryCode`: `null` on an idempotent replay
+ * (the receipt never stores it in plaintext), a fresh value only the first
+ * time this `requestId` actually creates the room.
+ */
+export interface CreateRoomAccepted extends RoomAdmissionAccepted {
+  readonly capability: "gm";
+  readonly tableCode: string | null;
+}
+
+export type CreateRoomResult = CreateRoomAccepted | RoomAdmissionRejected;
 export type JoinRoomResult = RoomAdmissionAccepted | RoomAdmissionRejected;
 export type ClaimGmSeatResult = RoomAdmissionAccepted | RoomAdmissionRejected;
+
+/**
+ * Service-only idempotency receipt at `createRoomReceipts/{requestId}`
+ * (board task A03: "persist creation receipt so retries/double-clicks
+ * cannot create duplicate/orphan rooms"). Deliberately excludes every
+ * secret (passphrase, table code, recovery code) — a lost-response retry
+ * must be recoverable without ever storing plaintext in shared data; a
+ * replay's `CreateRoomAccepted.recoveryCode`/`tableCode` are `null`, exactly
+ * like an admission reclaim never re-exposing a credential.
+ */
+export interface CreateRoomReceiptDocument {
+  readonly roomId: RoomId;
+  readonly roomCode: RoomCode;
+  readonly memberId: string;
+}
+
+function isRecordValue(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/**
+ * Runtime-validates `createRoomReceipts/{requestId}`. Fails closed via the
+ * same `RoomDataError` every other persisted-document reader in
+ * `./room.js` throws, so `apps/functions`'s existing
+ * `RoomDataError` -> `ROOM_DATA_INVALID` mapping covers this document too
+ * without a second error-handling path.
+ */
+export function parseCreateRoomReceiptDocument(data: unknown): CreateRoomReceiptDocument {
+  if (!isRecordValue(data)) {
+    throw new RoomDataError("room data: createRoomReceipts/{requestId}: malformed or missing");
+  }
+  const { roomId, roomCode, memberId } = data;
+  if (typeof roomId !== "string" || roomId.length === 0) {
+    throw new RoomDataError(
+      "room data: createRoomReceipts/{requestId}.roomId: malformed or missing",
+    );
+  }
+  if (typeof roomCode !== "string" || roomCode.length === 0) {
+    throw new RoomDataError(
+      "room data: createRoomReceipts/{requestId}.roomCode: malformed or missing",
+    );
+  }
+  if (typeof memberId !== "string" || memberId.length === 0) {
+    throw new RoomDataError(
+      "room data: createRoomReceipts/{requestId}.memberId: malformed or missing",
+    );
+  }
+  return { roomId: asRoomId(roomId), roomCode, memberId };
+}
 
 /**
  * Which screen a capability routes to. Kept as a named indirection (rather

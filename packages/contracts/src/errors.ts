@@ -28,6 +28,14 @@ export const STABLE_ERROR_CODES = [
   "ROOM_DATA_INVALID",
   /** The untrusted request payload failed runtime validation before any read (Phase 2 PR 3 second pass). */
   "INVALID_REQUEST",
+  /**
+   * Board task A03: `createRoom` exhausted its bounded room-code
+   * collision-retry loop. Practically unreachable (a fresh 10-symbol code
+   * from a 31-symbol alphabet collides with a live room with vanishing
+   * probability), kept only so this failure mode still carries a stable
+   * code instead of an unmapped internal error.
+   */
+  "ROOM_CREATION_FAILED",
 ] as const;
 
 export type StableErrorCode = (typeof STABLE_ERROR_CODES)[number];

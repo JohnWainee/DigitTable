@@ -8,8 +8,10 @@ import { createAdmissionCallables } from "./callables.js";
  * (docs/ARCHITECTURE.md ADR-001). Phase 2 PR 3 hosts the admission/join
  * boundary here — the operable callables a real client actually invokes,
  * behind Firebase Auth and App Check monitoring, with per-IP/per-room-code
- * throttling (docs/PHASE_2_PLAN.md PR 3). Phase 2 PR 4 adds the gameplay
- * command authority to this same codebase.
+ * throttling (docs/PHASE_2_PLAN.md PR 3). Board task A03 adds `createRoom`
+ * to the same boundary — the only way a room is provisioned, ETR
+ * preselected, atomically with its creator's GM seat. Phase 2 PR 4 / board
+ * task A04 adds the gameplay command authority to this same codebase.
  *
  * No project, region, or credential is named here: the Admin SDK resolves
  * the project from the runtime environment (`GCLOUD_PROJECT`, set by Cloud
@@ -27,3 +29,4 @@ const callables = createAdmissionCallables({
 
 export const admitMember = callables.admitMember;
 export const claimSeat = callables.claimSeat;
+export const createRoom = callables.createRoom;

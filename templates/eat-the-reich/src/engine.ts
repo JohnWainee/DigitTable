@@ -536,19 +536,28 @@ function theatre(event: EatTheReichEvent, prefs: PresentationPreferences): Theat
   }
 }
 
+/**
+ * `memberIds` may be empty: board task A03's `createRoom` calls this at room
+ * creation time, before any player has joined, so no player member exists
+ * yet to own the placeholder character (only the GM seat, which is not a
+ * `memberIds` entry — a GM does not hold a player character). Characters is
+ * empty until the first player joins; real per-player character assignment
+ * is board task B02's job (verified sheet fields, distinct claims), not this
+ * placeholder engine's. Passing at least one member ID (as
+ * `templates/eat-the-reich/test/fixtures.ts` and
+ * `apps/web/src/repository/InMemoryRoomRepository.ts`'s local-only
+ * single-browser simulation both still do) keeps today's placeholder
+ * behavior of pre-assigning the one placeholder character unchanged.
+ */
 function initialState(input: InitialCampaignInput): EatTheReichState {
   const [firstMemberId] = input.memberIds;
-  if (firstMemberId === undefined) {
-    throw new Error(
-      "eat-the-reich initialState requires at least one player member to assign the placeholder character",
-    );
-  }
-  const character = placeholderCharacter(firstMemberId);
+  const character = firstMemberId === undefined ? null : placeholderCharacter(firstMemberId);
+  const characters = character === null ? {} : { [character.memberId]: character };
   return {
     schemaVersion: 1,
     location: PLACEHOLDER_LOCATION,
     objective: PLACEHOLDER_OBJECTIVE,
-    characters: { [character.memberId]: character },
+    characters,
     threats: { [PLACEHOLDER_THREAT.id]: PLACEHOLDER_THREAT },
     rolls: {},
     nextRollSequence: 1,
