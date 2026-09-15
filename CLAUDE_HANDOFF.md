@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **PR #13 (admission), #15 (A02 contracts), #18 (A03 createRoom), and #23 (A04 game commands) are all implemented and ready for John's merge decision**, each after its own independent review round with findings fixed and tests added (none blocking; see each PR's own review doc under `docs/reviews/`).
-- **Branch:** `sonnet-a/a04` (from `sonnet-a/a03`, itself from `worktree-phase2-pr3-admission`/PR #13's branch with `sonnet-a/a02` merged in)
-- **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands, stacked on the other three — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-14 by Sonnet A (task A04: independent review and fixes)
+- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **PR #13 (admission), #15 (A02 contracts), #18 (A03 createRoom), #23 (A04 game commands), and #27 (A05 client repository) are all implemented and ready for John's merge decision**, each after its own independent review round with findings fixed and tests added (none blocking; see each PR's own review doc under `docs/reviews/`).
+- **Branch:** `sonnet-a/a05` (from `sonnet-a/a04`, itself from `sonnet-a/a03`, itself from `worktree-phase2-pr3-admission`/PR #13's branch with `sonnet-a/a02` merged in)
+- **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository, stacked on the other four — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
+- **Last updated:** 2026-09-14 by Sonnet A (task A05: independent review and fixes)
 
 ## Mission
 
@@ -274,6 +274,26 @@ Explicitly out of scope for this PR (documented, not silently dropped): syntheti
 ### Independent review
 
 One round: [`docs/reviews/2026-09-14-a04-gamecommand-independent-review.md`](docs/reviews/2026-09-14-a04-gamecommand-independent-review.md). No blocking finding — all 10 required verification items passed with direct code-path tracing. One Medium finding (client template-version assertion was previously unreachable, so `TEMPLATE_VERSION_MISMATCH` could never fire — fixed) and three Low findings (hand-duplicated projection assembly instead of reusing `projectViewer`; `commandId`/`roomId` only length-bounded, not character-restricted; authority/bindings validation could throw before the `AUTH_REQUIRED` check), all fixed with regression tests.
+
+Merge remains John's decision.
+
+## Eleventh implementation PR: live client repository (board task A05) — READY FOR JOHN'S MERGE DECISION
+
+`sonnet-a/a05`, PR #27, commit `2ac90f4` (stacked on PR #23's branch — see PR #27's description for the stacking note; retarget to `main` once #13, #15, #18, #23 merge). The client half of A01/A03/A04's trusted authority: `FirebaseSessionClient` (create/join/claim, wrapping A01/A03's callables behind A02's client contracts) and `FirebaseRoomRepository` (the real `RoomRepository` — `dispatch` via `submitRoomCommand` with the client's own asserted template identity; `getProjection`/`subscribeToProjection` via direct Firestore reads/listeners on `rooms/{roomId}/projections/{viewerId}`, never `authority/current` or an event tail). Found and fixed a real gap while wiring this: neither `admitMember` nor `claimSeat` returned `roomId` or `roomRevision`, and `roomCodes/{code}` is service-only — `AdmissionAccepted` now carries both, server-resolved, at all three construction sites in `admissionAuthority.ts`. `anonymousAuth.ts`'s sign-in helpers now take an explicit `FirebaseApp` instead of silently resolving to the process-wide default. Infrastructure: the Functions emulator now starts for `npm run test:emulator` (`firebase.json`) — the first time any test in this repository has driven it over real HTTP transport. `apps/web` gains its own opt-in emulator suite (`vitest.emulator.config.ts` + `test-emulator/session.test.ts`).
+
+Known, documented, out-of-scope gap (not fixed here): the current pre-B02 template never connects "a player joined" to "a character exists" — that's Sonnet B's B02/B03 `ClaimCharacter` rework. The integration test seeds a placeholder character directly past `firestore.rules` (matching `admission.test.ts`'s own fixture pattern) purely to exercise the real accepted-command path end to end.
+
+### Required checks — all pass locally
+
+- `npm run check` — formatting, lint (zero warnings), typecheck, and **325/325** default tests across 43 files passed.
+- `npm run build` — passed (`apps/functions` esbuild bundle 92.1kb; `apps/web` vite build, no Firebase/test-emulator code in the production bundle — verified by grep).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **92/92** tests passed (16 `packages/testing`, 73 `apps/functions`, 3 `apps/web` — the new suite genuinely drives `createRoom` → `admitMember` → `submitRoomCommand` (accepted) → projection read end to end through the real emulators, plus a live `onSnapshot` proof and a real `ROOM_NOT_FOUND` rejection proof).
+- `npm audit` — 13 moderate, unchanged from A01's baseline.
+- `git diff --check` — clean.
+
+### Independent review
+
+One round: [`docs/reviews/2026-09-14-a05-client-repository-independent-review.md`](docs/reviews/2026-09-14-a05-client-repository-independent-review.md). No hard-blocking finding. One Medium finding (the client-side `roomRevision` approximation's stated reasoning was factually wrong — fixed properly with a small server-side change, `AdmissionAccepted` now echoes the transaction's real `authority.roomRevision`, rather than left as a documented limitation) and two Low findings (a duplicated error-mapping helper, a missing `onSnapshot` error callback), all fixed with tests.
 
 Merge remains John's decision.
 
