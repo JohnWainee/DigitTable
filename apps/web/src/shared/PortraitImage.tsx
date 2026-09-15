@@ -9,9 +9,16 @@ export interface PortraitImageProps {
   readonly size?: "card" | "token";
 }
 
+/**
+ * F05 P1: a name segment wrapped in punctuation (a quoted nickname, e.g.
+ * `Grigor "Tallow" Belyakov`) previously contributed its leading quote
+ * mark as an "initial" (`G"`). Strip non-letters from each whitespace
+ * segment first, so only real letters are ever taken.
+ */
 function initials(name: string): string {
   return name
     .split(/\s+/)
+    .map((part) => part.replace(/[^\p{L}]/gu, ""))
     .filter(Boolean)
     .map((part) => part[0])
     .slice(0, 2)

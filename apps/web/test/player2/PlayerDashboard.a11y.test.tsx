@@ -2,20 +2,23 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
 import { beforeEach, describe, expect, it } from "vitest";
+import { asCommandId, asMemberId, asRoomId, type MemberId } from "@digitable/contracts";
+import { ORIGINAL_MISSION } from "@digitable/template-eat-the-reich";
 import { App } from "../../src/App.js";
-import { fixturePlayLoopStore } from "../../src/session/fixturePlayLoopStore.js";
+import { readOwnershipRecord } from "../../src/session/ownership.js";
+import { roomEngineStore } from "../../src/session/RoomEngineStore.js";
 
 /**
- * C02: player dashboard (scene card, party strip, compose -> declared ->
- * allocate -> confirm). Reuses C01's create/join/claim flow to reach a
- * claimed character, then drives the fixture play loop
- * (apps/web/src/session/fixturePlayLoop.ts + fixturePlayLoopStore.ts +
- * usePlayLoopFixture.ts — TEMPORARY until B03 lands) end to end. A
- * declared action now genuinely waits for GM review (C03's
- * `PendingActionsPanel` calls `fixturePlayLoopStore.reviewAndRoll`
- * directly, same as it would through the real UI); `reviewAsGm` below
- * stands in for that screen the same way the pre-existing Phase 1C player
- * test acts as the GM for `SubmitOpposition`.
+ * C02/C06: player dashboard (scene card, party strip, compose -> declared
+ * -> allocate -> confirm), driven by the real template against fixture
+ * mode's in-memory `RoomEngineStore` (no Firebase config in this test's
+ * `import.meta.env`, so `roomClient.ts` stays in fixture mode). A room
+ * starts with no scene loaded until the GM's `LoadScene`
+ * (`templates/eat-the-reich/src/engine.ts`'s `initialState` doc comment) —
+ * `loadOpeningSceneAsGm` below dispatches the real command directly
+ * against the room's repository, standing in for the GM's own
+ * `SceneDirector` screen the same way `reviewAsGm` stands in for
+ * `PendingActionsPanel`'s review.
  */
 
 /** Room id is embedded in the current hash route (`#/room/<roomId>/player`). */
@@ -25,10 +28,44 @@ function currentRoomId(): string {
   return match[1]!;
 }
 
-function reviewAsGm(characterId = "rook"): void {
-  const roomId = currentRoomId();
-  act(() => {
-    fixturePlayLoopStore.reviewAndRoll(roomId, characterId, [], []);
+async function loadOpeningSceneAsGm(roomId: string, gmMemberId: MemberId): Promise<void> {
+  const repository = roomEngineStore.getRepository(asRoomId(roomId));
+  if (!repository) throw new Error("room not found");
+  const { gmBriefing: _gmBriefing, ...scene } = ORIGINAL_MISSION[0]!;
+  await act(async () => {
+    await repository.dispatch(gmMemberId, {
+      commandId: asCommandId(crypto.randomUUID()),
+      payload: { type: "LoadScene", ...scene },
+    });
+  });
+}
+
+async function reviewAsGm(
+  roomId: string,
+  gmMemberId: MemberId,
+  characterId = "rook",
+): Promise<void> {
+  const repository = roomEngineStore.getRepository(asRoomId(roomId));
+  if (!repository) throw new Error("room not found");
+  const projection = await repository.getProjection({
+    roomId: asRoomId(roomId),
+    viewerId: gmMemberId,
+    capability: "gm",
+  });
+  const pendingRoll = projection.view.rolls.find(
+    (r) => r.characterId === characterId && r.status === "declared",
+  );
+  if (!pendingRoll) throw new Error("no pending declared roll for " + characterId);
+  await act(async () => {
+    await repository.dispatch(gmMemberId, {
+      commandId: asCommandId(crypto.randomUUID()),
+      payload: {
+        type: "ReviewAction",
+        rollId: pendingRoll.rollId,
+        approvedClaimIds: [],
+        engagedThreatIds: [],
+      },
+    });
   });
 }
 
@@ -49,8 +86,10 @@ function renderApp(hash = "#/"): ReturnType<typeof render> {
   return render(<App />);
 }
 
-/** Create a session, join as a player, and claim Rook, landing on the dashboard. */
-async function reachDashboardAsRook(user: ReturnType<typeof userEvent.setup>): Promise<void> {
+/** Create a session, load the opening scene, join as a player, and claim Rook, landing on the dashboard. */
+async function reachDashboardAsRook(
+  user: ReturnType<typeof userEvent.setup>,
+): Promise<{ readonly roomId: string; readonly gmMemberId: MemberId }> {
   renderApp("#/create");
   await user.type(screen.getByLabelText(/session name/i), "Rooftop Drop");
   await user.type(screen.getByLabelText(/^passphrase$/i), "wolfbane");
@@ -58,6 +97,12 @@ async function reachDashboardAsRook(user: ReturnType<typeof userEvent.setup>): P
   await user.click(screen.getByRole("button", { name: /^create session$/i }));
   await screen.findByRole("heading", { name: /write these down/i });
   const roomCode = screen.getByText(/^room code$/i).nextElementSibling!.textContent;
+  await user.click(screen.getByLabelText(/i have written these down/i));
+  await user.click(screen.getByRole("button", { name: /i'm ready — continue/i }));
+  await screen.findByRole("heading", { name: /^invite$/i });
+  const gmOwnership = readOwnershipRecord()!;
+
+  await loadOpeningSceneAsGm(gmOwnership.roomId, asMemberId(gmOwnership.memberId));
 
   window.localStorage.clear();
   goTo("#/join");
@@ -73,9 +118,11 @@ async function reachDashboardAsRook(user: ReturnType<typeof userEvent.setup>): P
   await user.click(within(rookCard).getByRole("button", { name: /claim/i }));
   await within(rookCard).findByText(/^yours$/i);
   await user.click(screen.getByRole("button", { name: /continue to your dashboard/i }));
+
+  return { roomId: gmOwnership.roomId, gmMemberId: asMemberId(gmOwnership.memberId) };
 }
 
-describe("Player dashboard (C02)", () => {
+describe("Player dashboard (C02/C06)", () => {
   beforeEach(() => {
     window.localStorage.clear();
     window.sessionStorage.clear();
@@ -94,42 +141,41 @@ describe("Player dashboard (C02)", () => {
     expect(screen.getByText(/get clear of the wreckage/i)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /^party$/i })).toBeInTheDocument();
     expect(screen.getByText(/rook \(you\)/i)).toBeInTheDocument();
-    // Rook's items from the roster fixture render as real checkboxes.
+    // Rook's items from the real roster render as real checkboxes.
     expect(screen.getByRole("checkbox", { name: /silenced pistol/i })).toBeInTheDocument();
   });
 
   it("declares an action, waits for the roll, and reaches the allocation step", async () => {
     const user = userEvent.setup();
-    await reachDashboardAsRook(user);
+    const { gmMemberId } = await reachDashboardAsRook(user);
     await screen.findByRole("heading", { name: /choose an action/i });
 
     await user.click(screen.getByRole("button", { name: /declare action/i }));
     expect(await screen.findByRole("heading", { name: /^declared$/i })).toBeInTheDocument();
     expect(screen.getAllByText(/waiting for the gm/i).length).toBeGreaterThan(0);
 
-    reviewAsGm();
+    await reviewAsGm(currentRoomId(), gmMemberId);
     expect(await screen.findByRole("heading", { name: /your roll/i })).toBeInTheDocument();
-    expect(screen.getByText(/points left to assign/i)).toBeInTheDocument();
+    expect(screen.getByText(/still need a target/i)).toBeInTheDocument();
   });
 
-  it("allocates every point and reaches a resolved confirmation", async () => {
+  it("allocates every kept die and reaches a resolved confirmation", async () => {
     const user = userEvent.setup();
-    await reachDashboardAsRook(user);
+    const { gmMemberId } = await reachDashboardAsRook(user);
     await screen.findByRole("heading", { name: /choose an action/i });
     await user.click(screen.getByRole("button", { name: /declare action/i }));
     await screen.findByRole("heading", { name: /^declared$/i });
-    reviewAsGm();
+    await reviewAsGm(currentRoomId(), gmMemberId);
     await screen.findByRole("heading", { name: /your roll/i });
 
-    const increaseObjective = screen.queryByRole("button", { name: /^increase .*wreckage/i });
-    if (increaseObjective) {
-      // Assign everything to the objective via the AllocationStepper (keyboard/click operable).
-      for (let i = 0; i < 20; i += 1) {
-        const btn = screen.queryByRole("button", { name: /^increase .*wreckage/i });
-        if (!btn || btn.hasAttribute("disabled")) break;
-
-        await user.click(btn);
-      }
+    // Assign every kept die to "Feed" — always a legal target per the real
+    // `validAllocations` (engine.ts) when Rook is not fighting alone
+    // against a `noFeeding` Threat, which the opening scene's Threats
+    // never set.
+    const dieGroups = screen.queryAllByRole("group");
+    for (const group of dieGroups) {
+      const feedRadio = within(group).queryByRole("radio", { name: /^feed$/i });
+      if (feedRadio) await user.click(feedRadio);
     }
 
     const confirmButton = screen.getByRole("button", { name: /confirm allocation/i });
@@ -140,26 +186,24 @@ describe("Player dashboard (C02)", () => {
     expect(screen.getByRole("button", { name: /back to scene/i })).toBeInTheDocument();
   });
 
-  it("allocates entirely by keyboard (spinbutton + End, then Enter to confirm) with no pointer input", async () => {
+  it("allocates entirely by keyboard (radio selection + Enter to confirm), no pointer input", async () => {
     const user = userEvent.setup();
-    await reachDashboardAsRook(user);
+    const { gmMemberId } = await reachDashboardAsRook(user);
     await screen.findByRole("heading", { name: /choose an action/i });
     const declareButton = screen.getByRole("button", { name: /declare action/i });
     declareButton.focus();
     await user.keyboard("{Enter}");
     await screen.findByRole("heading", { name: /^declared$/i });
-    reviewAsGm();
+    await reviewAsGm(currentRoomId(), gmMemberId);
     await screen.findByRole("heading", { name: /your roll/i });
 
-    const spinbuttons = screen.queryAllByRole("spinbutton");
-    if (spinbuttons.length > 0) {
-      // Jump the first target's stepper straight to its max via the keyboard-only End key.
-      // The rolled pool is random (a real dice roll, per fixturePlayLoop.ts), so the max may
-      // legitimately be 0 on an all-discard roll — what matters is that End reaches it exactly.
-      const first = spinbuttons[0]!;
-      first.focus();
-      await user.keyboard("{End}");
-      expect(first.getAttribute("aria-valuenow")).toBe(first.getAttribute("aria-valuemax"));
+    const dieGroups = screen.queryAllByRole("group");
+    for (const group of dieGroups) {
+      const feedRadio = within(group).queryByRole("radio", { name: /^feed$/i });
+      if (feedRadio) {
+        feedRadio.focus();
+        await user.keyboard(" ");
+      }
     }
 
     const confirmButton = screen.getByRole("button", { name: /confirm allocation/i });

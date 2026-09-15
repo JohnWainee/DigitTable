@@ -1,51 +1,80 @@
+import { useState } from "react";
 import { navigate } from "../router.js";
 import {
   ConnectionStatusStrip,
   useFixtureConnectionState,
 } from "../shell/ConnectionStatusStrip.js";
 import { FixtureModeBanner } from "../shell/FixtureModeBanner.js";
-import { readOwnershipRecord } from "../session/FixtureSessionGateway.js";
-import { fixtureSessionGateway as gateway } from "../session/gateway.js";
-import { lookupCharacterFixture } from "../session/fixturePlayLoop.js";
-import { ETR_SCENE_FIXTURE } from "../../test/fixtures/etrTemp.js";
-import { usePlayLoopFixture } from "./usePlayLoopFixture.js";
+import { readOwnershipRecord } from "../session/ownership.js";
+import { useRoomProjection } from "../session/useRoomProjection.js";
+import { asCommandId, type RoomCommandResult } from "@digitable/contracts";
+import type {
+  AllocationTarget,
+  EatTheReichEvent,
+  EatTheReichView,
+  RollView,
+  RollViewFull,
+} from "@digitable/template-eat-the-reich";
+import { LiveRegion } from "../accessibility/LiveRegion.js";
 import { SceneCard } from "./SceneCard.js";
 import { PartyStrip } from "./PartyStrip.js";
 import { ComposeStep2 } from "./ComposeStep2.js";
 import { DeclaredWaiting } from "./DeclaredWaiting.js";
 import { AllocationPanel2 } from "./AllocationPanel2.js";
-import { ConfirmSummary2 } from "./ConfirmSummary2.js";
-import { LiveRegion } from "../accessibility/LiveRegion.js";
+import { ChooseInjuryPanel2 } from "./ChooseInjuryPanel2.js";
+import { ConfirmSummary2, type ActionResolvedEvent } from "./ConfirmSummary2.js";
 
 export interface PlayerDashboardScreenProps {
   readonly roomId: string;
 }
 
-/**
- * docs/ETR_SESSION_FLOW.md section 1: `/room/:roomId/player`. The current
- * scene is always the fixture's first scene (`drop-forecourt`) — real GM
- * scene control (`LoadScene`) is C03's `SceneDirector`; until then every
- * player dashboard opens on the opening scene.
- */
+function isFullRoll(view: RollView): view is RollViewFull {
+  return "declaredStat" in view;
+}
+
+/** docs/ETR_SESSION_FLOW.md section 1: `/room/:roomId/player`, driven entirely by the real projection (C06) — no fixture engine. */
 export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): JSX.Element {
   const connection = useFixtureConnectionState();
   const ownership = readOwnershipRecord();
-  const roomExists = gateway.roomExists(roomId);
-  const roster = roomExists ? gateway.listRoster(roomId) : [];
-  const mine = ownership ? roster.find((c) => c.claimedBy === ownership.memberId) : undefined;
-  const characterFixture = mine ? lookupCharacterFixture(mine.id) : undefined;
-  const sceneFixture = ETR_SCENE_FIXTURE[0]!;
+  const memberId = ownership?.roomId === roomId ? ownership.memberId : "";
+  const { status, projection, dispatch } = useRoomProjection(roomId, memberId, "player");
+  const [error, setError] = useState<string | null>(null);
+  const [pendingResolution, setPendingResolution] = useState<ActionResolvedEvent | null>(null);
 
-  if (!roomExists || !ownership || ownership.roomId !== roomId || !mine || !characterFixture) {
+  if (!ownership || ownership.roomId !== roomId) {
     return (
       <main className="player-screen">
         <ConnectionStatusStrip state={connection} />
         <FixtureModeBanner />
-        <p role="alert">
-          {!roomExists
-            ? "This session has ended, or fixture mode lost it on reload."
-            : "Claim a character before opening the dashboard."}
-        </p>
+        <p role="alert">You need to join and claim a character before opening the dashboard.</p>
+        <button type="button" className="primary-action" onClick={() => navigate("/join")}>
+          Go to join
+        </button>
+      </main>
+    );
+  }
+
+  if (status === "not-found") {
+    return (
+      <main className="player-screen">
+        <ConnectionStatusStrip state={connection} />
+        <FixtureModeBanner />
+        <p role="alert">This session has ended, or fixture mode lost it on reload.</p>
+        <button type="button" className="primary-action" onClick={() => navigate("/")}>
+          Back to start
+        </button>
+      </main>
+    );
+  }
+
+  const self = projection?.view.self ?? null;
+
+  if (projection && !self) {
+    return (
+      <main className="player-screen">
+        <ConnectionStatusStrip state={connection} />
+        <FixtureModeBanner />
+        <p role="alert">Claim a character before opening the dashboard.</p>
         <button
           type="button"
           className="primary-action"
@@ -57,77 +86,138 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
     );
   }
 
-  return (
-    <PlayerDashboardBody
-      roomId={roomId}
-      connectionState={connection}
-      characterFixture={characterFixture}
-      sceneFixture={sceneFixture}
-      roster={roster}
-    />
-  );
-}
+  async function handleDispatch(
+    payload: Parameters<typeof dispatch>[1],
+  ): Promise<RoomCommandResult<EatTheReichEvent>> {
+    setError(null);
+    const result = await dispatch(asCommandId(globalThis.crypto.randomUUID()), payload);
+    if (result.status === "rejected") setError(result.message);
+    return result;
+  }
 
-function PlayerDashboardBody({
-  roomId,
-  connectionState,
-  characterFixture,
-  sceneFixture,
-  roster,
-}: {
-  readonly roomId: string;
-  readonly connectionState: ReturnType<typeof useFixtureConnectionState>;
-  readonly characterFixture: NonNullable<ReturnType<typeof lookupCharacterFixture>>;
-  readonly sceneFixture: (typeof ETR_SCENE_FIXTURE)[number];
-  readonly roster: ReturnType<typeof gateway.listRoster>;
-}): JSX.Element {
-  const loop = usePlayLoopFixture(roomId, characterFixture, sceneFixture);
-  // A pure function of `loop.phase`: identical text on an unrelated
-  // re-render does not get re-announced by `aria-live`, so this alone
-  // gives one polite announcement per phase transition without an effect.
-  const announcement = announcementForPhase(loop.phase);
+  async function handleAllocate(
+    allocations: readonly { readonly dieFaceIndex: number; readonly target: AllocationTarget }[],
+    rollId: string,
+  ): Promise<void> {
+    const result = await handleDispatch({ type: "AllocateResults", rollId, allocations });
+    if (result.status === "accepted") {
+      const resolved = result.sharedEvents.find(
+        (event): event is ActionResolvedEvent => event.type === "ActionResolved",
+      );
+      if (resolved) setPendingResolution(resolved);
+    }
+  }
+
+  async function handleChooseInjury(categoryId: string, rollId: string): Promise<void> {
+    const result = await handleDispatch({ type: "ChooseInjuryCategory", rollId, categoryId });
+    if (result.status === "accepted") {
+      const chosen = result.sharedEvents.find((event) => event.type === "InjuryCategoryChosen");
+      if (chosen && chosen.type === "InjuryCategoryChosen") {
+        setPendingResolution((prev) =>
+          prev ? { ...prev, injuryMark: chosen.mark, injuryChoicePendingMode: null } : prev,
+        );
+      } else {
+        setPendingResolution(null);
+      }
+    }
+  }
+
+  if (!projection || !self) {
+    return (
+      <main className="player-screen">
+        <ConnectionStatusStrip state={connection} />
+        <FixtureModeBanner />
+        <p>Loading&hellip;</p>
+      </main>
+    );
+  }
+
+  const view: EatTheReichView = projection.view;
+  const ownRollView = view.rolls.find((r) => r.characterId === self.id);
+  const ownRoll = ownRollView && isFullRoll(ownRollView) ? ownRollView : null;
+
+  let body: JSX.Element;
+  let announcement: string;
+
+  if (
+    pendingResolution &&
+    pendingResolution.injuryChoicePendingMode &&
+    !pendingResolution.injuryMark
+  ) {
+    body = (
+      <ChooseInjuryPanel2
+        character={self}
+        mode={pendingResolution.injuryChoicePendingMode}
+        onChoose={(categoryId) => {
+          void handleChooseInjury(categoryId, pendingResolution.rollId);
+        }}
+      />
+    );
+    announcement = "Choose an injury category.";
+  } else if (pendingResolution) {
+    body = (
+      <ConfirmSummary2
+        resolved={pendingResolution}
+        character={self}
+        objectives={view.objectives}
+        threats={view.threats}
+        onContinue={() => setPendingResolution(null)}
+      />
+    );
+    announcement = "Action resolved.";
+  } else if (ownRoll?.status === "awaiting_injury_choice" && ownRoll.injuryChoicePending) {
+    body = (
+      <ChooseInjuryPanel2
+        character={self}
+        mode={ownRoll.injuryChoicePending.mode}
+        onChoose={(categoryId) => {
+          void handleChooseInjury(categoryId, ownRoll.rollId);
+        }}
+      />
+    );
+    announcement = "Choose an injury category.";
+  } else if (ownRoll?.status === "awaiting_allocation") {
+    body = (
+      <AllocationPanel2
+        projection={projection}
+        roll={ownRoll}
+        character={self}
+        onConfirm={(allocations) => {
+          void handleAllocate(allocations, ownRoll.rollId);
+        }}
+      />
+    );
+    announcement = "Dice rolled. Assign your results.";
+  } else if (ownRoll?.status === "declared") {
+    body = <DeclaredWaiting />;
+    announcement = "Declared. Waiting for the GM.";
+  } else {
+    body = (
+      <ComposeStep2
+        projection={projection}
+        character={self}
+        threats={view.threats}
+        onDeclare={(command) => {
+          void handleDispatch(command);
+        }}
+      />
+    );
+    announcement = "Choose an action.";
+  }
 
   return (
     <main className="player-screen">
-      <ConnectionStatusStrip state={connectionState} />
+      <ConnectionStatusStrip state={connection} />
       <FixtureModeBanner />
       <LiveRegion politeness="polite" message={announcement} />
-      <SceneCard scene={loop.scene} />
-      <PartyStrip roomId={roomId} roster={roster} selfCharacterId={characterFixture.id} />
-      {loop.phase === "compose" && (
-        <ComposeStep2
-          character={loop.character}
-          threats={loop.scene.threats}
-          onDeclare={loop.declare}
-        />
+      {error && (
+        <p role="alert" className="error-message">
+          {error}
+        </p>
       )}
-      {loop.phase === "declared" && <DeclaredWaiting />}
-      {loop.phase === "rolled" && loop.activeRoll && (
-        <AllocationPanel2
-          roll={loop.activeRoll}
-          character={loop.character}
-          scene={loop.scene}
-          onAssign={loop.assign}
-          onConfirm={loop.confirmAllocation}
-        />
-      )}
-      {loop.phase === "resolved" && loop.resolved && (
-        <ConfirmSummary2 resolved={loop.resolved} onPlayAgain={loop.playAgain} />
-      )}
+      <SceneCard scene={view.scene} objectives={view.objectives} threats={view.threats} />
+      <PartyStrip roster={view.roster} selfCharacterId={self.id} />
+      {body}
     </main>
   );
-}
-
-function announcementForPhase(phase: ReturnType<typeof usePlayLoopFixture>["phase"]): string {
-  switch (phase) {
-    case "declared":
-      return "Declared. Waiting for the GM.";
-    case "rolled":
-      return "Dice rolled. Assign your results.";
-    case "resolved":
-      return "Action resolved.";
-    case "compose":
-    default:
-      return "Choose an action.";
-  }
 }

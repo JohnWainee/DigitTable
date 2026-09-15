@@ -5,11 +5,12 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { App } from "../../src/App.js";
 
 /**
- * C01: create/join/claim/table-join screens. Drives the fixture gateway
- * (apps/web/src/session/FixtureSessionGateway.ts — TEMPORARY until A05's
- * live repository lands) through full create -> reveal -> claim and
- * join -> claim flows, and checks accessibility at phone and desktop
- * widths (docs/ETR_SESSION_FLOW.md; issue #14 binding invariants).
+ * C01/C06: create/join/claim/table-join screens. Drives fixture mode's
+ * real in-memory `RoomEngineStore`/`InMemoryRoomRepository` (running the
+ * real `eatTheReichTemplate` — see `apps/web/src/session/roomClient.ts`)
+ * through full create -> reveal -> claim and join -> claim flows, and
+ * checks accessibility at phone and desktop widths (docs/ETR_SESSION_FLOW.md;
+ * issue #14 binding invariants).
  *
  * One `<App />` is rendered per test and navigated via hash changes (not
  * re-rendered per screen), matching how a real single-page session behaves
@@ -84,7 +85,11 @@ describe("Landing / create / join / claim (C01)", () => {
     await user.click(screen.getByRole("button", { name: /i'm ready — continue/i }));
 
     expect(await screen.findByRole("heading", { name: /invite/i })).toBeInTheDocument();
-    expect(screen.getByText(/players joined: 0\/6/i)).toBeInTheDocument();
+    // No projection has been fetched yet on the just-created reveal screen
+    // (InvitePanel's own doc comment), so no live claimed-count is shown here.
+    expect(
+      screen.getByText(/share the room code and your passphrase with your players/i),
+    ).toBeInTheDocument();
   });
 
   it("lets a player join by code and passphrase, then claim a character from the full roster", async () => {
@@ -149,8 +154,10 @@ describe("Landing / create / join / claim (C01)", () => {
     await user.click(screen.getByRole("button", { name: /i wrote it down/i }));
     await screen.findByRole("heading", { name: /pick your character/i });
 
+    // The real projection carries no member display name (matrix's
+    // `claimedByMemberId` is a bare id) — "claimed" only.
     const rookCardB = screen.getByRole("heading", { name: "Rook" }).closest("li")!;
-    expect(await within(rookCardB).findByText(/claimed by player a/i)).toBeInTheDocument();
+    expect(await within(rookCardB).findByText(/^claimed$/i)).toBeInTheDocument();
   });
 
   it("rejects a bad passphrase with the same message as a bad room code (no oracle)", async () => {
@@ -177,7 +184,7 @@ describe("Landing / create / join / claim (C01)", () => {
     await user.click(screen.getByRole("button", { name: /connect display/i }));
 
     expect(
-      await screen.findByText(/the full table display .* arrives with c03/i),
+      await screen.findByRole("button", { name: /open the table display/i }),
     ).toBeInTheDocument();
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
   });

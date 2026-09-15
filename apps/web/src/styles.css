@@ -742,9 +742,25 @@ input:focus-visible {
   fill: var(--bg, #f5f0e6);
 }
 
-.route-map-cross {
+/* F05 P1: distance-to-objective sector rings, behind the route. */
+.route-map-sector-ring {
+  stroke: var(--border);
+  stroke-width: 0.4;
+  opacity: 0.35;
+}
+
+/* F05 P1: replaces the earlier plain cross-out on a cleared node. */
+.route-map-cleared-stamp rect {
+  fill: var(--bg, #f5f0e6);
   stroke: var(--accent);
-  stroke-width: 1;
+  stroke-width: 0.6;
+}
+
+.route-map-cleared-stamp text {
+  font-size: 3.2px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  fill: var(--accent);
 }
 
 .route-map-label {
@@ -765,6 +781,26 @@ input:focus-visible {
   }
   50% {
     opacity: 0.6;
+  }
+}
+
+/* F05 P1: the shared-table display gets a two-column layout once there's
+   room for it (docs/ARCHITECTURE.md section 6: table is a large/desktop
+   display); a CSS multi-column flow keeps `TableDashboardScreen`'s DOM
+   order (and reading order for a screen reader) unchanged. */
+@media (min-width: 1280px) {
+  .table-screen {
+    display: block;
+    column-count: 2;
+    column-gap: 2rem;
+  }
+
+  .table-screen > * {
+    break-inside: avoid;
+  }
+
+  .table-screen > h1 {
+    column-span: all;
   }
 }
 

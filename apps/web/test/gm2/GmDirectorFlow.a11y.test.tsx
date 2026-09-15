@@ -6,19 +6,20 @@ import { App } from "../../src/App.js";
 import {
   readOwnershipRecord,
   writeOwnershipRecord,
-  type SessionOwnershipRecord,
-} from "../../src/session/FixtureSessionGateway.js";
+  type LocalOwnershipRecord,
+} from "../../src/session/ownership.js";
 
 /**
- * C03: GM director console (invite/scene director/pending actions/roster/
- * correction) and the read-only table display. Drives all three viewer
- * roles (GM, player, table) in one browser tab, switching the fixture
- * ownership record in `localStorage` between them the same way a real
- * multi-device session would use three different browsers — the
- * underlying room/play-loop state
- * (`apps/web/src/session/{FixtureSessionGateway,fixturePlayLoopStore}.ts`)
- * is a shared in-page singleton, so what one role does is visible to the
- * others, same as C02's `reviewAsGm` pattern but for the real GM screen.
+ * C03/C06: GM director console (invite/scene director/pending actions/
+ * roster/correction) and the read-only table display, driven by the real
+ * template against fixture mode's in-memory `RoomEngineStore` (no Firebase
+ * config in this test's `import.meta.env`, so `roomClient.ts` stays in
+ * fixture mode — see `apps/web/src/session/roomClient.ts`'s `isLiveMode`).
+ * Drives all three viewer roles (GM, player, table) in one browser tab,
+ * switching the ownership record in `localStorage` between them the same
+ * way a real multi-device session would use three different browsers —
+ * `roomEngineStore` is a shared in-page singleton, so what one role does
+ * is visible to the others.
  */
 
 function setViewport(width: number, height: number): void {
@@ -42,7 +43,7 @@ interface SessionHandles {
   readonly roomId: string;
   readonly roomCode: string;
   readonly tableCode: string;
-  readonly gmOwnership: SessionOwnershipRecord;
+  readonly gmOwnership: LocalOwnershipRecord;
 }
 
 /** Creates a session as GM and returns everything needed to switch roles later. */
@@ -62,6 +63,10 @@ async function createSessionAsGm(
   await screen.findByRole("heading", { name: /^invite$/i });
   await user.click(screen.getByRole("button", { name: /open the director console/i }));
   await screen.findByRole("heading", { name: /director console/i });
+  // Real `BeginAction` requires an active scene (matrix S05: "no active
+  // scene" is a real rejection) — load the opening scene through the real
+  // `SceneDirector` UI before any test that needs a player to declare.
+  await user.click(screen.getByRole("button", { name: /^load scene$/i }));
   const gmOwnership = readOwnershipRecord()!;
   return { roomId: gmOwnership.roomId, roomCode, tableCode, gmOwnership };
 }
@@ -70,7 +75,7 @@ async function createSessionAsGm(
 async function joinAndClaimRook(
   user: ReturnType<typeof userEvent.setup>,
   roomCode: string,
-): Promise<SessionOwnershipRecord> {
+): Promise<LocalOwnershipRecord> {
   window.localStorage.clear();
   goTo("#/join");
   await user.type(screen.getByLabelText(/room code/i), roomCode);
@@ -231,7 +236,7 @@ describe("GM director console and table display (C03)", () => {
 
   it("table display shows the route map and party strip with no form controls and no secrets", async () => {
     const user = userEvent.setup();
-    const { roomCode, tableCode, roomId } = await createSessionAsGm(user);
+    const { roomCode, tableCode } = await createSessionAsGm(user);
     await joinAndClaimRook(user, roomCode);
 
     window.localStorage.clear();
@@ -239,9 +244,8 @@ describe("GM director console and table display (C03)", () => {
     await user.type(screen.getByLabelText(/room code/i), roomCode);
     await user.type(screen.getByLabelText(/table code/i), tableCode);
     await user.click(screen.getByRole("button", { name: /connect display/i }));
-    await screen.findByText(/the full table display .* arrives with c03/i);
+    await user.click(await screen.findByRole("button", { name: /open the table display/i }));
 
-    goTo(`#/room/${roomId}/table`);
     expect(await screen.findByRole("img", { name: /route map/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /^party$/i })).toBeInTheDocument();
     expect(screen.getByText(/rook/i)).toBeInTheDocument();

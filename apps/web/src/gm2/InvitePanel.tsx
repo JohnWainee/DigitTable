@@ -1,35 +1,32 @@
-import { useState } from "react";
-import { fixtureSessionGateway as gateway } from "../session/gateway.js";
-
 export interface InvitePanelProps {
-  readonly roomId: string;
   readonly roomCode: string;
+  /** From the GM's own real projection (`view.roster`) — omitted on the just-created reveal screen, where no projection has been fetched yet. */
+  readonly claimedCount?: number;
+  readonly rosterSize?: number;
 }
 
-/** docs/ETR_SESSION_FLOW.md section 4.1: `InvitePanel` (GM only) — room code, passphrase hint, join count. */
-export function InvitePanel({ roomId, roomCode }: InvitePanelProps): JSX.Element {
-  // Fixture mode has no live subscription to re-render from automatically.
-  const [, forceRefresh] = useState(0);
-  const stats = gateway.roomStats(roomId);
-  const hint = gateway.passphraseHint(roomId);
-
+/**
+ * docs/ETR_SESSION_FLOW.md section 4.1: `InvitePanel` (GM only) — room
+ * code and how many of the roster's characters are claimed so far, read
+ * from the real projection (C06) rather than a fixture-only join counter
+ * the real system has no equivalent of.
+ */
+export function InvitePanel({ roomCode, claimedCount, rosterSize }: InvitePanelProps): JSX.Element {
   return (
     <section className="invite-panel" aria-labelledby="gm-invite-heading">
       <h2 id="gm-invite-heading">Invite</h2>
       <p>
         Room code: <strong>{roomCode}</strong>
       </p>
-      <p>
-        Passphrase hint: starts with &quot;{hint?.firstChar}&quot;, {hint?.length} characters long.
-        The full passphrase is never shown again.
+      <p className="form-hint">
+        Share the room code and your passphrase with your players. Neither is shown again after
+        creation.
       </p>
-      <p>
-        Players joined: {stats?.playerCount ?? 0}/6. Table display:{" "}
-        {stats?.tableClaimed ? "connected" : "not connected"}.
-      </p>
-      <button type="button" className="secondary-action" onClick={() => forceRefresh((t) => t + 1)}>
-        Refresh
-      </button>
+      {claimedCount !== undefined && rosterSize !== undefined && (
+        <p>
+          Characters claimed: {claimedCount}/{rosterSize}.
+        </p>
+      )}
     </section>
   );
 }

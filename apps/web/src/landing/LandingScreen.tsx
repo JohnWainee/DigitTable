@@ -8,13 +8,20 @@ import { FixtureModeBanner } from "../shell/FixtureModeBanner.js";
 import {
   clearOwnershipRecord,
   readOwnershipRecord,
-  type SessionOwnershipRecord,
-} from "../session/FixtureSessionGateway.js";
+  type LocalOwnershipRecord,
+} from "../session/ownership.js";
+import { isLiveMode } from "../session/roomClient.js";
+
+function resumeRoute(ownership: LocalOwnershipRecord): string {
+  if (ownership.capability === "gm") return `/room/${ownership.roomId}/gm`;
+  if (ownership.capability === "table") return `/room/${ownership.roomId}/table`;
+  return `/claim/${ownership.roomId}`;
+}
 
 /** docs/ETR_SESSION_FLOW.md section 1: `/` — Landing: Create / Join / Resume. */
 export function LandingScreen(): JSX.Element {
   const connection = useFixtureConnectionState();
-  const [ownership, setOwnership] = useState<SessionOwnershipRecord | null>(() =>
+  const [ownership, setOwnership] = useState<LocalOwnershipRecord | null>(() =>
     readOwnershipRecord(),
   );
 
@@ -39,18 +46,26 @@ export function LandingScreen(): JSX.Element {
         <section className="landing-resume" aria-labelledby="resume-heading">
           <h2 id="resume-heading">Resume</h2>
           <p>
-            You were <strong>{ownership.displayName}</strong> ({ownership.capability}) in{" "}
-            <strong>{ownership.sessionName}</strong>.
+            You were <strong>{ownership.displayName}</strong> ({ownership.capability})
+            {ownership.sessionName ? (
+              <>
+                {" "}
+                in <strong>{ownership.sessionName}</strong>
+              </>
+            ) : null}
+            .
           </p>
-          <p className="landing-resume-caveat">
-            Fixture mode keeps no state after a full page reload, so resuming may say the session
-            has ended. That limitation goes away once Sonnet A's live room repository lands.
-          </p>
+          {!isLiveMode && (
+            <p className="landing-resume-caveat">
+              Fixture mode keeps no state after a full page reload, so resuming may say the session
+              has ended.
+            </p>
+          )}
           <div className="landing-actions">
             <button
               type="button"
               className="primary-action"
-              onClick={() => navigate(`/claim/${ownership.roomId}`)}
+              onClick={() => navigate(resumeRoute(ownership))}
             >
               Resume session
             </button>
@@ -72,12 +87,6 @@ export function LandingScreen(): JSX.Element {
           Join as the table display
         </button>
       </nav>
-
-      <p className="landing-demo-link">
-        <button type="button" className="link-button" onClick={() => navigate("/demo")}>
-          Open the local three-role demo (Phase 1C, fixture only)
-        </button>
-      </p>
     </main>
   );
 }

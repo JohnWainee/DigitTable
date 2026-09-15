@@ -5,12 +5,9 @@ import {
   useFixtureConnectionState,
 } from "../shell/ConnectionStatusStrip.js";
 import { FixtureModeBanner } from "../shell/FixtureModeBanner.js";
-import {
-  writeOwnershipRecord,
-  type RoomAdmissionAccepted,
-} from "../session/FixtureSessionGateway.js";
-import { fixtureSessionGateway as gateway } from "../session/gateway.js";
-import type { SessionRequestState } from "../session/sessionRequestState.js";
+import { writeOwnershipRecord, ownershipFromAcceptedWithNames } from "../session/ownership.js";
+import { joinRoom } from "../session/roomClient.js";
+import type { RoomAdmissionAccepted, SessionRequestState } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
 
 /** docs/ETR_SESSION_FLOW.md section 4.2: `/join` — Player join by code + passphrase. */
@@ -28,31 +25,18 @@ export function JoinScreen(): JSX.Element {
     if (request.status === "pending") return;
     const requestId = globalThis.crypto.randomUUID();
     setRequest({ status: "pending", requestId });
-    try {
-      const result = await gateway.joinRoom({
-        requestId,
-        roomCode: roomCode.toUpperCase(),
-        passphrase,
-        requestedCapability: "player",
-        displayName,
-      });
+    const result = await joinRoom({
+      requestId,
+      roomCode: roomCode.toUpperCase(),
+      passphrase,
+      requestedCapability: "player",
+      displayName,
+    });
+    if (result.ok) {
       setRequest({ status: "accepted", requestId, result });
-      writeOwnershipRecord({
-        roomId: result.roomId,
-        roomCode: result.roomCode,
-        memberId: result.memberId,
-        capability: result.capability,
-        recoveryCode: result.recoveryCode,
-        displayName,
-        sessionName: gateway.sessionNameFor(result.roomId) ?? "",
-      });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "That didn't go through. Try again.";
-      const code =
-        error instanceof Error && "code" in error
-          ? String((error as { code: unknown }).code)
-          : "INVALID_REQUEST";
-      setRequest({ status: "rejected", requestId, code, message });
+      writeOwnershipRecord(ownershipFromAcceptedWithNames(result, displayName, ""));
+    } else {
+      setRequest({ status: "rejected", requestId, code: result.code, message: result.message });
     }
   }
 

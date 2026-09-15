@@ -16,8 +16,7 @@ export type Route =
   | { readonly name: "claim"; readonly roomId: string }
   | { readonly name: "player"; readonly roomId: string }
   | { readonly name: "gm"; readonly roomId: string }
-  | { readonly name: "table"; readonly roomId: string }
-  | { readonly name: "demo" };
+  | { readonly name: "table"; readonly roomId: string };
 
 function parseHash(hash: string): Route {
   const path = hash.replace(/^#\/?/, "");
@@ -36,7 +35,6 @@ function parseHash(hash: string): Route {
   if (segments[0] === "room" && segments[1] && segments[2] === "table") {
     return { name: "table", roomId: segments[1] };
   }
-  if (segments[0] === "demo") return { name: "demo" };
   return { name: "landing" };
 }
 

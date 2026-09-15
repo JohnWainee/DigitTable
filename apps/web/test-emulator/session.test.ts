@@ -2,48 +2,12 @@ import { deleteApp, initializeApp, type FirebaseApp } from "firebase/app";
 import { asCommandId, asMemberId, asRoomId } from "@digitable/contracts";
 import type { EatTheReichCommand } from "@digitable/template-eat-the-reich";
 import { createEmulatorTestEnvironment, type RulesTestEnvironment } from "@digitable/testing";
-import type { RulesTestContext } from "@firebase/rules-unit-testing";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   FirebaseSessionClient,
   type SessionEmulatorConfig,
 } from "../src/session/FirebaseSessionClient.js";
 import { FirebaseRoomRepository } from "../src/repository/FirebaseRoomRepository.js";
-
-/**
- * The pre-B02 template's `initialState` starts every room with zero
- * characters (board task A03: no player has joined yet at creation time),
- * and nothing in the *current* admission flow ever assigns one afterward —
- * that connection is `ClaimCharacter` (Sonnet B's B02/B03 rework, in
- * flight on `origin/sonnet-b/b02-characters`, not yet merged). Until that
- * lands, `BeginAction` can never succeed for a freshly-joined player
- * through any real, unprivileged path — a genuine template-level gap, not
- * an A05 transport bug. This test seeds the one placeholder character
- * directly (bypassing `firestore.rules`, the same way PR #13's own
- * `admission.test.ts` seeds fixtures) purely so the transport's *accepted*
- * path can be exercised end-to-end; production code never does this.
- */
-async function seedPlaceholderCharacter(
-  testEnv: RulesTestEnvironment,
-  roomId: string,
-  memberId: string,
-): Promise<void> {
-  await testEnv.withSecurityRulesDisabled(async (context: RulesTestContext): Promise<void> => {
-    const authorityRef = context.firestore().doc(`rooms/${roomId}/authority/current`);
-    await authorityRef.update({
-      "state.characters": {
-        [memberId]: {
-          memberId,
-          name: "Rook",
-          attributes: { nerve: 2 },
-          gear: ["silenced-tool"],
-          wounds: 0,
-          maxWounds: 3,
-        },
-      },
-    });
-  });
-}
 
 /**
  * Board task A05's required proof: the client's real callable HTTP/SDK
@@ -116,11 +80,6 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
     if (!joined.ok) throw new Error(`joinRoom failed: ${joined.code} ${joined.message}`);
     expect(joined.roomId).toBe(created.roomId);
 
-    // See `seedPlaceholderCharacter`'s doc comment: the current (pre-B02)
-    // template never connects "a player joined" to "a character exists"
-    // on its own; this step stands in for that until B02/B03 land.
-    await seedPlaceholderCharacter(testEnv, created.roomId, joined.memberId);
-
     const roomId = asRoomId(created.roomId);
     const playerRepo = new FirebaseRoomRepository(playerApp, roomId, "player", {
       functions: emulator.functions,
@@ -128,12 +87,28 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
     });
 
     const playerMemberId = asMemberId(joined.memberId);
+
+    // B02-B05's real roster/action loop (C06): a character is claimed via
+    // `ClaimCharacter`, not pre-assigned at room creation (see
+    // `templates/eat-the-reich/src/engine.ts`'s `initialState` doc
+    // comment) — claim one of the real roster characters before the real
+    // `BeginAction` shape (stat/itemIds/abilityIds/bonusClaimIds/
+    // engagedThreatIds/note) can be dispatched for it.
+    const claimResult = await playerRepo.dispatch(playerMemberId, {
+      commandId: asCommandId(crypto.randomUUID()),
+      payload: { type: "ClaimCharacter", characterId: "rook" } satisfies EatTheReichCommand,
+    });
+    expect(claimResult.status).toBe("accepted");
+
     const beginAction: EatTheReichCommand = {
       type: "BeginAction",
-      actorMemberId: playerMemberId,
-      threatId: "enforcer",
-      actionId: "strong-arm-the-enforcer",
-      gearIds: [],
+      characterId: "rook",
+      stat: "BRAWL",
+      itemIds: [],
+      abilityIds: [],
+      bonusClaimIds: [],
+      engagedThreatIds: [],
+      note: null,
     };
     const dispatchResult = await playerRepo.dispatch(playerMemberId, {
       commandId: asCommandId(crypto.randomUUID()),
@@ -143,7 +118,7 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
     if (dispatchResult.status !== "accepted") {
       throw new Error(`dispatch failed: ${dispatchResult.code} ${dispatchResult.message}`);
     }
-    expect(dispatchResult.roomRevision).toBe(1);
+    expect(dispatchResult.roomRevision).toBe(2);
     expect(dispatchResult.sharedEvents).toHaveLength(1);
 
     // The player reads their own updated projection through the real
@@ -153,7 +128,7 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
       viewerId: playerMemberId,
       capability: "player",
     });
-    expect(playerProjection.roomRevision).toBe(1);
+    expect(playerProjection.roomRevision).toBe(2);
 
     // The GM reads the same room's GM projection through its own
     // independent identity/session, proving both viewers see the one
@@ -163,7 +138,7 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
       firestore: emulator.firestore,
     });
     const gmProjection = await gmRepo.getProjection({ roomId, viewerId: "gm", capability: "gm" });
-    expect(gmProjection.roomRevision).toBe(1);
+    expect(gmProjection.roomRevision).toBe(2);
   });
 
   it("rejects an unrecognized room code through the real callable boundary with a stable error code", async () => {

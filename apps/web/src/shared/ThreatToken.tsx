@@ -6,29 +6,37 @@ export interface ThreatTokenProps {
   readonly beaten?: boolean;
 }
 
-const THREAT_IMAGE_IDS = new Set([
-  "threat-enforcer",
-  "threat-warden",
-  "threat-patrol",
-  "threat-rifle-squad",
-  "threat-plated-squad",
-  "threat-marksman-nest",
-  "threat-armoured-truck",
-]);
+/** docs/ETR_ART_BRIEF.md section 3.4 asset manifest ids, matched against a substring of the real engine's own scene-authored threat id (e.g. `metro-platform-enforcer` -> `threat-enforcer`). */
+const THREAT_IMAGE_ID_BY_SUBSTRING: readonly (readonly [string, string])[] = [
+  ["enforcer", "threat-enforcer"],
+  ["warden", "threat-warden"],
+  ["patrol", "threat-patrol"],
+  ["rifle-squad", "threat-rifle-squad"],
+  ["plated-squad", "threat-plated-squad"],
+  ["marksman-nest", "threat-marksman-nest"],
+  ["armoured-truck", "threat-armoured-truck"],
+];
+
+function resolveImageId(threatId: string): string | null {
+  const lower = threatId.toLowerCase();
+  for (const [needle, imageId] of THREAT_IMAGE_ID_BY_SUBSTRING) {
+    if (lower.includes(needle)) return imageId;
+  }
+  return null;
+}
 
 /**
  * docs/ETR_ART_BRIEF.md section 5: "Threat: charcoal square with the
  * `threat` glyph; crossed out in crimson when beaten" — the default until
- * `/etr/<threatId>-128.webp` loads, and permanent for threat ids with no
- * generated art yet. Fixture threat ids (`patrol-a`, `the-enforcer`, ...)
- * don't match the asset-manifest ids 1:1, so callers pass the manifest id
- * only when they have one; anything else (or not in THREAT_IMAGE_IDS)
- * renders the glyph fallback, which is correct per the brief's cut list,
- * not a bug.
+ * `/etr/<imageId>-128.webp` loads, and permanent for threat ids with no
+ * generated art yet (a real engine-authored id, e.g. `signal-mast-warden`,
+ * with no substring match), which is correct per the brief's cut list, not
+ * a bug.
  */
 export function ThreatToken({ threatId, beaten }: ThreatTokenProps): JSX.Element {
+  const imageId = resolveImageId(threatId);
   const [status, setStatus] = useState<"loading" | "loaded" | "error">(
-    THREAT_IMAGE_IDS.has(threatId) ? "loading" : "error",
+    imageId ? "loading" : "error",
   );
 
   return (
@@ -43,7 +51,7 @@ export function ThreatToken({ threatId, beaten }: ThreatTokenProps): JSX.Element
       )}
       {status !== "error" && (
         <img
-          src={`/etr/${threatId}-128.webp`}
+          src={`/etr/${imageId}-128.webp`}
           alt=""
           loading="lazy"
           decoding="async"

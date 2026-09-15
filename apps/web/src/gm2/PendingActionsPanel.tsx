@@ -1,23 +1,28 @@
 import { useState } from "react";
-import type { CharacterPlayRecord } from "../session/fixturePlayLoopStore.js";
-import type { FixtureSceneState } from "../session/fixturePlayLoop.js";
-import { ETR_STAT_LABELS } from "../../test/fixtures/etrTemp.js";
+import {
+  buildPool,
+  type CharacterFullSheet,
+  type EatTheReichView,
+  type RollViewFull,
+} from "@digitable/template-eat-the-reich";
 
 export interface PendingActionsPanelProps {
-  readonly pending: readonly CharacterPlayRecord[];
-  readonly scene: FixtureSceneState;
-  readonly onRoll: (
-    characterId: string,
+  readonly pending: readonly RollViewFull[];
+  readonly gmSheets: readonly CharacterFullSheet[];
+  readonly threats: EatTheReichView["threats"];
+  readonly onReview: (
+    rollId: string,
     approvedClaimIds: readonly string[],
     engagedThreatIds: readonly string[],
   ) => void;
 }
 
-/** docs/ETR_SESSION_FLOW.md section 6.2: the GM's pending-declarations review — approve/strike each claim, confirm engaged threats, roll. */
+/** docs/ETR_SESSION_FLOW.md section 6.2: the GM's pending-declarations review — approve/strike each claim, confirm engaged threats, roll (`ReviewAction`). */
 export function PendingActionsPanel({
   pending,
-  scene,
-  onRoll,
+  gmSheets,
+  threats,
+  onReview,
 }: PendingActionsPanelProps): JSX.Element {
   return (
     <section className="step" aria-labelledby="pending-actions-heading">
@@ -26,14 +31,19 @@ export function PendingActionsPanel({
         <p>No one is waiting on you.</p>
       ) : (
         <ul className="pending-actions-list">
-          {pending.map((record) => (
-            <PendingActionCard
-              key={record.character.id}
-              record={record}
-              scene={scene}
-              onRoll={onRoll}
-            />
-          ))}
+          {pending.map((roll) => {
+            const character = gmSheets.find((c) => c.id === roll.characterId);
+            if (!character) return null;
+            return (
+              <PendingActionCard
+                key={roll.rollId}
+                roll={roll}
+                character={character}
+                threats={threats}
+                onReview={onReview}
+              />
+            );
+          })}
         </ul>
       )}
     </section>
@@ -41,34 +51,30 @@ export function PendingActionsPanel({
 }
 
 function PendingActionCard({
-  record,
-  scene,
-  onRoll,
+  roll,
+  character,
+  threats,
+  onReview,
 }: {
-  readonly record: CharacterPlayRecord;
-  readonly scene: FixtureSceneState;
-  readonly onRoll: PendingActionsPanelProps["onRoll"];
+  readonly roll: RollViewFull;
+  readonly character: CharacterFullSheet;
+  readonly threats: EatTheReichView["threats"];
+  readonly onReview: PendingActionsPanelProps["onReview"];
 }): JSX.Element {
-  const choice = record.pendingChoice;
-  const character = record.character;
-  const claimableIds = choice ? [...choice.itemIds, ...choice.abilityIds] : [];
-  const claimsWithBonus = claimableIds
+  const claimableIds = [...roll.declaredItemIds, ...roll.declaredAbilityIds];
+  const claimsWithBonus = roll.declaredBonusClaimIds
     .map(
       (id) =>
         character.items.find((i) => i.id === id) ?? character.abilities.find((a) => a.id === id),
     )
-    .filter((source): source is NonNullable<typeof source> & { bonusCount: number } =>
-      Boolean(source && "bonusCount" in source && source.bonusCount),
-    );
+    .filter((source): source is NonNullable<typeof source> => Boolean(source));
 
   const [approvedClaimIds, setApprovedClaimIds] = useState<readonly string[]>(
     claimsWithBonus.map((c) => c.id), // default: approve every claim
   );
   const [engagedThreatIds, setEngagedThreatIds] = useState<readonly string[]>(
-    choice?.engagedThreatIds ?? [], // default: the player's own proposal
+    roll.declaredEngagedThreatIds, // default: the player's own proposal
   );
-
-  if (!choice) return <li />;
 
   function toggleClaim(id: string): void {
     setApprovedClaimIds((ids) => (ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]));
@@ -77,30 +83,38 @@ function PendingActionCard({
     setEngagedThreatIds((ids) => (ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]));
   }
 
-  const diceCount =
-    (choice.statIndex === null ? 2 : character.stats[choice.statIndex]!) +
-    choice.itemIds.length +
-    choice.abilityIds.length +
-    claimsWithBonus
-      .filter((c) => approvedClaimIds.includes(c.id))
-      .reduce((sum, c) => sum + c.bonusCount, 0);
+  const poolOutcome = buildPool(character, {
+    stat: roll.declaredStat,
+    itemIds: roll.declaredItemIds,
+    abilityIds: roll.declaredAbilityIds.filter((id) =>
+      character.abilities.some((a) => a.id === id && a.trigger !== "special"),
+    ),
+  });
+  const approvedBonusDice = claimsWithBonus
+    .filter((source) => approvedClaimIds.includes(source.id))
+    .reduce((sum, source) => sum + (source.bonusPlus ?? 0), 0);
+  const diceCount = (poolOutcome.ok ? poolOutcome.result.total : 0) + approvedBonusDice;
 
   return (
     <li className="pending-action-card">
       <h3>{character.name}</h3>
       <p>
-        Stat: {choice.statIndex === null ? "No stat fits" : ETR_STAT_LABELS[choice.statIndex]}
-        {choice.itemIds.length > 0 &&
-          ` · Items: ${choice.itemIds
+        Stat: {roll.declaredStat === "none" ? "No stat fits" : roll.declaredStat}
+        {roll.declaredItemIds.length > 0 &&
+          ` · Items: ${roll.declaredItemIds
             .map((id) => character.items.find((i) => i.id === id)?.name)
             .filter(Boolean)
             .join(", ")}`}
-        {choice.abilityIds.length > 0 &&
-          ` · Abilities: ${choice.abilityIds
+        {roll.declaredAbilityIds.length > 0 &&
+          ` · Abilities: ${roll.declaredAbilityIds
             .map((id) => character.abilities.find((a) => a.id === id)?.name)
             .filter(Boolean)
             .join(", ")}`}
       </p>
+      {roll.note && <p className="form-hint">&ldquo;{roll.note}&rdquo;</p>}
+      {!poolOutcome.ok && (
+        <p role="alert">Pool preview unavailable: {poolOutcome.rejection.kind}.</p>
+      )}
 
       {claimsWithBonus.length > 0 && (
         <fieldset>
@@ -113,7 +127,7 @@ function PendingActionCard({
                   checked={approvedClaimIds.includes(source.id)}
                   onChange={() => toggleClaim(source.id)}
                 />
-                {source.name} (+{source.bonusCount}, {source.bonusText})
+                {source.name} (+{source.bonusPlus ?? 0}, {source.bonusRequirement})
               </label>
             ))}
           </div>
@@ -123,8 +137,8 @@ function PendingActionCard({
       <fieldset>
         <legend>Engaged threats</legend>
         <div className="gear-list">
-          {scene.threats
-            .filter((t) => t.rating > 0)
+          {threats
+            .filter((t) => t.status === "active")
             .map((threat) => (
               <label key={threat.id} className="gear-option">
                 <input
@@ -133,7 +147,7 @@ function PendingActionCard({
                   onChange={() => toggleThreat(threat.id)}
                 />
                 {threat.name}
-                {!threat.revealed ? " (not yet revealed to players)" : ""}
+                {"revealed" in threat && !threat.revealed ? " (not yet revealed to players)" : ""}
               </label>
             ))}
         </div>
@@ -141,11 +155,12 @@ function PendingActionCard({
 
       <p>
         Pool: <strong>{diceCount}</strong> {diceCount === 1 ? "die" : "dice"}
+        {claimableIds.length !== roll.declaredBonusClaimIds.length ? " (before approval)" : ""}
       </p>
       <button
         type="button"
         className="primary-action"
-        onClick={() => onRoll(character.id, approvedClaimIds, engagedThreatIds)}
+        onClick={() => onReview(roll.rollId, approvedClaimIds, engagedThreatIds)}
       >
         Roll it
       </button>

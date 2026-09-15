@@ -22,7 +22,7 @@ export type IconName =
   | "online"
   | "offline";
 
-/** Brawl/Con/Fix/Search/Shoot/Sneak/Terrify, in that order (docs/ETR_RULES_MATRIX.md Appendix A). */
+/** Same order as `@digitable/template-eat-the-reich`'s `STATS` (BRAWL/CON/FIX/SEARCH/SHOOT/SNEAK/TERRIFY). */
 export const STAT_ICON_NAMES: readonly IconName[] = [
   "stat-brawl",
   "stat-con",
@@ -31,6 +31,17 @@ export const STAT_ICON_NAMES: readonly IconName[] = [
   "stat-shoot",
   "stat-sneak",
   "stat-terrify",
+];
+
+/** Human-readable labels, same order as `STAT_ICON_NAMES`/`STATS`. */
+export const STAT_LABELS: readonly string[] = [
+  "Brawl",
+  "Con",
+  "Fix",
+  "Search",
+  "Shoot",
+  "Sneak",
+  "Terrify",
 ];
 
 export interface IconProps {

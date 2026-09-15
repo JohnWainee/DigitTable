@@ -1,29 +1,47 @@
 import { useState } from "react";
-import { ETR_STAT_LABELS, type SceneThreatFixture } from "../../test/fixtures/etrTemp.js";
 import {
-  explainDeclareChoice,
-  type DeclareChoice,
-  type FixtureCharacterState,
-} from "../session/fixturePlayLoop.js";
-import { Icon, STAT_ICON_NAMES } from "../shared/Icon.js";
+  eatTheReichTemplate,
+  STATS,
+  type CharacterFullSheet,
+  type EatTheReichCommand,
+  type Stat,
+} from "@digitable/template-eat-the-reich";
+import type { ViewerProjection } from "@digitable/contracts";
+import type { EatTheReichView } from "@digitable/template-eat-the-reich";
+import { Icon, STAT_ICON_NAMES, STAT_LABELS } from "../shared/Icon.js";
 
 export interface ComposeStep2Props {
-  readonly character: FixtureCharacterState;
-  readonly threats: readonly SceneThreatFixture[];
-  readonly onDeclare: (choice: DeclareChoice) => void;
+  readonly projection: ViewerProjection<EatTheReichView>;
+  readonly character: CharacterFullSheet;
+  readonly threats: EatTheReichView["threats"];
+  readonly onDeclare: (choice: Extract<EatTheReichCommand, { type: "BeginAction" }>) => void;
 }
 
-/** docs/ETR_SESSION_FLOW.md section 6.1: stat / items / abilities / bonus claims / engaged threats. */
-export function ComposeStep2({ character, threats, onDeclare }: ComposeStep2Props): JSX.Element {
-  const [statIndex, setStatIndex] = useState<number | null>(0);
+function highestStatIndex(character: CharacterFullSheet): number {
+  let best = 0;
+  for (let i = 1; i < STATS.length; i += 1) {
+    if (character.stats[STATS[i]!] > character.stats[STATS[best]!]) best = i;
+  }
+  return best;
+}
+
+/** docs/ETR_SESSION_FLOW.md section 6.1: stat / items / abilities / bonus claims / engaged threats, derived from the real `self` sheet (C06). */
+export function ComposeStep2({
+  projection,
+  character,
+  threats,
+  onDeclare,
+}: ComposeStep2Props): JSX.Element {
+  // F05 P1: defaults to the character's highest stat, not always the first.
+  const [statIndex, setStatIndex] = useState<number | null>(() => highestStatIndex(character));
   const [itemIds, setItemIds] = useState<readonly string[]>([]);
   const [abilityIds, setAbilityIds] = useState<readonly string[]>([]);
   const [bonusClaimIds, setBonusClaimIds] = useState<readonly string[]>([]);
   const [engagedThreatIds, setEngagedThreatIds] = useState<readonly string[]>([]);
 
-  const revealedThreats = threats.filter((t) => t.revealed && t.rating > 0);
-  const selectableAbilities = character.abilities.filter((a) => a.cost !== "special");
-  const specialAbilities = character.abilities.filter((a) => a.cost === "special");
+  const revealedThreats = threats.filter((t) => t.status === "active");
+  const selectableAbilities = character.abilities.filter((a) => a.trigger !== "special");
+  const specialAbilities = character.abilities.filter((a) => a.trigger === "special");
   const claimableIds = [...itemIds, ...abilityIds];
 
   function toggle(
@@ -34,7 +52,6 @@ export function ComposeStep2({ character, threats, onDeclare }: ComposeStep2Prop
     set(list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
   }
 
-  /** Toggling an item/ability off also drops any bonus claim on it. */
   function toggleClaimable(
     list: readonly string[],
     id: string,
@@ -45,10 +62,43 @@ export function ComposeStep2({ character, threats, onDeclare }: ComposeStep2Prop
     if (removing) setBonusClaimIds((claims) => claims.filter((x) => x !== id));
   }
 
-  const choice: DeclareChoice = { statIndex, itemIds, abilityIds, bonusClaimIds, engagedThreatIds };
-  const pool = explainDeclareChoice(character, choice);
+  const stat: Stat | "none" = statIndex === null ? "none" : STATS[statIndex]!;
+
+  // Real explainPool (packages/contracts) is still shaped for the old
+  // placeholder (`actionId`/`gearIds`, no ability/bonus preview — see
+  // templates/eat-the-reich/src/engine.ts's own doc comment on this gap,
+  // proposed for extension to Sonnet A). Base total from the real function;
+  // abilities/claimed bonuses added as a clearly-informational client-side
+  // estimate on top — never authoritative, matching every other allocation
+  // control here (the GM's `ReviewAction` computes the real pool).
+  const basePool = eatTheReichTemplate.explainPool(projection, {
+    actionId: stat,
+    gearIds: itemIds,
+  });
+  const abilityDice = abilityIds.length;
+  const claimedBonusDice = claimableIds
+    .filter((id) => bonusClaimIds.includes(id))
+    .reduce((sum, id) => {
+      const item = character.items.find((i) => i.id === id);
+      const ability = character.abilities.find((a) => a.id === id);
+      return sum + (item?.bonusPlus ?? ability?.bonusPlus ?? 0);
+    }, 0);
+  const estimatedTotal = basePool.total + abilityDice + claimedBonusDice;
 
   const canDeclare = !character.downed && !character.retired;
+
+  function handleDeclare(): void {
+    onDeclare({
+      type: "BeginAction",
+      characterId: character.id,
+      stat,
+      itemIds,
+      abilityIds,
+      bonusClaimIds,
+      engagedThreatIds,
+      note: null,
+    });
+  }
 
   return (
     <section className="step" aria-labelledby="compose-heading">
@@ -56,8 +106,8 @@ export function ComposeStep2({ character, threats, onDeclare }: ComposeStep2Prop
 
       <fieldset>
         <legend>Stat</legend>
-        {ETR_STAT_LABELS.map((label, i) => (
-          <label key={label} className="gear-option">
+        {STATS.map((statName, i) => (
+          <label key={statName} className="gear-option">
             <input
               type="radio"
               name="stat"
@@ -65,7 +115,7 @@ export function ComposeStep2({ character, threats, onDeclare }: ComposeStep2Prop
               onChange={() => setStatIndex(i)}
             />
             <Icon name={STAT_ICON_NAMES[i]!} className="stat-icon" />
-            {label} ({character.stats[i]})
+            {STAT_LABELS[i]} ({character.stats[statName]})
           </label>
         ))}
         <label className="gear-option">
@@ -101,7 +151,8 @@ export function ComposeStep2({ character, threats, onDeclare }: ComposeStep2Prop
         <legend>Abilities</legend>
         <div className="gear-list">
           {selectableAbilities.map((ability) => {
-            const disabled = ability.cost === "blood1" && character.blood < 1;
+            const disabled =
+              ability.trigger === "blood" && character.blood < (ability.bloodCost ?? 1);
             return (
               <label key={ability.id} className="gear-option">
                 <input
@@ -110,7 +161,8 @@ export function ComposeStep2({ character, threats, onDeclare }: ComposeStep2Prop
                   disabled={disabled}
                   onChange={() => toggleClaimable(abilityIds, ability.id, setAbilityIds)}
                 />
-                {ability.name} ({ability.cost === "blood1" ? "1 Blood" : "free"})
+                {ability.name} (
+                {ability.trigger === "blood" ? `${ability.bloodCost ?? 1} Blood` : "free"})
                 {disabled ? " — not enough Blood" : ""}
               </label>
             );
@@ -131,8 +183,10 @@ export function ComposeStep2({ character, threats, onDeclare }: ComposeStep2Prop
             {claimableIds.map((id) => {
               const item = character.items.find((i) => i.id === id);
               const ability = character.abilities.find((a) => a.id === id);
-              const source = item ?? ability;
-              if (!source || !("bonusCount" in source) || !source.bonusCount) return null;
+              const bonusPlus = item?.bonusPlus ?? ability?.bonusPlus ?? 0;
+              const bonusRequirement = item?.bonusRequirement ?? ability?.bonusRequirement ?? "";
+              const name = item?.name ?? ability?.name ?? "";
+              if (!bonusPlus) return null;
               return (
                 <label key={id} className="gear-option">
                   <input
@@ -140,8 +194,7 @@ export function ComposeStep2({ character, threats, onDeclare }: ComposeStep2Prop
                     checked={bonusClaimIds.includes(id)}
                     onChange={() => toggle(bonusClaimIds, id, setBonusClaimIds)}
                   />
-                  I&rsquo;m meeting {source.name}&rsquo;s bonus ({source.bonusText}, +
-                  {source.bonusCount})
+                  I&rsquo;m meeting {name}&rsquo;s bonus ({bonusRequirement}, +{bonusPlus})
                 </label>
               );
             })}
@@ -171,17 +224,19 @@ export function ComposeStep2({ character, threats, onDeclare }: ComposeStep2Prop
 
       <div className="pool-summary">
         <p>
-          Pool: <strong>{pool.total}</strong> {pool.total === 1 ? "die" : "dice"} (needs 4+ on a d6;
-          6 is a critical)
+          Pool: <strong>{estimatedTotal}</strong> {estimatedTotal === 1 ? "die" : "dice"} (needs 4+
+          on a d6; 6 is a critical)
         </p>
         <details>
           <summary>Why?</summary>
           <ul>
-            {pool.lines.map((line, i) => (
-              <li key={`${line.label}-${i}`}>
-                {line.label}: {line.dice}
+            {basePool.components.map((component, i) => (
+              <li key={`${component.label}-${i}`}>
+                {component.label}: {component.value}
               </li>
             ))}
+            {abilityDice > 0 && <li>Abilities selected: {abilityDice}</li>}
+            {claimedBonusDice > 0 && <li>Claimed bonuses (pending GM): {claimedBonusDice}</li>}
           </ul>
         </details>
       </div>
@@ -190,7 +245,7 @@ export function ComposeStep2({ character, threats, onDeclare }: ComposeStep2Prop
         type="button"
         className="primary-action"
         disabled={!canDeclare}
-        onClick={() => onDeclare(choice)}
+        onClick={handleDeclare}
       >
         Declare action
       </button>

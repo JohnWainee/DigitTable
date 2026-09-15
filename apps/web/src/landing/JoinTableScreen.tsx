@@ -5,15 +5,18 @@ import {
   useFixtureConnectionState,
 } from "../shell/ConnectionStatusStrip.js";
 import { FixtureModeBanner } from "../shell/FixtureModeBanner.js";
-import {
-  writeOwnershipRecord,
-  type RoomAdmissionAccepted,
-} from "../session/FixtureSessionGateway.js";
-import { fixtureSessionGateway as gateway } from "../session/gateway.js";
-import type { SessionRequestState } from "../session/sessionRequestState.js";
+import { writeOwnershipRecord, ownershipFromAcceptedWithNames } from "../session/ownership.js";
+import { joinRoom } from "../session/roomClient.js";
+import type { RoomAdmissionAccepted, SessionRequestState } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
 
-/** docs/ETR_SESSION_FLOW.md section 4.4: `/table` — join a shared display. No secrets, no controls after admission. */
+/**
+ * docs/ETR_SESSION_FLOW.md section 4.4: `/table` — join a shared display.
+ * No secrets, no controls after admission. `apps/functions`'s
+ * `admitMember` checks a *separate* table secret for `requestedCapability:
+ * "table"` (never the room passphrase) — the `passphrase` field on the
+ * wire request carries whichever secret this capability actually needs.
+ */
 export function JoinTableScreen(): JSX.Element {
   const connection = useFixtureConnectionState();
   const [roomCode, setRoomCode] = useState("");
@@ -27,29 +30,18 @@ export function JoinTableScreen(): JSX.Element {
     if (request.status === "pending") return;
     const requestId = globalThis.crypto.randomUUID();
     setRequest({ status: "pending", requestId });
-    try {
-      const result = await gateway.joinTable({
-        requestId,
-        roomCode: roomCode.toUpperCase(),
-        tableCode: tableCode.toUpperCase(),
-      });
+    const result = await joinRoom({
+      requestId,
+      roomCode: roomCode.toUpperCase(),
+      passphrase: tableCode.toUpperCase(),
+      requestedCapability: "table",
+      displayName: "Table",
+    });
+    if (result.ok) {
       setRequest({ status: "accepted", requestId, result });
-      writeOwnershipRecord({
-        roomId: result.roomId,
-        roomCode: result.roomCode,
-        memberId: result.memberId,
-        capability: result.capability,
-        recoveryCode: null,
-        displayName: "Table",
-        sessionName: gateway.sessionNameFor(result.roomId) ?? "",
-      });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "That didn't go through. Try again.";
-      const code =
-        error instanceof Error && "code" in error
-          ? String((error as { code: unknown }).code)
-          : "INVALID_REQUEST";
-      setRequest({ status: "rejected", requestId, code, message });
+      writeOwnershipRecord(ownershipFromAcceptedWithNames(result, "Table", ""));
+    } else {
+      setRequest({ status: "rejected", requestId, code: result.code, message: result.message });
     }
   }
 
@@ -107,9 +99,13 @@ export function JoinTableScreen(): JSX.Element {
 
       {accepted && (
         <section aria-live="polite">
-          <p>Connected. The full table display (scene, party strip, route map) arrives with C03.</p>
-          <button type="button" className="primary-action" onClick={() => navigate("/demo")}>
-            Open the fixture demo table view
+          <p>Connected.</p>
+          <button
+            type="button"
+            className="primary-action"
+            onClick={() => navigate(`/room/${accepted.roomId}/table`)}
+          >
+            Open the table display
           </button>
         </section>
       )}

@@ -9,10 +9,11 @@ import {
   getOrMintCreateRequestId,
   clearCreateRequestId,
   writeOwnershipRecord,
-  type CreateRoomReveal,
-} from "../session/FixtureSessionGateway.js";
-import { fixtureSessionGateway as gateway } from "../session/gateway.js";
-import type { SessionRequestState } from "../session/sessionRequestState.js";
+  ownershipFromAcceptedWithNames,
+} from "../session/ownership.js";
+import { createRoom } from "../session/roomClient.js";
+import type { SessionRequestState } from "@digitable/contracts";
+import type { CreateRoomAccepted } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
 import { InvitePanel } from "../gm2/InvitePanel.js";
 
@@ -22,49 +23,31 @@ export function CreateSessionScreen(): JSX.Element {
   const [sessionName, setSessionName] = useState("");
   const [passphrase, setPassphrase] = useState("");
   const [creatorDisplayName, setCreatorDisplayName] = useState("");
-  const [request, setRequest] = useState<
-    SessionRequestState<{ ok: true; reveal: CreateRoomReveal }>
-  >({ status: "idle" });
+  const [request, setRequest] = useState<SessionRequestState<CreateRoomAccepted>>({
+    status: "idle",
+  });
   const [wroteDownSecrets, setWroteDownSecrets] = useState(false);
   const requestIdRef = useRef(getOrMintCreateRequestId());
 
-  const reveal = request.status === "accepted" ? request.result.reveal : null;
+  const accepted = request.status === "accepted" ? request.result : null;
 
   async function handleSubmit(event: React.FormEvent): Promise<void> {
     event.preventDefault();
     if (request.status === "pending") return; // double-click cannot mint a second request
     const requestId = requestIdRef.current;
     setRequest({ status: "pending", requestId });
-    try {
-      const result = await gateway.createRoom({
-        requestId,
-        sessionName,
-        passphrase,
-        creatorDisplayName,
-      });
-      setRequest({ status: "accepted", requestId, result: { ok: true, reveal: result } });
+    const result = await createRoom({ requestId, sessionName, passphrase, creatorDisplayName });
+    if (result.ok) {
+      setRequest({ status: "accepted", requestId, result });
       clearCreateRequestId();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "That didn't go through. Try again.";
-      const code =
-        error instanceof Error && "code" in error
-          ? String((error as { code: unknown }).code)
-          : "INVALID_REQUEST";
-      setRequest({ status: "rejected", requestId, code, message });
+    } else {
+      setRequest({ status: "rejected", requestId, code: result.code, message: result.message });
     }
   }
 
   function handleAcknowledgeSecrets(): void {
-    if (!reveal) return;
-    writeOwnershipRecord({
-      roomId: reveal.accepted.roomId,
-      roomCode: reveal.accepted.roomCode,
-      memberId: reveal.accepted.memberId,
-      capability: reveal.accepted.capability,
-      recoveryCode: reveal.accepted.recoveryCode,
-      displayName: creatorDisplayName,
-      sessionName,
-    });
+    if (!accepted) return;
+    writeOwnershipRecord(ownershipFromAcceptedWithNames(accepted, creatorDisplayName, sessionName));
   }
 
   return (
@@ -73,7 +56,7 @@ export function CreateSessionScreen(): JSX.Element {
       <FixtureModeBanner />
       <h1>Create a session</h1>
 
-      {!reveal && (
+      {!accepted && (
         <form
           className="session-form"
           onSubmit={(event) => {
@@ -143,32 +126,19 @@ export function CreateSessionScreen(): JSX.Element {
         }
       />
 
-      {reveal && (
+      {accepted && (
         <section className="reveal-card" aria-labelledby="reveal-heading">
           <h2 id="reveal-heading">Write these down — shown once</h2>
           <dl>
             <dt>Room code</dt>
-            <dd>{reveal.accepted.roomCode}</dd>
+            <dd>{accepted.roomCode}</dd>
             <dt>Passphrase</dt>
-            <dd>{reveal.passphraseTyped}</dd>
+            <dd>{passphrase}</dd>
             <dt>Table code</dt>
-            <dd>
-              {reveal.accepted.tableCode ?? (
-                <em>
-                  Not yet available from the server (A03 gap — a table code slot is reserved here;
-                  rotate it from the console once A03 lands).
-                </em>
-              )}
-            </dd>
+            <dd>{accepted.tableCode ?? <em>Already shown once; not re-issued.</em>}</dd>
             <dt>GM recovery code</dt>
-            <dd>{reveal.accepted.recoveryCode ?? <em>Already shown once; not re-issued.</em>}</dd>
+            <dd>{accepted.recoveryCode ?? <em>Already shown once; not re-issued.</em>}</dd>
           </dl>
-          {reveal.repeated && (
-            <p role="note">
-              Secrets were shown once at creation. Rotate the table code from the console if you did
-              not record it.
-            </p>
-          )}
           <div className="form-field form-field--checkbox">
             <input
               id="wrote-down"
@@ -189,13 +159,13 @@ export function CreateSessionScreen(): JSX.Element {
         </section>
       )}
 
-      {reveal && wroteDownSecrets && (
+      {accepted && wroteDownSecrets && (
         <>
-          <InvitePanel roomId={reveal.accepted.roomId} roomCode={reveal.accepted.roomCode} />
+          <InvitePanel roomCode={accepted.roomCode} />
           <button
             type="button"
             className="primary-action"
-            onClick={() => navigate(`/room/${reveal.accepted.roomId}/gm`)}
+            onClick={() => navigate(`/room/${accepted.roomId}/gm`)}
           >
             Open the director console
           </button>
