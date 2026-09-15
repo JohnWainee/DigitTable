@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { asMemberId, asRoomId, asTemplateId } from "@digitable/contracts";
 import { EAT_THE_REICH_MANIFEST } from "../src/manifest.js";
 import { eatTheReichTemplate } from "../src/engine.js";
-import { PLAYER_MEMBER_ID, freshState, stateWithRoll } from "./fixtures.js";
+import { PLAYER_MEMBER_ID, ROOK_ID, freshState, stateWithClaim } from "./fixtures.js";
 
 describe("schemas", () => {
   it("parseState round-trips a valid state through JSON", () => {
@@ -16,23 +16,24 @@ describe("schemas", () => {
     expect(() => eatTheReichTemplate.schemas.parseState(bad)).toThrow();
   });
 
-  it("parseState preserves an active roll instead of discarding it", () => {
-    const state = stateWithRoll({
-      id: "roll-1",
-      actorMemberId: PLAYER_MEMBER_ID,
-      threatId: "enforcer",
-      actionId: "strong-arm-the-enforcer",
-      status: "awaiting_allocation",
-      playerFaces: [5, 2],
-      playerHits: 1,
-      poolComponents: { nerve: 2, gear: 1, hiddenModifier: -1 },
-      hiddenAdjustmentApplied: true,
-      oppositionFaces: [2],
-      oppositionHits: 0,
-      netSuccesses: 1,
-    });
-    expect(eatTheReichTemplate.schemas.parseState(JSON.parse(JSON.stringify(state)))).toEqual(
-      state,
+  it("parseState round-trips a claimed character with marked injuries", () => {
+    const state = stateWithClaim(ROOK_ID, PLAYER_MEMBER_ID, { blood: 7 });
+    const character = state.characters[ROOK_ID];
+    if (!character) throw new Error("fixture missing rook");
+    const withInjury = {
+      ...state,
+      characters: {
+        ...state.characters,
+        [ROOK_ID]: {
+          ...character,
+          injuries: character.injuries.map((c, i) =>
+            i === 0 ? { ...c, boxes: [{ marked: true }, c.boxes[1]] as typeof c.boxes } : c,
+          ),
+        },
+      },
+    };
+    expect(eatTheReichTemplate.schemas.parseState(JSON.parse(JSON.stringify(withInjury)))).toEqual(
+      withInjury,
     );
   });
 
@@ -40,20 +41,24 @@ describe("schemas", () => {
     expect(() => eatTheReichTemplate.schemas.parseCommand({ type: "NotACommand" })).toThrow();
   });
 
-  it("parseCommand round-trips a BeginAction command", () => {
+  it("parseCommand round-trips a ClaimCharacter command", () => {
+    const command = { type: "ClaimCharacter", characterId: ROOK_ID };
+    expect(eatTheReichTemplate.schemas.parseCommand(command)).toEqual(command);
+  });
+
+  it("parseCommand round-trips a HealInjury command", () => {
     const command = {
-      type: "BeginAction",
-      actorMemberId: "member-rook",
-      threatId: "enforcer",
-      actionId: "strong-arm-the-enforcer",
-      gearIds: ["silenced-tool"],
+      type: "HealInjury",
+      characterId: ROOK_ID,
+      categoryId: "rook-papers-burned",
+      boxIndex: 0,
     };
     expect(eatTheReichTemplate.schemas.parseCommand(command)).toEqual(command);
   });
 
   it("parseEvent rejects a known event type with malformed fields", () => {
     expect(() =>
-      eatTheReichTemplate.schemas.parseEvent({ type: "ActionRolled", rollId: "roll-1" }),
+      eatTheReichTemplate.schemas.parseEvent({ type: "CharacterClaimed", characterId: ROOK_ID }),
     ).toThrow();
   });
 
@@ -64,7 +69,7 @@ describe("schemas", () => {
       capability: "player",
     });
     expect(() =>
-      eatTheReichTemplate.schemas.parseView({ ...view, characters: [{ name: 42 }] }),
+      eatTheReichTemplate.schemas.parseView({ ...view, roster: [{ name: 42 }] }),
     ).toThrow();
   });
 });
@@ -76,17 +81,28 @@ describe("migrate", () => {
       platformVersion: "0.0.0",
       templateId: EAT_THE_REICH_MANIFEST.templateId,
       templateVersion: EAT_THE_REICH_MANIFEST.templateVersion,
-      schemaVersion: 1,
+      schemaVersion: 3,
       state: JSON.parse(JSON.stringify(state)),
     });
     expect(result.ok).toBe(true);
   });
 
-  it("refuses an unknown schema version rather than guessing a migration", () => {
+  it("refuses the old schemaVersion 1 shape rather than guessing a migration (fresh start, docs/ETR_RULES_IMPLEMENTATION_PLAN.md §1)", () => {
     const result = eatTheReichTemplate.migrate({
       platformVersion: "0.0.0",
       templateId: EAT_THE_REICH_MANIFEST.templateId,
-      templateVersion: EAT_THE_REICH_MANIFEST.templateVersion,
+      templateVersion: "0.1.0",
+      schemaVersion: 1,
+      state: {},
+    });
+    expect(result.ok).toBe(false);
+  });
+
+  it("refuses the B02 schemaVersion 2 shape too (B03 reshaped state again, same fresh-start rationale)", () => {
+    const result = eatTheReichTemplate.migrate({
+      platformVersion: "0.0.0",
+      templateId: EAT_THE_REICH_MANIFEST.templateId,
+      templateVersion: "0.2.0",
       schemaVersion: 2,
       state: {},
     });
@@ -98,7 +114,7 @@ describe("migrate", () => {
       platformVersion: "0.0.0",
       templateId: asTemplateId("some-other-template"),
       templateVersion: "0.0.0",
-      schemaVersion: 1,
+      schemaVersion: 3,
       state: {},
     });
     expect(result.ok).toBe(false);
@@ -108,21 +124,35 @@ describe("migrate", () => {
 describe("theatre", () => {
   it("shortens the duration hint and drops decorative cues under reduced motion", () => {
     const event = {
-      type: "ActionRolled" as const,
-      rollId: "roll-1",
-      actorMemberId: asMemberId("member-rook"),
-      threatId: "enforcer",
-      actionId: "strong-arm-the-enforcer",
-      faces: [5, 6],
-      hits: 2,
-      poolComponents: { nerve: 2, gear: 0, hiddenModifier: 0 },
-      hiddenAdjustmentApplied: false,
+      type: "CharacterClaimed" as const,
+      characterId: ROOK_ID,
+      memberId: asMemberId("member-rook"),
     };
     const full = eatTheReichTemplate.theatre(event, { reducedMotion: false });
     const reduced = eatTheReichTemplate.theatre(event, { reducedMotion: true });
-    expect(full?.cues.length).toBeGreaterThan(0);
-    expect(reduced?.cues).toEqual([]);
+    expect(full?.durationHintMs).toBeGreaterThan(0);
     expect(reduced?.durationHintMs).toBe(0);
     expect(reduced?.fallback.announcement).toBe(full?.fallback.announcement);
+  });
+
+  it("returns a scene for every event type", () => {
+    expect(
+      eatTheReichTemplate.theatre(
+        { type: "CharacterReleased", characterId: ROOK_ID, memberId: asMemberId("member-rook") },
+        { reducedMotion: false },
+      ),
+    ).not.toBeNull();
+    expect(
+      eatTheReichTemplate.theatre(
+        {
+          type: "InjuryHealed",
+          characterId: ROOK_ID,
+          categoryId: "rook-papers-burned",
+          boxIndex: 0,
+          bloodSpent: 3,
+        },
+        { reducedMotion: false },
+      ),
+    ).not.toBeNull();
   });
 });
