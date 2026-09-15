@@ -5,6 +5,7 @@ import {
   type CreateRoomResult,
   type JoinRoomInput,
   type JoinRoomResult,
+  type RecoverSeatInput,
   type RoomId,
   type RoomRepository,
 } from "@digitable/contracts";
@@ -14,7 +15,11 @@ import type {
   EatTheReichView,
 } from "@digitable/template-eat-the-reich";
 import { firebaseBootstrap } from "./firebaseBootstrap.js";
-import { FirebaseSessionClient, type SessionEmulatorConfig } from "./FirebaseSessionClient.js";
+import {
+  FirebaseSessionClient,
+  type RecoverSeatResult,
+  type SessionEmulatorConfig,
+} from "./FirebaseSessionClient.js";
 import { FirebaseRoomRepository } from "../repository/FirebaseRoomRepository.js";
 import { roomEngineStore } from "./RoomEngineStore.js";
 
@@ -61,6 +66,12 @@ export async function createRoom(input: CreateRoomInput): Promise<CreateRoomResu
 export async function joinRoom(input: JoinRoomInput): Promise<JoinRoomResult> {
   if (isLiveMode) return getLiveSessionClient().joinRoom(input);
   return roomEngineStore.joinRoom(input);
+}
+
+/** Board task A06: redeems a recovery code, rebinding this browser's identity to the seat it belongs to. */
+export async function recoverSeat(input: RecoverSeatInput): Promise<RecoverSeatResult> {
+  if (isLiveMode) return getLiveSessionClient().recoverSeat(input);
+  return roomEngineStore.recoverSeat(input);
 }
 
 /**

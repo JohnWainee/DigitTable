@@ -1,4 +1,10 @@
-import type { Capability, RoomAdmissionAccepted, RoomId } from "@digitable/contracts";
+import {
+  asRoomId,
+  type Capability,
+  type RecoverSeatAccepted,
+  type RoomAdmissionAccepted,
+  type RoomId,
+} from "@digitable/contracts";
 
 const OWNERSHIP_STORAGE_KEY = "digitable.etr.ownership.v2";
 const CREATE_REQUEST_ID_KEY = "digitable.etr.createRequestId.v1";
@@ -36,6 +42,36 @@ export function ownershipFromAcceptedWithNames(
     displayName,
     sessionName,
   };
+}
+
+/**
+ * c08: `RecoverSeatAccepted` carries no `roomCode` (the recovering caller
+ * already has it — they typed it into the recovery form) and no `ok`
+ * field, so it can't go through `ownershipFromAcceptedWithNames` — this
+ * mirrors that helper for the recovery result shape instead.
+ */
+export function ownershipFromRecoverySeat(
+  accepted: RecoverSeatAccepted,
+  roomCode: string,
+  displayName: string,
+  sessionName: string,
+): LocalOwnershipRecord {
+  return {
+    roomId: asRoomId(accepted.roomId),
+    roomCode,
+    memberId: accepted.memberId,
+    capability: accepted.capability,
+    recoveryCode: accepted.recoveryCode,
+    displayName,
+    sessionName,
+  };
+}
+
+/** Where "Resume session" (or a completed seat recovery) should land, by capability. Shared by `LandingScreen` and `JoinScreen`'s recovery form. */
+export function resumeRoute(ownership: LocalOwnershipRecord): string {
+  if (ownership.capability === "gm") return `/room/${ownership.roomId}/gm`;
+  if (ownership.capability === "table") return `/room/${ownership.roomId}/table`;
+  return `/claim/${ownership.roomId}`;
 }
 
 export function readOwnershipRecord(): LocalOwnershipRecord | null {

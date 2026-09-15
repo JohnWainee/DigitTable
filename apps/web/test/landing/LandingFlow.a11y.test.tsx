@@ -203,4 +203,56 @@ describe("Landing / create / join / claim (C01)", () => {
     await user.click(screen.getByRole("button", { name: /forget this session/i }));
     expect(screen.queryByRole("heading", { name: /^resume$/i })).not.toBeInTheDocument();
   });
+
+  it("recovers a lost seat by room code + recovery code, and shows a fresh replacement code once (c08)", async () => {
+    const user = userEvent.setup();
+    renderApp("#/");
+    const { roomCode } = await createSession(user);
+
+    // Join as a player and capture the recovery code shown once at admission.
+    window.localStorage.clear();
+    goTo("#/join");
+    await user.type(screen.getByLabelText(/room code/i), roomCode);
+    await user.type(screen.getByLabelText(/^passphrase$/i), "wolfbane");
+    await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
+    await user.click(screen.getByRole("button", { name: /^join session$/i }));
+    await screen.findByRole("heading", { name: /your recovery code/i });
+    const originalRecoveryCode = screen.getByText(/^[A-Z0-9]{6,}$/).textContent;
+
+    // "Lose" this browser's identity entirely, then redeem the code from a fresh one.
+    // (Bounce through "/" first: re-navigating to the same "#/join" hash
+    // does not remount JoinScreen, so its local `accepted` state — still
+    // showing the just-joined reveal card — would otherwise persist.)
+    window.localStorage.clear();
+    goTo("#/");
+    goTo("#/join");
+    await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+    await screen.findByRole("heading", { name: /recover your seat/i });
+    await user.type(screen.getByLabelText(/^room code$/i), roomCode);
+    await user.type(screen.getByLabelText(/recovery code/i), originalRecoveryCode);
+    await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
+    await user.click(screen.getByRole("button", { name: /^recover my seat$/i }));
+
+    expect(
+      await screen.findByRole("heading", { name: /your new recovery code/i }),
+    ).toBeInTheDocument();
+    const newRecoveryCode = screen.getByText(/^[A-Z0-9]{6,}$/).textContent;
+    expect(newRecoveryCode).not.toBe(originalRecoveryCode);
+
+    await user.click(screen.getByRole("button", { name: /i wrote it down — continue/i }));
+    expect(
+      await screen.findByRole("heading", { name: /pick your character/i }),
+    ).toBeInTheDocument();
+
+    // The spent code no longer works.
+    window.localStorage.clear();
+    goTo("#/join");
+    await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+    await screen.findByRole("heading", { name: /recover your seat/i });
+    await user.type(screen.getByLabelText(/^room code$/i), roomCode);
+    await user.type(screen.getByLabelText(/recovery code/i), originalRecoveryCode);
+    await user.type(screen.getByLabelText(/your display name/i), "Someone else");
+    await user.click(screen.getByRole("button", { name: /^recover my seat$/i }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(/code not recognised/i);
+  });
 });

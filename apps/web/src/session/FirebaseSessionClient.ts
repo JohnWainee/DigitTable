@@ -9,7 +9,10 @@ import {
   type CreateRoomResult,
   type JoinRoomInput,
   type JoinRoomResult,
+  type RecoverSeatAccepted,
+  type RecoverSeatInput,
   type RoomAdmissionAccepted,
+  type RoomAdmissionRejected,
 } from "@digitable/contracts";
 import { callable, getRoomFunctions, type FunctionsEmulatorConfig } from "../firebase/functions.js";
 import type { FirestoreEmulatorConfig } from "../firebase/firestore.js";
@@ -25,6 +28,16 @@ export interface SessionEmulatorConfig {
   readonly functions: FunctionsEmulatorConfig;
   readonly firestore: FirestoreEmulatorConfig;
 }
+
+/**
+ * `packages/contracts/src/recovery.ts`'s `RecoverSeatAccepted` has no
+ * `ok`/`roomCode` fields of its own (the caller already has the room code
+ * — they typed it into the recovery form; the server proves the seat from
+ * the code alone, never from a client-asserted identity). Composed here,
+ * not in `@digitable/contracts`, since no other caller needs it yet.
+ */
+export type RecoverSeatResult =
+  ({ readonly ok: true } & RecoverSeatAccepted) | RoomAdmissionRejected;
 
 /** The server's admission-family callables (`apps/functions`) don't take a `requestId` — only `createRoom` does (board task A03). */
 interface AdmitMemberWireInput {
@@ -120,6 +133,28 @@ export class FirebaseSessionClient {
         displayName: input.displayName,
       });
       return toRoomAdmissionAccepted(input.roomCode, response.data);
+    } catch (error) {
+      return { ok: false, ...stableErrorFromThrown(error) };
+    }
+  }
+
+  /**
+   * Board task A06: redeems a recovery code shown once at admission,
+   * rebinding this (necessarily fresh — that's the whole point) anonymous
+   * identity to the seat the code belongs to. Unlike every other method
+   * here, a client-asserted `memberId`/`capability` is never sent — the
+   * server determines the seat from the code alone
+   * (`packages/contracts/src/recovery.ts`'s own doc comment).
+   */
+  async recoverSeat(input: RecoverSeatInput): Promise<RecoverSeatResult> {
+    await this.ensureSignedIn();
+    const fn = callable<RecoverSeatInput, RecoverSeatAccepted>(
+      getRoomFunctions(this.app, this.emulator?.functions),
+      "recoverSeat",
+    );
+    try {
+      const response = await fn(input);
+      return { ok: true, ...response.data };
     } catch (error) {
       return { ok: false, ...stableErrorFromThrown(error) };
     }

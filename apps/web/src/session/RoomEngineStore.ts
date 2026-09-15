@@ -8,8 +8,10 @@ import {
   type JoinRoomInput,
   type JoinRoomResult,
   type MemberId,
+  type RecoverSeatInput,
   type RoomId,
 } from "@digitable/contracts";
+import type { RecoverSeatResult } from "./FirebaseSessionClient.js";
 import {
   generateRecoveryCode,
   hashSecret,
@@ -34,6 +36,10 @@ interface FixtureRoom {
   readonly sessionName: string;
   readonly passphraseHash: HashedSecret;
   readonly repository: InMemoryRoomRepository;
+  /** Mirrors `repository`'s own private capability map — kept here too since `recoverSeat` needs to report a redeemed seat's capability without a repository getter for it. */
+  readonly capabilitiesByMember: Map<MemberId, Capability>;
+  /** One current recovery-code hash per recoverable member (player seats and the GM seat; never the table). Redeeming one replaces it in the same operation, exactly like the real server invalidating the spent code (docs/ARCHITECTURE.md section 8). */
+  readonly recoveryHashesByMember: Map<MemberId, HashedSecret>;
   tableClaimed: boolean;
   playerCount: number;
 }
@@ -92,6 +98,7 @@ export class RoomEngineStore {
     const gmMemberId = asMemberId(`member-${randomCode(8).toLowerCase()}`);
     const passphraseHash = await hashSecret(input.passphrase);
     const recoveryCode = generateRecoveryCode();
+    const recoveryHash = await hashSecret(recoveryCode);
 
     const room: FixtureRoom = {
       roomId,
@@ -100,6 +107,8 @@ export class RoomEngineStore {
       sessionName: input.sessionName,
       passphraseHash,
       repository: new InMemoryRoomRepository(roomId, gmMemberId),
+      capabilitiesByMember: new Map([[gmMemberId, "gm"]]),
+      recoveryHashesByMember: new Map([[gmMemberId, recoveryHash]]),
       tableClaimed: false,
       playerCount: 0,
     };
@@ -148,9 +157,14 @@ export class RoomEngineStore {
     }
     const memberId = asMemberId(`member-${randomCode(8).toLowerCase()}`);
     room.repository.registerMember(memberId, input.requestedCapability);
+    room.capabilitiesByMember.set(memberId, input.requestedCapability);
     if (input.requestedCapability === "player") room.playerCount += 1;
     if (input.requestedCapability === "table") room.tableClaimed = true;
-    const recoveryCode = input.requestedCapability === "player" ? generateRecoveryCode() : null;
+    let recoveryCode: string | null = null;
+    if (input.requestedCapability === "player") {
+      recoveryCode = generateRecoveryCode();
+      room.recoveryHashesByMember.set(memberId, await hashSecret(recoveryCode));
+    }
     return {
       ok: true,
       roomId: room.roomId,
@@ -159,6 +173,38 @@ export class RoomEngineStore {
       capability: input.requestedCapability,
       recoveryCode,
       roomRevision: 0,
+    };
+  }
+
+  /**
+   * Fixture-mode counterpart to board task A06's `recoverSeat` callable:
+   * checks `input.recoveryCode` against every recoverable member's current
+   * hash (bounded by this room's own seat count, same reasoning as the
+   * real server), then mints and stores a fresh replacement, invalidating
+   * the spent one in the same step.
+   */
+  async recoverSeat(input: RecoverSeatInput): Promise<RecoverSeatResult> {
+    const room = this.roomsByCode.get(input.roomCode.toUpperCase());
+    if (!room) {
+      return {
+        ok: false,
+        code: "INVALID_RECOVERY_CODE",
+        message: "Code not recognised.",
+      };
+    }
+    for (const [memberId, hash] of room.recoveryHashesByMember) {
+      if (await verifySecret(input.recoveryCode, hash)) {
+        const capability = room.capabilitiesByMember.get(memberId);
+        if (!capability) continue; // Defensive: every hashed member is always registered.
+        const recoveryCode = generateRecoveryCode();
+        room.recoveryHashesByMember.set(memberId, await hashSecret(recoveryCode));
+        return { ok: true, roomId: room.roomId, memberId, capability, recoveryCode };
+      }
+    }
+    return {
+      ok: false,
+      code: "INVALID_RECOVERY_CODE",
+      message: "Code not recognised.",
     };
   }
 
