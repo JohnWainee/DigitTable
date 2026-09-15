@@ -1,12 +1,20 @@
 import { asMemberId } from "@digitable/contracts";
 import type { AllocationTarget } from "./allocations.js";
-import type { EatTheReichCommand } from "./commands.js";
+import type {
+  CharacterCorrectionPatch,
+  EatTheReichCommand,
+  SceneObjectiveInput,
+  SceneThreatInput,
+} from "./commands.js";
 import type {
   EatTheReichEvent,
   InjuryMarkResult,
   ItemUseRestoreDelta,
   ObjectiveDelta,
+  ObjectiveEditResult,
+  SceneSnapshot,
   ThreatDelta,
+  ThreatEditResult,
 } from "./events.js";
 import type {
   AbilityEffect,
@@ -26,6 +34,7 @@ import type {
   ObjectiveState,
   RollRecord,
   RollStatus,
+  SceneState,
   Stat,
   ThreatFlags,
   ThreatState,
@@ -37,6 +46,7 @@ import type {
   EatTheReichView,
   ObjectiveView,
   RollView,
+  SceneView,
   ThreatGmView,
   ThreatPublicView,
 } from "./view.js";
@@ -406,6 +416,125 @@ function parseThreat(value: unknown, where: string): ThreatState {
   };
 }
 
+// --- Scene (B04) -------------------------------------------------------------------
+
+const SCENE_OBJECTIVE_KINDS = ["primary", "secondary", "retreat"] as const;
+
+function parseSceneObjectiveInput(value: unknown, where: string): SceneObjectiveInput {
+  if (!isRecord(value)) fail(where, "expected an object");
+  const kind = value.kind;
+  if (typeof kind !== "string" || !(SCENE_OBJECTIVE_KINDS as readonly string[]).includes(kind)) {
+    fail(`${where}.kind`, `expected one of ${SCENE_OBJECTIVE_KINDS.join(", ")}`);
+  }
+  return {
+    id: expectString(value.id, `${where}.id`),
+    title: expectString(value.title, `${where}.title`),
+    kind: kind as SceneObjectiveInput["kind"],
+    rating: expectNumber(value.rating, `${where}.rating`),
+    challenge: expectNumber(value.challenge, `${where}.challenge`),
+  };
+}
+
+function parseSceneThreatInput(value: unknown, where: string): SceneThreatInput {
+  if (!isRecord(value)) fail(where, "expected an object");
+  return {
+    id: expectString(value.id, `${where}.id`),
+    name: expectString(value.name, `${where}.name`),
+    rating: expectNumber(value.rating, `${where}.rating`),
+    attack: expectNumber(value.attack, `${where}.attack`),
+    challenge: expectNumber(value.challenge, `${where}.challenge`),
+    solo: expectBoolean(value.solo, `${where}.solo`),
+    elite: expectBoolean(value.elite, `${where}.elite`),
+    flags: parseThreatFlags(value.flags, `${where}.flags`),
+    revealed: expectBoolean(value.revealed, `${where}.revealed`),
+  };
+}
+
+const REINFORCEMENTS_MODES = ["book", "simplified"] as const;
+
+function expectReinforcementsMode(value: unknown, where: string): "book" | "simplified" {
+  if (typeof value !== "string" || !(REINFORCEMENTS_MODES as readonly string[]).includes(value)) {
+    fail(where, `expected one of ${REINFORCEMENTS_MODES.join(", ")}`);
+  }
+  return value as "book" | "simplified";
+}
+
+function parseScene(value: unknown, where: string): SceneState {
+  if (!isRecord(value)) fail(where, "expected an object");
+  const status = value.status;
+  if (status !== "active" && status !== "completed") {
+    fail(`${where}.status`, "expected active|completed");
+  }
+  return {
+    id: expectString(value.id, `${where}.id`),
+    title: expectString(value.title, `${where}.title`),
+    locationLabel: expectString(value.locationLabel, `${where}.locationLabel`),
+    round: expectNumber(value.round, `${where}.round`),
+    actedThisRound: expectStringArray(value.actedThisRound, `${where}.actedThisRound`),
+    reinforcementsMode: expectReinforcementsMode(
+      value.reinforcementsMode,
+      `${where}.reinforcementsMode`,
+    ),
+    status,
+  };
+}
+
+function parseCharacterCorrectionPatch(value: unknown, where: string): CharacterCorrectionPatch {
+  if (!isRecord(value)) fail(where, "expected an object");
+  const itemUses = value.itemUses;
+  const injuryBoxes = value.injuryBoxes;
+  const activeLootId = value.activeLootId;
+  if (activeLootId !== undefined && activeLootId !== null && typeof activeLootId !== "string") {
+    fail(`${where}.activeLootId`, "expected string, null, or undefined");
+  }
+  return {
+    ...(value.blood === undefined ? {} : { blood: expectNumber(value.blood, `${where}.blood`) }),
+    ...(value.downed === undefined
+      ? {}
+      : { downed: expectBoolean(value.downed, `${where}.downed`) }),
+    ...(value.retired === undefined
+      ? {}
+      : { retired: expectBoolean(value.retired, `${where}.retired`) }),
+    ...(activeLootId === undefined ? {} : { activeLootId }),
+    ...(itemUses === undefined
+      ? {}
+      : {
+          itemUses: Array.isArray(itemUses)
+            ? itemUses.map((entry, index) => {
+                if (!isRecord(entry)) fail(`${where}.itemUses[${index}]`, "expected an object");
+                return {
+                  itemId: expectString(entry.itemId, `${where}.itemUses[${index}].itemId`),
+                  usesRemaining: expectNumber(
+                    entry.usesRemaining,
+                    `${where}.itemUses[${index}].usesRemaining`,
+                  ),
+                };
+              })
+            : fail(`${where}.itemUses`, "expected an array"),
+        }),
+    ...(injuryBoxes === undefined
+      ? {}
+      : {
+          injuryBoxes: Array.isArray(injuryBoxes)
+            ? injuryBoxes.map((entry, index) => {
+                if (!isRecord(entry)) fail(`${where}.injuryBoxes[${index}]`, "expected an object");
+                return {
+                  categoryId: expectString(
+                    entry.categoryId,
+                    `${where}.injuryBoxes[${index}].categoryId`,
+                  ),
+                  boxIndex: expectBoxIndex(
+                    entry.boxIndex,
+                    `${where}.injuryBoxes[${index}].boxIndex`,
+                  ),
+                  marked: expectBoolean(entry.marked, `${where}.injuryBoxes[${index}].marked`),
+                };
+              })
+            : fail(`${where}.injuryBoxes`, "expected an array"),
+        }),
+  };
+}
+
 // --- Rolls (B03) -------------------------------------------------------------------
 
 function parseBonusClaimRecord(value: unknown, where: string): BonusClaimRecord {
@@ -540,23 +669,26 @@ function parseRoll(value: unknown, where: string): RollRecord {
 
 export function parseState(value: unknown): EatTheReichState {
   if (!isRecord(value)) fail("state", "expected an object");
-  if (value.schemaVersion !== 3) fail("state.schemaVersion", "expected 3");
+  if (value.schemaVersion !== 4) fail("state.schemaVersion", "expected 4");
   const characters = value.characters;
   const objectives = value.objectives;
   const threats = value.threats;
   const rolls = value.rolls;
+  const scene = value.scene;
   if (!isRecord(characters)) fail("state.characters", "expected an object");
   if (!isRecord(objectives)) fail("state.objectives", "expected an object");
   if (!isRecord(threats)) fail("state.threats", "expected an object");
   if (!isRecord(rolls)) fail("state.rolls", "expected an object");
+  if (scene !== null && !isRecord(scene)) fail("state.scene", "expected an object or null");
   return {
-    schemaVersion: 3,
+    schemaVersion: 4,
     characters: Object.fromEntries(
       Object.entries(characters).map(([characterId, character]) => [
         characterId,
         parseCharacter(character, `state.characters.${characterId}`),
       ]),
     ),
+    scene: scene === null ? null : parseScene(scene, "state.scene"),
     objectives: Object.fromEntries(
       Object.entries(objectives).map(([id, objective]) => [
         id,
@@ -573,6 +705,8 @@ export function parseState(value: unknown): EatTheReichState {
       Object.entries(rolls).map(([id, roll]) => [id, parseRoll(roll, `state.rolls.${id}`)]),
     ),
     nextRollSequence: expectNumber(value.nextRollSequence, "state.nextRollSequence"),
+    paused: expectBoolean(value.paused, "state.paused"),
+    missionEnded: expectBoolean(value.missionEnded, "state.missionEnded"),
   };
 }
 
@@ -662,6 +796,221 @@ export function parseCommand(value: unknown): EatTheReichCommand {
         rollId: expectString(value.rollId, "command.rollId"),
         categoryId: expectString(value.categoryId, "command.categoryId"),
       };
+    case "LoadScene": {
+      const objectives = value.objectives;
+      const threats = value.threats;
+      if (!Array.isArray(objectives)) fail("command.objectives", "expected an array");
+      if (!Array.isArray(threats)) fail("command.threats", "expected an array");
+      return {
+        type: "LoadScene",
+        sceneId: expectString(value.sceneId, "command.sceneId"),
+        title: expectString(value.title, "command.title"),
+        locationLabel: expectString(value.locationLabel, "command.locationLabel"),
+        objectives: objectives.map((o, i) =>
+          parseSceneObjectiveInput(o, `command.objectives[${i}]`),
+        ),
+        threats: threats.map((t, i) => parseSceneThreatInput(t, `command.threats[${i}]`)),
+        reinforcementsMode: expectReinforcementsMode(
+          value.reinforcementsMode,
+          "command.reinforcementsMode",
+        ),
+      };
+    }
+    case "NextScene": {
+      const objectives = value.objectives;
+      const threats = value.threats;
+      if (!Array.isArray(objectives)) fail("command.objectives", "expected an array");
+      if (!Array.isArray(threats)) fail("command.threats", "expected an array");
+      return {
+        type: "NextScene",
+        sceneId: expectString(value.sceneId, "command.sceneId"),
+        title: expectString(value.title, "command.title"),
+        locationLabel: expectString(value.locationLabel, "command.locationLabel"),
+        objectives: objectives.map((o, i) =>
+          parseSceneObjectiveInput(o, `command.objectives[${i}]`),
+        ),
+        threats: threats.map((t, i) => parseSceneThreatInput(t, `command.threats[${i}]`)),
+        reinforcementsMode: expectReinforcementsMode(
+          value.reinforcementsMode,
+          "command.reinforcementsMode",
+        ),
+        reason: expectNullableString(value.reason, "command.reason"),
+      };
+    }
+    case "EndMission":
+      return { type: "EndMission", reason: expectNullableString(value.reason, "command.reason") };
+    case "EndRound":
+      return { type: "EndRound" };
+    case "RevealThreat":
+      return { type: "RevealThreat", threatId: expectString(value.threatId, "command.threatId") };
+    case "EditScene": {
+      const addObjectives = value.addObjectives;
+      const addThreats = value.addThreats;
+      const updateObjectives = value.updateObjectives;
+      const updateThreats = value.updateThreats;
+      return {
+        type: "EditScene",
+        reason: expectString(value.reason, "command.reason"),
+        ...(addObjectives === undefined
+          ? {}
+          : {
+              addObjectives: Array.isArray(addObjectives)
+                ? addObjectives.map((o, i) =>
+                    parseSceneObjectiveInput(o, `command.addObjectives[${i}]`),
+                  )
+                : fail("command.addObjectives", "expected an array"),
+            }),
+        ...(addThreats === undefined
+          ? {}
+          : {
+              addThreats: Array.isArray(addThreats)
+                ? addThreats.map((t, i) => parseSceneThreatInput(t, `command.addThreats[${i}]`))
+                : fail("command.addThreats", "expected an array"),
+            }),
+        ...(updateObjectives === undefined
+          ? {}
+          : {
+              updateObjectives: Array.isArray(updateObjectives)
+                ? updateObjectives.map((entry, i) => {
+                    if (!isRecord(entry))
+                      fail(`command.updateObjectives[${i}]`, "expected an object");
+                    return {
+                      objectiveId: expectString(
+                        entry.objectiveId,
+                        `command.updateObjectives[${i}].objectiveId`,
+                      ),
+                      ...(entry.rating === undefined
+                        ? {}
+                        : {
+                            rating: expectNumber(
+                              entry.rating,
+                              `command.updateObjectives[${i}].rating`,
+                            ),
+                          }),
+                      ...(entry.challenge === undefined
+                        ? {}
+                        : {
+                            challenge: expectNumber(
+                              entry.challenge,
+                              `command.updateObjectives[${i}].challenge`,
+                            ),
+                          }),
+                    };
+                  })
+                : fail("command.updateObjectives", "expected an array"),
+            }),
+        ...(updateThreats === undefined
+          ? {}
+          : {
+              updateThreats: Array.isArray(updateThreats)
+                ? updateThreats.map((entry, i) => {
+                    if (!isRecord(entry)) fail(`command.updateThreats[${i}]`, "expected an object");
+                    return {
+                      threatId: expectString(
+                        entry.threatId,
+                        `command.updateThreats[${i}].threatId`,
+                      ),
+                      ...(entry.rating === undefined
+                        ? {}
+                        : {
+                            rating: expectNumber(
+                              entry.rating,
+                              `command.updateThreats[${i}].rating`,
+                            ),
+                          }),
+                      ...(entry.attack === undefined
+                        ? {}
+                        : {
+                            attack: expectNumber(
+                              entry.attack,
+                              `command.updateThreats[${i}].attack`,
+                            ),
+                          }),
+                      ...(entry.challenge === undefined
+                        ? {}
+                        : {
+                            challenge: expectNumber(
+                              entry.challenge,
+                              `command.updateThreats[${i}].challenge`,
+                            ),
+                          }),
+                    };
+                  })
+                : fail("command.updateThreats", "expected an array"),
+            }),
+        ...(value.removeObjectiveIds === undefined
+          ? {}
+          : {
+              removeObjectiveIds: expectStringArray(
+                value.removeObjectiveIds,
+                "command.removeObjectiveIds",
+              ),
+            }),
+        ...(value.removeThreatIds === undefined
+          ? {}
+          : {
+              removeThreatIds: expectStringArray(value.removeThreatIds, "command.removeThreatIds"),
+            }),
+      };
+    }
+    case "SetSceneRules":
+      return {
+        type: "SetSceneRules",
+        reinforcements: expectReinforcementsMode(value.reinforcements, "command.reinforcements"),
+        reason: expectString(value.reason, "command.reason"),
+      };
+    case "CorrectCharacter":
+      return {
+        type: "CorrectCharacter",
+        characterId: expectString(value.characterId, "command.characterId"),
+        reason: expectString(value.reason, "command.reason"),
+        patch: parseCharacterCorrectionPatch(value.patch, "command.patch"),
+      };
+    case "VoidRoll":
+      return {
+        type: "VoidRoll",
+        rollId: expectString(value.rollId, "command.rollId"),
+        reason: expectString(value.reason, "command.reason"),
+      };
+    case "GrantItem": {
+      const item = value.item;
+      if (!isRecord(item)) fail("command.item", "expected an object");
+      return {
+        type: "GrantItem",
+        characterId: expectString(value.characterId, "command.characterId"),
+        item: {
+          id: expectString(item.id, "command.item.id"),
+          name: expectString(item.name, "command.item.name"),
+          bonusRequirement: expectString(item.bonusRequirement, "command.item.bonusRequirement"),
+          bonusPlus: expectNumber(item.bonusPlus, "command.item.bonusPlus"),
+          maxUses: expectNumber(item.maxUses, "command.item.maxUses"),
+        },
+        reason: expectNullableString(value.reason, "command.reason"),
+      };
+    }
+    case "UnlockAdvance":
+      return {
+        type: "UnlockAdvance",
+        characterId: expectString(value.characterId, "command.characterId"),
+        advanceId: expectString(value.advanceId, "command.advanceId"),
+        reason: expectNullableString(value.reason, "command.reason"),
+      };
+    case "ReassignCharacter": {
+      const memberId = value.memberId;
+      if (memberId !== null && typeof memberId !== "string") {
+        fail("command.memberId", "expected string or null");
+      }
+      return {
+        type: "ReassignCharacter",
+        characterId: expectString(value.characterId, "command.characterId"),
+        memberId,
+        reason: expectNullableString(value.reason, "command.reason"),
+      };
+    }
+    case "Pause":
+      return { type: "Pause" };
+    case "Resume":
+      return { type: "Resume" };
     default:
       return fail("command.type", `unknown command type ${String(value.type)}`);
   }
@@ -700,6 +1049,44 @@ function parseItemUseRestoreDelta(value: unknown, where: string): ItemUseRestore
   return {
     itemId: expectString(value.itemId, `${where}.itemId`),
     amount: expectNumber(value.amount, `${where}.amount`),
+  };
+}
+
+function parseSceneSnapshot(value: unknown, where: string): SceneSnapshot {
+  if (!isRecord(value)) fail(where, "expected an object");
+  const objectives = value.objectives;
+  const threats = value.threats;
+  if (!Array.isArray(objectives)) fail(`${where}.objectives`, "expected an array");
+  if (!Array.isArray(threats)) fail(`${where}.threats`, "expected an array");
+  return {
+    id: expectString(value.id, `${where}.id`),
+    title: expectString(value.title, `${where}.title`),
+    locationLabel: expectString(value.locationLabel, `${where}.locationLabel`),
+    reinforcementsMode: expectReinforcementsMode(
+      value.reinforcementsMode,
+      `${where}.reinforcementsMode`,
+    ),
+    objectives: objectives.map((o, i) => parseObjective(o, `${where}.objectives[${i}]`)),
+    threats: threats.map((t, i) => parseThreat(t, `${where}.threats[${i}]`)),
+  };
+}
+
+function parseObjectiveEditResult(value: unknown, where: string): ObjectiveEditResult {
+  if (!isRecord(value)) fail(where, "expected an object");
+  return {
+    objectiveId: expectString(value.objectiveId, `${where}.objectiveId`),
+    rating: expectNumber(value.rating, `${where}.rating`),
+    challenge: expectNumber(value.challenge, `${where}.challenge`),
+  };
+}
+
+function parseThreatEditResult(value: unknown, where: string): ThreatEditResult {
+  if (!isRecord(value)) fail(where, "expected an object");
+  return {
+    threatId: expectString(value.threatId, `${where}.threatId`),
+    rating: expectNumber(value.rating, `${where}.rating`),
+    attack: expectNumber(value.attack, `${where}.attack`),
+    challenge: expectNumber(value.challenge, `${where}.challenge`),
   };
 }
 
@@ -847,6 +1234,129 @@ export function parseEvent(value: unknown): EatTheReichEvent {
         characterId: expectString(value.characterId, "event.characterId"),
         mark: parseInjuryMarkResult(value.mark, "event.mark"),
       };
+    case "SceneLoaded": {
+      const carried = value.carriedRescueObjectives;
+      if (!Array.isArray(carried)) fail("event.carriedRescueObjectives", "expected an array");
+      return {
+        type: "SceneLoaded",
+        scene: parseSceneSnapshot(value.scene, "event.scene"),
+        carriedRescueObjectives: carried.map((o, i) =>
+          parseObjective(o, `event.carriedRescueObjectives[${i}]`),
+        ),
+      };
+    }
+    case "MissionEnded":
+      return { type: "MissionEnded", reason: expectNullableString(value.reason, "event.reason") };
+    case "RoundEnded": {
+      const reinforcementDeltas = value.reinforcementDeltas;
+      if (!Array.isArray(reinforcementDeltas)) {
+        fail("event.reinforcementDeltas", "expected an array");
+      }
+      return {
+        type: "RoundEnded",
+        round: expectNumber(value.round, "event.round"),
+        reinforcementDeltas: reinforcementDeltas.map((d, i) =>
+          parseThreatDelta(d, `event.reinforcementDeltas[${i}]`),
+        ),
+      };
+    }
+    case "ThreatRevealed":
+      return { type: "ThreatRevealed", threatId: expectString(value.threatId, "event.threatId") };
+    case "SceneEdited": {
+      const addedObjectives = value.addedObjectives;
+      const addedThreats = value.addedThreats;
+      const updatedObjectives = value.updatedObjectives;
+      const updatedThreats = value.updatedThreats;
+      if (!Array.isArray(addedObjectives)) fail("event.addedObjectives", "expected an array");
+      if (!Array.isArray(addedThreats)) fail("event.addedThreats", "expected an array");
+      if (!Array.isArray(updatedObjectives)) fail("event.updatedObjectives", "expected an array");
+      if (!Array.isArray(updatedThreats)) fail("event.updatedThreats", "expected an array");
+      return {
+        type: "SceneEdited",
+        reason: expectString(value.reason, "event.reason"),
+        addedObjectives: addedObjectives.map((o, i) =>
+          parseObjective(o, `event.addedObjectives[${i}]`),
+        ),
+        addedThreats: addedThreats.map((t, i) => parseThreat(t, `event.addedThreats[${i}]`)),
+        updatedObjectives: updatedObjectives.map((u, i) =>
+          parseObjectiveEditResult(u, `event.updatedObjectives[${i}]`),
+        ),
+        updatedThreats: updatedThreats.map((u, i) =>
+          parseThreatEditResult(u, `event.updatedThreats[${i}]`),
+        ),
+        removedObjectiveIds: expectStringArray(
+          value.removedObjectiveIds,
+          "event.removedObjectiveIds",
+        ),
+        removedThreatIds: expectStringArray(value.removedThreatIds, "event.removedThreatIds"),
+      };
+    }
+    case "SceneRulesChanged":
+      return {
+        type: "SceneRulesChanged",
+        reinforcements: expectReinforcementsMode(value.reinforcements, "event.reinforcements"),
+        reason: expectString(value.reason, "event.reason"),
+      };
+    case "CharacterCorrected":
+      return {
+        type: "CharacterCorrected",
+        characterId: expectString(value.characterId, "event.characterId"),
+        reason: expectString(value.reason, "event.reason"),
+        patch: parseCharacterCorrectionPatch(value.patch, "event.patch"),
+      };
+    case "RollVoided": {
+      const itemRestoreDeltas = value.itemRestoreDeltas;
+      if (!Array.isArray(itemRestoreDeltas)) fail("event.itemRestoreDeltas", "expected an array");
+      return {
+        type: "RollVoided",
+        rollId: expectString(value.rollId, "event.rollId"),
+        characterId: expectString(value.characterId, "event.characterId"),
+        reason: expectString(value.reason, "event.reason"),
+        bloodRefund: expectNumber(value.bloodRefund, "event.bloodRefund"),
+        itemRestoreDeltas: itemRestoreDeltas.map((d, i) =>
+          parseItemUseRestoreDelta(d, `event.itemRestoreDeltas[${i}]`),
+        ),
+      };
+    }
+    case "ItemGranted":
+      return {
+        type: "ItemGranted",
+        characterId: expectString(value.characterId, "event.characterId"),
+        item: parseItem(value.item, "event.item"),
+        reason: expectNullableString(value.reason, "event.reason"),
+        previousActiveLootId: expectNullableString(
+          value.previousActiveLootId,
+          "event.previousActiveLootId",
+        ),
+      };
+    case "AdvanceUnlocked":
+      return {
+        type: "AdvanceUnlocked",
+        characterId: expectString(value.characterId, "event.characterId"),
+        advanceId: expectString(value.advanceId, "event.advanceId"),
+        reason: expectNullableString(value.reason, "event.reason"),
+      };
+    case "CharacterReassigned": {
+      const previousMemberId = value.previousMemberId;
+      const memberId = value.memberId;
+      if (previousMemberId !== null && typeof previousMemberId !== "string") {
+        fail("event.previousMemberId", "expected string or null");
+      }
+      if (memberId !== null && typeof memberId !== "string") {
+        fail("event.memberId", "expected string or null");
+      }
+      return {
+        type: "CharacterReassigned",
+        characterId: expectString(value.characterId, "event.characterId"),
+        previousMemberId: previousMemberId === null ? null : asMemberId(previousMemberId),
+        memberId: memberId === null ? null : asMemberId(memberId),
+        reason: expectNullableString(value.reason, "event.reason"),
+      };
+    }
+    case "Paused":
+      return { type: "Paused" };
+    case "Resumed":
+      return { type: "Resumed" };
     default:
       return fail("event.type", `unknown event type ${String(value.type)}`);
   }
@@ -1019,6 +1529,10 @@ function parseRollView(value: unknown, where: string): RollView {
   };
 }
 
+function parseSceneView(value: unknown, where: string): SceneView {
+  return parseScene(value, where);
+}
+
 export function parseView(value: unknown): EatTheReichView {
   if (!isRecord(value)) fail("view", "expected an object");
   const roster = value.roster;
@@ -1026,20 +1540,25 @@ export function parseView(value: unknown): EatTheReichView {
   const objectives = value.objectives;
   const threats = value.threats;
   const rolls = value.rolls;
+  const scene = value.scene;
   if (!Array.isArray(roster)) fail("view.roster", "expected an array");
   if (!Array.isArray(gmSheets)) fail("view.gmSheets", "expected an array");
   if (!Array.isArray(objectives)) fail("view.objectives", "expected an array");
   if (!Array.isArray(threats)) fail("view.threats", "expected an array");
   if (!Array.isArray(rolls)) fail("view.rolls", "expected an array");
+  if (scene !== null && !isRecord(scene)) fail("view.scene", "expected an object or null");
   const self = value.self;
   return {
     self: self === null ? null : parseFullSheet(self, "view.self"),
     roster: roster.map((entry, index) => parsePartySummary(entry, `view.roster[${index}]`)),
     gmSheets: gmSheets.map((entry, index) => parseFullSheet(entry, `view.gmSheets[${index}]`)),
+    scene: scene === null ? null : parseSceneView(scene, "view.scene"),
     objectives: objectives.map((entry, index) =>
       parseObjectiveView(entry, `view.objectives[${index}]`),
     ),
     threats: threats.map((entry, index) => parseThreatView(entry, `view.threats[${index}]`)),
     rolls: rolls.map((entry, index) => parseRollView(entry, `view.rolls[${index}]`)),
+    paused: expectBoolean(value.paused, "view.paused"),
+    missionEnded: expectBoolean(value.missionEnded, "view.missionEnded"),
   };
 }

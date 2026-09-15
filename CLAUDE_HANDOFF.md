@@ -309,7 +309,31 @@ No RESULT_* placeholders; all commands were run in `.claude/worktrees/sonnet-b-r
   **Same expected, out-of-scope `apps/web` breakage as B02** — this slice widens the gap further (new commands/view fields), not fixed here for the same reason (Sonnet C's C01-C04 territory).
 - **Dependencies/next:** B04 (scenes, rounds, reinforcements, `Pause`/`Resume` with Sonnet A) branches from `sonnet-b/b03-resolution-loop` next.
 
-### B04–B05 — not started as of this handoff entry
+### B04 — Consecutive scenes and GM director commands — DONE (branch `sonnet-b/b04-scenes-rounds`)
+
+- **Branch:** `sonnet-b/b04-scenes-rounds`, stacked on `sonnet-b/b03-resolution-loop`. `schemaVersion` bumped 3 -> 4 (same fresh-start rationale); `templateVersion` 0.3.0 -> 0.4.0.
+- **Deliverable:** the Scene wrapper, rounds/reinforcements, and every GM director command from `docs/ETR_SESSION_FLOW.md` §7, plus the anonymous Pause/Resume safety interrupt (§8, matrix T1):
+  - New `SceneState` (`id`, `title`, `locationLabel`, `round`, `actedThisRound`, `reinforcementsMode`, `status`). `EatTheReichState` gains `scene: SceneState | null`, `paused: boolean`, `missionEnded: boolean`. Objectives/Threats stay in their existing top-level maps (not nested under scene) so B03's allocation code needed no rework.
+  - `LoadScene`/`NextScene` (GM authors the scene content inline — id/title/location/Objectives/Threats/reinforcements mode — rather than referencing an external catalog by id; B05's scene fixture supplies the content, the GM console looks it up and sends it as the payload). Guards: `LoadScene` only with no scene active or the active one `completed`; `NextScene` requires the primary Objective complete or a reason, and rejects with `SCENE_HAS_OPEN_ROLLS` if any roll isn't resolved. Rescue Objectives (kind `rescue`) carry across scene transitions; every other Objective and every Threat is replaced.
+  - `EndMission` (same completion-or-reason guard). `EndRound`: rejects `ROUND_HAS_OPEN_ROLLS` if any roll is open; book-mode reinforcements reproduce the matrix's p.38 example exactly (defeated non-solo/elite Threats regain 1d6 rating and `floor(startingAttack/2)` Attack; every other active non-solo/elite Threat's Attack +1; solo/elite untouched); simplified mode is genuinely underspecified in the book beyond "raise ratings 1-3, remove Threats at 0" — implemented as defeated Threats removed outright, active ones +1d3 rating, documented as an interpretation a GM can override via `EditScene`.
+  - `RevealThreat`, `EditScene` (reason required; add/update/remove Objectives and Threats), `SetSceneRules` (reinforcements mode, reason required), `CorrectCharacter` (bounded: Blood 0-10, item uses 0-max, injury boxes, downed/retired, activeLootId — reason required), `VoidRoll` (refunds exactly the Blood/item uses charged at `ReviewAction`, tracked via two new `RollRecord` fields — `bloodSpent`/`itemIdsCharged` — populated at `ActionRolled` time specifically so `VoidRoll` can reverse them precisely), `GrantItem` (adds/swaps the active loot item), `UnlockAdvance`, `ReassignCharacter` (GM override, bypasses the `CHARACTER_TAKEN` precondition).
+  - `Pause`/`Resume`: player-or-GM may pause, GM-only resumes; blocks `BeginAction`/`ReviewAction`/`AllocateResults`; the `Paused`/`Resumed` events and `state.paused` carry no actor identity at all — anonymity is the trusted handler's job (Sonnet A wires `runCommand`'s `actor: {kind:"anonymous"}` override), noted as a coordination item since B has no visibility into `apps/functions`.
+  - `BeginAction` gains the S5 turn-order guard (`NOT_YOUR_TURN` if the character is in `scene.actedThisRound`), requires an active scene, and is blocked by `paused`/`missionEnded`. `AllocateResults`'s reduce now adds the acting character to `scene.actedThisRound` (recorded at resolution, not declaration, so a voided roll never counts as having acted).
+  - **Third contract proposal to Sonnet A** (not yet posted as its own issue comment; noted here and in the B04 status comment): add `"SESSION_PAUSED"` to `packages/contracts/src/errors.ts`'s `STABLE_ERROR_CODES`. Template-local placeholder cast in the meantime, same pattern as the two earlier proposals.
+  - New test file `test/decideScenes.test.ts` (26 tests): LoadScene/NextScene guards and carry-over, EndRound's book/simplified reinforcement math (including the p.38 worked example verbatim), NOT_YOUR_TURN, Pause blocking BeginAction with no actor leaked, and every GM director command's happy path plus its bounded-input rejection. `test/fixtures.ts`'s `stateWithScene` now also builds an active `SceneState` by default. `test/budgets.fixture.test.ts`'s worst case now includes a populated scene (round 3, every character having acted).
+- **Verification performed** (`.claude/worktrees/sonnet-b-rules`):
+  ```
+  npm run typecheck --workspace @digitable/template-eat-the-reich   # pass
+  npx eslint templates/eat-the-reich                                 # pass, 0 errors, 0 warnings
+  npx vitest run templates/eat-the-reich                             # pass: 190 passed, 14 todo, 16 files (1 skipped file unrelated)
+  npm run format                                                      # pass (whole repo)
+  npm run typecheck --workspace @digitable/contracts --workspace @digitable/engine --workspace @digitable/testing   # pass
+  npx vitest run --project '!web'                                    # pass: 220 passed, 14 todo, 23 files
+  ```
+  Same expected, out-of-scope `apps/web` breakage as B02/B03 (Sonnet C's territory, widens further with this slice's new commands/view fields).
+- **Dependencies/next:** B05 (original four-scene Appendix C fixture, private content-pack loader, `docs/ETR_PLAYTEST.md` S01-S10 bound as tests where cheap, property/budget/migration fixture closure, independent rules review) branches from `sonnet-b/b04-scenes-rounds` next.
+
+### B05 — not started as of this handoff entry
 
 ## Definition of first playable
 

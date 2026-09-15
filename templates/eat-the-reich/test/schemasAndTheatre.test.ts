@@ -81,7 +81,7 @@ describe("migrate", () => {
       platformVersion: "0.0.0",
       templateId: EAT_THE_REICH_MANIFEST.templateId,
       templateVersion: EAT_THE_REICH_MANIFEST.templateVersion,
-      schemaVersion: 3,
+      schemaVersion: 4,
       state: JSON.parse(JSON.stringify(state)),
     });
     expect(result.ok).toBe(true);
@@ -109,12 +109,23 @@ describe("migrate", () => {
     expect(result.ok).toBe(false);
   });
 
+  it("refuses the B03 schemaVersion 3 shape too (B04 reshaped state again, same fresh-start rationale)", () => {
+    const result = eatTheReichTemplate.migrate({
+      platformVersion: "0.0.0",
+      templateId: EAT_THE_REICH_MANIFEST.templateId,
+      templateVersion: "0.3.0",
+      schemaVersion: 3,
+      state: {},
+    });
+    expect(result.ok).toBe(false);
+  });
+
   it("refuses a record from a different template", () => {
     const result = eatTheReichTemplate.migrate({
       platformVersion: "0.0.0",
       templateId: asTemplateId("some-other-template"),
       templateVersion: "0.0.0",
-      schemaVersion: 3,
+      schemaVersion: 4,
       state: {},
     });
     expect(result.ok).toBe(false);

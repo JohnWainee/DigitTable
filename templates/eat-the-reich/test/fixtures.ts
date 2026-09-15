@@ -14,6 +14,7 @@ import type {
   EatTheReichState,
   ObjectiveState,
   RollRecord,
+  SceneState,
   ThreatState,
 } from "../src/state.js";
 
@@ -42,7 +43,7 @@ export function freshAuthority(
     platformVersion: "0.0.0",
     templateId: EAT_THE_REICH_MANIFEST.templateId,
     templateVersion: EAT_THE_REICH_MANIFEST.templateVersion,
-    schemaVersion: 3,
+    schemaVersion: 4,
     roomRevision: 0,
     nextSequence: 1,
     roomStatus: "active",
@@ -154,24 +155,41 @@ const DEFAULT_THREAT: ThreatState = {
   revealed: true,
 };
 
-/** A minimal scene: one primary Objective and one revealed Threat, both overridable. */
+const DEFAULT_SCENE: SceneState = {
+  id: "scene-fixture",
+  title: "Fixture Scene",
+  locationLabel: "A fixture location",
+  round: 1,
+  actedThisRound: [],
+  reinforcementsMode: "book",
+  status: "active",
+};
+
+/**
+ * A minimal active scene: one primary Objective, one revealed Threat, and
+ * an active `SceneState` wrapper (matrix B04's `NOT_YOUR_TURN`/round
+ * bookkeeping needs a scene; `BeginAction` rejects with no active scene).
+ */
 export function stateWithScene(
   overrides: {
     readonly objective?: Partial<ObjectiveState>;
     readonly threat?: Partial<ThreatState>;
     readonly extraThreats?: readonly ThreatState[];
     readonly extraObjectives?: readonly ObjectiveState[];
+    readonly scene?: Partial<SceneState>;
   } = {},
   base: EatTheReichState = freshState(),
 ): EatTheReichState {
   const objective: ObjectiveState = { ...DEFAULT_OBJECTIVE, ...overrides.objective };
   const threat: ThreatState = { ...DEFAULT_THREAT, ...overrides.threat };
+  const scene: SceneState = { ...DEFAULT_SCENE, ...overrides.scene };
   const extraThreats = Object.fromEntries((overrides.extraThreats ?? []).map((t) => [t.id, t]));
   const extraObjectives = Object.fromEntries(
     (overrides.extraObjectives ?? []).map((o) => [o.id, o]),
   );
   return {
     ...base,
+    scene,
     objectives: { ...base.objectives, [objective.id]: objective, ...extraObjectives },
     threats: { ...base.threats, [threat.id]: threat, ...extraThreats },
   };

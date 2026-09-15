@@ -140,6 +140,15 @@ function worstCaseState(): EatTheReichState {
   return {
     ...base,
     characters,
+    scene: {
+      id: "worst-case-scene",
+      title: "A reasonably long worst-case scene title for budget purposes",
+      locationLabel: "A reasonably long worst-case location label",
+      round: 3,
+      actedThisRound: Object.values(characters).map((c) => c.id),
+      reinforcementsMode: "book",
+      status: "active",
+    },
     objectives,
     threats,
     rolls,

@@ -13,16 +13,18 @@ import { describe, test } from "vitest";
  * never masks a missing test as green.
  */
 
-// B02 (matrix 3.1, 3.2 P1-P3/P7) and B03 (matrix 3.2 P4-P6, 3.3-3.6) are both
-// fully landed with real assertions — see test/pool.test.ts, test/roster.test.ts,
-// test/decide.test.ts, test/decideResolution.test.ts, test/resolution.test.ts,
-// test/reduce.test.ts, test/project.test.ts, and test/lifecycle.integration.test.ts.
-// C2's "concurrent claim retried with a stale revision" row is resolved by
+// B02 (matrix 3.1, 3.2 P1-P3/P7), B03 (matrix 3.2 P4-P6, 3.3-3.6), and B04
+// (matrix 3.7-3.8, scenes/rounds/reinforcements/Pause/GM director commands)
+// are all fully landed with real assertions — see test/pool.test.ts,
+// test/roster.test.ts, test/decide.test.ts, test/decideResolution.test.ts,
+// test/decideScenes.test.ts, test/resolution.test.ts, test/reduce.test.ts,
+// test/project.test.ts, and test/lifecycle.integration.test.ts. C2's
+// "concurrent claim retried with a stale revision" row is resolved by
 // design, not by that literal test: ClaimCharacter is entity-scoped
 // (packages/contracts/src/command.ts's `expectedRevision` doc comment) and
 // relies on the CHARACTER_TAKEN precondition instead.
 
-describe("B03 — deferred to B04/manual (matrix P1 items, not cut, sequenced later)", () => {
+describe("Deferred to B05/manual (matrix P1 items, not cut, sequenced later)", () => {
   test.todo(
     "P6: late bonus dice rolled during allocation, not just at review (P1; manual fallback: GM applies via correction)",
   );
@@ -30,44 +32,40 @@ describe("B03 — deferred to B04/manual (matrix P1 items, not cut, sequenced la
     "D4: Flashback — reroll kept-dice<=2 with +2 dice, once per session (P1; manual fallback: GM narrates a retry)",
   );
   test.todo(
-    "D5: passive onOnesGainBlood/onOnesRemoveAttack — implemented and unit-tested against a synthetic character (test/decideResolution.test.ts does not cover it; no roster character currently has a passive ability to exercise it live)",
+    "D5: passive onOnesGainBlood/onOnesRemoveAttack — implemented and unit-tested against a synthetic character (test/decideResolution.test.ts); no shipped roster character has a passive ability to exercise it live",
   );
   test.todo(
     "A6/noSpecials: an active noSpecials injury tag rejects a SPECIAL allocation (code path exists in decideAllocateResults, not yet decide-tested directly)",
   );
   test.todo(
-    "I3: Last Stand (8 dice, retire) — P1; manual fallback: GM marks retired via CorrectCharacter (B04) and adjudicates by hand",
+    "I3: Last Stand (8 dice, retire) — P1; manual fallback: GM marks retired via CorrectCharacter (implemented in B04) and adjudicates by hand",
   );
   test.todo(
-    "I4: injuryMarksWholeCategory threat flag — typed and applied in decideAllocateResults's injury logic; not yet exercised by a fixture Threat with the flag set",
+    "I4: injuryMarksWholeCategory threat flag — typed and applied in decideAllocateResults's injury logic; not yet exercised by a fixture Threat with the flag set in a full-loop test",
   );
-  test.todo("S9: Loot (GrantItem, activeLootId swap) — B04 GM command");
+  test.todo(
+    "S9: Loot 'only one loot item mechanically available at a time' cap — GrantItem (B04) replaces the active loot item unconditionally; not yet tested that a second GrantItem always displaces the first (implied by the replace logic, not asserted)",
+  );
   test.todo(
     "S2: secondary-objective rewards (ChooseSecondaryReward) — P1; manual fallback: GM applies via correction",
   );
-});
-
-describe("B04 — rounds, scenes, reinforcements (matrix 3.7)", () => {
-  test.todo("S5: a character who already acted this round is blocked (NOT_YOUR_TURN)");
-  test.todo("S5: EndRound resets acted-this-round and advances round");
-  test.todo("S5: EndRound rejected with open rolls (ROUND_HAS_OPEN_ROLLS)");
-  test.todo("S6: reinforcements worked example (p.38) reproduced with fixed d6");
-  test.todo("S6: solo/elite threats are exempt from reinforcement");
   test.todo(
-    "S7: SetSceneRules simplified mode raises ratings 1-3 and removes threats at 0 (docs/ETR_SESSION_FLOW.md §7)",
-  );
-  test.todo(
-    "S1: primary objective completion blocks further declares until NextScene (LoadScene/NextScene not implemented until B04)",
-  );
-  test.todo("S8: NextScene rejected with open rolls (SCENE_HAS_OPEN_ROLLS)");
-  test.todo("S8: character Blood/injuries/items carry across scenes; threats reset");
-  test.todo(
-    "Pause/Resume: anonymous actor, no initiator leaked to any client path (coordinate with Sonnet A)",
+    "S3: retreat Objective creation — manual, GM uses AddObjective-equivalent via EditScene",
   );
 });
 
-describe("B02-B05 — cross-cutting (matrix §6)", () => {
+describe("B05 — original scene fixture, private content pack, property/budget/migration closure", () => {
   test.todo(
-    "retry with the same commandId produces identical events, no double spend, for ReviewAction/AllocateResults/ChooseInjuryCategory specifically (lifecycle.integration.test.ts covers it for ClaimCharacter and BeginAction only so far)",
+    "Appendix C: the four original scenes (drop-forecourt, metro-platform, printworks, signal-mast) wired as a loadable scene catalog",
+  );
+  test.todo(
+    "content/private/*.json loader: reads a GM's own git-ignored rulebook content pack, never committed, never in shared Firestore documents",
+  );
+  test.todo("docs/ETR_PLAYTEST.md S01-S10: bound as fixed-seed engine-level tests where cheap");
+  test.todo(
+    "retry with the same commandId produces identical events, no double spend, for ReviewAction/AllocateResults/ChooseInjuryCategory/LoadScene/NextScene/EndRound/EditScene/CorrectCharacter/VoidRoll/GrantItem/UnlockAdvance/ReassignCharacter specifically (lifecycle.integration.test.ts covers ClaimCharacter and BeginAction only so far — the runCommand/priorReceipt mechanism is generic and already exercised, but per-command coverage is not exhaustive)",
+  );
+  test.todo(
+    "independent rules review, recorded under docs/reviews/, before B05 is called complete",
   );
 });

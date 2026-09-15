@@ -1,5 +1,6 @@
 import {
   allow,
+  asMemberId,
   broadcastEvent,
   decided,
   deny,
@@ -20,18 +21,22 @@ import {
   type TheatreScene,
   type VersionedTemplateRecord,
   type StableError,
+  type StableErrorCode,
   type ViewerContext,
   type ViewerProjection,
   type VisibleRoll,
 } from "@digitable/contracts";
 import type { AllocationTarget } from "./allocations.js";
-import type { EatTheReichCommand } from "./commands.js";
+import type { EatTheReichCommand, SceneObjectiveInput, SceneThreatInput } from "./commands.js";
 import type {
-  ItemUseRestoreDelta,
-  ObjectiveDelta,
-  ThreatDelta,
   EatTheReichEvent,
   InjuryMarkResult,
+  ItemUseRestoreDelta,
+  ObjectiveDelta,
+  ObjectiveEditResult,
+  SceneSnapshot,
+  ThreatDelta,
+  ThreatEditResult,
 } from "./events.js";
 import { EAT_THE_REICH_MANIFEST } from "./manifest.js";
 import {
@@ -62,6 +67,7 @@ import {
   type KeptDie,
   type ObjectiveState,
   type RollRecord,
+  type SceneState,
   type ThreatState,
 } from "./state.js";
 import type {
@@ -205,6 +211,17 @@ function poolRejectionToStableError(rejection: PoolBuildRejection): StableError 
   }
 }
 
+/**
+ * Contract proposal for Sonnet A (B04, not yet posted/merged): add
+ * `"SESSION_PAUSED"` to `packages/contracts/src/errors.ts`'s
+ * `STABLE_ERROR_CODES`, matching `docs/ETR_SESSION_FLOW.md` §8's Pause
+ * behavior. Template-local placeholder cast until then, same pattern as
+ * B02/B03's error-code proposals.
+ */
+function pausedError(): StableError {
+  return { code: "SESSION_PAUSED" as StableErrorCode, message: "Session paused." };
+}
+
 function hasUnresolvedRoll(state: EatTheReichState, characterId: string): boolean {
   return Object.values(state.rolls).some(
     (roll) => roll.characterId === characterId && roll.status !== "resolved",
@@ -342,6 +359,12 @@ function decideBeginAction(
   ctx: DecisionContext<EatTheReichState>,
   command: Extract<EatTheReichCommand, { type: "BeginAction" }>,
 ): Decision<EatTheReichEvent> {
+  if (ctx.state.paused) {
+    return rejected(pausedError());
+  }
+  if (ctx.state.missionEnded) {
+    return rejected(stableError("UNKNOWN_ACTION", "The mission has ended."));
+  }
   const character = ctx.state.characters[command.characterId];
   if (!character) {
     return rejected(stableError("UNKNOWN_ACTION", "No such character."));
@@ -354,6 +377,12 @@ function decideBeginAction(
   }
   if (character.retired) {
     return rejected(stableError("CHARACTER_RETIRED", "Your story is told."));
+  }
+  if (!ctx.state.scene || ctx.state.scene.status !== "active") {
+    return rejected(stableError("UNKNOWN_ACTION", "No active scene."));
+  }
+  if (ctx.state.scene.actedThisRound.includes(character.id)) {
+    return rejected(stableError("NOT_YOUR_TURN", "You've acted this round."));
   }
   if (hasUnresolvedRoll(ctx.state, character.id)) {
     return rejected(
@@ -424,6 +453,9 @@ function decideReviewAction(
   ctx: DecisionContext<EatTheReichState>,
   command: Extract<EatTheReichCommand, { type: "ReviewAction" }>,
 ): Decision<EatTheReichEvent> {
+  if (ctx.state.paused) {
+    return rejected(pausedError());
+  }
   const roll = ctx.state.rolls[command.rollId];
   if (!roll) return rejected(stableError("UNKNOWN_ACTION", "No such roll."));
   if (roll.status !== "declared") {
@@ -591,6 +623,9 @@ function decideAllocateResults(
   ctx: DecisionContext<EatTheReichState>,
   command: Extract<EatTheReichCommand, { type: "AllocateResults" }>,
 ): Decision<EatTheReichEvent> {
+  if (ctx.state.paused) {
+    return rejected(pausedError());
+  }
   const roll = ctx.state.rolls[command.rollId];
   if (!roll) return rejected(stableError("UNKNOWN_ACTION", "No such roll."));
   if (roll.actorMemberId !== ctx.actor.memberId) {
@@ -884,6 +919,415 @@ function decideChooseInjuryCategory(
 }
 
 // ---------------------------------------------------------------------------
+// B04: scenes, rounds, GM director commands, Pause/Resume
+// ---------------------------------------------------------------------------
+
+function findPrimaryObjective(state: EatTheReichState): ObjectiveState | undefined {
+  return Object.values(state.objectives).find((objective) => objective.kind === "primary");
+}
+
+function hasOpenRolls(state: EatTheReichState): boolean {
+  return Object.values(state.rolls).some((roll) => roll.status !== "resolved");
+}
+
+function requireReason(reason: string | null | undefined, message: string): StableError | null {
+  return reason && reason.trim() !== "" ? null : stableError("UNKNOWN_ACTION", message);
+}
+
+function buildObjectiveStates(inputs: readonly SceneObjectiveInput[]): ObjectiveState[] {
+  return inputs.map((input) => ({ ...input, status: "active" }));
+}
+
+function buildThreatStates(inputs: readonly SceneThreatInput[]): ThreatState[] {
+  return inputs.map((input) => ({ ...input, startingAttack: input.attack, status: "active" }));
+}
+
+function decideSceneTransition(
+  ctx: DecisionContext<EatTheReichState>,
+  command: {
+    readonly sceneId: string;
+    readonly title: string;
+    readonly locationLabel: string;
+    readonly objectives: readonly SceneObjectiveInput[];
+    readonly threats: readonly SceneThreatInput[];
+    readonly reinforcementsMode: "book" | "simplified";
+  },
+): Decision<EatTheReichEvent> {
+  const objectives = buildObjectiveStates(command.objectives);
+  const threats = buildThreatStates(command.threats);
+  const carriedRescueObjectives = Object.values(ctx.state.objectives).filter(
+    (objective) => objective.kind === "rescue" && objective.status === "active",
+  );
+  const scene: SceneSnapshot = {
+    id: command.sceneId,
+    title: command.title,
+    locationLabel: command.locationLabel,
+    reinforcementsMode: command.reinforcementsMode,
+    objectives,
+    threats,
+  };
+  const event: EatTheReichEvent = { type: "SceneLoaded", scene, carriedRescueObjectives };
+  return decided([broadcastEvent(`scene-${command.sceneId}-loaded`, event, [{ kind: "shared" }])]);
+}
+
+function decideLoadScene(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "LoadScene" }>,
+): Decision<EatTheReichEvent> {
+  if (ctx.state.scene !== null && ctx.state.scene.status !== "completed") {
+    return rejected(
+      stableError("UNKNOWN_ACTION", "A scene is already active; use NextScene to move on."),
+    );
+  }
+  if (hasOpenRolls(ctx.state)) {
+    return rejected(stableError("SCENE_HAS_OPEN_ROLLS", "Resolve or void every open roll first."));
+  }
+  return decideSceneTransition(ctx, command);
+}
+
+function decideNextScene(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "NextScene" }>,
+): Decision<EatTheReichEvent> {
+  if (!ctx.state.scene) {
+    return rejected(stableError("UNKNOWN_ACTION", "No scene is active to move on from."));
+  }
+  if (hasOpenRolls(ctx.state)) {
+    return rejected(stableError("SCENE_HAS_OPEN_ROLLS", "Resolve or void every open roll first."));
+  }
+  const primary = findPrimaryObjective(ctx.state);
+  if (primary?.status !== "complete") {
+    const error = requireReason(
+      command.reason,
+      "The primary Objective isn't complete; provide a reason to move on anyway.",
+    );
+    if (error) return rejected(error);
+  }
+  return decideSceneTransition(ctx, command);
+}
+
+function decideEndMission(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "EndMission" }>,
+): Decision<EatTheReichEvent> {
+  if (!ctx.state.scene) {
+    return rejected(stableError("UNKNOWN_ACTION", "No scene is active."));
+  }
+  if (hasOpenRolls(ctx.state)) {
+    return rejected(stableError("SCENE_HAS_OPEN_ROLLS", "Resolve or void every open roll first."));
+  }
+  const primary = findPrimaryObjective(ctx.state);
+  if (primary?.status !== "complete") {
+    const error = requireReason(
+      command.reason,
+      "The final Objective isn't complete; provide a reason to end the mission anyway.",
+    );
+    if (error) return rejected(error);
+  }
+  const event: EatTheReichEvent = { type: "MissionEnded", reason: command.reason };
+  return decided([broadcastEvent("mission-ended", event, [{ kind: "shared" }])]);
+}
+
+/**
+ * matrix S6 (book mode): a defeated (rating <= 0), non-solo/elite Threat
+ * regains 1d6 rating and Attack = floor(startingAttack/2); every other
+ * active, non-solo/elite Threat's Attack rises by 1; solo/elite are exempt
+ * from both. S7 (simplified mode) is underspecified in the book beyond
+ * "raise ratings 1-3, remove Threats at 0" — this implements a reasonable
+ * reading: defeated Threats are removed outright (no re-roll), active ones
+ * gain 1d3 rating, Attack untouched, matching "simplified" intent. A GM who
+ * wants the book's exact simplified wording can adjust via EditScene.
+ */
+function decideEndRound(
+  ctx: DecisionContext<EatTheReichState>,
+  _command: Extract<EatTheReichCommand, { type: "EndRound" }>,
+): Decision<EatTheReichEvent> {
+  if (!ctx.state.scene) {
+    return rejected(stableError("UNKNOWN_ACTION", "No scene is active."));
+  }
+  const openRolls = Object.values(ctx.state.rolls).filter((roll) => roll.status !== "resolved");
+  if (openRolls.length > 0) {
+    return rejected(
+      stableError(
+        "ROUND_HAS_OPEN_ROLLS",
+        `Resolve or void: ${openRolls.map((roll) => roll.id).join(", ")}`,
+      ),
+    );
+  }
+  const mode = ctx.state.scene.reinforcementsMode;
+  const deltas: {
+    readonly threatId: string;
+    readonly ratingAfter: number;
+    readonly attackAfter: number;
+    readonly status: "active" | "beaten" | "removed";
+  }[] = [];
+  for (const threat of Object.values(ctx.state.threats)) {
+    if (threat.solo || threat.elite || threat.status === "removed") continue;
+    if (mode === "book") {
+      if (threat.rating <= 0) {
+        const face = ctx.random.rollDie(6);
+        deltas.push({
+          threatId: threat.id,
+          ratingAfter: face,
+          attackAfter: Math.floor(threat.startingAttack / 2),
+          status: "active",
+        });
+      } else if (threat.status === "active") {
+        deltas.push({
+          threatId: threat.id,
+          ratingAfter: threat.rating,
+          attackAfter: threat.attack + 1,
+          status: "active",
+        });
+      }
+    } else {
+      if (threat.rating <= 0) {
+        deltas.push({ threatId: threat.id, ratingAfter: 0, attackAfter: 0, status: "removed" });
+      } else if (threat.status === "active") {
+        const bump = ctx.random.rollDie(3);
+        deltas.push({
+          threatId: threat.id,
+          ratingAfter: threat.rating + bump,
+          attackAfter: threat.attack,
+          status: "active",
+        });
+      }
+    }
+  }
+  const event: EatTheReichEvent = {
+    type: "RoundEnded",
+    round: ctx.state.scene.round,
+    reinforcementDeltas: deltas,
+  };
+  return decided([
+    broadcastEvent(`round-${ctx.state.scene.round}-ended`, event, [{ kind: "shared" }]),
+  ]);
+}
+
+function decideRevealThreat(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "RevealThreat" }>,
+): Decision<EatTheReichEvent> {
+  const threat = ctx.state.threats[command.threatId];
+  if (!threat) return rejected(stableError("UNKNOWN_ACTION", "No such Threat."));
+  const event: EatTheReichEvent = { type: "ThreatRevealed", threatId: threat.id };
+  return decided([broadcastEvent(`${threat.id}-revealed`, event, [{ kind: "shared" }])]);
+}
+
+function decideEditScene(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "EditScene" }>,
+): Decision<EatTheReichEvent> {
+  const reasonError = requireReason(command.reason, "A reason is required.");
+  if (reasonError) return rejected(reasonError);
+
+  const addedObjectives = buildObjectiveStates(command.addObjectives ?? []);
+  const addedThreats = buildThreatStates(command.addThreats ?? []);
+
+  const updatedObjectives: ObjectiveEditResult[] = [];
+  for (const update of command.updateObjectives ?? []) {
+    const objective = ctx.state.objectives[update.objectiveId];
+    if (!objective) {
+      return rejected(stableError("UNKNOWN_ACTION", `No such Objective "${update.objectiveId}".`));
+    }
+    updatedObjectives.push({
+      objectiveId: objective.id,
+      rating: update.rating ?? objective.rating,
+      challenge: update.challenge ?? objective.challenge,
+    });
+  }
+
+  const updatedThreats: ThreatEditResult[] = [];
+  for (const update of command.updateThreats ?? []) {
+    const threat = ctx.state.threats[update.threatId];
+    if (!threat) {
+      return rejected(stableError("UNKNOWN_ACTION", `No such Threat "${update.threatId}".`));
+    }
+    updatedThreats.push({
+      threatId: threat.id,
+      rating: update.rating ?? threat.rating,
+      attack: update.attack ?? threat.attack,
+      challenge: update.challenge ?? threat.challenge,
+    });
+  }
+
+  for (const id of command.removeObjectiveIds ?? []) {
+    if (!ctx.state.objectives[id]) {
+      return rejected(stableError("UNKNOWN_ACTION", `No such Objective "${id}".`));
+    }
+  }
+  for (const id of command.removeThreatIds ?? []) {
+    if (!ctx.state.threats[id]) {
+      return rejected(stableError("UNKNOWN_ACTION", `No such Threat "${id}".`));
+    }
+  }
+
+  const event: EatTheReichEvent = {
+    type: "SceneEdited",
+    reason: command.reason,
+    addedObjectives,
+    addedThreats,
+    updatedObjectives,
+    updatedThreats,
+    removedObjectiveIds: command.removeObjectiveIds ?? [],
+    removedThreatIds: command.removeThreatIds ?? [],
+  };
+  return decided([
+    broadcastEvent(`scene-edited-${ctx.state.nextRollSequence}`, event, [{ kind: "shared" }]),
+  ]);
+}
+
+function decideSetSceneRules(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "SetSceneRules" }>,
+): Decision<EatTheReichEvent> {
+  if (!ctx.state.scene) return rejected(stableError("UNKNOWN_ACTION", "No scene is active."));
+  const reasonError = requireReason(command.reason, "A reason is required.");
+  if (reasonError) return rejected(reasonError);
+  const event: EatTheReichEvent = {
+    type: "SceneRulesChanged",
+    reinforcements: command.reinforcements,
+    reason: command.reason,
+  };
+  return decided([broadcastEvent("scene-rules-changed", event, [{ kind: "shared" }])]);
+}
+
+function decideCorrectCharacter(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "CorrectCharacter" }>,
+): Decision<EatTheReichEvent> {
+  const reasonError = requireReason(command.reason, "A reason is required.");
+  if (reasonError) return rejected(reasonError);
+  const character = ctx.state.characters[command.characterId];
+  if (!character) return rejected(stableError("UNKNOWN_ACTION", "No such character."));
+  const patch = command.patch;
+  if (patch.blood !== undefined && (patch.blood < 0 || patch.blood > MAX_BLOOD)) {
+    return rejected(stableError("INVALID_ALLOCATION", `Blood must be between 0 and ${MAX_BLOOD}.`));
+  }
+  for (const itemUse of patch.itemUses ?? []) {
+    const item = character.items.find((candidate) => candidate.id === itemUse.itemId);
+    if (!item) {
+      return rejected(stableError("UNKNOWN_ACTION", `No such item "${itemUse.itemId}".`));
+    }
+    if (itemUse.usesRemaining < 0 || itemUse.usesRemaining > item.maxUses) {
+      return rejected(
+        stableError(
+          "INVALID_ALLOCATION",
+          `"${item.id}" uses must be between 0 and ${item.maxUses}.`,
+        ),
+      );
+    }
+  }
+  for (const box of patch.injuryBoxes ?? []) {
+    const category = character.injuries.find((candidate) => candidate.id === box.categoryId);
+    if (!category) {
+      return rejected(
+        stableError("UNKNOWN_ACTION", `No such injury category "${box.categoryId}".`),
+      );
+    }
+  }
+  const event: EatTheReichEvent = {
+    type: "CharacterCorrected",
+    characterId: character.id,
+    reason: command.reason,
+    patch,
+  };
+  return decided([
+    broadcastEvent(`${character.id}-corrected-${ctx.state.nextRollSequence}`, event, [
+      { kind: "shared" },
+    ]),
+  ]);
+}
+
+function decideVoidRoll(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "VoidRoll" }>,
+): Decision<EatTheReichEvent> {
+  const reasonError = requireReason(command.reason, "A reason is required.");
+  if (reasonError) return rejected(reasonError);
+  const roll = ctx.state.rolls[command.rollId];
+  if (!roll) return rejected(stableError("UNKNOWN_ACTION", "No such roll."));
+  if (roll.status === "resolved") {
+    return rejected(stableError("ROLL_ALREADY_RESOLVED", "That roll is already resolved."));
+  }
+  const event: EatTheReichEvent = {
+    type: "RollVoided",
+    rollId: roll.id,
+    characterId: roll.characterId,
+    reason: command.reason,
+    bloodRefund: roll.bloodSpent ?? 0,
+    itemRestoreDeltas: (roll.itemIdsCharged ?? []).map((itemId) => ({ itemId, amount: 1 })),
+  };
+  return decided([broadcastEvent(`${roll.id}-voided`, event, [{ kind: "shared" }])]);
+}
+
+function decideGrantItem(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "GrantItem" }>,
+): Decision<EatTheReichEvent> {
+  const character = ctx.state.characters[command.characterId];
+  if (!character) return rejected(stableError("UNKNOWN_ACTION", "No such character."));
+  const item = { ...command.item, usesRemaining: command.item.maxUses };
+  const event: EatTheReichEvent = {
+    type: "ItemGranted",
+    characterId: character.id,
+    item,
+    reason: command.reason,
+    previousActiveLootId: character.activeLootId,
+  };
+  return decided([
+    broadcastEvent(`${character.id}-item-granted-${item.id}`, event, [{ kind: "shared" }]),
+  ]);
+}
+
+function decideUnlockAdvance(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "UnlockAdvance" }>,
+): Decision<EatTheReichEvent> {
+  const character = ctx.state.characters[command.characterId];
+  if (!character) return rejected(stableError("UNKNOWN_ACTION", "No such character."));
+  const advance = character.advances.find((candidate) => candidate.id === command.advanceId);
+  if (!advance) return rejected(stableError("UNKNOWN_ACTION", "No such advance."));
+  const event: EatTheReichEvent = {
+    type: "AdvanceUnlocked",
+    characterId: character.id,
+    advanceId: advance.id,
+    reason: command.reason,
+  };
+  return decided([
+    broadcastEvent(`${character.id}-advance-${advance.id}`, event, [{ kind: "shared" }]),
+  ]);
+}
+
+function decideReassignCharacter(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "ReassignCharacter" }>,
+): Decision<EatTheReichEvent> {
+  const character = ctx.state.characters[command.characterId];
+  if (!character) return rejected(stableError("UNKNOWN_ACTION", "No such character."));
+  const event: EatTheReichEvent = {
+    type: "CharacterReassigned",
+    characterId: character.id,
+    previousMemberId: character.claimedByMemberId,
+    memberId: command.memberId === null ? null : asMemberId(command.memberId),
+    reason: command.reason,
+  };
+  return decided([
+    broadcastEvent(`${character.id}-reassigned-${ctx.state.nextRollSequence}`, event, [
+      { kind: "shared" },
+    ]),
+  ]);
+}
+
+function decidePause(): Decision<EatTheReichEvent> {
+  return decided([broadcastEvent("session-paused", { type: "Paused" }, [{ kind: "shared" }])]);
+}
+
+function decideResume(): Decision<EatTheReichEvent> {
+  return decided([broadcastEvent("session-resumed", { type: "Resumed" }, [{ kind: "shared" }])]);
+}
+
+// ---------------------------------------------------------------------------
 // GameTemplate wiring
 // ---------------------------------------------------------------------------
 
@@ -920,6 +1364,30 @@ function authorizeGameAction(
       return ctx.capability === "player"
         ? allow()
         : deny(stableError("ROLE_FORBIDDEN", "Only a player may choose an injury category."));
+    case "LoadScene":
+    case "NextScene":
+    case "EndMission":
+    case "EndRound":
+    case "RevealThreat":
+    case "EditScene":
+    case "SetSceneRules":
+    case "CorrectCharacter":
+    case "VoidRoll":
+    case "GrantItem":
+    case "UnlockAdvance":
+    case "ReassignCharacter":
+      return ctx.capability === "gm"
+        ? allow()
+        : deny(stableError("ROLE_FORBIDDEN", "Only the GM may do that."));
+    case "Pause":
+      // matrix 3.8 T1: anyone — player or GM — may pause (docs/ETR_SESSION_FLOW.md §7/§8).
+      return ctx.capability === "player" || ctx.capability === "gm"
+        ? allow()
+        : deny(stableError("ROLE_FORBIDDEN", "The table display cannot pause the session."));
+    case "Resume":
+      return ctx.capability === "gm"
+        ? allow()
+        : deny(stableError("ROLE_FORBIDDEN", "Only the GM may resume the session."));
   }
 }
 
@@ -942,6 +1410,34 @@ function decide(
       return decideAllocateResults(ctx, command);
     case "ChooseInjuryCategory":
       return decideChooseInjuryCategory(ctx, command);
+    case "LoadScene":
+      return decideLoadScene(ctx, command);
+    case "NextScene":
+      return decideNextScene(ctx, command);
+    case "EndMission":
+      return decideEndMission(ctx, command);
+    case "EndRound":
+      return decideEndRound(ctx, command);
+    case "RevealThreat":
+      return decideRevealThreat(ctx, command);
+    case "EditScene":
+      return decideEditScene(ctx, command);
+    case "SetSceneRules":
+      return decideSetSceneRules(ctx, command);
+    case "CorrectCharacter":
+      return decideCorrectCharacter(ctx, command);
+    case "VoidRoll":
+      return decideVoidRoll(ctx, command);
+    case "GrantItem":
+      return decideGrantItem(ctx, command);
+    case "UnlockAdvance":
+      return decideUnlockAdvance(ctx, command);
+    case "ReassignCharacter":
+      return decideReassignCharacter(ctx, command);
+    case "Pause":
+      return decidePause();
+    case "Resume":
+      return decideResume();
   }
 }
 
@@ -1081,6 +1577,8 @@ function reduce(state: EatTheReichState, event: EatTheReichEvent): EatTheReichSt
         attackDiceRolled: event.attackDiceRolled,
         attackFaces: event.attackFaces,
         attackSuccessesRolled: event.attackSuccessesRolled,
+        bloodSpent: event.bloodSpent,
+        itemIdsCharged: event.itemIdsCharged,
       };
       const chargedItemIds = new Set(event.itemIdsCharged);
       const items = character.items.map((item) =>
@@ -1156,6 +1654,17 @@ function reduce(state: EatTheReichState, event: EatTheReichEvent): EatTheReichSt
       if (event.injuryMark) {
         next = applyInjuryMark(next, event.characterId, event.injuryMark);
       }
+      // matrix S5: the character has now acted this round (recorded at resolution,
+      // not declaration, so a voided roll never counts as having acted).
+      if (next.scene && !next.scene.actedThisRound.includes(event.characterId)) {
+        next = {
+          ...next,
+          scene: {
+            ...next.scene,
+            actedThisRound: [...next.scene.actedThisRound, event.characterId],
+          },
+        };
+      }
       return next;
     }
     case "InjuryCategoryChosen": {
@@ -1170,6 +1679,196 @@ function reduce(state: EatTheReichState, event: EatTheReichEvent): EatTheReichSt
       }
       return next;
     }
+    case "SceneLoaded": {
+      const scene: SceneState = {
+        id: event.scene.id,
+        title: event.scene.title,
+        locationLabel: event.scene.locationLabel,
+        round: 1,
+        actedThisRound: [],
+        reinforcementsMode: event.scene.reinforcementsMode,
+        status: "active",
+      };
+      const objectives: Record<string, ObjectiveState> = {};
+      for (const objective of event.scene.objectives) objectives[objective.id] = objective;
+      for (const rescue of event.carriedRescueObjectives) objectives[rescue.id] = rescue;
+      const threats: Record<string, ThreatState> = {};
+      for (const threat of event.scene.threats) threats[threat.id] = threat;
+      return { ...state, scene, objectives, threats };
+    }
+    case "MissionEnded":
+      return {
+        ...state,
+        missionEnded: true,
+        scene: state.scene ? { ...state.scene, status: "completed" } : state.scene,
+      };
+    case "RoundEnded": {
+      let next = state;
+      for (const delta of event.reinforcementDeltas) next = applyThreatDelta(next, delta);
+      if (next.scene) {
+        next = {
+          ...next,
+          scene: { ...next.scene, round: next.scene.round + 1, actedThisRound: [] },
+        };
+      }
+      return next;
+    }
+    case "ThreatRevealed": {
+      const threat = state.threats[event.threatId];
+      if (!threat) return state;
+      return {
+        ...state,
+        threats: { ...state.threats, [threat.id]: { ...threat, revealed: true } },
+      };
+    }
+    case "SceneEdited": {
+      const objectiveEntries: [string, ObjectiveState][] = Object.entries(state.objectives)
+        .filter(([id]) => !event.removedObjectiveIds.includes(id))
+        .map(([id, objective]) => {
+          const update = event.updatedObjectives.find((u) => u.objectiveId === id);
+          return update
+            ? [id, { ...objective, rating: update.rating, challenge: update.challenge }]
+            : [id, objective];
+        });
+      for (const added of event.addedObjectives) objectiveEntries.push([added.id, added]);
+
+      const threatEntries: [string, ThreatState][] = Object.entries(state.threats)
+        .filter(([id]) => !event.removedThreatIds.includes(id))
+        .map(([id, threat]) => {
+          const update = event.updatedThreats.find((u) => u.threatId === id);
+          return update
+            ? [
+                id,
+                {
+                  ...threat,
+                  rating: update.rating,
+                  attack: update.attack,
+                  challenge: update.challenge,
+                },
+              ]
+            : [id, threat];
+        });
+      for (const added of event.addedThreats) threatEntries.push([added.id, added]);
+
+      return {
+        ...state,
+        objectives: Object.fromEntries(objectiveEntries),
+        threats: Object.fromEntries(threatEntries),
+      };
+    }
+    case "SceneRulesChanged":
+      return state.scene
+        ? { ...state, scene: { ...state.scene, reinforcementsMode: event.reinforcements } }
+        : state;
+    case "CharacterCorrected": {
+      const character = state.characters[event.characterId];
+      if (!character) return state;
+      const patch = event.patch;
+      let next = character;
+      if (patch.blood !== undefined) next = { ...next, blood: patch.blood };
+      if (patch.downed !== undefined) next = { ...next, downed: patch.downed };
+      if (patch.retired !== undefined) next = { ...next, retired: patch.retired };
+      if (patch.activeLootId !== undefined) next = { ...next, activeLootId: patch.activeLootId };
+      if (patch.itemUses) {
+        const byId = new Map(patch.itemUses.map((u) => [u.itemId, u.usesRemaining]));
+        next = {
+          ...next,
+          items: next.items.map((item) =>
+            byId.has(item.id) ? { ...item, usesRemaining: byId.get(item.id)! } : item,
+          ),
+        };
+      }
+      if (patch.injuryBoxes) {
+        const boxPatches = patch.injuryBoxes;
+        next = {
+          ...next,
+          injuries: next.injuries.map((category) => {
+            const relevant = boxPatches.filter((b) => b.categoryId === category.id);
+            if (relevant.length === 0) return category;
+            const boxes = [...category.boxes] as [
+              (typeof category.boxes)[0],
+              (typeof category.boxes)[1],
+            ];
+            for (const patchedBox of relevant) {
+              boxes[patchedBox.boxIndex] = {
+                ...boxes[patchedBox.boxIndex],
+                marked: patchedBox.marked,
+              };
+            }
+            return { ...category, boxes };
+          }),
+        };
+      }
+      return { ...state, characters: { ...state.characters, [character.id]: next } };
+    }
+    case "RollVoided": {
+      const character = state.characters[event.characterId];
+      let next = state;
+      if (character) {
+        let items = character.items;
+        for (const restore of event.itemRestoreDeltas) {
+          items = items.map((item) =>
+            item.id === restore.itemId
+              ? {
+                  ...item,
+                  usesRemaining: Math.min(item.maxUses, item.usesRemaining + restore.amount),
+                }
+              : item,
+          );
+        }
+        const blood = Math.min(MAX_BLOOD, character.blood + event.bloodRefund);
+        next = {
+          ...next,
+          characters: { ...next.characters, [character.id]: { ...character, items, blood } },
+        };
+      }
+      const { [event.rollId]: _voided, ...remainingRolls } = next.rolls;
+      return { ...next, rolls: remainingRolls };
+    }
+    case "ItemGranted": {
+      const character = state.characters[event.characterId];
+      if (!character) return state;
+      const items = character.items.filter((item) => item.id !== event.previousActiveLootId);
+      items.push(event.item);
+      return {
+        ...state,
+        characters: {
+          ...state.characters,
+          [character.id]: { ...character, items, activeLootId: event.item.id },
+        },
+      };
+    }
+    case "AdvanceUnlocked": {
+      const character = state.characters[event.characterId];
+      if (!character) return state;
+      return {
+        ...state,
+        characters: {
+          ...state.characters,
+          [character.id]: {
+            ...character,
+            advances: character.advances.map((advance) =>
+              advance.id === event.advanceId ? { ...advance, unlocked: true } : advance,
+            ),
+          },
+        },
+      };
+    }
+    case "CharacterReassigned": {
+      const character = state.characters[event.characterId];
+      if (!character) return state;
+      return {
+        ...state,
+        characters: {
+          ...state.characters,
+          [character.id]: { ...character, claimedByMemberId: event.memberId },
+        },
+      };
+    }
+    case "Paused":
+      return { ...state, paused: true };
+    case "Resumed":
+      return { ...state, paused: false };
   }
 }
 
@@ -1191,9 +1890,12 @@ function project(state: EatTheReichState, viewer: ViewerContext): EatTheReichVie
     self: ownCharacter ? toFullSheet(ownCharacter) : null,
     roster,
     gmSheets: isGm ? Object.values(state.characters).map(toFullSheet) : [],
+    scene: state.scene ? { ...state.scene } : null,
     objectives,
     threats,
     rolls,
+    paused: state.paused,
+    missionEnded: state.missionEnded,
   };
 }
 
@@ -1371,6 +2073,149 @@ function theatre(event: EatTheReichEvent, prefs: PresentationPreferences): Theat
         fallback: { announcement },
       };
     }
+    case "SceneLoaded": {
+      const announcement = `Scene: ${event.scene.title}.`;
+      return {
+        id: `scene-${event.scene.id}-loaded`,
+        semanticLabel: announcement,
+        priority: "result",
+        durationHintMs,
+        cues: [],
+        fallback: { announcement },
+      };
+    }
+    case "MissionEnded": {
+      const announcement = "The mission has ended.";
+      return {
+        id: "mission-ended",
+        semanticLabel: announcement,
+        priority: "result",
+        durationHintMs,
+        cues: [],
+        fallback: { announcement },
+      };
+    }
+    case "RoundEnded": {
+      const announcement = `Round ${event.round} ends; reinforcements arrive.`;
+      return {
+        id: `round-${event.round}-ended`,
+        semanticLabel: announcement,
+        priority: "ambient",
+        durationHintMs,
+        cues: [],
+        fallback: { announcement },
+      };
+    }
+    case "ThreatRevealed": {
+      const announcement = "A new Threat is revealed.";
+      return {
+        id: `${event.threatId}-revealed`,
+        semanticLabel: announcement,
+        priority: "result",
+        durationHintMs,
+        cues: [],
+        fallback: { announcement },
+      };
+    }
+    case "SceneEdited": {
+      const announcement = "The GM adjusted the scene.";
+      return {
+        id: `scene-edited-${event.reason}`,
+        semanticLabel: announcement,
+        priority: "ambient",
+        durationHintMs,
+        cues: [],
+        fallback: { announcement },
+      };
+    }
+    case "SceneRulesChanged": {
+      const announcement = "The GM changed the reinforcement rule.";
+      return {
+        id: "scene-rules-changed",
+        semanticLabel: announcement,
+        priority: "ambient",
+        durationHintMs,
+        cues: [],
+        fallback: { announcement },
+      };
+    }
+    case "CharacterCorrected": {
+      const announcement = `The GM corrected a character: ${event.reason}`;
+      return {
+        id: `${event.characterId}-corrected`,
+        semanticLabel: announcement,
+        priority: "ambient",
+        durationHintMs,
+        cues: [],
+        fallback: { announcement },
+      };
+    }
+    case "RollVoided": {
+      const announcement = "An action was withdrawn.";
+      return {
+        id: `${event.rollId}-voided`,
+        semanticLabel: announcement,
+        priority: "ambient",
+        durationHintMs,
+        cues: [],
+        fallback: { announcement },
+      };
+    }
+    case "ItemGranted": {
+      const announcement = `${event.characterId} found something.`;
+      return {
+        id: `${event.characterId}-item-granted`,
+        semanticLabel: announcement,
+        priority: "ambient",
+        durationHintMs,
+        cues: [],
+        fallback: { announcement },
+      };
+    }
+    case "AdvanceUnlocked": {
+      const announcement = "An advance is unlocked.";
+      return {
+        id: `${event.characterId}-advance-${event.advanceId}`,
+        semanticLabel: announcement,
+        priority: "ambient",
+        durationHintMs,
+        cues: [],
+        fallback: { announcement },
+      };
+    }
+    case "CharacterReassigned": {
+      const announcement = "The GM reassigned a character.";
+      return {
+        id: `${event.characterId}-reassigned`,
+        semanticLabel: announcement,
+        priority: "ambient",
+        durationHintMs,
+        cues: [],
+        fallback: { announcement },
+      };
+    }
+    case "Paused": {
+      const announcement = "Paused.";
+      return {
+        id: "session-paused",
+        semanticLabel: announcement,
+        priority: "interrupt",
+        durationHintMs: 0,
+        cues: [],
+        fallback: { announcement },
+      };
+    }
+    case "Resumed": {
+      const announcement = "Resumed.";
+      return {
+        id: "session-resumed",
+        semanticLabel: announcement,
+        priority: "interrupt",
+        durationHintMs: 0,
+        cues: [],
+        fallback: { announcement },
+      };
+    }
   }
 }
 
@@ -1382,12 +2227,15 @@ function initialState(_input: InitialCampaignInput): EatTheReichState {
     ]),
   );
   return {
-    schemaVersion: 3,
+    schemaVersion: 4,
     characters,
+    scene: null,
     objectives: {},
     threats: {},
     rolls: {},
     nextRollSequence: 1,
+    paused: false,
+    missionEnded: false,
   };
 }
 
@@ -1397,13 +2245,13 @@ function migrate(
   if (record.templateId !== EAT_THE_REICH_MANIFEST.templateId) {
     return { ok: false, reason: `Unexpected templateId "${record.templateId}".` };
   }
-  if (record.schemaVersion !== 3) {
+  if (record.schemaVersion !== 4) {
     return {
       ok: false,
       reason: `No migration path from schemaVersion ${record.schemaVersion} (docs/ETR_RULES_IMPLEMENTATION_PLAN.md §1: fresh start, no live rooms exist under any prior shape).`,
     };
   }
-  return { ok: true, state: parseState(record.state), schemaVersion: 3 };
+  return { ok: true, state: parseState(record.state), schemaVersion: 4 };
 }
 
 export const eatTheReichTemplate: GameTemplate<

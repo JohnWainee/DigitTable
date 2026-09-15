@@ -113,6 +113,17 @@ export interface RollViewFull {
 
 export type RollView = RollViewActing | RollViewFull;
 
+/** Public scene summary (matrix flow §5, §10): every viewer sees the same fields. */
+export interface SceneView {
+  readonly id: string;
+  readonly title: string;
+  readonly locationLabel: string;
+  readonly round: number;
+  readonly actedThisRound: readonly string[];
+  readonly reinforcementsMode: "book" | "simplified";
+  readonly status: "active" | "completed";
+}
+
 export interface EatTheReichView {
   /** The viewer's own claimed character's full sheet, or null if they have none (or are GM/table). */
   readonly self: CharacterFullSheet | null;
@@ -120,15 +131,18 @@ export interface EatTheReichView {
   readonly roster: readonly CharacterPartySummary[];
   /** GM only: every character's full sheet, keyed by character id. Empty for non-GM viewers. */
   readonly gmSheets: readonly CharacterFullSheet[];
+  /** `null` before the GM's first `LoadScene` (matrix flow §5's empty state). */
+  readonly scene: SceneView | null;
   readonly objectives: readonly ObjectiveView[];
   /** GM sees every Threat (as `ThreatGmView`); everyone else sees only revealed ones (as `ThreatPublicView`). */
   readonly threats: readonly (ThreatPublicView | ThreatGmView)[];
   /**
    * Every non-resolved roll, viewer-appropriate detail (see `RollView`).
    * Resolved rolls are dropped from the projection once seen (their effects
-   * already live in `roster`/`objectives`/`threats`); a known limitation is
-   * that `EatTheReichState.rolls` itself keeps every roll forever — B04's
-   * scene transition is the natural place to prune it, tracked there.
+   * already live in `roster`/`objectives`/`threats`).
    */
   readonly rolls: readonly RollView[];
+  /** matrix 3.8 T1: shown to every viewer with no actor identity (never who paused). */
+  readonly paused: boolean;
+  readonly missionEnded: boolean;
 }

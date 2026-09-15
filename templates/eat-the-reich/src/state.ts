@@ -247,16 +247,43 @@ export interface RollRecord {
   readonly attackFaces?: readonly number[];
   readonly attackSuccessesRolled?: number;
   readonly primaryEngagedThreatId?: string | null;
+  /** Charged at ReviewAction time; kept on the roll so `VoidRoll` (B04) can refund exactly this. */
+  readonly bloodSpent?: number;
+  readonly itemIdsCharged?: readonly string[];
   // Populated once AllocateResults resolves:
   readonly remainingAttackSuccessesAfterAllocation?: number;
   readonly injuryChoicePending?: InjuryChoicePending;
 }
 
+/**
+ * B04 (docs/ETR_RULES_MATRIX.md 3.7-3.8): the one active scene wrapper.
+ * `null` before the GM's first `LoadScene` (matrix flow §5's "the GM is
+ * preparing the first scene" empty state). Objectives/Threats stay in
+ * `EatTheReichState.objectives`/`.threats` (not nested here) so B03's
+ * allocation code, which already addresses them by id, needs no rework;
+ * `LoadScene`/`NextScene` replace those maps' contents (matrix S8: "threats
+ * do not carry over" between scenes; rescue Objectives are the one
+ * exception — they track a character, not a scene, and survive).
+ */
+export interface SceneState {
+  readonly id: string;
+  readonly title: string;
+  readonly locationLabel: string;
+  readonly round: number;
+  readonly actedThisRound: readonly string[];
+  readonly reinforcementsMode: "book" | "simplified";
+  readonly status: "active" | "completed";
+}
+
 export interface EatTheReichState {
-  readonly schemaVersion: 3;
+  readonly schemaVersion: 4;
   readonly characters: Readonly<Record<string, CharacterState>>;
+  readonly scene: SceneState | null;
   readonly objectives: Readonly<Record<string, ObjectiveState>>;
   readonly threats: Readonly<Record<string, ThreatState>>;
   readonly rolls: Readonly<Record<string, RollRecord>>;
   readonly nextRollSequence: number;
+  /** Anonymous safety pause (matrix 3.8, T1). Never carries who paused. */
+  readonly paused: boolean;
+  readonly missionEnded: boolean;
 }

@@ -1,6 +1,24 @@
 import type { MemberId } from "@digitable/contracts";
 import type { AllocationTarget } from "./allocations.js";
-import type { BonusClaimRecord, KeptDie, ObjectiveState, Stat } from "./state.js";
+import type { CharacterCorrectionPatch } from "./commands.js";
+import type {
+  BonusClaimRecord,
+  ItemState,
+  KeptDie,
+  ObjectiveState,
+  Stat,
+  ThreatState,
+} from "./state.js";
+
+/** The replacement scene contents applied by `SceneLoaded` (matrix S1, S4, S8). */
+export interface SceneSnapshot {
+  readonly id: string;
+  readonly title: string;
+  readonly locationLabel: string;
+  readonly reinforcementsMode: "book" | "simplified";
+  readonly objectives: readonly ObjectiveState[];
+  readonly threats: readonly ThreatState[];
+}
 
 export interface ObjectiveDelta {
   readonly objectiveId: string;
@@ -18,6 +36,20 @@ export interface ThreatDelta {
 export interface ItemUseRestoreDelta {
   readonly itemId: string;
   readonly amount: number;
+}
+
+/** A full post-edit snapshot of one edited Objective/Threat (matrix §4 item 7's `EditScene`). */
+export interface ObjectiveEditResult {
+  readonly objectiveId: string;
+  readonly rating: number;
+  readonly challenge: number;
+}
+
+export interface ThreatEditResult {
+  readonly threatId: string;
+  readonly rating: number;
+  readonly attack: number;
+  readonly challenge: number;
 }
 
 export interface InjuryMarkResult {
@@ -98,4 +130,83 @@ export type EatTheReichEvent =
       readonly rollId: string;
       readonly characterId: string;
       readonly mark: InjuryMarkResult;
+    }
+  | {
+      readonly type: "SceneLoaded";
+      readonly scene: SceneSnapshot;
+      /** Rescue Objectives carried forward from the previous scene, if any (matrix I2, S8). */
+      readonly carriedRescueObjectives: readonly ObjectiveState[];
+    }
+  | {
+      readonly type: "MissionEnded";
+      readonly reason: string | null;
+    }
+  | {
+      readonly type: "RoundEnded";
+      readonly round: number;
+      readonly reinforcementDeltas: readonly {
+        readonly threatId: string;
+        readonly ratingAfter: number;
+        readonly attackAfter: number;
+        readonly status: "active" | "beaten" | "removed";
+      }[];
+    }
+  | {
+      readonly type: "ThreatRevealed";
+      readonly threatId: string;
+    }
+  | {
+      readonly type: "SceneEdited";
+      readonly reason: string;
+      readonly addedObjectives: readonly ObjectiveState[];
+      readonly addedThreats: readonly ThreatState[];
+      readonly updatedObjectives: readonly ObjectiveEditResult[];
+      readonly updatedThreats: readonly ThreatEditResult[];
+      readonly removedObjectiveIds: readonly string[];
+      readonly removedThreatIds: readonly string[];
+    }
+  | {
+      readonly type: "SceneRulesChanged";
+      readonly reinforcements: "book" | "simplified";
+      readonly reason: string;
+    }
+  | {
+      readonly type: "CharacterCorrected";
+      readonly characterId: string;
+      readonly reason: string;
+      readonly patch: CharacterCorrectionPatch;
+    }
+  | {
+      readonly type: "RollVoided";
+      readonly rollId: string;
+      readonly characterId: string;
+      readonly reason: string;
+      readonly bloodRefund: number;
+      readonly itemRestoreDeltas: readonly ItemUseRestoreDelta[];
+    }
+  | {
+      readonly type: "ItemGranted";
+      readonly characterId: string;
+      readonly item: ItemState;
+      readonly reason: string | null;
+      readonly previousActiveLootId: string | null;
+    }
+  | {
+      readonly type: "AdvanceUnlocked";
+      readonly characterId: string;
+      readonly advanceId: string;
+      readonly reason: string | null;
+    }
+  | {
+      readonly type: "CharacterReassigned";
+      readonly characterId: string;
+      readonly previousMemberId: MemberId | null;
+      readonly memberId: MemberId | null;
+      readonly reason: string | null;
+    }
+  | {
+      readonly type: "Paused";
+    }
+  | {
+      readonly type: "Resumed";
     };
