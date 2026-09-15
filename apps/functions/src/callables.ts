@@ -7,6 +7,7 @@ import {
 } from "firebase-functions/v2/https";
 import {
   AdmissionInputError,
+  FUNCTIONS_REGION,
   RecoverySeatInputError,
   RoomDataError,
   SessionInputError,
@@ -288,7 +289,7 @@ export function createAdmissionCallables(deps: AdmissionCallableDependencies): {
 } {
   return {
     admitMember: onCall<unknown, Promise<AdmissionAccepted>>(
-      { enforceAppCheck: false },
+      { enforceAppCheck: false, region: FUNCTIONS_REGION },
       (request) =>
         handleAdmission<AdmitMemberInput>(
           deps,
@@ -298,21 +299,23 @@ export function createAdmissionCallables(deps: AdmissionCallableDependencies): {
           admitMemberTxn,
         ),
     ),
-    claimSeat: onCall<unknown, Promise<AdmissionAccepted>>({ enforceAppCheck: false }, (request) =>
-      handleAdmission<ClaimSeatInput>(
-        deps,
-        "claimSeat",
-        request,
-        parseClaimSeatInput,
-        claimSeatTxn,
-      ),
+    claimSeat: onCall<unknown, Promise<AdmissionAccepted>>(
+      { enforceAppCheck: false, region: FUNCTIONS_REGION },
+      (request) =>
+        handleAdmission<ClaimSeatInput>(
+          deps,
+          "claimSeat",
+          request,
+          parseClaimSeatInput,
+          claimSeatTxn,
+        ),
     ),
     createRoom: onCall<unknown, Promise<CreateRoomAccepted>>(
-      { enforceAppCheck: false },
+      { enforceAppCheck: false, region: FUNCTIONS_REGION },
       (request) => handleCreateRoom(deps, request),
     ),
     recoverSeat: onCall<unknown, Promise<RecoverSeatAccepted>>(
-      { enforceAppCheck: false },
+      { enforceAppCheck: false, region: FUNCTIONS_REGION },
       (request) => handleRecoverSeat(deps, request),
     ),
   };
