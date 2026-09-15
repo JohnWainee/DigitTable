@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **Phase 2 PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim, PR #13) is ready for John's merge decision** after three independent review rounds, no blocking findings. **A02 (integration contracts, PR #15) and A03 (secure `createRoom`, PR #18, stacked on #13+#15) are also implemented on this branch and ready for John's merge decision**, A03 after an independent review round with one process-blocking finding (a formatting check that hadn't been re-run) and three substantive findings (UID-unscoped idempotency receipts, a discarded `sessionName`, a hardcoded replay `roomRevision`), all fixed with tests.
-- **Branch:** `sonnet-a/a03` (from `worktree-phase2-pr3-admission`, PR #13's branch, with `sonnet-a/a02` merged in)
-- **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom, stacked on the other two — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-14 by Sonnet A (task A03: independent review and fixes)
+- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **PR #13 (admission), #15 (A02 contracts), #18 (A03 createRoom), and #23 (A04 game commands) are all implemented and ready for John's merge decision**, each after its own independent review round with findings fixed and tests added (none blocking; see each PR's own review doc under `docs/reviews/`).
+- **Branch:** `sonnet-a/a04` (from `sonnet-a/a03`, itself from `worktree-phase2-pr3-admission`/PR #13's branch with `sonnet-a/a02` merged in)
+- **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands, stacked on the other three — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
+- **Last updated:** 2026-09-14 by Sonnet A (task A04: independent review and fixes)
 
 ## Mission
 
@@ -254,6 +254,26 @@ Merge remains John's decision.
 ### Independent review
 
 One round: [`docs/reviews/2026-09-14-a03-createroom-independent-review.md`](docs/reviews/2026-09-14-a03-createroom-independent-review.md). No blocking finding in the security-relevant guarantees (atomicity, collision safety, secret handling, privilege/injection safety, throttling, rules enforcement — all independently verified PASS with test evidence). One process-blocking finding (a formatting check that hadn't been re-run after the last file was added — fixed) and three substantive findings, all fixed with tests: idempotency receipts were not scoped to the calling UID (fixed — `ROLE_FORBIDDEN` on a UID mismatch, which also corrected a test that had inadvertently exercised the insecure cross-identity case as the happy path), the validated `sessionName` was silently discarded (fixed — persisted to `meta/current`), and a replay hardcoded `roomRevision: 0` (fixed — reads the live value). One judgment call (a client's own recovery code persisted in `localStorage` until board task A06 consumes it) recorded as an explicit A06 follow-up rather than an A03 defect.
+
+Merge remains John's decision.
+
+## Tenth implementation PR: trusted game-command authority (board task A04) — READY FOR JOHN'S MERGE DECISION
+
+`sonnet-a/a04`, PR #23, commit `1113209` (stacked on PR #18's branch — see PR #23's description for the stacking note; retarget to `main` once #13, #15, and #18 merge). Adds a fourth callable, `submitRoomCommand`, implementing `docs/PHASE_2_PR4_PLAN.md`'s design for the current template's three commands (`BeginAction`, `SubmitOpposition`, `AllocateResults`). One transaction per invocation: resolve capability from `uidBindings` only (checked immediately — `AUTH_REQUIRED` before any other read) → prior-receipt lookup → full `authority/current` read (`parseAuthorityRecord`, fail-closed) → every live binding read (before any write) → `expectedRevision` check → platform authorization, using the client's own asserted `templateId`/`templateVersion` (`WireCommandRequest`) checked against the room's live values → command parse → `runCommand` → atomic writes of authority, receipt, every event's destination-partitioned copy, and every live viewer's projection (via `projectViewer`, matching the reserved `"gm"`/`"table"` viewer-ID convention). Idempotent both ways: an accepted retry short-circuits; a rejected retry replays the identical stored `code`/`message`. Seed generated once per invocation outside the transaction, reused across internal retries, never logged. `commandId` is UUID-shape-validated; `roomId` gets the same character-safety pattern `admission.ts`'s room codes use.
+
+Explicitly out of scope for this PR (documented, not silently dropped): synthetic revision-gated/anonymous-actor fixture-command tests (no current ETR command is revision-gated or anonymous) and Firestore write-count/size worst-case budget assertions (today's commands stay far under those limits).
+
+### Required checks — all pass locally
+
+- `npm run check` — formatting, lint (zero warnings), typecheck, and **321/321** default tests across 43 files passed.
+- `npm run build` — passed (`apps/functions` esbuild bundle 91.6kb; `apps/web` vite build).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **89/89** tests passed (16 `packages/testing`, 73 `apps/functions`).
+- `npm audit` — 13 moderate, unchanged from A01's baseline.
+- `git diff --check` — clean.
+
+### Independent review
+
+One round: [`docs/reviews/2026-09-14-a04-gamecommand-independent-review.md`](docs/reviews/2026-09-14-a04-gamecommand-independent-review.md). No blocking finding — all 10 required verification items passed with direct code-path tracing. One Medium finding (client template-version assertion was previously unreachable, so `TEMPLATE_VERSION_MISMATCH` could never fire — fixed) and three Low findings (hand-duplicated projection assembly instead of reusing `projectViewer`; `commandId`/`roomId` only length-bounded, not character-restricted; authority/bindings validation could throw before the `AUTH_REQUIRED` check), all fixed with regression tests.
 
 Merge remains John's decision.
 
