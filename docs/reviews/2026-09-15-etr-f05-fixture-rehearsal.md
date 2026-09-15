@@ -64,6 +64,34 @@ Candidate: the same build plus `origin/sonnet-c/c07-gm-controls` @ `7ea4033` (PR
 
 **Fixture-mode verdict: session-runnable.** The live (emulator/staging) path and the three-device rehearsal remain the open gate (R11), owned by Sonnet A's `sonnet-a/a08-integration-fixes`.
 
+## Live emulator-backed walkthrough (2026-09-15, Fable, independent of Sonnet A's run)
+
+Candidate: `sonnet-c/c07-gm-controls` @ `446f74d` (PR #35, includes the auth-readiness patch) merged with `sonnet-a/a08-final` (PR #36, on top of #34/#32/#30/#27/#23/#18/#15/#13) and `sonnet-b/b05-fixtures-review` @ `29067ec`, on the review branch `fable/f05-candidate`. Stack: `firebase emulators:start --project demo-digitable` (Auth 9099, Firestore 8080, RTDB 9000, Functions 5001; five callables loaded as `us-west1-*`), `vite` dev server with `VITE_FIREBASE_USE_EMULATOR=true` and demo config, three browser tabs on distinct origins (`gm.localhost`, `sam.localhost`, `jo.localhost` → later `table.localhost`) so each role held its own anonymous identity. Driven by DOM events as before; every result read from the rendered page.
+
+| Step | Result | Evidence |
+|---|---|---|
+| Create room (real `createRoom`) | pass | Server room code `ZJD7R-93PH5`, server-issued table code (A03 delivered the F02 §3 gap), GM recovery code, all shown once; App Check logged as monitoring-only (`admission.appCheckMissing` warning, request not blocked). Emulator log: `Beginning execution of "us-west1-createRoom"`. |
+| GM console load | pass after C's patch | Before `446f74d`: "This session has ended" on first load (the auth-readiness race A diagnosed). After: console loads on a fresh navigation. |
+| Load scene (`submitRoomCommand`) | pass | Objectives/threats panel with ratings; "Characters claimed: 1/6" updated live from Sam's claim. |
+| Join + claim on a second identity (`admitMember`, `ClaimCharacter`) | pass | Recovery code shown once; claim screen loaded immediately after joining (PR #36's initial-projection fix works); "You claimed Rook." |
+| Declare → GM review (live) → roll → allocate (live) | pass | GM's pending card appeared without reload; server dice 4,1,1,2,3,2 vs 1 attack success; Defend → "Removed 1 attack success, no injury." |
+| Reload mid-allocation (S06 reload case) | pass | Open roll re-rendered from the projection after a full page reload; allocation then confirmed once. |
+| End round (live) | pass | Round 2; both patrols' attack 2 → 3 on the GM, player, and table surfaces. |
+| Late join on a third identity (S07) | pass | Jo saw round 2, reinforced attack values, Rook claimed (no Claim button on Rook), claimed Tallow, party strip on every surface updated. |
+| Table display (`admitMember` as `table`) | pass | 0 controls; passphrase, table code, both recovery codes absent from the DOM; no display names shown. |
+| Pause from a player (anonymous) | pass | Sam "Paused."; GM "Session paused." with Resume only; table "Paused"; no name on any surface. Resume restored all three. |
+| Advance scene with reason | pass | GM: Métro scene, Plated Squad (challenge 1), The Enforcer "hidden — GM notes: …"; Sam: Plated Squad only, no Enforcer; Blood/injuries carried. |
+
+**Still unverified (honest gaps for the 17th):**
+
+- **S06 disconnect after send, before the response** (outbox persistence and receipt reconciliation). Sonnet A's A06 delivered seat recovery only and explicitly deferred the client outbox; the engine's receipt short-circuit is tested server-side, but the client will not automatically reconcile a lost response. A player who loses connectivity mid-tap must reload and re-check the screen; a duplicate tap after reload cannot double-apply because the same `commandId` is not reused across reloads and the engine rejects a second allocation of a resolved roll. Treat as an accepted residual or a release blocker, John's call.
+- **No recovery-code entry screen exists in `apps/web`** (grep: the only "recovery" references are the one-time reveal cards). The `recoverSeat` callable exists and is emulator-tested, but a player who loses their browser identity cannot redeem their code from the UI and would join as a new seat without their character. P1 for Sonnet C (a small "Recover my seat" form on the join screen calling `recoverSeat`).
+- **Physical devices and staging**: this run used three browser origins on one machine against the emulator, not phones on a network against `powerglove-1cd23`. Deployment has not been executed (runbook §3 lists the commands).
+- **Retry storms / stale-revision paths** were not driven from the UI; covered by A04's emulator tests.
+- Page `<title>` still reads "Local fixture (not a live room)" in live mode (static `index.html`). P2.
+
+**Verdict:** the candidate is **playable end to end over the real callables** for the flow the board requires. Remaining gates are operational (deploy, devices) plus the S06 outbox decision.
+
 ## Required before the 2026-09-17 session
 
 1. C: R1–R3 (End round, Pause/Resume, End mission, GM ratings/notes panel), then R4–R8 as time allows. These are UI wiring over commands the template already implements and tests.
