@@ -6,6 +6,8 @@ import {
   type CommandId,
   type RoomCommandResult,
   type RoomDispatchFailure,
+  type Unsubscribe,
+  type ViewerId,
   type ViewerProjection,
 } from "@digitable/contracts";
 import type {
@@ -13,7 +15,21 @@ import type {
   EatTheReichEvent,
   EatTheReichView,
 } from "@digitable/template-eat-the-reich";
-import { getRoomRepository } from "./roomClient.js";
+import { ensureLiveAuthReady, getRoomRepository } from "./roomClient.js";
+
+/**
+ * A08 live verification finding: the GM/table projections live at the
+ * fixed reserved ids `projections/gm`/`projections/table`
+ * (`FirebaseRoomRepository.getProjection`'s own `projections/{viewer.
+ * viewerId}` path), never at a path keyed by the GM's own member id —
+ * invisible in fixture mode, where `InMemoryRoomRepository` computes a
+ * viewer's projection on the fly regardless of `viewerId`, only
+ * surfacing as a live `permission-denied`/not-found against Firestore.
+ */
+function viewerIdForCapability(memberId: string, capability: Capability): ViewerId {
+  if (capability === "gm" || capability === "table") return capability;
+  return asMemberId(memberId);
+}
 
 export type RoomProjectionStatus = "connecting" | "live" | "reconnecting" | "not-found";
 
@@ -64,32 +80,51 @@ export function useRoomProjection(
         cancelled = true;
       };
     }
-    const viewer = { roomId: asRoomId(roomId), viewerId: asMemberId(memberId), capability };
+    const viewer = {
+      roomId: asRoomId(roomId),
+      viewerId: viewerIdForCapability(memberId, capability),
+      capability,
+    };
 
-    repository
-      .getProjection(viewer)
-      .then((initial) => {
-        if (cancelled) return;
-        setProjection(initial);
-        setStatus("live");
-      })
-      .catch(() => {
-        if (!cancelled) setStatus("not-found");
-      });
+    let unsubscribeProjection: Unsubscribe | null = null;
+    let unsubscribeErrors: Unsubscribe | null = null;
 
-    const unsubscribeProjection = repository.subscribeToProjection(viewer, (next) => {
+    // A08 live verification finding: on a full page load landing directly
+    // on a room route (a reload, a bookmark, this effect's own first run),
+    // nothing previously ensured Firebase Auth had finished restoring its
+    // persisted anonymous session before this first Firestore read fired —
+    // a read that races ahead of it can reach Firestore before the SDK's
+    // auth context has propagated, denying with `permission-denied` even
+    // though the rules and the data are both already correct. No-ops in
+    // fixture mode.
+    void ensureLiveAuthReady().then(() => {
       if (cancelled) return;
-      setProjection(next);
-      setStatus("live");
-    });
-    const unsubscribeErrors = repository.subscribeToErrors((failure) => {
-      if (!cancelled) setLastError(failure);
+
+      repository
+        .getProjection(viewer)
+        .then((initial) => {
+          if (cancelled) return;
+          setProjection(initial);
+          setStatus("live");
+        })
+        .catch(() => {
+          if (!cancelled) setStatus("not-found");
+        });
+
+      unsubscribeProjection = repository.subscribeToProjection(viewer, (next) => {
+        if (cancelled) return;
+        setProjection(next);
+        setStatus("live");
+      });
+      unsubscribeErrors = repository.subscribeToErrors((failure) => {
+        if (!cancelled) setLastError(failure);
+      });
     });
 
     return () => {
       cancelled = true;
-      unsubscribeProjection();
-      unsubscribeErrors();
+      unsubscribeProjection?.();
+      unsubscribeErrors?.();
     };
   }, [roomId, memberId, capability]);
 
