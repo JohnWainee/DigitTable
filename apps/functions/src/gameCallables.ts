@@ -40,10 +40,33 @@ function requireAuth(request: CallableRequest<unknown>): string {
   return request.auth.uid;
 }
 
+const MAX_ROOM_ID_LENGTH = 128;
+
+/**
+ * A real client only ever echoes back the `roomId` a server response gave
+ * it (board task A03's `createRoomAuthority.ts` mints it via
+ * `crypto.randomUUID()`), but path-safety, not exact UUID shape, is what
+ * this boundary actually needs — matching `admission.ts`'s `ROOM_CODE_
+ * PATTERN` reasoning for the same class of value, and keeping this
+ * consistent with every emulator test fixture across this codebase (
+ * `admission.test.ts`, `createRoom.test.ts`, `roomRules.test.ts`, and this
+ * file's own `seedRoom`), none of which use real UUIDs for test room IDs.
+ * Shape-checked here (independent A04 review, Low finding): an
+ * unconstrained value would still be Firestore-path-safe against this
+ * room's own subtree, but a stray `/` would previously surface as an
+ * unhandled exception instead of a clean `INVALID_REQUEST`.
+ */
+const ROOM_ID_PATTERN = /^[A-Za-z0-9-]+$/;
+
 function requireRoomId(request: CallableRequest<unknown>): string {
   const data = request.data as { readonly roomId?: unknown } | null;
   const roomId = data === null || typeof data !== "object" ? undefined : data.roomId;
-  if (typeof roomId !== "string" || roomId.length === 0) {
+  if (
+    typeof roomId !== "string" ||
+    roomId.length === 0 ||
+    roomId.length > MAX_ROOM_ID_LENGTH ||
+    !ROOM_ID_PATTERN.test(roomId)
+  ) {
     throw toHttpsError("INVALID_REQUEST", "A room ID is required.");
   }
   return roomId;

@@ -2,7 +2,12 @@ import { createHash, randomBytes as nodeRandomBytes } from "node:crypto";
 import type { Firestore, Transaction } from "firebase-admin/firestore";
 import { eatTheReichTemplate } from "@digitable/template-eat-the-reich";
 import type { EatTheReichEvent } from "@digitable/template-eat-the-reich";
-import { authorizePlatform, createSeededRandom, runCommand } from "@digitable/engine";
+import {
+  authorizePlatform,
+  createSeededRandom,
+  projectViewer,
+  runCommand,
+} from "@digitable/engine";
 import {
   RoomDataError,
   asCommandId,
@@ -28,6 +33,21 @@ export type GameCommandResult = RoomCommandResult<EatTheReichEvent>;
 
 const MIN_COMMAND_ID_LENGTH = 8;
 const MAX_COMMAND_ID_LENGTH = 128;
+const MAX_TEMPLATE_VERSION_LENGTH = 32;
+
+/**
+ * `docs/ARCHITECTURE.md` section 8: "commandId validated as a UUID before
+ * use." A UUID-*shaped* check (independent review finding, Low): the prior
+ * length-only bound let a `commandId` containing `/` reach
+ * `receiptIdFor`'s path construction unmangled, which could only ever
+ * produce a malformed (odd-segment) Firestore path within this room's own
+ * subtree — never an authorization bypass or a path outside `rooms/
+ * {roomId}` — but would have surfaced as an unhandled exception (generic
+ * `internal`) instead of a clean `INVALID_REQUEST`. `crypto.randomUUID()`
+ * output is the only value a real client sends; this accepts that exact
+ * shape.
+ */
+const COMMAND_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export class GameCommandInputError extends Error {}
 
@@ -35,32 +55,52 @@ export interface WireCommandRequest {
   readonly commandId: string;
   readonly payload: unknown;
   readonly expectedRevision?: number;
+  /**
+   * The client's own template build (independent review finding, Medium):
+   * without a client-asserted value here, `authorizePlatform`'s
+   * `TEMPLATE_VERSION_MISMATCH` check was comparing the room's
+   * `authority/current.templateId`/`templateVersion` against themselves —
+   * vacuously true, so a stale/incompatible client build could never be
+   * rejected by that guard. The client sends the template manifest it was
+   * actually built against (`eatTheReichTemplate.manifest`), and this is
+   * checked against the room's live values, not the other way around.
+   */
+  readonly templateId: string;
+  readonly templateVersion: string;
 }
 
 /**
  * Runtime-validates the untrusted wire envelope — everything except
  * `payload`'s internal shape, which `template.schemas.parseCommand`
  * validates once platform authorization has already run (docs/PHASE_2_PR4_PLAN.md
- * §4.3, §12.1). `commandId` is bounds-checked here (it is used verbatim to
- * construct the receipt document path via `receiptIdFor`, so an unbounded
- * or empty value must never reach that path construction) but not strictly
- * parsed as a UUID — `crypto.randomUUID()` output is the only value real
- * clients ever send, but rejecting on exact UUID shape would make this
- * parser the single point that breaks if that format ever changes; the
- * length bound is what actually matters for path-safety.
+ * §4.3, §12.1).
  */
 export function parseWireCommandRequest(value: unknown): WireCommandRequest {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     throw new GameCommandInputError("game command input: root: expected an object");
   }
-  const { commandId, payload, expectedRevision } = value as Record<string, unknown>;
+  const { commandId, payload, expectedRevision, templateId, templateVersion } = value as Record<
+    string,
+    unknown
+  >;
   if (
     typeof commandId !== "string" ||
     commandId.length < MIN_COMMAND_ID_LENGTH ||
-    commandId.length > MAX_COMMAND_ID_LENGTH
+    commandId.length > MAX_COMMAND_ID_LENGTH ||
+    !COMMAND_ID_PATTERN.test(commandId)
+  ) {
+    throw new GameCommandInputError("game command input: commandId: expected a UUID");
+  }
+  if (typeof templateId !== "string" || templateId.length === 0) {
+    throw new GameCommandInputError("game command input: templateId: expected a non-empty string");
+  }
+  if (
+    typeof templateVersion !== "string" ||
+    templateVersion.length === 0 ||
+    templateVersion.length > MAX_TEMPLATE_VERSION_LENGTH
   ) {
     throw new GameCommandInputError(
-      `game command input: commandId: expected a string between ${MIN_COMMAND_ID_LENGTH} and ${MAX_COMMAND_ID_LENGTH} characters`,
+      "game command input: templateVersion: expected a non-empty bounded string",
     );
   }
   if (
@@ -74,8 +114,8 @@ export function parseWireCommandRequest(value: unknown): WireCommandRequest {
     );
   }
   return expectedRevision === undefined
-    ? { commandId, payload }
-    : { commandId, payload, expectedRevision };
+    ? { commandId, payload, templateId, templateVersion }
+    : { commandId, payload, expectedRevision, templateId, templateVersion };
 }
 
 // -- Capability resolution (docs/PHASE_2_PR4_PLAN.md §1) --
@@ -251,14 +291,24 @@ export async function submitRoomCommand(
   const startedAtMs = Date.now();
   const result = await runGameCommandTransaction(db, wire.commandId, async (txn) => {
     const member = await resolveCapability(txn, db, roomId, uid);
+    // Checked immediately, before any other read: an unauthenticated-for-
+    // this-room caller must never learn anything about the room's data
+    // (independent review finding, Low — a corrupted authority/bindings
+    // document previously surfaced as ROOM_DATA_INVALID before this check
+    // ever ran, a minor "room exists and is corrupted" disclosure to a
+    // caller who isn't even a member).
+    if (member === null) {
+      return rejectedResult(
+        wire.commandId,
+        "AUTH_REQUIRED",
+        "Sign-in is required to act in this room.",
+      );
+    }
 
-    const receiptRef =
-      member === null
-        ? null
-        : db.doc(
-            `rooms/${roomId}/receipts/${receiptIdFor(member.memberId, asCommandId(wire.commandId))}`,
-          );
-    const receiptSnap = receiptRef === null ? null : await txn.get(receiptRef);
+    const receiptRef = db.doc(
+      `rooms/${roomId}/receipts/${receiptIdFor(member.memberId, asCommandId(wire.commandId))}`,
+    );
+    const receiptSnap = await txn.get(receiptRef);
 
     const authorityRef = db.doc(`rooms/${roomId}/authority/current`);
     const authoritySnap = await txn.get(authorityRef);
@@ -270,15 +320,7 @@ export async function submitRoomCommand(
     // Read unconditionally (before any write); only used on the accept path.
     const bindings = await liveBindings(txn, db, roomId);
 
-    if (member === null) {
-      return rejectedResult(
-        wire.commandId,
-        "AUTH_REQUIRED",
-        "Sign-in is required to act in this room.",
-      );
-    }
-
-    if (receiptSnap !== null && receiptSnap.exists) {
+    if (receiptSnap.exists) {
       const stored = parseCommandReceiptDocument(receiptSnap.data());
       if (stored.status === "rejected") {
         return rejectedResult(
@@ -325,11 +367,11 @@ export async function submitRoomCommand(
         templateId: authority.templateId,
         templateVersion: authority.templateVersion,
       },
-      {
-        templateId: authority.templateId,
-        templateVersion: authority.templateVersion,
-        payload: wire.payload,
-      },
+      // The client's own asserted build (`wire.templateId`/`templateVersion`,
+      // independent review finding) checked against the room's live values
+      // — not the room's values compared to themselves, which could never
+      // reject anything.
+      { templateId: wire.templateId, templateVersion: wire.templateVersion, payload: wire.payload },
     );
     if (!platformResult.allowed) {
       writeRejectedReceipt(
@@ -416,23 +458,19 @@ export async function submitRoomCommand(
 
     // Every live viewer's projection, freshly recomputed against the
     // post-command authority (docs/PHASE_2_PR4_PLAN.md §5.3/§5.4) — never
-    // reused across viewers, never computed against pre-command state.
+    // reused across viewers, never computed against pre-command state. Uses
+    // the platform's own `projectViewer` (independent review finding, Low:
+    // a hand-duplicated envelope here would silently drift if that
+    // function's shape ever changed) rather than reassembling the same
+    // fields inline.
     for (const binding of bindings) {
       const viewerId = binding.capability === "player" ? binding.memberId : binding.capability;
-      const view = eatTheReichTemplate.project(decision.authority.state, {
+      const projection = projectViewer(eatTheReichTemplate, decision.authority, {
         roomId: asRoomId(roomId),
         viewerId,
         capability: binding.capability,
       });
-      txn.set(db.doc(`rooms/${roomId}/projections/${viewerId}`), {
-        platformVersion: decision.authority.platformVersion,
-        templateId: decision.authority.templateId,
-        templateVersion: decision.authority.templateVersion,
-        schemaVersion: decision.authority.schemaVersion,
-        viewerId,
-        roomRevision: decision.authority.roomRevision,
-        view,
-      });
+      txn.set(db.doc(`rooms/${roomId}/projections/${viewerId}`), projection);
     }
 
     return {

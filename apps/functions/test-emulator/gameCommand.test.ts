@@ -8,6 +8,9 @@ import { submitRoomCommand } from "../src/gameCommandAuthority.js";
 import { createGameCallables, type SubmitRoomCommandCallable } from "../src/gameCallables.js";
 import type { GameCommandLogger } from "../src/gameCommandAuthority.js";
 
+const TEMPLATE_ID = eatTheReichTemplate.manifest.templateId;
+const TEMPLATE_VERSION = eatTheReichTemplate.manifest.templateVersion;
+
 /**
  * Board task A04's game-command authority proof, run against the real
  * Firestore emulator the same way `admission.test.ts`/`createRoom.test.ts`
@@ -18,14 +21,15 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
   let db: Firestore;
   const RUN = Date.now().toString(36);
   let roomCounter = 0;
-  let commandCounter = 0;
 
   beforeAll(() => {
     if (getApps().length === 0) initializeApp();
     db = getFirestore();
   });
 
-  const commandId = (): string => `command-${RUN}-${(commandCounter += 1)}`;
+  // Must be a real UUID now that gameCommandAuthority.ts validates commandId
+  // shape (independent review finding).
+  const commandId = (): string => crypto.randomUUID();
 
   function fixedClock(seedByte = 7): {
     occurredAtServer: () => string;
@@ -147,7 +151,12 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       const result = await submitRoomCommand(
         roomId,
         `uid-player-${roomCounter}`,
-        { commandId: commandId(), payload: beginActionPayload(playerMemberId) },
+        {
+          commandId: commandId(),
+          payload: beginActionPayload(playerMemberId),
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
         { db, logger, ...fixedClock() },
       );
 
@@ -179,7 +188,12 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
     it("a sequential retry with the same commandId short-circuits: no new event, unchanged authority", async () => {
       const { roomId, playerMemberId } = await seedRoom();
       const cmdId = commandId();
-      const request = { commandId: cmdId, payload: beginActionPayload(playerMemberId) };
+      const request = {
+        commandId: cmdId,
+        payload: beginActionPayload(playerMemberId),
+        templateId: TEMPLATE_ID,
+        templateVersion: TEMPLATE_VERSION,
+      };
       const first = await submitRoomCommand(roomId, `uid-player-${roomCounter}`, request, {
         db,
         logger: recorder(),
@@ -204,7 +218,12 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
     it("N concurrent duplicate commandId submissions produce exactly one event and identical responses", async () => {
       const { roomId, playerMemberId } = await seedRoom();
       const cmdId = commandId();
-      const request = { commandId: cmdId, payload: beginActionPayload(playerMemberId) };
+      const request = {
+        commandId: cmdId,
+        payload: beginActionPayload(playerMemberId),
+        templateId: TEMPLATE_ID,
+        templateVersion: TEMPLATE_VERSION,
+      };
       const attempts = 6;
       const results = await Promise.all(
         Array.from({ length: attempts }, () =>
@@ -228,7 +247,12 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       const result = await submitRoomCommand(
         roomId,
         `uid-table-${roomCounter}`,
-        { commandId: commandId(), payload: beginActionPayload(tableMemberId ?? "") },
+        {
+          commandId: commandId(),
+          payload: beginActionPayload(tableMemberId ?? ""),
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
         { db, logger, ...fixedClock() },
       );
       expect(result).toMatchObject({ status: "rejected", code: "ROLE_FORBIDDEN" });
@@ -249,7 +273,12 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       const begin = await submitRoomCommand(
         roomId,
         `uid-player-${roomCounter}`,
-        { commandId: commandId(), payload: beginActionPayload(playerMemberId) },
+        {
+          commandId: commandId(),
+          payload: beginActionPayload(playerMemberId),
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
         { db, logger: recorder(), ...fixedClock() },
       );
       expect(begin.status).toBe("accepted");
@@ -267,6 +296,8 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
         {
           commandId: commandId(),
           payload: { type: "AllocateResults", rollId, allocations: [] },
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
         },
         { db, logger: recorder(), ...fixedClock() },
       );
@@ -281,6 +312,8 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
         {
           commandId: commandId(),
           payload: beginActionPayload(playerMemberId),
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
           expectedRevision: 99,
         },
         { db, logger: recorder(), ...fixedClock() },
@@ -295,7 +328,12 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       const result = await submitRoomCommand(
         roomId,
         `uid-player-${roomCounter}`,
-        { commandId: commandId(), payload: { type: "NotARealCommand" } },
+        {
+          commandId: commandId(),
+          payload: { type: "NotARealCommand" },
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
         { db, logger: recorder(), ...fixedClock() },
       );
       expect(result).toMatchObject({ status: "rejected", code: "UNKNOWN_ACTION" });
@@ -306,7 +344,12 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       const result = await submitRoomCommand(
         roomId,
         "uid-never-joined",
-        { commandId: commandId(), payload: beginActionPayload(playerMemberId) },
+        {
+          commandId: commandId(),
+          payload: beginActionPayload(playerMemberId),
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
         { db, logger: recorder(), ...fixedClock() },
       );
       expect(result).toMatchObject({ status: "rejected", code: "AUTH_REQUIRED" });
@@ -315,7 +358,12 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
     it("a rejected command's retry replays the identical rejection without re-deciding", async () => {
       const { roomId } = await seedRoom();
       const cmdId = commandId();
-      const request = { commandId: cmdId, payload: { type: "NotARealCommand" } };
+      const request = {
+        commandId: cmdId,
+        payload: { type: "NotARealCommand" },
+        templateId: TEMPLATE_ID,
+        templateVersion: TEMPLATE_VERSION,
+      };
       const first = await submitRoomCommand(roomId, `uid-player-${roomCounter}`, request, {
         db,
         logger: recorder(),
@@ -335,10 +383,53 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       const result = await submitRoomCommand(
         roomId,
         `uid-player-${roomCounter}`,
-        { commandId: commandId(), payload: beginActionPayload(playerMemberId) },
+        {
+          commandId: commandId(),
+          payload: beginActionPayload(playerMemberId),
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
         { db, logger: recorder(), ...fixedClock() },
       );
       expect(result).toMatchObject({ status: "rejected", code: "ROOM_ARCHIVED" });
+    });
+
+    it("rejects a client-asserted templateVersion that doesn't match the room's own (independent review finding: this guard was previously unreachable)", async () => {
+      const { roomId, playerMemberId } = await seedRoom();
+      const result = await submitRoomCommand(
+        roomId,
+        `uid-player-${roomCounter}`,
+        {
+          commandId: commandId(),
+          payload: beginActionPayload(playerMemberId),
+          templateId: TEMPLATE_ID,
+          templateVersion: "0.0.0-stale-client-build",
+        },
+        { db, logger: recorder(), ...fixedClock() },
+      );
+      expect(result).toMatchObject({ status: "rejected", code: "TEMPLATE_VERSION_MISMATCH" });
+    });
+
+    it("AUTH_REQUIRED fires before any authority/bindings data is read, even against a room with corrupted data (independent review finding)", async () => {
+      const { roomId } = await seedRoom();
+      // Corrupt the room's authority document *after* seeding it validly —
+      // if capability resolution ran after this read (the pre-fix order),
+      // an unauthenticated-for-this-room caller would get ROOM_DATA_INVALID
+      // instead of AUTH_REQUIRED, disclosing that the room exists and is
+      // corrupted to a caller who isn't even a member.
+      await db.doc(`rooms/${roomId}/authority/current`).update({ roomStatus: "not-a-real-status" });
+      const result = await submitRoomCommand(
+        roomId,
+        "uid-never-joined-corrupted-room",
+        {
+          commandId: commandId(),
+          payload: beginActionPayload("member-doesnt-matter"),
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
+        { db, logger: recorder(), ...fixedClock() },
+      );
+      expect(result).toMatchObject({ status: "rejected", code: "AUTH_REQUIRED" });
     });
 
     it("dice faces are reproducible from the injected seed regardless of which internal attempt commits (ADR-002)", async () => {
@@ -346,7 +437,12 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       const result = await submitRoomCommand(
         roomId,
         `uid-player-${roomCounter}`,
-        { commandId: commandId(), payload: beginActionPayload(playerMemberId) },
+        {
+          commandId: commandId(),
+          payload: beginActionPayload(playerMemberId),
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
         {
           db,
           logger: recorder(),
@@ -366,7 +462,12 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       const secondResult = await submitRoomCommand(
         second.roomId,
         `uid-player-${roomCounter}`,
-        { commandId: commandId(), payload: beginActionPayload(second.playerMemberId) },
+        {
+          commandId: commandId(),
+          payload: beginActionPayload(second.playerMemberId),
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
         {
           db,
           logger: recorder(),
@@ -388,7 +489,12 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       await submitRoomCommand(
         roomId,
         `uid-player-${roomCounter}`,
-        { commandId: commandId(), payload: beginActionPayload(playerMemberId) },
+        {
+          commandId: commandId(),
+          payload: beginActionPayload(playerMemberId),
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
         { db, logger, ...fixedClock() },
       );
       const serialized = JSON.stringify(logger.events);
@@ -439,7 +545,12 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
         callable().run(
           request({
             roomId,
-            command: { commandId: commandId(), payload: beginActionPayload(playerMemberId) },
+            command: {
+              commandId: commandId(),
+              payload: beginActionPayload(playerMemberId),
+              templateId: TEMPLATE_ID,
+              templateVersion: TEMPLATE_VERSION,
+            },
           }),
         ),
         "unauthenticated",
@@ -466,7 +577,12 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
         request(
           {
             roomId,
-            command: { commandId: commandId(), payload: beginActionPayload(playerMemberId) },
+            command: {
+              commandId: commandId(),
+              payload: beginActionPayload(playerMemberId),
+              templateId: TEMPLATE_ID,
+              templateVersion: TEMPLATE_VERSION,
+            },
           },
           { uid: `uid-player-${roomCounter}` },
         ),
