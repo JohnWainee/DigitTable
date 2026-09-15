@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **Phase 2 PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim) is implemented on this branch, its first-review blockers are remediated, a second independent pass (two reviewers) found no blocking issue with six Medium findings fixed, and a third independent pass (board task A01) re-verified the boundary against every item A01 names, found no blocking issue, and fixed one Low cosmetic finding (a recovery-code alphabet comment miscount)** (`docs/reviews/2026-09-14-phase-2-pr3-third-pass-independent-review.md`). **Ready for John's merge decision.**
-- **Branch:** `worktree-phase2-pr3-admission` (from `origin/main` at PR #12)
-- **PR:** [#13](https://github.com/JohnWainee/DigitTable/pull/13), draft until John merges.
-- **Last updated:** 2026-09-14 by Sonnet A (task A01: third-pass independent review and fix)
+- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **Phase 2 PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim, PR #13) is ready for John's merge decision** after three independent review rounds, no blocking findings. **A02 (integration contracts, PR #15) and A03 (secure `createRoom`, PR #18, stacked on #13+#15) are also implemented on this branch and ready for John's merge decision**, A03 after an independent review round with one process-blocking finding (a formatting check that hadn't been re-run) and three substantive findings (UID-unscoped idempotency receipts, a discarded `sessionName`, a hardcoded replay `roomRevision`), all fixed with tests.
+- **Branch:** `sonnet-a/a03` (from `worktree-phase2-pr3-admission`, PR #13's branch, with `sonnet-a/a02` merged in)
+- **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom, stacked on the other two — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
+- **Last updated:** 2026-09-14 by Sonnet A (task A03: independent review and fixes)
 
 ## Mission
 
@@ -232,6 +232,28 @@ Scope is exactly `docs/PHASE_2_PLAN.md` PR 3, revised during review to also host
 1. First independent review: five blockers, dispositioned in [`docs/reviews/2026-09-14-phase-2-pr3-review-resolution.md`](docs/reviews/2026-09-14-phase-2-pr3-review-resolution.md) (residuals R1–R7).
 2. Second independent pass over the remediation (two reviewers in fresh contexts, with emulator probes): [`docs/reviews/2026-09-14-phase-2-pr3-second-pass-review.md`](docs/reviews/2026-09-14-phase-2-pr3-second-pass-review.md). No blocking finding; six Medium findings (spoofable IP key, no enumeration bound, absent `gmMemberId` reopening the GM seat, unconstrained room-code characters, deploy manifest, `meta/current` merge) and the Low ones are fixed on this branch with tests.
 3. Third independent pass (board task A01, a fresh reviewer subagent given only the branch and the architecture invariants): [`docs/reviews/2026-09-14-phase-2-pr3-third-pass-independent-review.md`](docs/reviews/2026-09-14-phase-2-pr3-third-pass-independent-review.md). Re-verified callable auth/throttle ordering, fail-closed persisted-data validation, separate table admission, secret-on-reclaim ordering, and Enterprise App Check monitoring against the actual code (not just the prior reviews' claims) — no blocking finding. One Low, non-blocking, cosmetic finding (a recovery-code alphabet comment claimed 32 symbols; the literal alphabet is 31, still ~64.4 bits, clearing the required >=64-bit floor) fixed on this branch with no behavior change.
+
+Merge remains John's decision.
+
+## Eighth implementation PR: integration contracts (board task A02) — READY FOR JOHN'S MERGE DECISION
+
+`sonnet-a/a02`, PR #15, commit `af20261`, branched from `origin/main` (does not depend on PR #13 merging first — publishable and mergeable independently). Adds `packages/contracts/src/session.ts` (create/join/claim-GM-seat request and result shapes, viewer routing, client-side pending/accepted/rejected/disconnected request state, local-only session ownership record, runtime-validating `parseCreateRoomInput`), `packages/engine/src/queryProjection.ts` (the "game projection selectors" a UI binds a template's read-only queries to one fetched projection), fixture builders, and the required milestone-adjustment record (`docs/IMPLEMENTATION_ROADMAP.md` + a dated `docs/reviews/` note) pulling character/scene tools forward into this sprint per John's 2026-09-14 direction. `npm run check`: pass, 172/172 tests across 30 files. `npm run build`: pass. Not independently reviewed as its own slice (a pure-contracts, no-runtime-behavior addition); its content was subsequently exercised and extended by A03's own independent review.
+
+## Ninth implementation PR: secure createRoom (board task A03) — READY FOR JOHN'S MERGE DECISION
+
+`sonnet-a/a03`, PR #18, commit `b1bbca8` (stacked on PR #13's branch with PR #15 merged in — see PR #18's description for the stacking note; retarget to `main` once #13 and #15 merge). Adds a third callable, `createRoom`, to the trusted `apps/functions` boundary: one Firestore transaction atomically provisions the room-code index, the hashed room passphrase, a separate system-generated table credential, `authority/current` (ETR preselected, `participantCount: 1` for the seated GM), its `meta/current` mirror (including the creator's `sessionName`), the GM's binding/uidBinding/member/recovery documents, and the GM's own initial isolated projection. Idempotent on a client-minted, UID-scoped `requestId` via `createRoomReceipts/{requestId}`; room-code collision is checked transactionally with bounded regeneration; a UID-scoped replay reads the room's live `roomRevision` rather than a hardcoded value. A second, independent throttle (per-UID/per-IP) gates creation. `templates/eat-the-reich/src/engine.ts`'s `initialState` now tolerates zero player members (only the GM seat exists at creation) — backward-compatible, flagged for Sonnet B's awareness since that module is B's.
+
+### Required checks — all pass locally
+
+- `npm run check` — formatting, lint (zero warnings), typecheck, and **306/306** default tests across 43 files passed.
+- `npm run build` — passed (`apps/functions` esbuild bundle 70.7kb; `apps/web` vite build).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **72/72** tests passed (16 `packages/testing`, 56 `apps/functions`).
+- `npm audit` — 13 moderate, unchanged from A01's baseline.
+- `git diff --check` — clean.
+
+### Independent review
+
+One round: [`docs/reviews/2026-09-14-a03-createroom-independent-review.md`](docs/reviews/2026-09-14-a03-createroom-independent-review.md). No blocking finding in the security-relevant guarantees (atomicity, collision safety, secret handling, privilege/injection safety, throttling, rules enforcement — all independently verified PASS with test evidence). One process-blocking finding (a formatting check that hadn't been re-run after the last file was added — fixed) and three substantive findings, all fixed with tests: idempotency receipts were not scoped to the calling UID (fixed — `ROLE_FORBIDDEN` on a UID mismatch, which also corrected a test that had inadvertently exercised the insecure cross-identity case as the happy path), the validated `sessionName` was silently discarded (fixed — persisted to `meta/current`), and a replay hardcoded `roomRevision: 0` (fixed — reads the live value). One judgment call (a client's own recovery code persisted in `localStorage` until board task A06 consumes it) recorded as an explicit A06 follow-up rather than an A03 defect.
 
 Merge remains John's decision.
 

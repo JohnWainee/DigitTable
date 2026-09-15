@@ -8,17 +8,21 @@ import {
 import {
   AdmissionInputError,
   RoomDataError,
+  SessionInputError,
   parseAdmitMemberInput,
   parseClaimSeatInput,
+  parseCreateRoomInput,
   type AdmissionAccepted,
   type AdmitMemberInput,
   type ClaimSeatInput,
+  type CreateRoomAccepted,
   type StableErrorCode,
 } from "@digitable/contracts";
 import { admitMember as admitMemberTxn, claimSeat as claimSeatTxn } from "./admissionAuthority.js";
+import { createRoom as createRoomTxn, type CreateRoomResult } from "./createRoomAuthority.js";
 import { clientIpFrom } from "./clientIp.js";
 import { grpcCodeFor } from "./httpsErrors.js";
-import { checkAndConsumeAdmissionThrottle } from "./throttle.js";
+import { checkAndConsumeAdmissionThrottle, checkAndConsumeCreateRoomThrottle } from "./throttle.js";
 import type { AdmissionResult } from "./admissionAuthority.js";
 
 /** Structured, content-free log sink; `firebase-functions/logger` in production, a recorder in tests. */
@@ -34,7 +38,7 @@ export interface AdmissionCallableDependencies {
   readonly now: () => number;
 }
 
-export type AdmissionCallableName = "admitMember" | "claimSeat";
+export type AdmissionCallableName = "admitMember" | "claimSeat" | "createRoom";
 
 /** The subset of the underlying HTTP request that per-IP throttling reads. */
 interface RawRequestMetadata {
@@ -44,6 +48,9 @@ interface RawRequestMetadata {
 
 /** An admission callable: untrusted JSON in, the accepted seat out (or an `HttpsError`). */
 export type AdmissionCallable = CallableFunction<unknown, Promise<AdmissionAccepted>>;
+
+/** A `createRoom` callable: untrusted JSON in, the accepted room+GM seat out (or an `HttpsError`). */
+export type CreateRoomCallable = CallableFunction<unknown, Promise<CreateRoomAccepted>>;
 
 function toHttpsError(code: StableErrorCode, message: string): HttpsError {
   // `details.code` is the stable code clients branch on; the gRPC status is
@@ -77,15 +84,21 @@ function requireAuth(request: CallableRequest<unknown>): string {
   return request.auth.uid;
 }
 
-/** Runtime-validates the untrusted payload; a malformed payload is rejected before any Firestore read. */
+/**
+ * Runtime-validates the untrusted payload; a malformed payload is rejected
+ * before any Firestore read. `AdmitMemberInput`/`ClaimSeatInput` throw
+ * `AdmissionInputError` (`@digitable/contracts/admission.js`);
+ * `CreateRoomInput` throws `SessionInputError`
+ * (`@digitable/contracts/session.js`) — both map to the same stable code
+ * and fixed message, since neither parser's detail string (which echoes the
+ * offending value's shape) is safe to send to a client or a log.
+ */
 function parseInput<TInput>(parse: (value: unknown) => TInput, data: unknown): TInput {
   try {
     return parse(data);
   } catch (error) {
-    if (error instanceof AdmissionInputError) {
-      // Stable code, fixed message: the parser's detail string (which echoes
-      // the offending value's shape) never reaches the client or a log.
-      throw toHttpsError("INVALID_REQUEST", "The join request was malformed.");
+    if (error instanceof AdmissionInputError || error instanceof SessionInputError) {
+      throw toHttpsError("INVALID_REQUEST", "The request was malformed.");
     }
     throw error;
   }
@@ -121,6 +134,28 @@ async function requireThrottle(
   }
 }
 
+/** Same shape as `requireThrottle`, over `createRoom`'s uid/ip-only bucket set (board task A03: no room code exists yet to key on). */
+async function requireCreateRoomThrottle(
+  deps: AdmissionCallableDependencies,
+  request: CallableRequest<unknown>,
+  uid: string,
+): Promise<void> {
+  const raw = request.rawRequest as unknown as RawRequestMetadata;
+  const ip = clientIpFrom({ ip: raw.ip, forwardedFor: raw.headers["x-forwarded-for"] });
+  let allowed: boolean;
+  try {
+    ({ allowed } = await checkAndConsumeCreateRoomThrottle(deps.db, { ip, uid }, deps.now()));
+  } catch (error) {
+    if (error instanceof RoomDataError) {
+      throw toHttpsError("ROOM_DATA_INVALID", "This room's data could not be verified.");
+    }
+    throw error;
+  }
+  if (!allowed) {
+    throw toHttpsError("RATE_LIMITED", "Too many rooms created. Try again in a minute.");
+  }
+}
+
 /**
  * The shared callable pipeline: App Check monitoring → auth → payload
  * validation → throttle (per code+IP, per IP, per UID) → one Firestore
@@ -150,15 +185,43 @@ async function handleAdmission<TInput extends { readonly roomCode: string }>(
 }
 
 /**
- * Builds the two admission callables against explicit dependencies. The
- * production instances in `src/index.ts` use the Admin SDK's default
- * Firestore, the Functions logger, and the wall clock; emulator tests build
- * their own with a recording logger and a controllable clock, then invoke
- * `.run()` — the same handler a deployed HTTPS request reaches.
+ * `createRoom`'s own pipeline: App Check monitoring → auth → payload
+ * validation → throttle (per UID, per IP — no room code exists yet to key
+ * on) → one Firestore transaction. Kept distinct from `handleAdmission`
+ * rather than generalized over it: `CreateRoomInput` has no `roomCode`
+ * field (`handleAdmission`'s generic bound requires one), and the result
+ * type (`CreateRoomAccepted`, with `tableCode`) differs from
+ * `AdmissionAccepted`.
+ */
+async function handleCreateRoom(
+  deps: AdmissionCallableDependencies,
+  request: CallableRequest<unknown>,
+): Promise<CreateRoomAccepted> {
+  logAppCheckStatus(deps, request, "createRoom");
+  const uid = requireAuth(request);
+  const input = parseInput(parseCreateRoomInput, request.data);
+  await requireCreateRoomThrottle(deps, request, uid);
+
+  const result: CreateRoomResult = await createRoomTxn(deps.db, uid, input);
+  if (!result.ok) {
+    deps.logger.info("admission.denied", { function: "createRoom", code: result.code });
+    throw toHttpsError(result.code, result.message);
+  }
+  return result.accepted;
+}
+
+/**
+ * Builds the three admission/room-creation callables against explicit
+ * dependencies. The production instances in `src/index.ts` use the Admin
+ * SDK's default Firestore, the Functions logger, and the wall clock;
+ * emulator tests build their own with a recording logger and a
+ * controllable clock, then invoke `.run()` — the same handler a deployed
+ * HTTPS request reaches.
  */
 export function createAdmissionCallables(deps: AdmissionCallableDependencies): {
   readonly admitMember: AdmissionCallable;
   readonly claimSeat: AdmissionCallable;
+  readonly createRoom: CreateRoomCallable;
 } {
   return {
     admitMember: onCall<unknown, Promise<AdmissionAccepted>>(
@@ -180,6 +243,10 @@ export function createAdmissionCallables(deps: AdmissionCallableDependencies): {
         parseClaimSeatInput,
         claimSeatTxn,
       ),
+    ),
+    createRoom: onCall<unknown, Promise<CreateRoomAccepted>>(
+      { enforceAppCheck: false },
+      (request) => handleCreateRoom(deps, request),
     ),
   };
 }

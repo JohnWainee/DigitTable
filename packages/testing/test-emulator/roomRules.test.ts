@@ -68,6 +68,9 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
         set(`rooms/${room}/events/member-player-b/items/1`, { sequence: 1 }),
         set(`rooms/${room}/authority/current`, { roomStatus: "active" }),
         set(`roomCodes/CODE-1`, { roomId: room }),
+        // Board task A03: createRoom's idempotency receipt and its own throttle tree.
+        set(`createRoomReceipts/req-1`, { roomId: room, roomCode: "CODE-1", memberId: "gm-seat" }),
+        set(`createRoomThrottle/uid-abc/scope/all`, { windowStartMs: 0, count: 1 }),
       ]);
     });
   });
@@ -147,6 +150,9 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
       await assertFails(get(uid, `admissionThrottle/code-abc/byIp/def`));
       await assertFails(get(uid, `admissionThrottle/ip-def/scope/all`));
       await assertFails(get(uid, `admissionThrottle/uid-ghi/scope/all`));
+      // Board task A03.
+      await assertFails(get(uid, `createRoomReceipts/req-1`));
+      await assertFails(get(uid, `createRoomThrottle/uid-abc/scope/all`));
     }
   });
 
@@ -274,6 +280,22 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
         .set({ memberId: "player-a", commandId: "command-2" }),
     );
     await assertFails(context(gmUid).firestore().doc(`roomCodes/CODE-2`).set({ roomId: room }));
+    // Board task A03: a client that could write its own receipt could forge
+    // a room it never actually created; a client that could reset its own
+    // create-room throttle counter could defeat that throttle too.
+    await assertFails(
+      context(gmUid)
+        .firestore()
+        .doc(`createRoomReceipts/req-2`)
+        .set({ roomId: "forged", roomCode: "FORGED", memberId: "forged" }),
+    );
+    await assertFails(context(playerUid).firestore().doc(`createRoomReceipts/req-1`).delete());
+    await assertFails(
+      context(playerUid)
+        .firestore()
+        .doc(`createRoomThrottle/uid-abc/scope/all`)
+        .set({ windowStartMs: 0, count: 0 }),
+    );
     await assertFails(
       testEnv.unauthenticatedContext().firestore().doc(`rooms/${room}/meta/current`).set({}),
     );
