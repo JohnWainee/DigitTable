@@ -2,6 +2,7 @@ import { getApps, initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
 import { createAdmissionCallables } from "./callables.js";
+import { createGameCallables } from "./gameCallables.js";
 
 /**
  * `apps/functions`: the trusted, deployable Cloud Functions authority
@@ -30,3 +31,6 @@ const callables = createAdmissionCallables({
 export const admitMember = callables.admitMember;
 export const claimSeat = callables.claimSeat;
 export const createRoom = callables.createRoom;
+
+const gameCallables = createGameCallables({ db: getFirestore(), logger });
+export const submitRoomCommand = gameCallables.submitRoomCommand;

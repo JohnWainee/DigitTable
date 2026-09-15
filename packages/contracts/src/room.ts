@@ -1,6 +1,7 @@
 import type { AdmissionStatus, AuthorityRecord, RoomStatus } from "./authority.js";
-import type { CommandId, MemberId, ReceiptId, RoomId } from "./ids.js";
-import { asMemberId, asRoomId } from "./ids.js";
+import { STABLE_ERROR_CODES, type StableErrorCode } from "./errors.js";
+import type { CommandId, MemberId, ReceiptId, RoomId, TemplateId } from "./ids.js";
+import { asCommandId, asMemberId, asReceiptId, asRoomId } from "./ids.js";
 import type { Capability } from "./template.js";
 import type { VersionedTemplateRecord } from "./versions.js";
 
@@ -47,7 +48,17 @@ export interface UidBindingDocument {
   readonly capability: Capability;
 }
 
-/** Actor-private command outcome at `receipts/{memberId}_{commandId}`. */
+/**
+ * Actor-private command outcome at `receipts/{memberId}_{commandId}` (board
+ * task A04). A `"rejected"` receipt carries `code`/`message` so a retried
+ * command whose first attempt was rejected replays the identical rejection
+ * without re-running `authorizeGameAction`/`decide` a second time against
+ * possibly-changed state (docs/PHASE_2_PR4_PLAN.md §2.2, option (a) — the
+ * plan's own recommendation). `acceptedSequence` is singular, not an array,
+ * because every currently-defined `templates/eat-the-reich` command emits
+ * exactly one logical event; revisit if a future command emits more than
+ * one (docs/PHASE_2_PR4_PLAN.md §5.2).
+ */
 export interface CommandReceiptDocument {
   readonly receiptId: ReceiptId;
   readonly memberId: MemberId;
@@ -55,6 +66,10 @@ export interface CommandReceiptDocument {
   readonly status: "accepted" | "rejected";
   readonly acceptedSequence: number | null;
   readonly roomRevision: number;
+  /** Present only when `status === "rejected"`. */
+  readonly code?: StableErrorCode;
+  /** Present only when `status === "rejected"`. */
+  readonly message?: string;
 }
 
 /** Service-only archival copy at `snapshots/{sequence}`. */
@@ -264,4 +279,127 @@ export function parseAdmissionThrottleDocument(data: unknown): AdmissionThrottle
     fail("admissionThrottle.count");
   }
   return { windowStartMs, count };
+}
+
+/**
+ * Runtime-validates `receipts/{memberId}_{commandId}` (board task A04).
+ * Fails closed: a malformed receipt throws rather than being treated as
+ * "no prior receipt" — the latter would let a retried command re-decide
+ * from scratch against possibly-changed state instead of replaying the
+ * original outcome.
+ */
+export function parseCommandReceiptDocument(data: unknown): CommandReceiptDocument {
+  if (!isRecord(data)) fail("receipts/{receiptId}");
+  const { receiptId, memberId, commandId, status, acceptedSequence, roomRevision, code, message } =
+    data;
+  if (typeof receiptId !== "string" || receiptId.length === 0) {
+    fail("receipts/{receiptId}.receiptId");
+  }
+  if (typeof memberId !== "string" || memberId.length === 0) {
+    fail("receipts/{receiptId}.memberId");
+  }
+  if (typeof commandId !== "string" || commandId.length === 0) {
+    fail("receipts/{receiptId}.commandId");
+  }
+  if (status !== "accepted" && status !== "rejected") {
+    fail("receipts/{receiptId}.status");
+  }
+  if (
+    acceptedSequence !== null &&
+    (typeof acceptedSequence !== "number" || !Number.isInteger(acceptedSequence))
+  ) {
+    fail("receipts/{receiptId}.acceptedSequence");
+  }
+  if (typeof roomRevision !== "number" || !Number.isInteger(roomRevision) || roomRevision < 0) {
+    fail("receipts/{receiptId}.roomRevision");
+  }
+  if (status === "rejected") {
+    if (typeof code !== "string" || !(STABLE_ERROR_CODES as readonly string[]).includes(code)) {
+      fail("receipts/{receiptId}.code");
+    }
+    if (typeof message !== "string" || message.length === 0) {
+      fail("receipts/{receiptId}.message");
+    }
+  }
+  return {
+    receiptId: asReceiptId(receiptId),
+    memberId: asMemberId(memberId),
+    commandId: asCommandId(commandId),
+    status,
+    acceptedSequence,
+    roomRevision,
+    ...(status === "rejected" ? { code: code as StableErrorCode, message: message as string } : {}),
+  };
+}
+
+/**
+ * Runtime-validates the *full* `authority/current` document (board task
+ * A04) — every field the trusted game-command transaction reads, not only
+ * the admission-relevant subset `parseAuthorityAdmissionFields` covers.
+ * Fails closed on every field, including `state` (delegated to the
+ * template's own `schemas.parseState`, so a malformed campaign state can
+ * never silently pass through as some default state) and `schemaVersion`
+ * (must equal the template's `currentSchemaVersion` exactly — no migration
+ * is attempted here; docs/PHASE_2_PR4_PLAN.md does not scope migration into
+ * this transaction, and no live room predates the template's current
+ * schema version per B01's schema decision).
+ */
+export function parseAuthorityRecord<TState>(
+  data: unknown,
+  template: {
+    readonly manifest: { readonly templateId: TemplateId; readonly currentSchemaVersion: number };
+    readonly schemas: { readonly parseState: (value: unknown) => TState };
+  },
+): AuthorityRecord<TState> {
+  if (!isRecord(data)) fail("authority/current");
+  const admissionFields = parseAuthorityAdmissionFields(data);
+  const {
+    platformVersion,
+    templateId,
+    templateVersion,
+    schemaVersion,
+    roomRevision,
+    nextSequence,
+  } = data;
+  if (typeof platformVersion !== "string" || platformVersion.length === 0) {
+    fail("authority/current.platformVersion");
+  }
+  if (templateId !== template.manifest.templateId) {
+    fail("authority/current.templateId");
+  }
+  if (typeof templateVersion !== "string" || templateVersion.length === 0) {
+    fail("authority/current.templateVersion");
+  }
+  if (schemaVersion !== template.manifest.currentSchemaVersion) {
+    fail("authority/current.schemaVersion");
+  }
+  if (typeof roomRevision !== "number" || !Number.isInteger(roomRevision) || roomRevision < 0) {
+    fail("authority/current.roomRevision");
+  }
+  if (typeof nextSequence !== "number" || !Number.isInteger(nextSequence) || nextSequence < 1) {
+    fail("authority/current.nextSequence");
+  }
+  let state: TState;
+  try {
+    state = template.schemas.parseState(data.state);
+  } catch {
+    fail("authority/current.state");
+  }
+  return {
+    platformVersion,
+    // Already proven equal to `template.manifest.templateId` above; using
+    // that value directly (rather than re-branding the untrusted `unknown`)
+    // avoids an unnecessary cast.
+    templateId: template.manifest.templateId,
+    templateVersion,
+    schemaVersion,
+    roomRevision,
+    nextSequence,
+    roomStatus: admissionFields.roomStatus,
+    gmMemberId: admissionFields.gmMemberId,
+    admissionStatus: admissionFields.admissionStatus,
+    participantCount: admissionFields.participantCount,
+    tableSeatClaimed: admissionFields.tableSeatClaimed,
+    state,
+  };
 }
