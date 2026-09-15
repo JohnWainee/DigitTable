@@ -116,8 +116,12 @@ export function ClaimCharacterScreen({ roomId }: ClaimCharacterScreenProps): JSX
       )}
 
       {mine && (
-        <button type="button" className="primary-action" onClick={() => navigate("/demo")}>
-          Continue to the fixture demo dashboard
+        <button
+          type="button"
+          className="primary-action"
+          onClick={() => navigate(`/room/${roomId}/player`)}
+        >
+          Continue to your dashboard
         </button>
       )}
     </main>

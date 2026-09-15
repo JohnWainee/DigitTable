@@ -412,6 +412,96 @@ input:focus-visible {
   color: var(--accent);
 }
 
+/* C02: player dashboard (scene card, party strip, compose/allocate/confirm). */
+
+.scene-card {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.scene-card-art {
+  height: 6rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, var(--fg, #1b1b1b), var(--accent));
+  color: var(--bg, #f5f0e6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.party-strip ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.party-member {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+}
+
+.party-member--self {
+  border-color: var(--accent);
+}
+
+.party-portrait {
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.75rem;
+}
+
+.dice-chip-row {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.die-chip {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  border: 2px solid var(--border);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.die-chip--success {
+  border-color: var(--focus);
+}
+
+.die-chip--critical {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.die-chip--discard {
+  border-color: var(--ash, #6e6a66);
+  color: var(--ash, #6e6a66);
+  opacity: 0.7;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;

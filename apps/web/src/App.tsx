@@ -8,6 +8,7 @@ import { CreateSessionScreen } from "./landing/CreateSessionScreen.js";
 import { JoinScreen } from "./landing/JoinScreen.js";
 import { JoinTableScreen } from "./landing/JoinTableScreen.js";
 import { ClaimCharacterScreen } from "./landing/ClaimCharacterScreen.js";
+import { PlayerDashboardScreen } from "./player2/PlayerDashboardScreen.js";
 import { useRoute } from "./router.js";
 import "./styles.css";
 
@@ -33,6 +34,8 @@ export function App(): JSX.Element {
       return <JoinTableScreen />;
     case "claim":
       return <ClaimCharacterScreen roomId={route.roomId} />;
+    case "player":
+      return <PlayerDashboardScreen roomId={route.roomId} />;
     case "demo":
       return <FixtureDemo />;
     default:
