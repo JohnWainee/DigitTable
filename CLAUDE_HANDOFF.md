@@ -31,6 +31,7 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
 - **Phase 2 preflight is complete on `main`** (merged from `worktree-phase2-preflight`), per `docs/ARCHITECTURE.md` section 17 step 4. See "Phase 2 preflight: contract re-evaluation before persistence" below.
 - **Phase 2 PR 1 (repository interface + Firebase emulator harness) is complete on this branch** (`worktree-phase2-pr1`), scoped exactly to `docs/PHASE_2_PLAN.md`'s PR 1. See "Fourth implementation PR: repository interface and Firebase emulator harness (Phase 2 PR 1)" below.
 - **Phase 2 PR 2 (Firestore data model and rules) is implemented on `worktree-phase2-pr2` and independently reviewed on this branch** (`claude/phase2-pr2-security-review-lexa32`). It adds the authority lifecycle fields, client-read security rules, and emulator allow/deny matrix described below; it does not add Functions, admission, or client reconnect/outbox behavior. The review approved it and applied two narrow remediations here (reserved-viewer hardening in `firestore.rules`; a fuller emulator matrix).
+- **Issue #14 ("Eat the Reich: three-day execution board") is in progress**, running Sonnet A (backend/rooms), Sonnet B (rules, this section), Sonnet C (screens/assets), and Fable (specifications/review) against `origin/main` in parallel worktrees. See "Sonnet B — Eat the Reich rules implementation" below for B01+.
 
 ## Read in this order
 
@@ -231,6 +232,38 @@ Recorded in [`docs/reviews/2026-09-14-phase-2-pr2-independent-review.md`](docs/r
 - **S7/S8 (Informational):** the decision brief records the staging project identifier and regions as a decision; no config, code, or credential references it (`.firebaserc` remains `demo-digitable`). The emulator command's Homebrew `PATH` prefix is macOS-specific; a JDK on `PATH` is the actual requirement.
 
 Review-branch gate (after remediations): `npm run check` — **157/157** tests across 28 files, zero lint warnings, typecheck clean; `npm run build` — passed; `npm run test:emulator` — **16/16** (5 harness + 11 rules); `git diff --check origin/main...HEAD` — clean. In the Linux review sandbox, `firebase-tools` routed its loopback RTDB rules upload through the egress proxy (it ignores `NO_PROXY`), so the emulator suite was run with the `*_PROXY` variables unset for that one invocation only; no repository file was changed for it.
+
+## Sonnet B — Eat the Reich rules implementation (issue #14, tasks B01–B05)
+
+- **Status:** B01 done, this branch. B02–B05 not started as of this handoff entry.
+- **Branch:** `sonnet-b/etr-rules` (worktree `.claude/worktrees/sonnet-b-rules`), branched from `origin/main` @ `2823b69`. Later slices (B02+) branch from this one per the board's "later slices branch from earlier ones" rule.
+- **Scope owned:** `templates/eat-the-reich` and deterministic rules fixtures only. Does not touch `packages/contracts`, `packages/engine`, `apps/*`, `package-lock.json`, or `firestore.rules` — those go to Sonnet A as contract proposals (see below).
+
+### B01 — Rules implementation plan — DONE (this branch)
+
+Deliverable: [`docs/ETR_RULES_IMPLEMENTATION_PLAN.md`](docs/ETR_RULES_IMPLEMENTATION_PLAN.md), turning Fable's `docs/ETR_RULES_MATRIX.md` (F01) into (1) an explicit schema/version decision, (2) a B02–B05 slice plan, (3) a deterministic test-case register (also encoded as `test.todo(...)` placeholders in `templates/eat-the-reich/test/rulesMatrix.todo.test.ts`, one row per matrix rule id, deleted as each slice implements the real assertion), (4) the manual-adjudication register carried from matrix §4, and (5) the open contract proposals for Sonnet A (§7 of the plan).
+
+**Schema/version decision:** `EatTheReichState.schemaVersion` bumps `1` → `2` as a fresh start, not a migrated one — recorded in the plan §1. No live room has ever existed under the v1 shape (room creation, A03, is not implemented yet; the only place the v1 shape has run is this template's own tests and the Phase 1C in-memory fixture demo), and the v1→v2 field mapping is not invertible (one "nerve" stat vs. seven stats; no Blood/items/abilities to backfill), so a real migration would have to invent data — forbidden by the architecture's fail-closed persisted-data rule. `migrate()` keeps failing closed on anything but the current `schemaVersion`, exactly as it already did for v1.
+
+**Policy clarification recorded** (matrix §5, at Fable's and the matrix's own instruction) in `AGENTS.md` ("Non-negotiable boundaries" → licensed-content bullet) and `docs/EAT_THE_REICH_BUILD_GUIDE.md` (new "Licensing and content policy" section): ordinary game-mechanical structure and short field labels (seven stat names, Blood, Objective/Threat/Challenge/Attack, success/critical, injury categories, Downed, Last Stand, Loot, Flashback) may be implemented and shown in the UI; rulebook prose, sheet text, location/enemy entries, and art stay licensed and are never committed; a GM's own book content loads only from a private, git-ignored `content/private/*.json` (added to `.gitignore` this PR).
+
+**Contract proposals still open with Sonnet A** (posted as an issue #14 comment starting "Contract proposal for Sonnet A:"): add `CHARACTER_TAKEN`, `NOT_YOUR_TURN`, `CHARACTER_DOWNED`, `CHARACTER_RETIRED`, `INSUFFICIENT_BLOOD`, `ITEM_DEPLETED`, `ROUND_HAS_OPEN_ROLLS`, `SCENE_HAS_OPEN_ROLLS` to `packages/contracts/src/errors.ts`'s `STABLE_ERROR_CODES` (per `docs/ETR_SESSION_FLOW.md` §9/§12, which A02 did not touch). Until merged, B02/B03 use a template-local placeholder documented at its definition site and rebase onto A's branch once it lands.
+
+**Verification performed:**
+
+```
+npm run format      # pass
+npm run lint         # pass, zero warnings
+npm run typecheck    # pass, all 5 workspaces
+npm run test          # pass — 157 passed, 62 todo (the new rulesMatrix.todo.test.ts placeholders), 219 total, 29 files
+npm run build         # pass (apps/web vite build; other workspaces have no build step on this branch)
+```
+
+No RESULT_* placeholders; all commands were run in `.claude/worktrees/sonnet-b-rules` and their output is exactly as shown above.
+
+### B02–B05 — not started as of this handoff entry
+
+Next action for whoever continues this branch tree: open `sonnet-b/b02-characters` from `sonnet-b/etr-rules`, and follow `docs/ETR_RULES_IMPLEMENTATION_PLAN.md` §3's B02 row (state v2 with seven stats, the Appendix A roster fixture, `ClaimCharacter`/`ReleaseCharacter`, Blood, items/abilities, six-box typed injuries structure, `HealInjury`), converting the matching `test.todo` rows in `rulesMatrix.todo.test.ts` to real tests as each lands. B02 and B03 are expected to co-evolve the state shape (see plan §3's note); B04 needs A's `Pause`/`Resume` coordination; B05 needs the private-content-pack loader and an independent rules reviewer subagent per the board's requirement (author cannot self-certify).
 
 ## Definition of first playable
 
