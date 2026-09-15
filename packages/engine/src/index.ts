@@ -4,3 +4,4 @@ export * from "./runCommand.js";
 export * from "./projectViewer.js";
 export * from "./admission.js";
 export * from "./secretHash.js";
+export * from "./queryProjection.js";
