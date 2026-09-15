@@ -342,6 +342,23 @@ Two passes (the first stalled mid-run on a long-running background command and w
 
 Merge remains John's decision.
 
+## C06 integration fixes (issue #14) — PRs #34 and #36, READY FOR JOHN'S MERGE DECISION
+
+Sonnet C's `sonnet-c/c06-integration` (PR #33) surfaced two `apps/functions` gaps while running its own full check/build/emulator pass, plus a third found live during the follow-up verification. All three are fixed here, stacked `sonnet-a/a07` → `sonnet-a/a08-integration-fixes` (PR #34) → `sonnet-a/a08-final` (PR #36):
+
+1. **`httpsErrors.ts` exhaustiveness** — `grpcCodeFor`'s switch had no case for B05's eight stable error codes or this repo's own `SESSION_PAUSED`. Fixed with semantically-grouped mappings (PR #34).
+2. **`test:emulator` silently ran against a stale/missing Functions build** — nothing in the pipeline built `apps/functions` before the emulator suite ran; a missing `dist/index.js` made the whole Functions emulator fail to load, surfacing as unmapped-error rejections everywhere. Fixed with a `pretest:emulator` npm lifecycle script (PR #34).
+3. **`admitMember`/`claimSeat` never wrote the newly-admitted member's own initial projection** — a known, documented-but-never-implemented residual from A03/A04, only caught by actually driving create → join → claim live against the real emulator. Fixed in `writeInitialProjection` (PR #36).
+
+**Verified live**, not just by unit test: merged this fix with `origin/sonnet-c/c06-integration` (`25b9dec`) in a throwaway verification worktree and ran the real UI against the real Functions/Firestore/Auth emulators through the full loop — create room → load scene → join player → claim character → declare action → GM reviews/rolls → player allocates → GM advances scene. Every step went through the real callables; nothing was mocked or faked. Full write-up, including two findings that could not be committed to this branch (a client-side auth-readiness race in `sonnet-c/c06-integration`'s own `apps/web/src/session/useRoomProjection.ts`, with a ready-to-apply patch; a stale `BeginAction`-rolls-immediately assumption in `gameCommand.test.ts`'s fixtures, needing a dedicated follow-up), is recorded on issue #14.
+
+### Required checks — all pass locally (PR #36's branch)
+
+- `npm run check` — 325/325 tests, 43 files, format/lint/typecheck clean.
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — 106/106 (17 `packages/testing` + 86 `apps/functions` + 3 `apps/web`), no regressions from the projection fix.
+
+Merge remains John's decision.
+
 ## Definition of first playable
 
 After the later realtime PR, two players and one GM can join a room, load the sample encounter, resolve an opposed action, receive correctly isolated projections, reconnect without duplicating it, invoke anonymous safety controls, and review the timeline.
