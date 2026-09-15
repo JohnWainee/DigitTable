@@ -85,10 +85,10 @@ Candidate: `sonnet-c/c07-gm-controls` @ `446f74d` (PR #35, includes the auth-rea
 **Still unverified (honest gaps for the 17th):**
 
 - **S06 disconnect after send, before the response** (outbox persistence and receipt reconciliation). Sonnet A's A06 delivered seat recovery only and explicitly deferred the client outbox; the engine's receipt short-circuit is tested server-side, but the client will not automatically reconcile a lost response. A player who loses connectivity mid-tap must reload and re-check the screen; a duplicate tap after reload cannot double-apply because the same `commandId` is not reused across reloads and the engine rejects a second allocation of a resolved roll. Treat as an accepted residual or a release blocker, John's call.
-- **No recovery-code entry screen exists in `apps/web`** (grep: the only "recovery" references are the one-time reveal cards). The `recoverSeat` callable exists and is emulator-tested, but a player who loses their browser identity cannot redeem their code from the UI and would join as a new seat without their character. P1 for Sonnet C (a small "Recover my seat" form on the join screen calling `recoverSeat`).
+- **No recovery-code entry screen exists in `apps/web`** (grep: the only "recovery" references are the one-time reveal cards). The `recoverSeat` callable exists and is emulator-tested, but a player who loses their browser identity cannot redeem their code from the UI and would join as a new seat without their character. Delivered by Sonnet C as `sonnet-c/c08-recovery` @ `97126b5` (PR #37): a "Recover your seat" form on the join screen calling `recoverSeat`, with an end-to-end test (join → lose identity → redeem → spent code rejected). Not re-driven by Fable.
 - **Physical devices and staging**: this run used three browser origins on one machine against the emulator, not phones on a network against `powerglove-1cd23`. Deployment has not been executed (runbook §3 lists the commands).
 - **Retry storms / stale-revision paths** were not driven from the UI; covered by A04's emulator tests.
-- Page `<title>` still reads "Local fixture (not a live room)" in live mode (static `index.html`). P2.
+- Page `<title>` read "Local fixture (not a live room)" in live mode; fixed in PR #37 (`main.tsx` sets it from the mode).
 
 **Verdict:** the candidate is **playable end to end over the real callables** for the flow the board requires. Remaining gates are operational (deploy, devices) plus the S06 outbox decision.
 
