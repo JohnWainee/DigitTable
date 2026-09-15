@@ -1,27 +1,20 @@
-import type { MemberId } from "@digitable/contracts";
-import type { RollAllocation } from "./state.js";
-
 /**
- * The opposed-action flow (docs/ARCHITECTURE.md, "Opposed action"): a player
- * begins an action, the server rolls their pool; the GM commits an
- * opposition push, the server rolls it; the player allocates their net
- * successes against valid targets.
+ * B02 commands: character claim/release and healing. The declare/review/
+ * roll/allocate loop (docs/ETR_SESSION_FLOW.md §6) lands in B03; scene and
+ * round commands (LoadScene, EndRound, ...) land in B04.
  */
 export type EatTheReichCommand =
   | {
-      readonly type: "BeginAction";
-      readonly actorMemberId: MemberId;
-      readonly threatId: string;
-      readonly actionId: string;
-      readonly gearIds: readonly string[];
+      readonly type: "ClaimCharacter";
+      readonly characterId: string;
     }
   | {
-      readonly type: "SubmitOpposition";
-      readonly rollId: string;
-      readonly pushDice: number;
+      readonly type: "ReleaseCharacter";
+      readonly characterId: string;
     }
   | {
-      readonly type: "AllocateResults";
-      readonly rollId: string;
-      readonly allocations: readonly RollAllocation[];
+      readonly type: "HealInjury";
+      readonly characterId: string;
+      readonly categoryId: string;
+      readonly boxIndex: 0 | 1;
     };
