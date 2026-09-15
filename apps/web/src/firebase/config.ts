@@ -8,6 +8,16 @@ export interface FirebaseEnvironment {
   readonly VITE_FIREBASE_DATABASE_URL?: string;
 }
 
+/** True when every required Firebase value is present; false for a local-only (in-memory) build. */
+export function hasFirebaseConfig(environment: FirebaseEnvironment): boolean {
+  return Boolean(
+    environment.VITE_FIREBASE_API_KEY &&
+    environment.VITE_FIREBASE_AUTH_DOMAIN &&
+    environment.VITE_FIREBASE_PROJECT_ID &&
+    environment.VITE_FIREBASE_APP_ID,
+  );
+}
+
 /**
  * Builds an explicit environment-provided Firebase configuration. There is no
  * project fallback: local emulator builds keep using the in-memory repository,

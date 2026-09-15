@@ -19,6 +19,13 @@ export const STABLE_ERROR_CODES = [
   "ROOM_NOT_FOUND",
   "INVALID_PASSPHRASE",
   "GM_SEAT_TAKEN",
+  /**
+   * A persisted document required for a decision (authority, room-code
+   * index, uid binding, or secret hash) exists but fails runtime validation
+   * — malformed data never defaults to a permissive state (open/active/zero
+   * capacity); the request is denied instead (Phase 2 PR 3 review).
+   */
+  "ROOM_DATA_INVALID",
 ] as const;
 
 export type StableErrorCode = (typeof STABLE_ERROR_CODES)[number];

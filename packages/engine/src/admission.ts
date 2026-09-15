@@ -24,7 +24,16 @@ export interface RoomAdmissionSnapshot {
   readonly participantCount: number;
   readonly tableSeatClaimed: boolean;
   readonly gmMemberId: MemberId | null;
+  /** Whether the caller's submitted secret matches the room's general (player/GM) passphrase. */
   readonly passphraseValid: boolean;
+  /**
+   * Whether the caller's submitted secret matches the room's separate table
+   * code (docs/ARCHITECTURE.md section 8: "The GM admits it using a
+   * separate table code."). Knowing the general room passphrase must never
+   * satisfy this — the table seat is not self-claimable with the same
+   * secret every player uses.
+   */
+  readonly tablePassphraseValid: boolean;
   readonly existingBinding: {
     readonly memberId: MemberId;
     readonly capability: Capability;
@@ -43,11 +52,24 @@ function deniedFrom(error: StableError): AdmissionDecision {
 /**
  * Decides an `AdmitMember` request against a trusted snapshot. Pure: no I/O,
  * no clock, no randomness — every fact it needs is already resolved onto
- * `snapshot` by the caller. Order matters: an already-bound identity
- * reconnecting (the `existingBinding` branch) is checked, and either
- * accepted or rejected as a capability mismatch, before capacity/closure are
- * even considered, so reconnecting never trips a cap that only applies to
- * new occupants.
+ * `snapshot` by the caller.
+ *
+ * Order matters:
+ *
+ * 1. Archived rooms are denied before anything else.
+ * 2. The secret matching the *requested* capability must be correct first —
+ *    a general room passphrase never satisfies a `table` request, and vice
+ *    versa (docs/ARCHITECTURE.md section 8's separate table code), and this
+ *    check applies even to an already-bound identity: reclaiming a seat
+ *    still requires the correct current secret, so a since-rotated
+ *    passphrase or table code actually locks out a stale identity rather
+ *    than being bypassable by reconnecting instead of joining fresh (Phase
+ *    2 PR 3 review).
+ * 3. Only once the secret is proven does an already-bound identity
+ *    reconnecting (the `existingBinding` branch) get accepted or rejected
+ *    as a capability mismatch, before capacity/closure are even considered,
+ *    so a legitimate reconnect never trips a cap that only applies to new
+ *    occupants.
  */
 export function decideAdmitMember(
   input: AdmitMemberInput,
@@ -55,6 +77,16 @@ export function decideAdmitMember(
 ): AdmissionDecision {
   if (snapshot.roomStatus === "archived") {
     return deniedFrom(stableError("ROOM_ARCHIVED", "This room has been archived."));
+  }
+
+  const secretValid =
+    input.requestedCapability === "table"
+      ? snapshot.tablePassphraseValid
+      : snapshot.passphraseValid;
+  if (!secretValid) {
+    return deniedFrom(
+      stableError("INVALID_PASSPHRASE", "The room code or passphrase is incorrect."),
+    );
   }
 
   if (snapshot.existingBinding !== null) {
@@ -68,12 +100,6 @@ export function decideAdmitMember(
       memberId: snapshot.existingBinding.memberId,
       capability: snapshot.existingBinding.capability,
     };
-  }
-
-  if (!snapshot.passphraseValid) {
-    return deniedFrom(
-      stableError("INVALID_PASSPHRASE", "The room code or passphrase is incorrect."),
-    );
   }
 
   if (snapshot.admissionStatus === "closed") {
@@ -97,10 +123,13 @@ export function decideAdmitMember(
 
 /**
  * Decides a `ClaimSeat` (GM) request against a trusted snapshot. Same
- * purity and ordering discipline as `decideAdmitMember`. A non-null
- * `gmMemberId` that does not match the caller's own binding always denies
- * `GM_SEAT_TAKEN`, regardless of capacity — the GM seat is exclusive, not
- * capacity-limited in the way player seats are.
+ * purity and ordering discipline as `decideAdmitMember`: the passphrase is
+ * checked first, before an already-bound GM's reconnect is honored (Phase 2
+ * PR 3 review — a stale identity must not bypass a rotated passphrase by
+ * reclaiming instead of joining fresh). A non-null `gmMemberId` that does
+ * not match the caller's own binding always denies `GM_SEAT_TAKEN`,
+ * regardless of capacity — the GM seat is exclusive, not capacity-limited in
+ * the way player seats are.
  */
 export function decideClaimSeat(
   // Unused: a GM claim has no capability choice or other field this decision
@@ -114,6 +143,12 @@ export function decideClaimSeat(
     return deniedFrom(stableError("ROOM_ARCHIVED", "This room has been archived."));
   }
 
+  if (!snapshot.passphraseValid) {
+    return deniedFrom(
+      stableError("INVALID_PASSPHRASE", "The room code or passphrase is incorrect."),
+    );
+  }
+
   if (snapshot.existingBinding !== null) {
     if (snapshot.existingBinding.capability !== "gm") {
       return deniedFrom(
@@ -125,12 +160,6 @@ export function decideClaimSeat(
       memberId: snapshot.existingBinding.memberId,
       capability: "gm",
     };
-  }
-
-  if (!snapshot.passphraseValid) {
-    return deniedFrom(
-      stableError("INVALID_PASSPHRASE", "The room code or passphrase is incorrect."),
-    );
   }
 
   if (snapshot.gmMemberId !== null) {

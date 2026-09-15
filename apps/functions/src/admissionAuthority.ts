@@ -1,4 +1,4 @@
-import type { RulesTestContext } from "@firebase/rules-unit-testing";
+import type { DocumentReference, Firestore, Transaction } from "firebase-admin/firestore";
 import {
   decideAdmitMember,
   decideClaimSeat,
@@ -9,46 +9,23 @@ import {
 } from "@digitable/engine";
 import {
   asMemberId,
+  parseAuthorityAdmissionFields,
+  parseHashedSecretDocument,
+  parseRoomCodeDocument,
+  parseUidBindingDocument,
+  RoomDataError,
   type AdmissionAccepted,
-  type AdmissionStatus,
   type AdmitMemberInput,
+  type AuthorityAdmissionFields,
   type Capability,
   type ClaimSeatInput,
   type MemberBindingDocument,
   type MemberId,
   type RecoveryCredentialDocument,
-  type RoomAdmissionSecretDocument,
-  type RoomCodeDocument,
   type RoomMemberDocument,
   type StableErrorCode,
   type UidBindingDocument,
 } from "@digitable/contracts";
-
-/**
- * Derived from `RulesTestContext.firestore()`'s own return type rather than
- * naming the underlying `firebase.firestore.*` compat namespace directly —
- * that namespace is only merged into scope by an import elsewhere
- * (`@firebase/rules-unit-testing`'s own type declarations), which makes it
- * fragile to reference by name here. This is the trusted-context Firestore
- * handle this module runs against in every test call site.
- */
-export type Firestore = ReturnType<RulesTestContext["firestore"]>;
-type Transaction = Parameters<Parameters<Firestore["runTransaction"]>[0]>[0];
-type DocumentReference = ReturnType<Firestore["doc"]>;
-
-/**
- * The subset of `authority/current` the admission authority reads and
- * writes. Deliberately excludes `state` (the template's `TState`) — admission
- * never reads or writes template state, only the platform-owned lifecycle
- * and capacity fields (docs/ARCHITECTURE.md section 8).
- */
-interface AuthorityAdmissionFields {
-  readonly roomStatus: "active" | "archived";
-  readonly admissionStatus: AdmissionStatus;
-  readonly participantCount: number;
-  readonly tableSeatClaimed: boolean;
-  readonly gmMemberId: string | null;
-}
 
 export type AdmissionResult =
   | { readonly ok: true; readonly accepted: AdmissionAccepted }
@@ -58,26 +35,40 @@ function denied(code: StableErrorCode, message: string): AdmissionResult {
   return { ok: false, code, message };
 }
 
-/** Defensive defaults, not runtime validation: these are our own service-written documents. */
-function readAuthorityAdmissionFields(
-  data: Record<string, unknown> | undefined,
-): AuthorityAdmissionFields | null {
-  if (data === undefined) return null;
-  return {
-    roomStatus: data.roomStatus === "archived" ? "archived" : "active",
-    admissionStatus: data.admissionStatus === "closed" ? "closed" : "open",
-    participantCount: typeof data.participantCount === "number" ? data.participantCount : 0,
-    tableSeatClaimed: data.tableSeatClaimed === true,
-    gmMemberId: typeof data.gmMemberId === "string" ? data.gmMemberId : null,
-  };
+const ROOM_DATA_INVALID = denied(
+  "ROOM_DATA_INVALID",
+  "This room's data could not be verified. Ask the GM to check the room.",
+);
+
+/**
+ * Every persisted-document read below is runtime-validated
+ * (`parse*Document`, `@digitable/contracts/room.ts`) and fails closed: a
+ * document that exists but does not parse throws `RoomDataError`, which the
+ * transaction wrapper maps to a `ROOM_DATA_INVALID` denial — never to a
+ * permissive default (active/open/zero capacity/"no binding"/"valid
+ * secret"). Only a genuinely *absent* document is treated as "not found",
+ * "no binding", or "cannot verify" — a distinct, narrower meaning from
+ * "malformed".
+ */
+async function readExistingBinding(
+  txn: Transaction,
+  ref: DocumentReference,
+): Promise<{ readonly memberId: MemberId; readonly capability: Capability } | null> {
+  const snapshot = await txn.get(ref);
+  if (!snapshot.exists) return null;
+  const binding: UidBindingDocument = parseUidBindingDocument(snapshot.data());
+  return { memberId: binding.memberId, capability: binding.capability };
 }
 
-function readExistingBinding(
-  data: Record<string, unknown> | undefined,
-): { readonly memberId: MemberId; readonly capability: Capability } | null {
-  if (data === undefined) return null;
-  const binding = data as unknown as UidBindingDocument;
-  return { memberId: asMemberId(binding.memberId), capability: binding.capability };
+/** `false` for a missing secret document (nothing to verify against); throws `RoomDataError` for a malformed one. */
+async function readSecretValid(
+  txn: Transaction,
+  ref: DocumentReference,
+  candidate: string,
+): Promise<boolean> {
+  const snapshot = await txn.get(ref);
+  if (!snapshot.exists) return false;
+  return verifySecret(candidate, parseHashedSecretDocument(snapshot.data()));
 }
 
 async function resolveRoomId(
@@ -87,7 +78,7 @@ async function resolveRoomId(
 ): Promise<string | null> {
   const snapshot = await txn.get(db.doc(`roomCodes/${roomCode}`));
   if (!snapshot.exists) return null;
-  return (snapshot.data() as RoomCodeDocument).roomId;
+  return parseRoomCodeDocument(snapshot.data()).roomId;
 }
 
 interface ResolvedRoomContext {
@@ -103,6 +94,12 @@ interface ResolvedRoomContext {
  * makes capacity checks and the GM-seat claim race-safe under concurrent
  * invocations (the transaction retries automatically if another commit
  * changes `authority/current` first).
+ *
+ * Both secrets are verified on every request: the general room passphrase
+ * (`admission/secret`, gating `player`/`gm`) and the separate table code
+ * (`admission/tableSecret`, gating `table`; docs/ARCHITECTURE.md section 8).
+ * The pure decision picks the one the *requested* capability requires, so
+ * knowing one never satisfies the other.
  */
 async function resolveRoomContext(
   txn: Transaction,
@@ -117,22 +114,19 @@ async function resolveRoomContext(
   }
 
   const authorityRef = db.doc(`rooms/${roomId}/authority/current`);
-  const secretRef = db.doc(`rooms/${roomId}/admission/secret`);
-  const uidBindingRef = db.doc(`rooms/${roomId}/uidBindings/${uid}`);
+  const [authoritySnap, passphraseValid, tablePassphraseValid, existingBinding] = await Promise.all(
+    [
+      txn.get(authorityRef),
+      readSecretValid(txn, db.doc(`rooms/${roomId}/admission/secret`), passphrase),
+      readSecretValid(txn, db.doc(`rooms/${roomId}/admission/tableSecret`), passphrase),
+      readExistingBinding(txn, db.doc(`rooms/${roomId}/uidBindings/${uid}`)),
+    ],
+  );
 
-  const [authoritySnap, secretSnap, uidBindingSnap] = await Promise.all([
-    txn.get(authorityRef),
-    txn.get(secretRef),
-    txn.get(uidBindingRef),
-  ]);
-
-  const authority = readAuthorityAdmissionFields(authoritySnap.data());
-  if (authority === null) {
+  if (!authoritySnap.exists) {
     return { deniedResult: denied("ROOM_NOT_FOUND", "The room code was not recognized.") };
   }
-
-  const secret = secretSnap.data() as RoomAdmissionSecretDocument | undefined;
-  const passphraseValid = secret !== undefined ? await verifySecret(passphrase, secret) : false;
+  const authority = parseAuthorityAdmissionFields(authoritySnap.data());
 
   return {
     roomId,
@@ -143,9 +137,10 @@ async function resolveRoomContext(
       admissionStatus: authority.admissionStatus,
       participantCount: authority.participantCount,
       tableSeatClaimed: authority.tableSeatClaimed,
-      gmMemberId: authority.gmMemberId === null ? null : asMemberId(authority.gmMemberId),
+      gmMemberId: authority.gmMemberId,
       passphraseValid,
-      existingBinding: readExistingBinding(uidBindingSnap.data()),
+      tablePassphraseValid,
+      existingBinding,
     },
   };
 }
@@ -183,20 +178,31 @@ async function createSeat(
   return { memberId, capability, recoveryCode };
 }
 
+/** Runs one admission transaction, mapping a fail-closed data error to a stable denial. */
+async function runAdmissionTransaction(
+  db: Firestore,
+  body: (txn: Transaction) => Promise<AdmissionResult>,
+): Promise<AdmissionResult> {
+  try {
+    return await db.runTransaction(body);
+  } catch (error) {
+    if (error instanceof RoomDataError) return ROOM_DATA_INVALID;
+    throw error;
+  }
+}
+
 /**
- * Resolves an `AdmitMember` join request inside one Firestore transaction —
- * the shape a real trusted Function (Phase 2 PR 4+) will host, exercised
- * here against the emulator's trusted context exactly as Phase 2 PR 2's
- * rules were exercised without a real Function
- * (docs/PHASE_2_PLAN.md: "rules are tested by direct emulator reads/writes
- * standing in for a trusted service identity where needed").
+ * Resolves an `AdmitMember` join request inside one Firestore transaction.
+ * This is the trusted authority a real client reaches through the
+ * `admitMember` callable (`src/index.ts`) — the operable boundary the
+ * platform's join flow actually calls.
  */
-export async function admitMember(
+export function admitMember(
   db: Firestore,
   uid: string,
   input: AdmitMemberInput,
 ): Promise<AdmissionResult> {
-  return db.runTransaction(async (txn): Promise<AdmissionResult> => {
+  return runAdmissionTransaction(db, async (txn) => {
     const context = await resolveRoomContext(txn, db, uid, input.roomCode, input.passphrase);
     if ("deniedResult" in context) return context.deniedResult;
 
@@ -237,12 +243,12 @@ export async function admitMember(
  * Resolves a `ClaimSeat` (GM) request inside one Firestore transaction. See
  * `admitMember` for the shared transaction/trust-boundary shape.
  */
-export async function claimSeat(
+export function claimSeat(
   db: Firestore,
   uid: string,
   input: ClaimSeatInput,
 ): Promise<AdmissionResult> {
-  return db.runTransaction(async (txn): Promise<AdmissionResult> => {
+  return runAdmissionTransaction(db, async (txn) => {
     const context = await resolveRoomContext(txn, db, uid, input.roomCode, input.passphrase);
     if ("deniedResult" in context) return context.deniedResult;
 
@@ -265,9 +271,7 @@ export async function claimSeat(
     txn.set(
       db.doc(`rooms/${context.roomId}/meta/current`),
       { gmMemberId: accepted.memberId },
-      {
-        merge: true,
-      },
+      { merge: true },
     );
     return { ok: true, accepted };
   });

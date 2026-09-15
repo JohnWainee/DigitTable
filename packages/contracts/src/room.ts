@@ -1,7 +1,10 @@
-import type { AuthorityRecord, RoomStatus } from "./authority.js";
+import type { AdmissionStatus, AuthorityRecord, RoomStatus } from "./authority.js";
 import type { CommandId, MemberId, ReceiptId, RoomId } from "./ids.js";
+import { asMemberId, asRoomId } from "./ids.js";
 import type { Capability } from "./template.js";
 import type { VersionedTemplateRecord } from "./versions.js";
+
+const CAPABILITIES: readonly Capability[] = ["player", "gm", "table"];
 
 /** Client-readable mirror of room lifecycle metadata at `meta/current`. */
 export interface RoomMetaDocument extends VersionedTemplateRecord {
@@ -72,15 +75,167 @@ export interface HashedSecretDocument {
   readonly iterations: number;
 }
 
-/** Service-only room passphrase at `rooms/{roomId}/admission/secret`. */
+/** Service-only room passphrase at `rooms/{roomId}/admission/secret`. Gates `player`/`gm` admission. */
 export type RoomAdmissionSecretDocument = HashedSecretDocument;
+
+/**
+ * Service-only table code at `rooms/{roomId}/admission/tableSecret`
+ * (docs/ARCHITECTURE.md section 8: "A `table` seat ... The GM admits it
+ * using a separate table code."). A distinct secret from
+ * `RoomAdmissionSecretDocument` — knowing the room's general
+ * code-plus-passphrase must never be sufficient to claim the exclusive
+ * table seat.
+ */
+export type RoomTableSecretDocument = HashedSecretDocument;
 
 /** Service-only per-seat recovery credential at `rooms/{roomId}/recovery/{memberId}`. */
 export interface RecoveryCredentialDocument extends HashedSecretDocument {
   readonly memberId: MemberId;
 }
 
+/**
+ * Service-only per-IP/per-room-code admission rate-limit counter at
+ * `admissionThrottle/{roomCode}/byIp/{ip}` (Phase 2 PR 3 review: "meaningful
+ * per-IP/per-room throttling"). Keyed by the submitted room *code* rather
+ * than a resolved room ID so it also bounds attempts against codes that
+ * never resolve to a room (docs/ARCHITECTURE.md section 11's "Room-code
+ * guessing" mitigation), and lives outside `rooms/{roomId}` for the same
+ * reason. A fixed-window counter, not a token bucket: simple enough to
+ * reason about correctness under concurrent transactions.
+ */
+export interface AdmissionThrottleDocument {
+  readonly windowStartMs: number;
+  readonly count: number;
+}
+
 /** Canonical Firestore document identifier from the architecture's R6 decision. */
 export function receiptIdFor(memberId: MemberId, commandId: CommandId): ReceiptId {
   return `${memberId}_${commandId}` as ReceiptId;
+}
+
+/**
+ * Thrown by the `parse*Document` functions below when a persisted document
+ * exists but fails runtime validation. Every reader of a persisted
+ * authority/room-code/binding/secret document must treat this as a deny,
+ * never as license to substitute a permissive default — malformed data must
+ * never read as active/open/zero-capacity (Phase 2 PR 3 review).
+ */
+export class RoomDataError extends Error {}
+
+function fail(where: string): never {
+  throw new RoomDataError(`room data: ${where}: malformed or missing`);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/** The subset of `authority/current` the admission authority reads and writes. */
+export interface AuthorityAdmissionFields {
+  readonly roomStatus: RoomStatus;
+  readonly admissionStatus: AdmissionStatus;
+  readonly participantCount: number;
+  readonly tableSeatClaimed: boolean;
+  readonly gmMemberId: MemberId | null;
+}
+
+/**
+ * Runtime-validates `authority/current`'s admission-relevant fields.
+ * Fails closed: an unrecognized `roomStatus`/`admissionStatus`, a
+ * non-integer/negative `participantCount`, or a non-boolean
+ * `tableSeatClaimed` throws rather than defaulting to "active", "open", or
+ * `0` — a defaulted-permissive read here would silently reopen a closed or
+ * archived room, or under-report occupancy.
+ */
+export function parseAuthorityAdmissionFields(data: unknown): AuthorityAdmissionFields {
+  if (!isRecord(data)) fail("authority/current");
+  const { roomStatus, admissionStatus, participantCount, tableSeatClaimed, gmMemberId } = data;
+  if (roomStatus !== "active" && roomStatus !== "archived") {
+    fail("authority/current.roomStatus");
+  }
+  if (admissionStatus !== "open" && admissionStatus !== "closed") {
+    fail("authority/current.admissionStatus");
+  }
+  if (
+    typeof participantCount !== "number" ||
+    !Number.isInteger(participantCount) ||
+    participantCount < 0
+  ) {
+    fail("authority/current.participantCount");
+  }
+  if (typeof tableSeatClaimed !== "boolean") {
+    fail("authority/current.tableSeatClaimed");
+  }
+  if (gmMemberId !== null && gmMemberId !== undefined && typeof gmMemberId !== "string") {
+    fail("authority/current.gmMemberId");
+  }
+  return {
+    roomStatus,
+    admissionStatus,
+    participantCount,
+    tableSeatClaimed,
+    gmMemberId: typeof gmMemberId === "string" ? asMemberId(gmMemberId) : null,
+  };
+}
+
+/** Runtime-validates `roomCodes/{code}`. Fails closed on a missing/empty `roomId`. */
+export function parseRoomCodeDocument(data: unknown): RoomCodeDocument {
+  if (!isRecord(data)) fail("roomCodes/{code}");
+  const { roomId } = data;
+  if (typeof roomId !== "string" || roomId.length === 0) {
+    fail("roomCodes/{code}.roomId");
+  }
+  return { roomId: asRoomId(roomId) };
+}
+
+/**
+ * Runtime-validates `uidBindings/{uid}`. Fails closed rather than treating a
+ * corrupted binding as "no binding exists" — the latter would let a caller
+ * whose binding failed to parse re-enter the `create` path and potentially
+ * double-occupy a seat.
+ */
+export function parseUidBindingDocument(data: unknown): UidBindingDocument {
+  if (!isRecord(data)) fail("uidBindings/{uid}");
+  const { memberId, capability } = data;
+  if (typeof memberId !== "string" || memberId.length === 0) {
+    fail("uidBindings/{uid}.memberId");
+  }
+  if (!(CAPABILITIES as readonly string[]).includes(capability as string)) {
+    fail("uidBindings/{uid}.capability");
+  }
+  return { memberId: asMemberId(memberId), capability: capability as Capability };
+}
+
+/**
+ * Runtime-validates a `HashedSecretDocument` (`admission/secret`,
+ * `admission/tableSecret`, or `recovery/{memberId}`). Fails closed: a
+ * malformed secret document is treated as "cannot verify," which callers
+ * must map to a failed passphrase check, never a bypassed one.
+ */
+export function parseHashedSecretDocument(data: unknown): HashedSecretDocument {
+  if (!isRecord(data)) fail("secret document");
+  const { hash, salt, iterations } = data;
+  if (typeof hash !== "string" || hash.length === 0) fail("secret.hash");
+  if (typeof salt !== "string" || salt.length === 0) fail("secret.salt");
+  if (typeof iterations !== "number" || !Number.isInteger(iterations) || iterations <= 0) {
+    fail("secret.iterations");
+  }
+  return { hash, salt, iterations };
+}
+
+/**
+ * Runtime-validates an `admissionThrottle/{roomCode}/byIp/{ip}` counter.
+ * Fails closed: a malformed counter throws rather than being treated as a
+ * fresh window, since "start a new window" is the permissive outcome.
+ */
+export function parseAdmissionThrottleDocument(data: unknown): AdmissionThrottleDocument {
+  if (!isRecord(data)) fail("admissionThrottle");
+  const { windowStartMs, count } = data;
+  if (typeof windowStartMs !== "number" || !Number.isFinite(windowStartMs)) {
+    fail("admissionThrottle.windowStartMs");
+  }
+  if (typeof count !== "number" || !Number.isInteger(count) || count < 0) {
+    fail("admissionThrottle.count");
+  }
+  return { windowStartMs, count };
 }

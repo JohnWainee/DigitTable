@@ -47,7 +47,12 @@ export interface AdmissionAccepted {
   readonly recoveryCode: string | null;
 }
 
-class AdmissionInputError extends Error {}
+/**
+ * Thrown by `parseAdmitMemberInput`/`parseClaimSeatInput` for a malformed
+ * untrusted payload. Exported so a trusted boundary can map it to an
+ * "invalid argument" response without leaking the parser's detail string.
+ */
+export class AdmissionInputError extends Error {}
 
 function fail(where: string, detail: string): never {
   throw new AdmissionInputError(`admission input: ${where}: ${detail}`);

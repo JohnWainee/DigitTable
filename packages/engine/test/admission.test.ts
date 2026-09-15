@@ -18,6 +18,7 @@ const baseSnapshot: RoomAdmissionSnapshot = {
   tableSeatClaimed: false,
   gmMemberId: asMemberId("member-gm"),
   passphraseValid: true,
+  tablePassphraseValid: true,
   existingBinding: null,
 };
 
@@ -67,6 +68,24 @@ describe("decideAdmitMember", () => {
     expect(decision).toMatchObject({ outcome: "denied", code: "INVALID_PASSPHRASE" });
   });
 
+  it("a valid general passphrase does not admit the table seat (separate table code required)", () => {
+    const decision = decideAdmitMember(admitTableInput, {
+      ...baseSnapshot,
+      passphraseValid: true,
+      tablePassphraseValid: false,
+    });
+    expect(decision).toMatchObject({ outcome: "denied", code: "INVALID_PASSPHRASE" });
+  });
+
+  it("a valid table code does not admit a player seat", () => {
+    const decision = decideAdmitMember(admitPlayerInput, {
+      ...baseSnapshot,
+      passphraseValid: false,
+      tablePassphraseValid: true,
+    });
+    expect(decision).toMatchObject({ outcome: "denied", code: "INVALID_PASSPHRASE" });
+  });
+
   it("denies a new player when admission is closed", () => {
     const decision = decideAdmitMember(admitPlayerInput, {
       ...baseSnapshot,
@@ -107,12 +126,12 @@ describe("decideAdmitMember", () => {
     expect(decision).toEqual({ outcome: "create", capability: "table" });
   });
 
-  it("reclaims (idempotent) when the caller's UID is already bound to a matching-capability seat", () => {
+  it("reclaims (idempotent) when the caller's UID is already bound to a matching-capability seat and the passphrase is still correct", () => {
     const decision = decideAdmitMember(admitPlayerInput, {
       ...baseSnapshot,
       admissionStatus: "closed",
       participantCount: MAX_PARTICIPANT_SEATS,
-      passphraseValid: false,
+      passphraseValid: true,
       existingBinding: { memberId: asMemberId("member-existing"), capability: "player" },
     });
     expect(decision).toEqual({
@@ -120,6 +139,24 @@ describe("decideAdmitMember", () => {
       memberId: asMemberId("member-existing"),
       capability: "player",
     });
+  });
+
+  it("denies a reclaim when the passphrase is now wrong, even for an already-bound identity", () => {
+    const decision = decideAdmitMember(admitPlayerInput, {
+      ...baseSnapshot,
+      passphraseValid: false,
+      existingBinding: { memberId: asMemberId("member-existing"), capability: "player" },
+    });
+    expect(decision).toMatchObject({ outcome: "denied", code: "INVALID_PASSPHRASE" });
+  });
+
+  it("denies a table reclaim when the table code is now wrong", () => {
+    const decision = decideAdmitMember(admitTableInput, {
+      ...baseSnapshot,
+      tablePassphraseValid: false,
+      existingBinding: { memberId: asMemberId("member-existing"), capability: "table" },
+    });
+    expect(decision).toMatchObject({ outcome: "denied", code: "INVALID_PASSPHRASE" });
   });
 
   it("privilege escalation: refuses to reinterpret an existing player binding as a table seat", () => {
@@ -184,6 +221,7 @@ describe("decideClaimSeat", () => {
   it("reclaims (idempotent) when the caller's UID is already the bound GM", () => {
     const decision = decideClaimSeat(claimSeatInput, {
       ...baseSnapshot,
+      passphraseValid: true,
       existingBinding: { memberId: asMemberId("member-gm"), capability: "gm" },
     });
     expect(decision).toEqual({
@@ -191,6 +229,15 @@ describe("decideClaimSeat", () => {
       memberId: asMemberId("member-gm"),
       capability: "gm",
     });
+  });
+
+  it("denies a GM reclaim when the passphrase is now wrong, even for the already-bound GM", () => {
+    const decision = decideClaimSeat(claimSeatInput, {
+      ...baseSnapshot,
+      passphraseValid: false,
+      existingBinding: { memberId: asMemberId("member-gm"), capability: "gm" },
+    });
+    expect(decision).toMatchObject({ outcome: "denied", code: "INVALID_PASSPHRASE" });
   });
 
   it("privilege escalation: a bound player cannot claim the GM seat via ClaimSeat", () => {
