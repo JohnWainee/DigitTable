@@ -166,6 +166,15 @@ export interface AuthorityAdmissionFields {
   readonly participantCount: number;
   readonly tableSeatClaimed: boolean;
   readonly gmMemberId: MemberId | null;
+  /**
+   * Board task A05 independent review finding: `AdmissionAccepted` needs
+   * this so a client's create/join/claim result carries the room's real
+   * revision instead of a client-side guess (the previous approximation —
+   * reading the joining member's own not-yet-written projection, defaulting
+   * to 0 — was wrong whenever another command had already run before this
+   * member joined).
+   */
+  readonly roomRevision: number;
 }
 
 /**
@@ -178,7 +187,14 @@ export interface AuthorityAdmissionFields {
  */
 export function parseAuthorityAdmissionFields(data: unknown): AuthorityAdmissionFields {
   if (!isRecord(data)) fail("authority/current");
-  const { roomStatus, admissionStatus, participantCount, tableSeatClaimed, gmMemberId } = data;
+  const {
+    roomStatus,
+    admissionStatus,
+    participantCount,
+    tableSeatClaimed,
+    gmMemberId,
+    roomRevision,
+  } = data;
   if (roomStatus !== "active" && roomStatus !== "archived") {
     fail("authority/current.roomStatus");
   }
@@ -195,6 +211,9 @@ export function parseAuthorityAdmissionFields(data: unknown): AuthorityAdmission
   if (typeof tableSeatClaimed !== "boolean") {
     fail("authority/current.tableSeatClaimed");
   }
+  if (typeof roomRevision !== "number" || !Number.isInteger(roomRevision) || roomRevision < 0) {
+    fail("authority/current.roomRevision");
+  }
   // The key must be present: an *absent* `gmMemberId` must never read as "no
   // GM seated" — that would let a corrupted authority document reopen the
   // exclusive GM seat (Phase 2 PR 3 second pass, T2/C4). Only `null` (seat
@@ -209,6 +228,7 @@ export function parseAuthorityAdmissionFields(data: unknown): AuthorityAdmission
     participantCount,
     tableSeatClaimed,
     gmMemberId: typeof gmMemberId === "string" ? asMemberId(gmMemberId) : null,
+    roomRevision,
   };
 }
 

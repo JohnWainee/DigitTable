@@ -87,6 +87,7 @@ const validAuthority = {
   participantCount: 3,
   tableSeatClaimed: false,
   gmMemberId: "member-gm",
+  roomRevision: 0,
 };
 
 /**
@@ -135,6 +136,10 @@ describe("parseAuthorityAdmissionFields (fails closed)", () => {
     ],
     ["truthy non-boolean tableSeatClaimed", { ...validAuthority, tableSeatClaimed: "yes" }],
     ["non-string gmMemberId", { ...validAuthority, gmMemberId: 42 }],
+    ["missing roomRevision", { ...validAuthority, roomRevision: undefined }],
+    ["negative roomRevision", { ...validAuthority, roomRevision: -1 }],
+    ["fractional roomRevision", { ...validAuthority, roomRevision: 1.5 }],
+    ["string roomRevision", { ...validAuthority, roomRevision: "0" }],
   ])("throws RoomDataError for %s", (_label, data) => {
     expect(() => parseAuthorityAdmissionFields(data)).toThrow(RoomDataError);
   });

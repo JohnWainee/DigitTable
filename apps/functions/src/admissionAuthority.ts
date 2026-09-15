@@ -10,6 +10,7 @@ import {
 } from "@digitable/engine";
 import {
   asMemberId,
+  asRoomId,
   parseAuthorityAdmissionFields,
   parseHashedSecretDocument,
   parseRoomCodeDocument,
@@ -191,6 +192,7 @@ function createSeat(
   displayName: string,
   credential: SeatCredential,
   now: string,
+  roomRevision: number,
 ): AdmissionAccepted {
   const { memberId, recoveryCode, hashedRecovery } = credential;
 
@@ -210,7 +212,7 @@ function createSeat(
   txn.set(db.doc(`rooms/${roomId}/members/${memberId}`), member);
   txn.set(db.doc(`rooms/${roomId}/recovery/${memberId}`), recovery);
 
-  return { memberId, capability, recoveryCode };
+  return { roomId: asRoomId(roomId), memberId, capability, recoveryCode, roomRevision };
 }
 
 /** Runs one admission transaction, mapping a fail-closed data error to a stable denial. */
@@ -257,9 +259,11 @@ export async function admitMember(
       return {
         ok: true,
         accepted: {
+          roomId: asRoomId(context.roomId),
           memberId: decision.memberId,
           capability: decision.capability,
           recoveryCode: null,
+          roomRevision: context.authority.roomRevision,
         },
       };
     }
@@ -273,6 +277,7 @@ export async function admitMember(
       input.displayName,
       credential,
       new Date().toISOString(),
+      context.authority.roomRevision,
     );
     txn.update(
       context.authorityRef,
@@ -305,7 +310,13 @@ export async function claimSeat(
     if (decision.outcome === "reclaim") {
       return {
         ok: true,
-        accepted: { memberId: decision.memberId, capability: "gm", recoveryCode: null },
+        accepted: {
+          roomId: asRoomId(context.roomId),
+          memberId: decision.memberId,
+          capability: "gm",
+          recoveryCode: null,
+          roomRevision: context.authority.roomRevision,
+        },
       };
     }
 
@@ -319,6 +330,7 @@ export async function claimSeat(
       input.displayName,
       credential,
       now,
+      context.authority.roomRevision,
     );
     txn.update(context.authorityRef, {
       participantCount: context.authority.participantCount + 1,
