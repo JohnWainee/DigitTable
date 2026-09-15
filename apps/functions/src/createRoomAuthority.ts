@@ -275,16 +275,24 @@ export async function createRoom(
     // once that seat is actually claimed (board task A04's job, matching
     // `admissionAuthority.ts`'s admit/claim paths, which do not yet write
     // any projection either — see docs/reviews for that residual).
+    //
+    // `viewerId: "gm"` (the reserved viewer ID, not the GM's own
+    // `memberId`), matching `apps/web/src/repository/InMemoryRoomRepository.
+    // ts`'s established convention and `firestore.rules`' `projections/gm`
+    // path: the GM is not a player, so `project()`'s `state.characters[
+    // viewer.viewerId]` "own character" lookup must miss for the GM, which
+    // the reserved literal guarantees by construction (a real `memberId`
+    // would only coincidentally miss).
     txn.set(db.doc(`rooms/${roomId}/projections/gm`), {
       platformVersion: "0.0.0",
       templateId: manifest.templateId,
       templateVersion: manifest.templateVersion,
       schemaVersion: manifest.currentSchemaVersion,
-      viewerId: gmMemberId,
+      viewerId: "gm",
       roomRevision: 0,
       view: eatTheReichTemplate.project(initialState, {
         roomId,
-        viewerId: gmMemberId,
+        viewerId: "gm",
         capability: "gm",
       }),
     });

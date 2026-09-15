@@ -85,7 +85,10 @@ describe("createRoom (apps/functions, board task A03)", () => {
       expect(member).toMatchObject({ capability: "gm", displayName: "Rook" });
 
       const projection = (await db.doc(`rooms/${seat.roomId}/projections/gm`).get()).data();
-      expect(projection).toMatchObject({ viewerId: seat.memberId, roomRevision: 0 });
+      // "gm" (the reserved viewer ID), not the GM's own memberId — matches
+      // the established InMemoryRoomRepository convention and firestore.rules'
+      // `projections/gm` path.
+      expect(projection).toMatchObject({ viewerId: "gm", roomRevision: 0 });
       expect(projection?.view).toBeDefined();
 
       const roomCodeDoc = (await db.doc(`roomCodes/${seat.roomCode}`).get()).data();
