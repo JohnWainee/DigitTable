@@ -3,161 +3,143 @@ import { createSeededRandom, projectViewer, runCommand } from "@digitable/engine
 import { findLeakedSecrets } from "@digitable/testing";
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
-import { DAMAGE_THREAT_OPTION_ID } from "../src/allocations.js";
-import { ACTION_ID, THREAT_ID } from "../src/content.js";
 import { eatTheReichTemplate } from "../src/engine.js";
 import type { EatTheReichState } from "../src/state.js";
 import {
-  GM_CTX,
   GM_VIEWER,
   PLAYER_CTX,
-  PLAYER_MEMBER_ID,
   PLAYER_VIEWER,
+  ROOK_ID,
+  SECOND_PLAYER_VIEWER,
   TABLE_VIEWER,
   freshAuthority,
   freshState,
 } from "./fixtures.js";
 
-/** A fresh authority with the fixture threat's hidden fields overridden for this run. */
-function authorityWithHiddenThreat(
-  hiddenIntel: string,
-  hiddenDifficultyModifier: number,
-): AuthorityRecord<EatTheReichState> {
+function authorityWithSecretItemName(secretItemName: string): AuthorityRecord<EatTheReichState> {
   const state = freshState();
-  const threat = state.threats[THREAT_ID];
-  if (!threat) throw new Error("fixture threat missing");
+  const character = state.characters[ROOK_ID];
+  if (!character) throw new Error("fixture missing rook");
   return freshAuthority({
     ...state,
-    threats: {
-      ...state.threats,
-      [THREAT_ID]: { ...threat, hiddenIntel, hiddenDifficultyModifier },
+    characters: {
+      ...state.characters,
+      [ROOK_ID]: {
+        ...character,
+        items: character.items.map((item, index) =>
+          index === 0 ? { ...item, name: secretItemName } : item,
+        ),
+      },
     },
   });
 }
 
 /**
- * Asserts docs/PHASE_1C_PLAN.md's "Projection isolation (extended)"
- * invariant across all three concurrently-live viewers at once: `table`
- * never sees hidden fields, `gm` is the only one that does, and neither
- * gains a `self` character.
+ * Asserts the four-viewer isolation invariant at once: only the claiming
+ * player (`self`) and the GM (`gmSheets`) see a character's sheet detail;
+ * another player and the table never do, even mid-lifecycle.
  */
-function assertThreeWayIsolation(
+function assertFourWayIsolation(
   authority: AuthorityRecord<EatTheReichState>,
-  hiddenIntel: string,
-  hiddenDifficultyModifier: number,
+  secretItemName: string,
+  claimed: boolean,
 ): void {
   const playerProjection = projectViewer(eatTheReichTemplate, authority, PLAYER_VIEWER);
+  const otherPlayerProjection = projectViewer(eatTheReichTemplate, authority, SECOND_PLAYER_VIEWER);
   const gmProjection = projectViewer(eatTheReichTemplate, authority, GM_VIEWER);
   const tableProjection = projectViewer(eatTheReichTemplate, authority, TABLE_VIEWER);
 
-  for (const projection of [playerProjection, gmProjection, tableProjection]) {
+  for (const projection of [
+    playerProjection,
+    otherPlayerProjection,
+    gmProjection,
+    tableProjection,
+  ]) {
     expect(checkProjectionBudget(projection).withinCeiling).toBe(true);
   }
 
-  expect(findLeakedSecrets(playerProjection.view, [hiddenIntel])).toEqual([]);
-  expect(findLeakedSecrets(tableProjection.view, [hiddenIntel])).toEqual([]);
-  expect(findLeakedSecrets(gmProjection.view, [hiddenIntel])).toEqual([hiddenIntel]);
-
-  expect(playerProjection.view.threats[0]).not.toHaveProperty("hiddenDifficultyModifier");
-  expect(tableProjection.view.threats[0]).not.toHaveProperty("hiddenDifficultyModifier");
-  expect(gmProjection.view.threats[0]).toMatchObject({ hiddenDifficultyModifier });
+  expect(findLeakedSecrets(otherPlayerProjection.view, [secretItemName])).toEqual([]);
+  expect(findLeakedSecrets(tableProjection.view, [secretItemName])).toEqual([]);
+  expect(findLeakedSecrets(gmProjection.view, [secretItemName])).toEqual([secretItemName]);
+  expect(findLeakedSecrets(playerProjection.view, [secretItemName])).toEqual(
+    claimed ? [secretItemName] : [],
+  );
 
   expect(gmProjection.view.self).toBeNull();
   expect(tableProjection.view.self).toBeNull();
-  expect(playerProjection.view.self?.memberId).toBe(PLAYER_MEMBER_ID);
-
-  const activeRoll = playerProjection.view.activeRoll;
-  if (activeRoll) {
-    expect(playerProjection.view.activeRoll).not.toHaveProperty("hiddenDifficultyModifier");
-    expect(tableProjection.view.activeRoll).not.toHaveProperty("hiddenDifficultyModifier");
-    expect(gmProjection.view.activeRoll?.hiddenDifficultyModifier).toBe(hiddenDifficultyModifier);
-    if (hiddenDifficultyModifier !== 0) {
-      expect(playerProjection.view.activeRoll?.playerFaces).toBeNull();
-      expect(tableProjection.view.activeRoll?.playerFaces).toBeNull();
-      expect(gmProjection.view.activeRoll?.playerFaces).not.toBeNull();
-    }
-  }
+  expect(otherPlayerProjection.view.self).toBeNull();
+  expect(playerProjection.view.self?.id).toBe(claimed ? ROOK_ID : undefined);
 }
 
-describe("projection isolation across the full opposed-action flow (property)", () => {
-  it("keeps player/GM/table isolation intact at every step of BeginAction -> SubmitOpposition -> AllocateResults", () => {
+describe("projection isolation across the character claim/heal/release flow (property)", () => {
+  it("keeps four-way isolation intact at every step of ClaimCharacter -> HealInjury -> ReleaseCharacter", () => {
     fc.assert(
-      fc.property(
-        fc.hexaString({ minLength: 16, maxLength: 32 }),
-        fc.integer({ min: -2, max: 2 }),
-        fc.integer({ min: 0, max: 2 }),
-        (hiddenIntel, hiddenDifficultyModifier, pushDice) => {
-          let authority = authorityWithHiddenThreat(hiddenIntel, hiddenDifficultyModifier);
+      fc.property(fc.hexaString({ minLength: 16, maxLength: 32 }), (secretItemName) => {
+        let authority = authorityWithSecretItemName(secretItemName);
+        assertFourWayIsolation(authority, secretItemName, false);
 
-          const begin = runCommand(eatTheReichTemplate, {
-            member: PLAYER_CTX,
-            authority,
-            random: createSeededRandom(`mr-begin-${hiddenIntel}-${hiddenDifficultyModifier}`),
-            command: {
-              type: "BeginAction",
-              actorMemberId: PLAYER_MEMBER_ID,
-              threatId: THREAT_ID,
-              actionId: ACTION_ID,
-              gearIds: [],
+        const claim = runCommand(eatTheReichTemplate, {
+          member: PLAYER_CTX,
+          authority,
+          random: createSeededRandom(`mr-claim-${secretItemName}`),
+          command: { type: "ClaimCharacter", characterId: ROOK_ID },
+          commandId: asCommandId("mr-cmd-claim"),
+          occurredAtServer: "2026-09-14T00:00:00.000Z",
+        });
+        expect(claim.ok).toBe(true);
+        if (!claim.ok) return;
+        authority = claim.authority;
+        assertFourWayIsolation(authority, secretItemName, true);
+
+        // Mark an injury box directly (heal's only precondition, not itself under test here) then heal it.
+        const claimedCharacter = authority.state.characters[ROOK_ID];
+        if (!claimedCharacter) throw new Error("expected rook to be present");
+        const categoryId = claimedCharacter.injuries[0]?.id;
+        if (!categoryId) throw new Error("expected an injury category");
+        authority = {
+          ...authority,
+          state: {
+            ...authority.state,
+            characters: {
+              ...authority.state.characters,
+              [ROOK_ID]: {
+                ...claimedCharacter,
+                blood: 5,
+                injuries: claimedCharacter.injuries.map((c, i) =>
+                  i === 0 ? { ...c, boxes: [{ marked: true }, c.boxes[1]] as typeof c.boxes } : c,
+                ),
+              },
             },
-            commandId: asCommandId("mr-cmd-begin"),
-            occurredAtServer: "2026-09-13T00:00:00.000Z",
-          });
-          expect(begin.ok).toBe(true);
-          if (!begin.ok) return;
-          authority = begin.authority;
-          assertThreeWayIsolation(authority, hiddenIntel, hiddenDifficultyModifier);
+          },
+        };
+        assertFourWayIsolation(authority, secretItemName, true);
 
-          const rollId = Object.keys(authority.state.rolls)[0];
-          if (!rollId) throw new Error("expected a roll to exist after BeginAction");
+        const heal = runCommand(eatTheReichTemplate, {
+          member: PLAYER_CTX,
+          authority,
+          random: createSeededRandom(`mr-heal-${secretItemName}`),
+          command: { type: "HealInjury", characterId: ROOK_ID, categoryId, boxIndex: 0 },
+          commandId: asCommandId("mr-cmd-heal"),
+          occurredAtServer: "2026-09-14T00:00:01.000Z",
+        });
+        expect(heal.ok).toBe(true);
+        if (!heal.ok) return;
+        authority = heal.authority;
+        assertFourWayIsolation(authority, secretItemName, true);
 
-          const oppose = runCommand(eatTheReichTemplate, {
-            member: GM_CTX,
-            authority,
-            random: createSeededRandom(`mr-oppose-${pushDice}`),
-            command: { type: "SubmitOpposition", rollId, pushDice },
-            commandId: asCommandId("mr-cmd-oppose"),
-            occurredAtServer: "2026-09-13T00:00:01.000Z",
-          });
-          expect(oppose.ok).toBe(true);
-          if (!oppose.ok) return;
-          authority = oppose.authority;
-          assertThreeWayIsolation(authority, hiddenIntel, hiddenDifficultyModifier);
-
-          // Allocate using the player's own projection-derived options, exactly as the real
-          // player surface does (apps/web/src/player/ActiveRollPanel.tsx), so the allocation is
-          // always valid regardless of the random dice outcome.
-          const playerProjection = projectViewer(eatTheReichTemplate, authority, PLAYER_VIEWER);
-          const netSuccesses = playerProjection.view.activeRoll?.netSuccesses ?? 0;
-          const options = eatTheReichTemplate.validAllocations(playerProjection, {
-            rollId,
-            status: "awaiting_allocation",
-            netSuccesses,
-          });
-          const damageOption = options.find((option) => option.id === DAMAGE_THREAT_OPTION_ID);
-          const allocations =
-            netSuccesses > 0 && damageOption
-              ? [{ optionId: damageOption.id, uses: Math.min(1, damageOption.maxUses) }]
-              : [];
-
-          const allocate = runCommand(eatTheReichTemplate, {
-            member: PLAYER_CTX,
-            authority,
-            random: createSeededRandom("mr-allocate"),
-            command: { type: "AllocateResults", rollId, allocations },
-            commandId: asCommandId("mr-cmd-allocate"),
-            occurredAtServer: "2026-09-13T00:00:02.000Z",
-          });
-          expect(allocate.ok).toBe(true);
-          if (!allocate.ok) return;
-          authority = allocate.authority;
-          assertThreeWayIsolation(authority, hiddenIntel, hiddenDifficultyModifier);
-
-          // The roll is resolved: no viewer's activeRoll survives, so there is nothing left to leak.
-          const finalPlayerView = projectViewer(eatTheReichTemplate, authority, PLAYER_VIEWER).view;
-          expect(finalPlayerView.activeRoll).toBeNull();
-        },
-      ),
+        const release = runCommand(eatTheReichTemplate, {
+          member: PLAYER_CTX,
+          authority,
+          random: createSeededRandom(`mr-release-${secretItemName}`),
+          command: { type: "ReleaseCharacter", characterId: ROOK_ID },
+          commandId: asCommandId("mr-cmd-release"),
+          occurredAtServer: "2026-09-14T00:00:02.000Z",
+        });
+        expect(release.ok).toBe(true);
+        if (!release.ok) return;
+        authority = release.authority;
+        assertFourWayIsolation(authority, secretItemName, false);
+      }),
       { numRuns: 50 },
     );
   });
