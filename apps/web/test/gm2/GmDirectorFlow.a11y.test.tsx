@@ -39,6 +39,15 @@ function renderApp(hash = "#/"): ReturnType<typeof render> {
   return render(<App />);
 }
 
+/**
+ * c07: `GmToolsPanel`'s character `<select>` options repeat every roster
+ * name too, so an unscoped `getByText`/`getByRole("heading")` lookup for
+ * a name is no longer unique — scope to the roster list itself.
+ */
+function rosterList(): HTMLElement {
+  return document.querySelector(".roster-panel-list") as HTMLElement;
+}
+
 interface SessionHandles {
   readonly roomId: string;
   readonly roomCode: string;
@@ -109,7 +118,7 @@ describe("GM director console and table display (C03)", () => {
     expect(screen.getByRole("heading", { name: /invite/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /scene director/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /^roster$/i })).toBeInTheDocument();
-    const rookRow = screen.getByText("Rook").closest("li")!;
+    const rookRow = within(rosterList()).getByText("Rook").closest("li")!;
     expect(rookRow.textContent).toMatch(/unclaimed/i);
     expect(await axe(container)).toHaveNoViolations();
   });
@@ -165,7 +174,7 @@ describe("GM director console and table display (C03)", () => {
     goTo(`#/room/${roomId}/gm`);
     await screen.findByRole("heading", { name: /^roster$/i });
 
-    const rookRow = screen.getByText(/^rook/i).closest("li")!;
+    const rookRow = within(rosterList()).getByText(/^rook/i).closest("li")!;
     const correctButton = within(rookRow).getByRole("button", { name: /correct/i });
     await user.click(correctButton);
 
@@ -197,7 +206,7 @@ describe("GM director console and table display (C03)", () => {
     goTo(`#/room/${roomId}/gm`);
     await screen.findByRole("heading", { name: /^roster$/i });
 
-    const rookRow = screen.getByText(/^rook/i).closest("li")!;
+    const rookRow = within(rosterList()).getByText(/^rook/i).closest("li")!;
     const correctButton = within(rookRow).getByRole("button", { name: /correct/i });
     await user.click(correctButton);
     expect(screen.getByRole("dialog")).toBeInTheDocument();
@@ -217,7 +226,7 @@ describe("GM director console and table display (C03)", () => {
     goTo(`#/room/${roomId}/gm`);
     await screen.findByRole("heading", { name: /^roster$/i });
 
-    const rookRow = screen.getByText(/^rook/i).closest("li")!;
+    const rookRow = within(rosterList()).getByText(/^rook/i).closest("li")!;
     await user.click(within(rookRow).getByRole("button", { name: /correct/i }));
     const dialog = screen.getByRole("dialog");
 

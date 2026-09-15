@@ -39,7 +39,10 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
   const memberId = ownership?.roomId === roomId ? ownership.memberId : "";
   const { status, projection, dispatch } = useRoomProjection(roomId, memberId, "player");
   const [error, setError] = useState<string | null>(null);
-  const [pendingResolution, setPendingResolution] = useState<ActionResolvedEvent | null>(null);
+  const [pendingResolution, setPendingResolution] = useState<{
+    readonly event: ActionResolvedEvent;
+    readonly attackSuccessesRolled: number;
+  } | null>(null);
 
   if (!ownership || ownership.roomId !== roomId) {
     return (
@@ -98,13 +101,14 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
   async function handleAllocate(
     allocations: readonly { readonly dieFaceIndex: number; readonly target: AllocationTarget }[],
     rollId: string,
+    attackSuccessesRolled: number,
   ): Promise<void> {
     const result = await handleDispatch({ type: "AllocateResults", rollId, allocations });
     if (result.status === "accepted") {
       const resolved = result.sharedEvents.find(
         (event): event is ActionResolvedEvent => event.type === "ActionResolved",
       );
-      if (resolved) setPendingResolution(resolved);
+      if (resolved) setPendingResolution({ event: resolved, attackSuccessesRolled });
     }
   }
 
@@ -114,12 +118,21 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
       const chosen = result.sharedEvents.find((event) => event.type === "InjuryCategoryChosen");
       if (chosen && chosen.type === "InjuryCategoryChosen") {
         setPendingResolution((prev) =>
-          prev ? { ...prev, injuryMark: chosen.mark, injuryChoicePendingMode: null } : prev,
+          prev
+            ? {
+                ...prev,
+                event: { ...prev.event, injuryMark: chosen.mark, injuryChoicePendingMode: null },
+              }
+            : prev,
         );
       } else {
         setPendingResolution(null);
       }
     }
+  }
+
+  async function handlePause(): Promise<void> {
+    await handleDispatch({ type: "Pause" });
   }
 
   if (!projection || !self) {
@@ -141,15 +154,15 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
 
   if (
     pendingResolution &&
-    pendingResolution.injuryChoicePendingMode &&
-    !pendingResolution.injuryMark
+    pendingResolution.event.injuryChoicePendingMode &&
+    !pendingResolution.event.injuryMark
   ) {
     body = (
       <ChooseInjuryPanel2
         character={self}
-        mode={pendingResolution.injuryChoicePendingMode}
+        mode={pendingResolution.event.injuryChoicePendingMode}
         onChoose={(categoryId) => {
-          void handleChooseInjury(categoryId, pendingResolution.rollId);
+          void handleChooseInjury(categoryId, pendingResolution.event.rollId);
         }}
       />
     );
@@ -157,10 +170,11 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
   } else if (pendingResolution) {
     body = (
       <ConfirmSummary2
-        resolved={pendingResolution}
+        resolved={pendingResolution.event}
         character={self}
         objectives={view.objectives}
         threats={view.threats}
+        attackSuccessesRolled={pendingResolution.attackSuccessesRolled}
         onContinue={() => setPendingResolution(null)}
       />
     );
@@ -183,7 +197,7 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
         roll={ownRoll}
         character={self}
         onConfirm={(allocations) => {
-          void handleAllocate(allocations, ownRoll.rollId);
+          void handleAllocate(allocations, ownRoll.rollId, ownRoll.attackSuccessesRolled ?? 0);
         }}
       />
     );
@@ -215,6 +229,22 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
           {error}
         </p>
       )}
+      {view.paused && (
+        <p role="status" className="form-hint">
+          Paused.
+        </p>
+      )}
+      <div className="landing-actions">
+        <button
+          type="button"
+          className="secondary-action"
+          onClick={() => {
+            void handlePause();
+          }}
+        >
+          Pause
+        </button>
+      </div>
       <SceneCard scene={view.scene} objectives={view.objectives} threats={view.threats} />
       <PartyStrip roster={view.roster} selfCharacterId={self.id} />
       {body}

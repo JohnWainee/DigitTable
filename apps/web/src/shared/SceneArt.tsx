@@ -2,7 +2,8 @@ import { useState } from "react";
 
 export interface SceneArtProps {
   readonly sceneId: string;
-  readonly location: string;
+  /** The scene's short name (`SceneView.title`) — shown as the condensed fallback caption, distinct from `SceneCard`'s own longer location description. */
+  readonly title: string;
 }
 
 const SCENE_ALT: Record<string, string> = {
@@ -26,14 +27,14 @@ type LoadStatus = "loading" | "loaded" | "error";
  * unrecognised or not-yet-generated ids simply show the fallback forever,
  * which is correct, not a bug.
  */
-export function SceneArt({ sceneId, location }: SceneArtProps): JSX.Element {
+export function SceneArt({ sceneId, title }: SceneArtProps): JSX.Element {
   const [status, setStatus] = useState<LoadStatus>("loading");
-  const alt = SCENE_ALT[sceneId] ?? location;
+  const alt = SCENE_ALT[sceneId] ?? title;
 
   return (
     <div className="scene-card-art">
       <div className="scene-card-art-fallback" aria-hidden={status === "loaded"}>
-        {location}
+        {title}
       </div>
       {status !== "error" && (
         <img

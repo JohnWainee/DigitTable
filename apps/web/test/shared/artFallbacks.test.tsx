@@ -14,7 +14,7 @@ import { ThreatToken } from "../../src/shared/ThreatToken.js";
  */
 describe("art fallbacks (C04)", () => {
   it("SceneArt shows its text fallback and gives the image real alt text", () => {
-    const { container } = render(<SceneArt sceneId="drop-forecourt" location="Test Forecourt" />);
+    const { container } = render(<SceneArt sceneId="drop-forecourt" title="Test Forecourt" />);
     expect(screen.getByText("Test Forecourt")).toBeInTheDocument();
     const img = container.querySelector("img")!;
     expect(img.alt.length).toBeGreaterThan(10);
@@ -22,7 +22,7 @@ describe("art fallbacks (C04)", () => {
   });
 
   it("SceneArt falls back to the location name as alt text for an unknown scene id", () => {
-    const { container } = render(<SceneArt sceneId="not-a-real-scene" location="Mystery Place" />);
+    const { container } = render(<SceneArt sceneId="not-a-real-scene" title="Mystery Place" />);
     const img = container.querySelector("img")!;
     expect(img.alt).toBe("Mystery Place");
   });
