@@ -1,4 +1,5 @@
 import type { Capability } from "./template.js";
+import type { RoomId } from "./ids.js";
 
 /** Cap room membership at eight participant seats (docs/ARCHITECTURE.md section 11). */
 export const MAX_PARTICIPANT_SEATS = 8;
@@ -52,8 +53,15 @@ export type AdmissionCommand =
  * a reclaim by an already-bound identity (the same UID reconnecting) never
  * re-mints or re-exposes a credential, since it is shown exactly once at
  * creation (docs/ARCHITECTURE.md section 8).
+ *
+ * `roomId` (board task A05): a caller who joined by room *code* has no
+ * other way to learn the real `roomId` every server-side collection this
+ * platform exposes is addressed by — `roomCodes/{code}` is service-only,
+ * denied to every client role (`firestore.rules`), by design. Added here
+ * rather than requiring a second round trip.
  */
 export interface AdmissionAccepted {
+  readonly roomId: RoomId;
   readonly memberId: string;
   readonly capability: Capability;
   readonly recoveryCode: string | null;

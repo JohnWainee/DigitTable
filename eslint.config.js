@@ -20,16 +20,16 @@ const THREE_RESTRICTED_IMPORT = {
 
 // Phase 2 has begun (docs/PHASE_2_PLAN.md): Firebase packages are now allowed, but only in the
 // emulator harness (packages/testing/src/emulator.ts, packages/testing/test-emulator/**), the
-// Phase 2 PR 3 client seams (apps/web/src/firebase/**), the trusted Cloud Functions codebase
-// (apps/functions/**, Admin SDK + firebase-functions), and from Phase 2 PR 7,
-// FirebaseRoomRepository — never in the pure engine/contracts/templates packages or the rest
-// of apps/web. `paths` catches the bare "firebase" specifier; `patterns` catches every
-// "firebase/*"/"@firebase/*" subpath import too.
+// client Firebase seams (apps/web/src/firebase/**, apps/web/src/repository/
+// FirebaseRoomRepository.ts, apps/web/src/session/**, board tasks A01/A05), and the trusted
+// Cloud Functions codebase (apps/functions/**, Admin SDK + firebase-functions) — never in the
+// pure engine/contracts/templates packages or the rest of apps/web. `paths` catches the bare
+// "firebase" specifier; `patterns` catches every "firebase/*"/"@firebase/*" subpath import too.
 const FIREBASE_RESTRICTED_IMPORTS = [
   {
     name: "firebase",
     message:
-      "Firebase belongs only in the emulator harness (packages/testing/src/emulator.ts) and a future FirebaseRoomRepository — not here.",
+      "Firebase belongs only in the emulator harness (packages/testing/src/emulator.ts) and the client's own Firebase/repository/session seams (apps/web/src/firebase/**, apps/web/src/repository/FirebaseRoomRepository.ts, apps/web/src/session/**) — not here.",
   },
   {
     name: "firebase-admin",
@@ -41,7 +41,7 @@ const FIREBASE_RESTRICTED_PATTERNS = [
   {
     group: ["firebase/*", "@firebase/*"],
     message:
-      "Firebase belongs only in the emulator harness (packages/testing/src/emulator.ts) and a future FirebaseRoomRepository — not here.",
+      "Firebase belongs only in the emulator harness (packages/testing/src/emulator.ts) and the client's own Firebase/repository/session seams (apps/web/src/firebase/**, apps/web/src/repository/FirebaseRoomRepository.ts, apps/web/src/session/**) — not here.",
   },
 ];
 
@@ -118,9 +118,17 @@ export default tseslint.config(
     },
   },
   {
-    // PR 3's anonymous-auth bootstrap is the only browser Firebase seam before
-    // FirebaseRoomRepository arrives in PR 7.
-    files: ["apps/web/src/firebase/**/*.{ts,tsx}"],
+    // Board task A05: the client's remaining Firebase seams —
+    // FirebaseRoomRepository (real callable/Firestore transport for game
+    // commands) and FirebaseSessionClient (create/join/claim), alongside
+    // PR 3's anonymous-auth bootstrap. Firebase stays banned everywhere
+    // else in apps/web.
+    files: [
+      "apps/web/src/firebase/**/*.{ts,tsx}",
+      "apps/web/src/repository/FirebaseRoomRepository.ts",
+      "apps/web/src/session/**/*.{ts,tsx}",
+      "apps/web/test-emulator/**/*.{ts,tsx}",
+    ],
     rules: {
       "no-restricted-imports": ["error", { paths: [THREE_RESTRICTED_IMPORT] }],
     },

@@ -10,6 +10,7 @@ import {
 } from "@digitable/engine";
 import {
   asMemberId,
+  asRoomId,
   parseAuthorityAdmissionFields,
   parseHashedSecretDocument,
   parseRoomCodeDocument,
@@ -210,7 +211,7 @@ function createSeat(
   txn.set(db.doc(`rooms/${roomId}/members/${memberId}`), member);
   txn.set(db.doc(`rooms/${roomId}/recovery/${memberId}`), recovery);
 
-  return { memberId, capability, recoveryCode };
+  return { roomId: asRoomId(roomId), memberId, capability, recoveryCode };
 }
 
 /** Runs one admission transaction, mapping a fail-closed data error to a stable denial. */
@@ -257,6 +258,7 @@ export async function admitMember(
       return {
         ok: true,
         accepted: {
+          roomId: asRoomId(context.roomId),
           memberId: decision.memberId,
           capability: decision.capability,
           recoveryCode: null,
@@ -305,7 +307,12 @@ export async function claimSeat(
     if (decision.outcome === "reclaim") {
       return {
         ok: true,
-        accepted: { memberId: decision.memberId, capability: "gm", recoveryCode: null },
+        accepted: {
+          roomId: asRoomId(context.roomId),
+          memberId: decision.memberId,
+          capability: "gm",
+          recoveryCode: null,
+        },
       };
     }
 
