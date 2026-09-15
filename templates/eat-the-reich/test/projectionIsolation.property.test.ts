@@ -1,88 +1,69 @@
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 import { findLeakedSecrets } from "@digitable/testing";
-import { ACTION_ID, THREAT_ID } from "../src/content.js";
 import { eatTheReichTemplate } from "../src/engine.js";
 import type { EatTheReichState } from "../src/state.js";
 import {
   GM_VIEWER,
   PLAYER_MEMBER_ID,
   PLAYER_VIEWER,
+  ROOK_ID,
+  SECOND_PLAYER_VIEWER,
   TABLE_VIEWER,
   freshState,
+  stateWithClaim,
 } from "./fixtures.js";
 
 /**
- * Property: for any hidden GM-only threat data and any hidden roll modifier,
- * a player's or table's projection never contains it — only the GM's does
- * (docs/ARCHITECTURE.md, N12; AGENTS.md "Engineering invariants").
+ * Property: for any character sheet detail (item names, ability names,
+ * injury labels — everything only present on `CharacterFullSheet`), a
+ * viewer other than the claiming member or the GM never sees it. Only the
+ * public `CharacterPartySummary` fields (id, name, concept, stats, Blood,
+ * injury box count, downed/retired) are visible to everyone
+ * (docs/ARCHITECTURE.md N12; AGENTS.md "Engineering invariants").
  */
 describe("projection isolation (property)", () => {
-  it("never leaks the threat's hidden intel or difficulty modifier to a non-GM viewer", () => {
+  it("never leaks a claimed character's sheet detail (items/abilities/injuries) outside self/GM", () => {
     fc.assert(
       fc.property(
-        // Long hex strings, not short/common substrings, so a match against
-        // fixed public flavor text can only mean an actual leak, never a
-        // coincidental collision (e.g. a single space would match almost
-        // every sentence in the fixture content).
+        // Long hex strings so a match can only mean an actual leak, never a
+        // coincidental collision with fixed roster flavor text.
         fc.hexaString({ minLength: 16, maxLength: 32 }),
-        fc.integer({ min: -5, max: 5 }),
-        fc.boolean(),
-        fc.integer({ min: -5, max: 5 }),
-        (hiddenIntel, hiddenDifficultyModifier, hasActiveRoll, rollHiddenModifier) => {
-          const base = freshState();
-          const threat = base.threats[THREAT_ID];
-          if (!threat) throw new Error("fixture threat missing");
-
-          let state: EatTheReichState = {
+        fc.integer({ min: 0, max: 10 }),
+        (secretItemName, blood) => {
+          const base = stateWithClaim(ROOK_ID, PLAYER_MEMBER_ID, { blood });
+          const character = base.characters[ROOK_ID];
+          if (!character) throw new Error("fixture missing rook");
+          const state: EatTheReichState = {
             ...base,
-            threats: {
-              ...base.threats,
-              [THREAT_ID]: { ...threat, hiddenIntel, hiddenDifficultyModifier },
+            characters: {
+              ...base.characters,
+              [ROOK_ID]: {
+                ...character,
+                items: character.items.map((item, index) =>
+                  index === 0 ? { ...item, name: secretItemName } : item,
+                ),
+              },
             },
           };
 
-          if (hasActiveRoll) {
-            state = {
-              ...state,
-              rolls: {
-                "roll-1": {
-                  id: "roll-1",
-                  actorMemberId: PLAYER_MEMBER_ID,
-                  threatId: THREAT_ID,
-                  actionId: ACTION_ID,
-                  status: "awaiting_opposition",
-                  playerFaces: [5],
-                  playerHits: 1,
-                  poolComponents: { nerve: 2, gear: 0, hiddenModifier: rollHiddenModifier },
-                  hiddenAdjustmentApplied: rollHiddenModifier !== 0,
-                },
-              },
-            };
-          }
-
           const playerView = eatTheReichTemplate.project(state, PLAYER_VIEWER);
+          const otherPlayerView = eatTheReichTemplate.project(state, SECOND_PLAYER_VIEWER);
           const tableView = eatTheReichTemplate.project(state, TABLE_VIEWER);
           const gmView = eatTheReichTemplate.project(state, GM_VIEWER);
 
-          // String secret: findLeakedSecrets walks every string leaf in the view.
-          expect(findLeakedSecrets(playerView, [hiddenIntel])).toEqual([]);
-          expect(findLeakedSecrets(tableView, [hiddenIntel])).toEqual([]);
-          expect(findLeakedSecrets(gmView, [hiddenIntel])).toEqual([hiddenIntel]);
+          expect(findLeakedSecrets(playerView, [secretItemName])).toEqual([secretItemName]);
+          expect(findLeakedSecrets(otherPlayerView, [secretItemName])).toEqual([]);
+          expect(findLeakedSecrets(tableView, [secretItemName])).toEqual([]);
+          expect(findLeakedSecrets(gmView, [secretItemName])).toEqual([secretItemName]);
 
-          // Structural checks for the numeric secret (findLeakedSecrets only walks strings).
-          expect(playerView.threats[0]).not.toHaveProperty("hiddenDifficultyModifier");
-          expect(tableView.threats[0]).not.toHaveProperty("hiddenDifficultyModifier");
-          expect(gmView.threats[0]).toMatchObject({ hiddenDifficultyModifier });
-
-          if (hasActiveRoll) {
-            expect(playerView.activeRoll).not.toHaveProperty("hiddenDifficultyModifier");
-            expect(tableView.activeRoll).not.toHaveProperty("hiddenDifficultyModifier");
-            expect(gmView.activeRoll?.hiddenDifficultyModifier).toBe(rollHiddenModifier);
-            if (rollHiddenModifier !== 0) {
-              expect(playerView.activeRoll?.playerFaces).toBeNull();
-              expect(tableView.activeRoll?.playerFaces).toBeNull();
-            }
+          // Structural checks: the roster summary (seen by every viewer) never carries item/ability/injury fields at all.
+          for (const view of [playerView, otherPlayerView, tableView, gmView]) {
+            const rookSummary = view.roster.find((c) => c.id === ROOK_ID);
+            expect(rookSummary).not.toHaveProperty("items");
+            expect(rookSummary).not.toHaveProperty("abilities");
+            expect(rookSummary).not.toHaveProperty("injuries");
+            expect(rookSummary?.blood).toBe(blood);
           }
         },
       ),
@@ -92,17 +73,18 @@ describe("projection isolation (property)", () => {
 
   it("never gives the GM or table seat a `self` character", () => {
     fc.assert(
-      fc.property(fc.integer({ min: -5, max: 5 }), (hiddenDifficultyModifier) => {
-        const base = freshState();
-        const threat = base.threats[THREAT_ID];
-        if (!threat) throw new Error("fixture threat missing");
-        const state: EatTheReichState = {
-          ...base,
-          threats: { ...base.threats, [THREAT_ID]: { ...threat, hiddenDifficultyModifier } },
-        };
+      fc.property(fc.integer({ min: 0, max: 10 }), (blood) => {
+        const state = stateWithClaim(ROOK_ID, PLAYER_MEMBER_ID, { blood });
         expect(eatTheReichTemplate.project(state, GM_VIEWER).self).toBeNull();
         expect(eatTheReichTemplate.project(state, TABLE_VIEWER).self).toBeNull();
       }),
     );
+  });
+
+  it("an unclaimed roster never gives any viewer a `self` character", () => {
+    const state = freshState();
+    for (const viewer of [PLAYER_VIEWER, GM_VIEWER, TABLE_VIEWER]) {
+      expect(eatTheReichTemplate.project(state, viewer).self).toBeNull();
+    }
   });
 });

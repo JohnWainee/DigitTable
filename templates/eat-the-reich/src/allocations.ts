@@ -1,41 +1,27 @@
-export const DAMAGE_THREAT_OPTION_ID = "damage-threat";
-export const ADVANCE_OBJECTIVE_OPTION_ID = "advance-objective";
-
-export interface AllocationOptionDef {
-  readonly id: string;
-  readonly label: string;
-  readonly costPerUse: number;
-  readonly maxUses: number;
-}
-
 /**
- * The allocation catalog for the one implemented opposed action, derived
- * only from publicly visible fields (`resolveRemaining`, `advancesRemaining`)
- * so it produces the same result whether called from `decide` (with the
- * full trusted threat/objective state) or from `validAllocations` (with a
- * viewer's projected, possibly-redacted view of the same fields).
+ * B03 (docs/ETR_RULES_MATRIX.md 3.5): the five allocation families a kept
+ * die may be spent on. Replaces the old two-option placeholder catalog
+ * entirely (deleted in B02 along with the rest of the placeholder loop).
  */
-export function allocationOptionsFor(
-  threat: { readonly resolveRemaining: number },
-  objective: { readonly advancesRemaining: number },
-  netSuccesses: number,
-): readonly AllocationOptionDef[] {
-  if (netSuccesses <= 0) {
-    return [];
+export type AllocationTarget =
+  | { readonly kind: "objective"; readonly objectiveId: string }
+  | { readonly kind: "threat"; readonly threatId: string }
+  | { readonly kind: "defend" }
+  | { readonly kind: "feed" }
+  | { readonly kind: "special"; readonly abilityId: string };
+
+/** A stable string key for grouping/looking up a target (matrix A7's per-target Challenge grouping). */
+export function allocationTargetKey(target: AllocationTarget): string {
+  switch (target.kind) {
+    case "objective":
+      return `objective:${target.objectiveId}`;
+    case "threat":
+      return `threat:${target.threatId}`;
+    case "defend":
+      return "defend";
+    case "feed":
+      return "feed";
+    case "special":
+      return `special:${target.abilityId}`;
   }
-  const options: AllocationOptionDef[] = [
-    {
-      id: DAMAGE_THREAT_OPTION_ID,
-      label: "Wound the Enforcer",
-      costPerUse: 1,
-      maxUses: Math.min(netSuccesses, threat.resolveRemaining),
-    },
-    {
-      id: ADVANCE_OBJECTIVE_OPTION_ID,
-      label: "Create an opening toward the objective",
-      costPerUse: 1,
-      maxUses: Math.min(netSuccesses, objective.advancesRemaining),
-    },
-  ];
-  return options.filter((option) => option.maxUses > 0);
 }
