@@ -13,6 +13,8 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
 
 ## Current state
 
+- **ART PAUSED by John:** approved boards and selections are on `codex/approved-etr-character-art` under `assets/generated/eat-the-reich/approved/` (commit `a235233`). The six-PC board and final eldritch-archangel boss board remain approved. The subsequent standalone portrait batch is REJECTED for identity/costume drift and is not in this repository. It mixed character traits, including cowboy hats on bosses and Iryna styling on Astrid. No standalone production portraits/tokens, scene pack or runtime integration are complete. No Fable assignment is pending. John requested a handoff update and a stop.
+
 - Repository is initialized and connected to GitHub.
 - Architecture work (PR #1, PR #2) is merged to `main`.
 - **Phase 1A (scaffold and pure engine) is merged to `main`** (PR #3/#4), scoped exactly to `docs/IMPLEMENTATION_ROADMAP.md`'s Phase 1A and `docs/ARCHITECTURE.md` section 17's PR 1:
@@ -252,6 +254,8 @@ When pausing or finishing a material unit:
 4. Do not call a non-trivial change complete until independently reviewed.
 
 ## Next action
+
+**Art pause:** do not generate further assets until John resumes. Retain only the two approved boards as design authority. On resumption, verify a fixed reference and generate/review ONE character at a time. Do not use a shifting recent-image window in a concurrent batch; do not reuse rejected outputs as references. This asset-only update is checked with `git diff --check`; no runtime tests or implementation completion are claimed. Backend items below belong to a separate workstream and require fresh status verification.
 
 1. Close draft PR #10 (`claude/phase-2-pr-2-firestore-159rmr`) or rebase it onto `main`; PR 2 has merged from `worktree-phase2-pr2` (review finding S5). Its typed document contracts (`packages/contracts/src/room.ts`) are the natural candidate for the S6 item below.
 2. Before PR 3 writes `uidBindings`/`bindings`/`members`/`receipts`, land typed document shapes for the section 8 documents (S6). Carry S3 (pending-receipt read) into PR 7's design and S4 (`.validate`, write-grant level) into PR 5.

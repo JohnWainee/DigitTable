@@ -1,5 +1,14 @@
 # Approved character art
 
+## Production paused
+
+John rejected the subsequent standalone batch for inconsistent identities and
+requested a stop. Those outputs are not included here. Only the two boards remain
+approved; production portraits/tokens and runtime integration are unfinished.
+Resume only when asked, using one fixed reference and one character at a time.
+Do not use the rejected batch as reference. Concurrent recent-image references
+shifted during generation and contaminated costumes and character identities.
+
 John approved these original generated interpretations in the design conversation.
 They are not scans of the rulebook or official publisher artwork. The source book
 was consulted for boss identities; it is not included in this repository.
