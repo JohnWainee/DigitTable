@@ -59,12 +59,22 @@ export type AdmissionCommand =
  * platform exposes is addressed by — `roomCodes/{code}` is service-only,
  * denied to every client role (`firestore.rules`), by design. Added here
  * rather than requiring a second round trip.
+ *
+ * `roomRevision` (board task A05 independent review finding): the client
+ * has no authorized read path to `authority/current` (service-only), so
+ * without this field its only way to learn the room's revision was to read
+ * its own not-yet-written `projections/{viewerId}` document and guess `0`
+ * when absent — wrong for any member who joins after an earlier command
+ * has already been accepted. The transaction that resolves this request
+ * already has `authority.roomRevision` in scope; echoing it here is exact,
+ * not a guess.
  */
 export interface AdmissionAccepted {
   readonly roomId: RoomId;
   readonly memberId: string;
   readonly capability: Capability;
   readonly recoveryCode: string | null;
+  readonly roomRevision: number;
 }
 
 /**

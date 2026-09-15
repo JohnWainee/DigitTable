@@ -1,5 +1,4 @@
 import type { FirebaseApp } from "firebase/app";
-import { FunctionsError } from "firebase/functions";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import {
   asTemplateId,
@@ -10,7 +9,6 @@ import {
   type RoomDispatchFailure,
   type RoomId,
   type RoomRepository,
-  type StableErrorCode,
   type Unsubscribe,
   type ViewerContext,
   type ViewerProjection,
@@ -23,6 +21,7 @@ import type {
 import { eatTheReichTemplate } from "@digitable/template-eat-the-reich";
 import { callable, getRoomFunctions, type FunctionsEmulatorConfig } from "../firebase/functions.js";
 import { getRoomFirestore, type FirestoreEmulatorConfig } from "../firebase/firestore.js";
+import { stableErrorFromThrown } from "../firebase/functionsError.js";
 
 export interface RoomRepositoryEmulatorConfig {
   readonly functions: FunctionsEmulatorConfig;
@@ -161,7 +160,7 @@ export class FirebaseRoomRepository implements RoomRepository<
       const response = await fn(wire);
       result = response.data;
     } catch (error) {
-      const { code, message } = this.stableErrorFromThrown(error);
+      const { code, message } = stableErrorFromThrown(error);
       result = { status: "rejected", commandId: request.commandId, code, message };
     }
     if (result.status === "rejected") {
@@ -185,6 +184,16 @@ export class FirebaseRoomRepository implements RoomRepository<
    * contract) — `onSnapshot`'s first callback (which fires once with the
    * current cached/server value) is intentionally not treated specially
    * here; callers that need a starting value call `getProjection` first.
+   *
+   * `onSnapshot`'s error callback (independent A05 review, Low finding: the
+   * first version of this method had none, so a dead listener —
+   * permission-denied after a rules change, a sustained network partition —
+   * went completely silent, with neither `listener` nor
+   * `subscribeToErrors`' listeners ever told the live feed had stopped)
+   * relays the failure through `subscribeToErrors`, the same broadcast
+   * channel `dispatch` rejections already use — there is no second,
+   * projection-specific error channel in the `RoomRepository` interface to
+   * add one to.
    */
   subscribeToProjection(
     viewer: ViewerContext,
@@ -192,16 +201,26 @@ export class FirebaseRoomRepository implements RoomRepository<
   ): Unsubscribe {
     const db = getRoomFirestore(this.app, this.emulator?.firestore);
     const ref = doc(db, `rooms/${this.roomId}/projections/${viewer.viewerId}`);
-    return onSnapshot(ref, (snapshot) => {
-      if (!snapshot.exists()) return;
-      try {
-        listener(parseViewerProjection(snapshot.data()));
-      } catch {
-        // A malformed projection document is a server bug, not something
-        // this listener can recover from; drop the update rather than
-        // crash the subscription (the next valid snapshot still arrives).
-      }
-    });
+    return onSnapshot(
+      ref,
+      (snapshot) => {
+        if (!snapshot.exists()) return;
+        try {
+          listener(parseViewerProjection(snapshot.data()));
+        } catch {
+          // A malformed projection document is a server bug, not something
+          // this listener can recover from; drop the update rather than
+          // crash the subscription (the next valid snapshot still arrives).
+        }
+      },
+      () => {
+        this.notifyError({
+          capability: this.capability,
+          code: "ROOM_DATA_INVALID",
+          message: "Lost the live connection to this room's data. Refresh to reconnect.",
+        });
+      },
+    );
   }
 
   /**
@@ -223,22 +242,5 @@ export class FirebaseRoomRepository implements RoomRepository<
 
   private notifyError(failure: RoomDispatchFailure): void {
     for (const listener of this.errorListeners) listener(failure);
-  }
-
-  private stableErrorFromThrown(error: unknown): { code: StableErrorCode; message: string } {
-    if (error instanceof FunctionsError) {
-      const details = error.details;
-      if (
-        typeof details === "object" &&
-        details !== null &&
-        typeof (details as { readonly code?: unknown }).code === "string"
-      ) {
-        return {
-          code: (details as { readonly code: string }).code as StableErrorCode,
-          message: error.message,
-        };
-      }
-    }
-    return { code: "UNKNOWN_ACTION", message: "The command could not be completed." };
   }
 }

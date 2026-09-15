@@ -1,6 +1,4 @@
 import type { FirebaseApp } from "firebase/app";
-import { FunctionsError } from "firebase/functions";
-import { doc, getDoc } from "firebase/firestore";
 import {
   type AdmissionAccepted,
   type Capability,
@@ -12,10 +10,10 @@ import {
   type JoinRoomInput,
   type JoinRoomResult,
   type RoomAdmissionAccepted,
-  type StableErrorCode,
 } from "@digitable/contracts";
 import { callable, getRoomFunctions, type FunctionsEmulatorConfig } from "../firebase/functions.js";
-import { getRoomFirestore, type FirestoreEmulatorConfig } from "../firebase/firestore.js";
+import type { FirestoreEmulatorConfig } from "../firebase/firestore.js";
+import { stableErrorFromThrown } from "../firebase/functionsError.js";
 import {
   signInForAdmission,
   waitForCurrentUser,
@@ -39,35 +37,6 @@ interface ClaimSeatWireInput {
   readonly roomCode: string;
   readonly passphrase: string;
   readonly displayName: string;
-}
-
-function viewerIdFor(capability: Capability, memberId: string): string {
-  return capability === "player" ? memberId : capability;
-}
-
-/**
- * The server always throws `HttpsError(grpcCode, message, { code: stableCode })`
- * (`apps/functions/src/httpsErrors.ts`), so `details` is `{ code:
- * StableErrorCode }` on every deliberate rejection this client can receive.
- * An error the server never intended as a modeled rejection (a bug, an
- * unmapped exception) has no such `details` and falls back to a generic
- * code rather than fabricating a false-precise one.
- */
-function stableErrorFromThrown(error: unknown): { code: StableErrorCode; message: string } {
-  if (error instanceof FunctionsError) {
-    const details = error.details;
-    if (
-      typeof details === "object" &&
-      details !== null &&
-      typeof (details as { readonly code?: unknown }).code === "string"
-    ) {
-      return {
-        code: (details as { readonly code: string }).code as StableErrorCode,
-        message: error.message,
-      };
-    }
-  }
-  return { code: "UNKNOWN_ACTION", message: "The request could not be completed." };
 }
 
 /**
@@ -132,7 +101,7 @@ export class FirebaseSessionClient {
         requestedCapability: input.requestedCapability,
         displayName: input.displayName,
       });
-      return this.toRoomAdmissionAccepted(input.roomCode, response.data);
+      return toRoomAdmissionAccepted(input.roomCode, response.data);
     } catch (error) {
       return { ok: false, ...stableErrorFromThrown(error) };
     }
@@ -150,48 +119,35 @@ export class FirebaseSessionClient {
         passphrase: input.passphrase,
         displayName: input.displayName,
       });
-      return this.toRoomAdmissionAccepted(input.roomCode, response.data);
+      return toRoomAdmissionAccepted(input.roomCode, response.data);
     } catch (error) {
       return { ok: false, ...stableErrorFromThrown(error) };
     }
   }
+}
 
-  /**
-   * `admitMember`/`claimSeat` return `roomId` directly (a same-session A05
-   * fix to `AdmissionAccepted` — see `packages/contracts/src/admission.ts`
-   * and `apps/functions/src/admissionAuthority.ts`; previously the response
-   * carried no `roomId` at all, which would have left a client that joined
-   * by code with no way to address any of that room's Firestore documents,
-   * since `roomCodes/{code}` is service-only). `roomRevision` still isn't
-   * returned by those callables, so this reads the joining member's own
-   * freshly-available projection for the authoritative value — the same
-   * read the UI needs next anyway. When no projection exists yet (no game
-   * command has run in this room since it was created — board task A04
-   * only writes one per live viewer on each accepted command, not on join),
-   * `roomRevision: 0` is not a guess: it is the only value a room with zero
-   * accepted commands can have.
-   */
-  private async toRoomAdmissionAccepted(
-    roomCode: string,
-    accepted: AdmissionAccepted,
-  ): Promise<RoomAdmissionAccepted> {
-    const viewerId = viewerIdFor(accepted.capability, accepted.memberId);
-    const db = getRoomFirestore(this.app, this.emulator?.firestore);
-    const projectionSnap = await getDoc(
-      doc(db, `rooms/${accepted.roomId}/projections/${viewerId}`),
-    );
-    const roomRevision =
-      projectionSnap.exists() && typeof projectionSnap.data().roomRevision === "number"
-        ? (projectionSnap.data().roomRevision as number)
-        : 0;
-    return {
-      ok: true,
-      roomId: accepted.roomId,
-      roomCode,
-      memberId: accepted.memberId,
-      capability: accepted.capability,
-      recoveryCode: accepted.recoveryCode,
-      roomRevision,
-    };
-  }
+/**
+ * `admitMember`/`claimSeat` return `roomId` and `roomRevision` directly (a
+ * same-session A05 fix to `AdmissionAccepted` — see
+ * `packages/contracts/src/admission.ts` and
+ * `apps/functions/src/admissionAuthority.ts`). An earlier version of this
+ * function approximated `roomRevision` by reading the joining member's own
+ * projection and defaulting to `0` when it didn't exist yet — wrong for any
+ * member who joins after an earlier command has already run in that room
+ * (independent A05 review finding). The server-echoed value is exact, not
+ * an approximation, and needs no extra Firestore round trip.
+ */
+function toRoomAdmissionAccepted(
+  roomCode: string,
+  accepted: AdmissionAccepted,
+): RoomAdmissionAccepted {
+  return {
+    ok: true,
+    roomId: accepted.roomId,
+    roomCode,
+    memberId: accepted.memberId,
+    capability: accepted.capability,
+    recoveryCode: accepted.recoveryCode,
+    roomRevision: accepted.roomRevision,
+  };
 }
