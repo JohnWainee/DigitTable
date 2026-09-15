@@ -203,6 +203,32 @@ describe("GM director console and table display (C03)", () => {
     expect(within(rookRow).getByText(/blood 0\/10/i)).toBeInTheDocument(); // unchanged
   });
 
+  it("traps Tab focus inside the correction dialog and is itself axe-clean", async () => {
+    const user = userEvent.setup();
+    const { roomCode, roomId, gmOwnership } = await createSessionAsGm(user);
+    await joinAndClaimRook(user, roomCode);
+
+    writeOwnershipRecord(gmOwnership);
+    goTo(`#/room/${roomId}/gm`);
+    await screen.findByRole("heading", { name: /^roster$/i });
+
+    const rookRow = screen.getByText(/^rook/i).closest("li")!;
+    await user.click(within(rookRow).getByRole("button", { name: /correct/i }));
+    const dialog = screen.getByRole("dialog");
+
+    expect(await axe(dialog)).toHaveNoViolations();
+
+    // Shift+Tab from the first focusable control wraps to the last, never
+    // escaping into the console behind the backdrop.
+    const cancelButton = within(dialog).getByRole("button", { name: /cancel/i });
+    await user.tab({ shift: true });
+    expect(cancelButton).toHaveFocus();
+
+    // Tab from the last control wraps back to the first.
+    await user.tab();
+    expect(within(dialog).getByRole("button", { name: /decrease blood change/i })).toHaveFocus();
+  });
+
   it("table display shows the route map and party strip with no form controls and no secrets", async () => {
     const user = userEvent.setup();
     const { roomCode, tableCode, roomId } = await createSessionAsGm(user);

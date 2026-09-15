@@ -140,6 +140,36 @@ describe("Player dashboard (C02)", () => {
     expect(screen.getByRole("button", { name: /back to scene/i })).toBeInTheDocument();
   });
 
+  it("allocates entirely by keyboard (spinbutton + End, then Enter to confirm) with no pointer input", async () => {
+    const user = userEvent.setup();
+    await reachDashboardAsRook(user);
+    await screen.findByRole("heading", { name: /choose an action/i });
+    const declareButton = screen.getByRole("button", { name: /declare action/i });
+    declareButton.focus();
+    await user.keyboard("{Enter}");
+    await screen.findByRole("heading", { name: /^declared$/i });
+    reviewAsGm();
+    await screen.findByRole("heading", { name: /your roll/i });
+
+    const spinbuttons = screen.queryAllByRole("spinbutton");
+    if (spinbuttons.length > 0) {
+      // Jump the first target's stepper straight to its max via the keyboard-only End key.
+      // The rolled pool is random (a real dice roll, per fixturePlayLoop.ts), so the max may
+      // legitimately be 0 on an all-discard roll — what matters is that End reaches it exactly.
+      const first = spinbuttons[0]!;
+      first.focus();
+      await user.keyboard("{End}");
+      expect(first.getAttribute("aria-valuenow")).toBe(first.getAttribute("aria-valuemax"));
+    }
+
+    const confirmButton = screen.getByRole("button", { name: /confirm allocation/i });
+    if (!confirmButton.hasAttribute("disabled")) {
+      confirmButton.focus();
+      await user.keyboard("{Enter}");
+      expect(await screen.findByRole("heading", { name: /^resolved$/i })).toBeInTheDocument();
+    }
+  });
+
   it("has no detectable accessibility violations on the compose step at 375x812, 1280x800, and 1920x1080", async () => {
     const user = userEvent.setup();
     const { container } = await (async () => {

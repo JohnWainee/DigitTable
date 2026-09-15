@@ -7,16 +7,21 @@ export interface CorrectionDialogProps {
   readonly onClose: () => void;
 }
 
+const FOCUSABLE_SELECTOR =
+  'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 /**
  * docs/ETR_SESSION_FLOW.md section 7: `CorrectCharacter` — bounded,
  * reason-required. This first cut covers Blood only.
  *
- * Accessibility (C05): focus moves into the dialog on open and returns to
- * whatever triggered it on close (a native `<dialog>`-like contract for a
- * plain `role="dialog"` element, since browser support for `<dialog>`'s own
- * focus handling is inconsistent); Escape closes it; the Blood preview is a
- * polite live region so a screen-reader user hears the pending value change
- * as they step it, not just at submit time.
+ * Accessibility (C05, hardened after independent review — see
+ * docs/reviews/2026-09-15-etr-screens-independent-review.md): focus moves
+ * into the dialog on open and returns to whatever triggered it on close;
+ * Escape closes it; Tab is trapped inside the dialog while it's open (a
+ * keyboard user can no longer tab into the backdrop-covered console behind
+ * it); the Blood preview is a polite live region; the stepper is grouped
+ * under one accessible label instead of a `<label>` pointing at a
+ * non-control `<span>`.
  */
 export function CorrectionDialog({
   characterName,
@@ -29,6 +34,7 @@ export function CorrectionDialog({
   const next = Math.max(0, Math.min(10, currentBlood + delta));
   const canApply = reason.trim().length > 0 && delta !== 0;
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -41,7 +47,34 @@ export function CorrectionDialog({
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent): void {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (event.key !== "Tab" || !dialogRef.current) return;
+      const focusable = Array.from(
+        dialogRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0]!;
+      const last = focusable[focusable.length - 1]!;
+      const active = document.activeElement;
+      // The dialog's initial focus lands on its (non-interactive,
+      // tabIndex=-1) heading, not on `first` — treat that the same as
+      // "first" for wrap purposes so the very first Shift+Tab doesn't
+      // escape the trap before any real control has been visited.
+      const atStart = active === first || active === headingRef.current;
+      if (event.shiftKey && atStart) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      } else if (!dialogRef.current.contains(active)) {
+        // Focus escaped the dialog (e.g. programmatically) - pull it back in.
+        event.preventDefault();
+        first.focus();
+      }
     }
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
@@ -49,30 +82,36 @@ export function CorrectionDialog({
 
   return (
     <div className="modal-backdrop" role="presentation">
-      <div role="dialog" aria-modal="true" aria-labelledby="correction-heading" className="modal">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="correction-heading"
+        className="modal"
+        ref={dialogRef}
+      >
         <h2 id="correction-heading" tabIndex={-1} ref={headingRef}>
           Correct {characterName}
         </h2>
         <div className="form-field">
-          <label htmlFor="correction-delta">Blood change</label>
-          <div className="stepper-controls">
-            <button
-              type="button"
-              onClick={() => setDelta((d) => d - 1)}
-              aria-label="Decrease Blood change"
-            >
-              −
-            </button>
-            <span id="correction-delta" className="stepper-value">
-              {delta > 0 ? `+${delta}` : delta}
-            </span>
-            <button
-              type="button"
-              onClick={() => setDelta((d) => d + 1)}
-              aria-label="Increase Blood change"
-            >
-              +
-            </button>
+          <div role="group" aria-labelledby="correction-delta-label">
+            <span id="correction-delta-label">Blood change</span>
+            <div className="stepper-controls">
+              <button
+                type="button"
+                onClick={() => setDelta((d) => d - 1)}
+                aria-label="Decrease Blood change"
+              >
+                −
+              </button>
+              <span className="stepper-value">{delta > 0 ? `+${delta}` : delta}</span>
+              <button
+                type="button"
+                onClick={() => setDelta((d) => d + 1)}
+                aria-label="Increase Blood change"
+              >
+                +
+              </button>
+            </div>
           </div>
           <p className="form-hint" role="status" aria-live="polite">
             Blood {currentBlood} &rarr; {next}
