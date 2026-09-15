@@ -3,11 +3,14 @@ import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import { HttpsError, type CallableRequest } from "firebase-functions/v2/https";
 import { hashSecret } from "@digitable/engine";
 import {
+  asMemberId,
+  asRoomId,
   MAX_PARTICIPANT_SEATS,
   type AdmitMemberInput,
   type ClaimSeatInput,
 } from "@digitable/contracts";
 import { beforeAll, describe, expect, it } from "vitest";
+import { eatTheReichTemplate } from "@digitable/template-eat-the-reich";
 import { admitMember, claimSeat, type AdmissionResult } from "../src/admissionAuthority.js";
 import {
   createAdmissionCallables,
@@ -86,12 +89,32 @@ describe("Phase 2 admission authority (apps/functions)", () => {
         ? Promise.resolve()
         : db.doc(`rooms/${roomId}/admission/tableSecret`).set(hashedTable),
       db.doc(`rooms/${roomId}/authority/current`).set({
+        // Board task A08 live verification: `writeInitialProjection` (the
+        // newly admitted member's own projection, written on the accept
+        // path) needs the *full* authority record — same shape
+        // `createRoomAuthority.ts` writes for a real room, not just the
+        // narrow admission fields this fixture predates (Phase 2 PR 3, before
+        // A03's createRoom existed). A real room's authority/current is
+        // never this minimal.
+        platformVersion: "0.0.0",
+        templateId: eatTheReichTemplate.manifest.templateId,
+        templateVersion: eatTheReichTemplate.manifest.templateVersion,
+        schemaVersion: eatTheReichTemplate.manifest.currentSchemaVersion,
+        nextSequence: 1,
         roomStatus: overrides.roomStatus ?? "active",
         admissionStatus: overrides.admissionStatus ?? "open",
         participantCount: overrides.participantCount ?? 0,
         tableSeatClaimed: overrides.tableSeatClaimed ?? false,
         gmMemberId: overrides.gmMemberId ?? null,
         roomRevision: overrides.roomRevision ?? 0,
+        // `gmMemberId`/`memberIds` are unused by this template's
+        // `initialState` (its characters come from the fixed roster,
+        // independent of who has joined) — placeholder values are fine.
+        state: eatTheReichTemplate.initialState({
+          roomId: asRoomId(roomId),
+          gmMemberId: asMemberId("fixture-gm-placeholder"),
+          memberIds: [],
+        }),
       }),
       db.doc(`rooms/${roomId}/meta/current`).set({
         roomStatus: overrides.roomStatus ?? "active",
