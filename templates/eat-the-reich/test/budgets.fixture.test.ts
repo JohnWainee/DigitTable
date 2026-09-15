@@ -2,7 +2,7 @@ import { projectViewer } from "@digitable/engine";
 import { checkAuthorityBudget, checkProjectionBudget, asMemberId } from "@digitable/contracts";
 import { describe, expect, it } from "vitest";
 import { eatTheReichTemplate } from "../src/engine.js";
-import type { EatTheReichState } from "../src/state.js";
+import type { EatTheReichState, ObjectiveState, RollRecord, ThreatState } from "../src/state.js";
 import { GM_VIEWER, PLAYER_VIEWER, TABLE_VIEWER, freshAuthority, freshState } from "./fixtures.js";
 
 /**
@@ -10,8 +10,10 @@ import { GM_VIEWER, PLAYER_VIEWER, TABLE_VIEWER, freshAuthority, freshState } fr
  * docs/ARCHITECTURE.md section 8 hold for this template: authority/current
  * stays well under its 256 KiB working budget (and the 1 MiB Firestore
  * ceiling), and every viewer's projection stays under 64 KiB — even in the
- * worst case for B02 (the full six-character roster claimed, every injury
- * box marked).
+ * worst case (the full six-character roster claimed and all injured, a
+ * full scene of Objectives/Threats per matrix Appendix C's busiest scene,
+ * and every character with a concurrent in-progress roll — flow doc §6:
+ * "several characters may have rolls open concurrently").
  */
 describe("size budgets", () => {
   it("keeps the freshly-initialized authority record within budget", () => {
@@ -65,5 +67,82 @@ function worstCaseState(): EatTheReichState {
       },
     ]),
   );
-  return { ...base, characters };
+
+  const objectives: Record<string, ObjectiveState> = {};
+  for (let i = 0; i < 3; i += 1) {
+    objectives[`objective-${i}`] = {
+      id: `objective-${i}`,
+      title: `Worst-case Objective ${i} with a reasonably long title for budget purposes`,
+      kind: i === 0 ? "primary" : "secondary",
+      rating: 8,
+      challenge: 1,
+      status: "active",
+    };
+  }
+
+  const threats: Record<string, ThreatState> = {};
+  for (let i = 0; i < 3; i += 1) {
+    threats[`threat-${i}`] = {
+      id: `threat-${i}`,
+      name: `Worst-case Threat ${i}`,
+      rating: 6,
+      startingAttack: 3,
+      attack: 3,
+      challenge: 1,
+      solo: false,
+      elite: i === 0,
+      flags: {
+        discardBelow: 5,
+        noFeeding: true,
+        attackCritOnSix: true,
+        challengeLocked: true,
+        injuryMarksWholeCategory: true,
+      },
+      status: "active",
+      revealed: true,
+    };
+  }
+
+  const rolls: Record<string, RollRecord> = {};
+  Object.values(characters).forEach((character, index) => {
+    rolls[`roll-${index}`] = {
+      id: `roll-${index}`,
+      characterId: character.id,
+      actorMemberId: character.claimedByMemberId,
+      status: "awaiting_allocation",
+      declaredStat: "SNEAK",
+      declaredItemIds: character.items.map((item) => item.id),
+      declaredAbilityIds: character.abilities
+        .filter((a) => a.trigger !== "special")
+        .map((a) => a.id),
+      declaredBonusClaimIds: character.items.map((item) => item.id),
+      declaredEngagedThreatIds: Object.keys(threats),
+      note: "A reasonably long note about this declared action for budget purposes.",
+      approvedBonusClaims: character.items.map((item) => ({
+        sourceId: item.id,
+        approved: true,
+        plus: item.bonusPlus,
+      })),
+      engagedThreatIds: Object.keys(threats),
+      playerFaces: [6, 5, 4, 3, 2, 1, 6, 5, 4, 3],
+      keptDice: [
+        { faceIndex: 0, face: 6, result: "critical", points: 2 },
+        { faceIndex: 1, face: 5, result: "success", points: 1 },
+        { faceIndex: 2, face: 4, result: "success", points: 1 },
+      ],
+      attackDiceRolled: 5,
+      attackFaces: [6, 5, 4, 3, 2],
+      attackSuccessesRolled: 3,
+      primaryEngagedThreatId: "threat-0",
+    };
+  });
+
+  return {
+    ...base,
+    characters,
+    objectives,
+    threats,
+    rolls,
+    nextRollSequence: Object.keys(rolls).length + 1,
+  };
 }

@@ -5,4 +5,6 @@ export * from "./commands.js";
 export * from "./events.js";
 export * from "./view.js";
 export * from "./pool.js";
+export * from "./allocations.js";
+export * from "./resolution.js";
 export * from "./engine.js";

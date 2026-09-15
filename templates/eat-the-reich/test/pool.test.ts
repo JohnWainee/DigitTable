@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { buildPool, NO_STAT_BASE, type PoolEligibleCharacter } from "../src/pool.js";
+import {
+  buildPool,
+  interpretAttackDie,
+  interpretDie,
+  isLastUse,
+  lastUseBonusDice,
+  NO_STAT_BASE,
+  pointsForResult,
+  type PoolEligibleCharacter,
+} from "../src/pool.js";
 import type {
   AbilityState,
   InjuryCategoryState,
@@ -276,5 +285,83 @@ describe("buildPool (matrix P1-P3, P7)", () => {
       ok: false,
       rejection: { kind: "bloodSpendForbidden", abilityId: "surge" },
     });
+  });
+});
+
+describe("interpretDie (matrix D1-D2)", () => {
+  it.each([
+    [1, "discard"],
+    [2, "discard"],
+    [3, "discard"],
+    [4, "success"],
+    [5, "success"],
+    [6, "critical"],
+  ] as const)("face %i interprets to %s at the default threshold", (face, expected) => {
+    expect(interpretDie(face)).toBe(expected);
+  });
+
+  it("D2: a threat's discardBelow override changes the discard band (discard 1-4)", () => {
+    expect(interpretDie(4, 5)).toBe("discard");
+    expect(interpretDie(5, 5)).toBe("success");
+    expect(interpretDie(6, 5)).toBe("critical");
+  });
+});
+
+describe("pointsForResult (matrix D1)", () => {
+  it("a success is worth 1 point, a critical 2, a discard 0", () => {
+    expect(pointsForResult("discard")).toBe(0);
+    expect(pointsForResult("success")).toBe(1);
+    expect(pointsForResult("critical")).toBe(2);
+  });
+});
+
+describe("interpretAttackDie (matrix D3)", () => {
+  it("a face below 4 is 0 successes", () => {
+    expect(interpretAttackDie(3, false)).toBe(0);
+  });
+
+  it("a face of 4 or 5 is 1 success", () => {
+    expect(interpretAttackDie(4, false)).toBe(1);
+    expect(interpretAttackDie(5, false)).toBe(1);
+  });
+
+  it("a 6 is 1 success by default (no GM criticals)", () => {
+    expect(interpretAttackDie(6, false)).toBe(1);
+  });
+
+  it("attackCritOnSix makes a 6 worth 2 successes", () => {
+    expect(interpretAttackDie(6, true)).toBe(2);
+  });
+});
+
+describe("isLastUse / lastUseBonusDice (matrix P5)", () => {
+  it("an item with maxUses > 1 about to go from 1 to 0 is its last use", () => {
+    expect(isLastUse(makeItem({ maxUses: 3, usesRemaining: 1 }))).toBe(true);
+  });
+
+  it("an item not down to its last use is not", () => {
+    expect(isLastUse(makeItem({ maxUses: 3, usesRemaining: 2 }))).toBe(false);
+  });
+
+  it("a single-use item (maxUses 1) never qualifies for the last-use bonus", () => {
+    expect(isLastUse(makeItem({ maxUses: 1, usesRemaining: 1 }))).toBe(false);
+  });
+
+  it("lastUseBonusDice sums the bonus across every qualifying selected item", () => {
+    const character = makeCharacter({
+      items: [
+        makeItem({ id: "a", maxUses: 3, usesRemaining: 1 }),
+        makeItem({ id: "b", maxUses: 1, usesRemaining: 1 }),
+        makeItem({ id: "c", maxUses: 3, usesRemaining: 2 }),
+      ],
+    });
+    expect(lastUseBonusDice(character, ["a", "b", "c"])).toBe(1);
+  });
+
+  it("lastUseBonusDice deduplicates repeated item ids", () => {
+    const character = makeCharacter({
+      items: [makeItem({ id: "a", maxUses: 3, usesRemaining: 1 })],
+    });
+    expect(lastUseBonusDice(character, ["a", "a"])).toBe(1);
   });
 });

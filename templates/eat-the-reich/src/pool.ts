@@ -1,5 +1,6 @@
 import type {
   AbilityState,
+  DieResult,
   InjuryCategoryState,
   InjuryPenaltyTag,
   ItemState,
@@ -162,4 +163,59 @@ export function buildPool(
   ];
 
   return { ok: true, result: { base, itemDice, abilityDice, bloodCost, total, components } };
+}
+
+// ---------------------------------------------------------------------------
+// B03: die interpretation (matrix D1-D3), bonus claims (P4), last-use (P5).
+// ---------------------------------------------------------------------------
+
+/**
+ * A face of 6 is always a critical; a face at or above `discardBelow`
+ * (default `SUCCESS_THRESHOLD`, i.e. 4) but below 6 is a success; anything
+ * lower discards (matrix D1). `discardBelow` may be overridden per-Threat
+ * (matrix D2, e.g. a Threat with "discard 1-4" sets it to 5).
+ */
+export function interpretDie(face: number, discardBelow: number = SUCCESS_THRESHOLD): DieResult {
+  if (face >= 6) return "critical";
+  if (face >= discardBelow) return "success";
+  return "discard";
+}
+
+/** A success is worth 1 point, a critical 2, a discard 0 (matrix D1, 3.5 preamble). */
+export function pointsForResult(result: DieResult): number {
+  return result === "critical" ? 2 : result === "success" ? 1 : 0;
+}
+
+/**
+ * The GM's Attack dice have no critical rule: any face >= 4 is one success,
+ * including a 6 — unless the engaged Threat's `attackCritOnSix` flag makes a
+ * 6 worth 2 (matrix D3).
+ */
+export function interpretAttackDie(face: number, attackCritOnSix: boolean): number {
+  if (face < SUCCESS_THRESHOLD) return 0;
+  if (face === 6 && attackCritOnSix) return 2;
+  return 1;
+}
+
+/**
+ * Whether using `itemId` right now would be its *last* use — i.e.
+ * `usesRemaining` is about to go from 1 to 0 on an item whose `maxUses > 1`
+ * (matrix P5: "last use of an item that started with >1 use adds one extra
+ * die"). A single-use item (`maxUses === 1`) never qualifies.
+ */
+export function isLastUse(item: ItemState): boolean {
+  return item.maxUses > 1 && item.usesRemaining === 1;
+}
+
+/** Sum of P5's last-use bonus across every item in `itemIds` that qualifies. */
+export function lastUseBonusDice(
+  character: PoolEligibleCharacter,
+  itemIds: readonly string[],
+): number {
+  let bonus = 0;
+  for (const itemId of new Set(itemIds)) {
+    const item = character.items.find((candidate) => candidate.id === itemId);
+    if (item && isLastUse(item)) bonus += 1;
+  }
+  return bonus;
 }

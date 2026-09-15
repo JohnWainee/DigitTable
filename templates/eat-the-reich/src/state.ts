@@ -66,6 +66,9 @@ export interface AbilityState {
   readonly trigger: AbilityTrigger;
   /** Present only for `trigger: "blood"`. */
   readonly bloodCost?: number;
+  /** Optional bonus-claim pair (matrix P4), same shape as `ItemState`'s. Not every ability has one. */
+  readonly bonusRequirement?: string;
+  readonly bonusPlus?: number;
   readonly effect: AbilityEffect;
 }
 
@@ -135,7 +138,125 @@ export interface CharacterState {
   readonly activeLootId: string | null;
 }
 
+/**
+ * B03 (docs/ETR_RULES_MATRIX.md 3.5, 3.7): an Objective a scene presents.
+ * `kind` distinguishes the primary Objective (completing it ends the scene,
+ * matrix S1) from GM-created secondary/rescue/retreat Objectives (S2, I2,
+ * S3 — created by B04's GM commands). No Scene wrapper or round tracking
+ * exists yet (B04); this milestone has one implicit "current scene" only.
+ */
+export interface ObjectiveState {
+  readonly id: string;
+  readonly title: string;
+  readonly kind: "primary" | "secondary" | "rescue" | "retreat";
+  readonly rating: number;
+  readonly challenge: number;
+  readonly status: "active" | "complete";
+}
+
+/**
+ * Typed Threat flags (docs/ETR_RULES_MATRIX.md Appendix B "Threat" row,
+ * S10). Only the flags B03's roll/allocation math needs are enforced this
+ * slice; `challengeLocked` (blocks Challenge reduction, B04's EditScene) is
+ * carried as data now so B04 doesn't need another reshape.
+ */
+export interface ThreatFlags {
+  /** D2: overrides the discard band for the engaged player's dice (default: matrix's SUCCESS_THRESHOLD). */
+  readonly discardBelow?: number;
+  /** A5: this Threat cannot be fed from (Blood gain) while engaged with it alone. */
+  readonly noFeeding?: boolean;
+  /** D3: a 6 on this Threat's Attack dice is worth 2 successes instead of 1. */
+  readonly attackCritOnSix?: boolean;
+  /** S10: this Threat's Challenge cannot be reduced by any effect (enforced when B04 adds Challenge-reducing GM tools). */
+  readonly challengeLocked?: boolean;
+  /** I4: any injury this Threat inflicts marks every available box in the rolled category, not just one. */
+  readonly injuryMarksWholeCategory?: boolean;
+}
+
+/**
+ * B03 (matrix 3.4, 3.7, 3.5 A3/A7): a Threat a scene presents. `solo`/
+ * `elite` (matrix S4) affect reinforcement (B04) and removal-on-zero
+ * (elite is removed rather than merely beaten back, and its Blood unlocks
+ * an advance — B04's GrantItem/UnlockAdvance).
+ */
+export interface ThreatState {
+  readonly id: string;
+  readonly name: string;
+  readonly rating: number;
+  readonly startingAttack: number;
+  readonly attack: number;
+  readonly challenge: number;
+  readonly solo: boolean;
+  readonly elite: boolean;
+  readonly flags: ThreatFlags;
+  readonly status: "active" | "beaten" | "removed";
+  /** GM-only; an unrevealed Threat never appears in a player/table projection (matrix Appendix C). */
+  readonly revealed: boolean;
+}
+
+/** One approved or struck bonus claim, recorded at GM review time (matrix P4). */
+export interface BonusClaimRecord {
+  readonly sourceId: string;
+  readonly approved: boolean;
+  readonly plus: number;
+}
+
+export type DieResult = "discard" | "success" | "critical";
+
+export interface KeptDie {
+  readonly faceIndex: number;
+  readonly face: number;
+  readonly result: "success" | "critical";
+  readonly points: number;
+}
+
+/**
+ * A pending injury the player must resolve by picking a category because
+ * the rolled category had no open box left (matrix I1 "if both full, pick
+ * another category"; I2's Downed case reuses the same mechanism).
+ */
+export interface InjuryChoicePending {
+  readonly mode: "single" | "downed";
+}
+
+export type RollStatus = "declared" | "awaiting_allocation" | "awaiting_injury_choice" | "resolved";
+
+/**
+ * B03's declare -> GM review -> single server roll -> allocate loop
+ * (docs/ETR_SESSION_FLOW.md §6). One `RollRecord` per `BeginAction`; the
+ * character may not `BeginAction` again while an unresolved roll of theirs
+ * exists (enforced in `decide`).
+ */
+export interface RollRecord {
+  readonly id: string;
+  readonly characterId: string;
+  readonly actorMemberId: MemberId;
+  readonly status: RollStatus;
+  readonly declaredStat: Stat | "none";
+  readonly declaredItemIds: readonly string[];
+  readonly declaredAbilityIds: readonly string[];
+  readonly declaredBonusClaimIds: readonly string[];
+  readonly declaredEngagedThreatIds: readonly string[];
+  readonly note: string | null;
+  // Populated once ReviewAction resolves:
+  readonly approvedBonusClaims?: readonly BonusClaimRecord[];
+  readonly engagedThreatIds?: readonly string[];
+  readonly playerFaces?: readonly number[];
+  readonly keptDice?: readonly KeptDie[];
+  readonly attackDiceRolled?: number;
+  readonly attackFaces?: readonly number[];
+  readonly attackSuccessesRolled?: number;
+  readonly primaryEngagedThreatId?: string | null;
+  // Populated once AllocateResults resolves:
+  readonly remainingAttackSuccessesAfterAllocation?: number;
+  readonly injuryChoicePending?: InjuryChoicePending;
+}
+
 export interface EatTheReichState {
-  readonly schemaVersion: 2;
+  readonly schemaVersion: 3;
   readonly characters: Readonly<Record<string, CharacterState>>;
+  readonly objectives: Readonly<Record<string, ObjectiveState>>;
+  readonly threats: Readonly<Record<string, ThreatState>>;
+  readonly rolls: Readonly<Record<string, RollRecord>>;
+  readonly nextRollSequence: number;
 }

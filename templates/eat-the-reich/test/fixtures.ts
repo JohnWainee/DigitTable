@@ -4,11 +4,18 @@ import {
   type AuthorityRecord,
   type AuthorizedMemberContext,
   type MemberId,
+  type RandomSource,
   type ViewerContext,
 } from "@digitable/contracts";
 import { eatTheReichTemplate } from "../src/engine.js";
 import { EAT_THE_REICH_MANIFEST } from "../src/manifest.js";
-import type { CharacterState, EatTheReichState } from "../src/state.js";
+import type {
+  CharacterState,
+  EatTheReichState,
+  ObjectiveState,
+  RollRecord,
+  ThreatState,
+} from "../src/state.js";
 
 export const ROOM_ID = asRoomId("room-fixture");
 export const PLAYER_MEMBER_ID = asMemberId("member-player-one");
@@ -35,7 +42,7 @@ export function freshAuthority(
     platformVersion: "0.0.0",
     templateId: EAT_THE_REICH_MANIFEST.templateId,
     templateVersion: EAT_THE_REICH_MANIFEST.templateVersion,
-    schemaVersion: 2,
+    schemaVersion: 3,
     roomRevision: 0,
     nextSequence: 1,
     roomStatus: "active",
@@ -102,4 +109,96 @@ export function stateWithClaim(
       [characterId]: { ...character, claimedByMemberId: memberId, ...patch },
     },
   };
+}
+
+/**
+ * A test double that returns an exact, pre-planned sequence of die faces
+ * regardless of the `sides` requested, so a test can assert on a specific
+ * worked example (docs/ETR_RULES_MATRIX.md's p.31/34/38 examples) instead
+ * of a seeded-but-opaque sequence. Throws if more draws are requested than
+ * were planned, so a test's die budget is self-documenting.
+ */
+export class FixedSequenceRandom implements RandomSource {
+  private index = 0;
+  constructor(private readonly faces: readonly number[]) {}
+  rollDie(): number {
+    if (this.index >= this.faces.length) {
+      throw new Error(`FixedSequenceRandom: exhausted after ${this.faces.length} draws`);
+    }
+    const face = this.faces[this.index]!;
+    this.index += 1;
+    return face;
+  }
+}
+
+const DEFAULT_OBJECTIVE: ObjectiveState = {
+  id: "objective-fixture",
+  title: "Fixture Objective",
+  kind: "primary",
+  rating: 8,
+  challenge: 0,
+  status: "active",
+};
+
+const DEFAULT_THREAT: ThreatState = {
+  id: "threat-fixture",
+  name: "Fixture Threat",
+  rating: 6,
+  startingAttack: 3,
+  attack: 3,
+  challenge: 0,
+  solo: false,
+  elite: false,
+  flags: {},
+  status: "active",
+  revealed: true,
+};
+
+/** A minimal scene: one primary Objective and one revealed Threat, both overridable. */
+export function stateWithScene(
+  overrides: {
+    readonly objective?: Partial<ObjectiveState>;
+    readonly threat?: Partial<ThreatState>;
+    readonly extraThreats?: readonly ThreatState[];
+    readonly extraObjectives?: readonly ObjectiveState[];
+  } = {},
+  base: EatTheReichState = freshState(),
+): EatTheReichState {
+  const objective: ObjectiveState = { ...DEFAULT_OBJECTIVE, ...overrides.objective };
+  const threat: ThreatState = { ...DEFAULT_THREAT, ...overrides.threat };
+  const extraThreats = Object.fromEntries((overrides.extraThreats ?? []).map((t) => [t.id, t]));
+  const extraObjectives = Object.fromEntries(
+    (overrides.extraObjectives ?? []).map((o) => [o.id, o]),
+  );
+  return {
+    ...base,
+    objectives: { ...base.objectives, [objective.id]: objective, ...extraObjectives },
+    threats: { ...base.threats, [threat.id]: threat, ...extraThreats },
+  };
+}
+
+const DEFAULT_ROLL_DEFAULTS: Pick<
+  RollRecord,
+  | "declaredStat"
+  | "declaredItemIds"
+  | "declaredAbilityIds"
+  | "declaredBonusClaimIds"
+  | "declaredEngagedThreatIds"
+  | "note"
+> = {
+  declaredStat: "none",
+  declaredItemIds: [],
+  declaredAbilityIds: [],
+  declaredBonusClaimIds: [],
+  declaredEngagedThreatIds: [],
+  note: null,
+};
+
+/** Injects a roll directly into state, bypassing decide/reduce, for tests focused on a later lifecycle stage. */
+export function stateWithRoll(
+  roll: Partial<RollRecord> & Pick<RollRecord, "id" | "characterId" | "actorMemberId" | "status">,
+  base: EatTheReichState = freshState(),
+): EatTheReichState {
+  const fullRoll: RollRecord = { ...DEFAULT_ROLL_DEFAULTS, ...roll };
+  return { ...base, rolls: { ...base.rolls, [fullRoll.id]: fullRoll } };
 }
