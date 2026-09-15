@@ -6,6 +6,7 @@ import {
   type Functions,
   type HttpsCallable,
 } from "firebase/functions";
+import { FUNCTIONS_REGION } from "@digitable/contracts";
 
 /**
  * Board task A05: the real callable transport. `getFunctions` returns the
@@ -23,13 +24,14 @@ export interface FunctionsEmulatorConfig {
 
 /**
  * Resolves the Functions instance for `app`, optionally pointed at the
- * local emulator. No region is passed — the deployed Functions default to
- * `us-central1` unless the callable's own options specify otherwise
- * (matching `apps/functions`, which also names no region in code; see
- * `docs/PHASE_2_DECISION_BRIEF.md` for the outstanding region decision).
+ * local emulator. Pinned to `FUNCTIONS_REGION` (`@digitable/contracts`,
+ * board task A07) so this always targets the same region `apps/functions`
+ * deploys its callables to — the emulator ignores region entirely, so this
+ * distinction is invisible in every existing test and only matters against
+ * a real deployment (`docs/PHASE_2_DECISION_BRIEF.md` Decision 1).
  */
 export function getRoomFunctions(app: FirebaseApp, emulator?: FunctionsEmulatorConfig): Functions {
-  const functions = getFunctions(app);
+  const functions = getFunctions(app, FUNCTIONS_REGION);
   if (emulator !== undefined && !emulatorConnected.has(functions)) {
     connectFunctionsEmulator(functions, emulator.host, emulator.port);
     emulatorConnected.add(functions);
