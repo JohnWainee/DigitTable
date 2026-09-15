@@ -33,6 +33,14 @@ export const STABLE_ERROR_CODES = [
   "ROUND_HAS_OPEN_ROLLS",
   /** GM `NextScene`/`EndMission` with one or more rolls still open (unresolved). */
   "SCENE_HAS_OPEN_ROLLS",
+  /**
+   * Sonnet B's third contract proposal (GitHub issue #14, B04, matrix T1):
+   * `BeginAction`/`ReviewAction`/`AllocateResults` rejected because the
+   * session is currently paused (`Pause`/`Resume`, the anonymous safety
+   * interrupt — carries no actor identity in state or events at all, per
+   * B04's own design; anonymity is the trusted handler's responsibility).
+   */
+  "SESSION_PAUSED",
 ] as const;
 
 export type StableErrorCode = (typeof STABLE_ERROR_CODES)[number];
