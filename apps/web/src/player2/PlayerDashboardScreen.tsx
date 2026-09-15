@@ -59,6 +59,7 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
 
   return (
     <PlayerDashboardBody
+      roomId={roomId}
       connectionState={connection}
       characterFixture={characterFixture}
       sceneFixture={sceneFixture}
@@ -68,17 +69,19 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
 }
 
 function PlayerDashboardBody({
+  roomId,
   connectionState,
   characterFixture,
   sceneFixture,
   roster,
 }: {
+  readonly roomId: string;
   readonly connectionState: ReturnType<typeof useFixtureConnectionState>;
   readonly characterFixture: NonNullable<ReturnType<typeof lookupCharacterFixture>>;
   readonly sceneFixture: (typeof ETR_SCENE_FIXTURE)[number];
   readonly roster: ReturnType<typeof gateway.listRoster>;
 }): JSX.Element {
-  const loop = usePlayLoopFixture(characterFixture, sceneFixture);
+  const loop = usePlayLoopFixture(roomId, characterFixture, sceneFixture);
   // A pure function of `loop.phase`: identical text on an unrelated
   // re-render does not get re-announced by `aria-live`, so this alone
   // gives one polite announcement per phase transition without an effect.
@@ -90,7 +93,7 @@ function PlayerDashboardBody({
       <FixtureModeBanner />
       <LiveRegion politeness="polite" message={announcement} />
       <SceneCard scene={loop.scene} />
-      <PartyStrip roster={roster} selfCharacterId={characterFixture.id} />
+      <PartyStrip roomId={roomId} roster={roster} selfCharacterId={characterFixture.id} />
       {loop.phase === "compose" && (
         <ComposeStep2
           character={loop.character}

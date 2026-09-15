@@ -3,14 +3,34 @@ import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
 import { beforeEach, describe, expect, it } from "vitest";
 import { App } from "../../src/App.js";
+import { fixturePlayLoopStore } from "../../src/session/fixturePlayLoopStore.js";
 
 /**
  * C02: player dashboard (scene card, party strip, compose -> declared ->
  * allocate -> confirm). Reuses C01's create/join/claim flow to reach a
  * claimed character, then drives the fixture play loop
- * (apps/web/src/session/fixturePlayLoop.ts + usePlayLoopFixture.ts —
- * TEMPORARY until B03 lands) end to end.
+ * (apps/web/src/session/fixturePlayLoop.ts + fixturePlayLoopStore.ts +
+ * usePlayLoopFixture.ts — TEMPORARY until B03 lands) end to end. A
+ * declared action now genuinely waits for GM review (C03's
+ * `PendingActionsPanel` calls `fixturePlayLoopStore.reviewAndRoll`
+ * directly, same as it would through the real UI); `reviewAsGm` below
+ * stands in for that screen the same way the pre-existing Phase 1C player
+ * test acts as the GM for `SubmitOpposition`.
  */
+
+/** Room id is embedded in the current hash route (`#/room/<roomId>/player`). */
+function currentRoomId(): string {
+  const match = window.location.hash.match(/\/room\/([^/]+)\/player/);
+  if (!match) throw new Error("expected to be on a player dashboard route");
+  return match[1]!;
+}
+
+function reviewAsGm(characterId = "rook"): void {
+  const roomId = currentRoomId();
+  act(() => {
+    fixturePlayLoopStore.reviewAndRoll(roomId, characterId, [], []);
+  });
+}
 
 function setViewport(width: number, height: number): void {
   window.innerWidth = width;
@@ -87,9 +107,8 @@ describe("Player dashboard (C02)", () => {
     expect(await screen.findByRole("heading", { name: /^declared$/i })).toBeInTheDocument();
     expect(screen.getAllByText(/waiting for the gm/i).length).toBeGreaterThan(0);
 
-    expect(
-      await screen.findByRole("heading", { name: /your roll/i }, { timeout: 2000 }),
-    ).toBeInTheDocument();
+    reviewAsGm();
+    expect(await screen.findByRole("heading", { name: /your roll/i })).toBeInTheDocument();
     expect(screen.getByText(/points left to assign/i)).toBeInTheDocument();
   });
 
@@ -98,7 +117,9 @@ describe("Player dashboard (C02)", () => {
     await reachDashboardAsRook(user);
     await screen.findByRole("heading", { name: /choose an action/i });
     await user.click(screen.getByRole("button", { name: /declare action/i }));
-    await screen.findByRole("heading", { name: /your roll/i }, { timeout: 2000 });
+    await screen.findByRole("heading", { name: /^declared$/i });
+    reviewAsGm();
+    await screen.findByRole("heading", { name: /your roll/i });
 
     const increaseObjective = screen.queryByRole("button", { name: /^increase .*wreckage/i });
     if (increaseObjective) {

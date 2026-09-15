@@ -289,6 +289,9 @@ export interface SceneFixture {
   readonly objectiveRating: number;
   readonly objectiveChallenge: number;
   readonly threats: readonly SceneThreatFixture[];
+  /** 0-100 units, for `RouteMap` (docs/ETR_ART_BRIEF.md section 3.6). Sonnet C's own layout, not sourced from the rules matrix. */
+  readonly mapX: number;
+  readonly mapY: number;
 }
 
 /** Appendix C original scene list (docs/ETR_RULES_MATRIX.md). */
@@ -300,6 +303,8 @@ export const ETR_SCENE_FIXTURE: readonly SceneFixture[] = [
     objectiveTitle: "Get clear of the wreckage and into the streets",
     objectiveRating: 8,
     objectiveChallenge: 0,
+    mapX: 20,
+    mapY: 80,
     threats: [
       {
         id: "patrol-a",
@@ -326,6 +331,8 @@ export const ETR_SCENE_FIXTURE: readonly SceneFixture[] = [
     objectiveTitle: "Cut through the tunnels to the far exit",
     objectiveRating: 8,
     objectiveChallenge: 0,
+    mapX: 40,
+    mapY: 60,
     threats: [
       {
         id: "plated-squad",
@@ -354,6 +361,8 @@ export const ETR_SCENE_FIXTURE: readonly SceneFixture[] = [
     objectiveTitle: "Wreck the presses and get out through the loading yard",
     objectiveRating: 8,
     objectiveChallenge: 1,
+    mapX: 62,
+    mapY: 42,
     threats: [
       {
         id: "rifle-squad",
@@ -381,6 +390,8 @@ export const ETR_SCENE_FIXTURE: readonly SceneFixture[] = [
     objectiveTitle: "Silence the Voice",
     objectiveRating: 10,
     objectiveChallenge: 1,
+    mapX: 82,
+    mapY: 20,
     threats: [
       {
         id: "armoured-truck",

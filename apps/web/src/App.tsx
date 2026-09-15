@@ -9,6 +9,8 @@ import { JoinScreen } from "./landing/JoinScreen.js";
 import { JoinTableScreen } from "./landing/JoinTableScreen.js";
 import { ClaimCharacterScreen } from "./landing/ClaimCharacterScreen.js";
 import { PlayerDashboardScreen } from "./player2/PlayerDashboardScreen.js";
+import { GmDirectorScreen } from "./gm2/GmDirectorScreen.js";
+import { TableDashboardScreen } from "./table2/TableDashboardScreen.js";
 import { useRoute } from "./router.js";
 import "./styles.css";
 
@@ -36,6 +38,10 @@ export function App(): JSX.Element {
       return <ClaimCharacterScreen roomId={route.roomId} />;
     case "player":
       return <PlayerDashboardScreen roomId={route.roomId} />;
+    case "gm":
+      return <GmDirectorScreen roomId={route.roomId} />;
+    case "table":
+      return <TableDashboardScreen roomId={route.roomId} />;
     case "demo":
       return <FixtureDemo />;
     default:

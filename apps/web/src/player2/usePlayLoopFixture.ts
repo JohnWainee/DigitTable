@@ -1,15 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  characterStateFromFixture,
-  declareAndRoll,
-  resolveAllocation,
-  sceneStateFromFixture,
-  totalRollPoints,
-  type ActiveRollState,
-  type DeclareChoice,
-  type FixtureCharacterState,
-  type FixtureSceneState,
-  type ResolvedOutcome,
+import { useEffect, useState } from "react";
+import { fixturePlayLoopStore as store } from "../session/fixturePlayLoopStore.js";
+import type {
+  ActiveRollState,
+  DeclareChoice,
+  FixtureCharacterState,
+  FixtureSceneState,
+  ResolvedOutcome,
 } from "../session/fixturePlayLoop.js";
 import type { RosterCharacterFixture, SceneFixture } from "../../test/fixtures/etrTemp.js";
 
@@ -28,86 +24,66 @@ export interface PlayLoopFixture {
 }
 
 /**
- * TEMPORARY: wires `fixturePlayLoop.ts`'s pure functions into React state.
- * See that file's doc comment for what this stands in for and why. The
- * `declared -> rolled` step uses a short fixed delay to stand in for a real
- * GM's review action (C03 adds that screen); every claim is auto-approved
- * in the meantime.
+ * TEMPORARY: a thin subscriber to `fixturePlayLoopStore` (see that file's
+ * doc comment). The player's own declare/assign/confirm/playAgain actions
+ * write into the shared per-room store; a GM screen (C03) reviews and
+ * rolls the same record via the store directly.
  */
 export function usePlayLoopFixture(
+  roomId: string,
   characterFixture: RosterCharacterFixture,
   sceneFixture: SceneFixture,
 ): PlayLoopFixture {
-  const [character, setCharacter] = useState<FixtureCharacterState>(() =>
-    characterStateFromFixture(characterFixture),
-  );
-  const [scene, setScene] = useState<FixtureSceneState>(() => sceneStateFromFixture(sceneFixture));
-  const [phase, setPhase] = useState<PlayLoopPhase>("compose");
-  const [pendingChoice, setPendingChoice] = useState<DeclareChoice | null>(null);
-  const [activeRoll, setActiveRoll] = useState<ActiveRollState | null>(null);
-  const [resolved, setResolved] = useState<ResolvedOutcome | null>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [, forceRender] = useState(0);
 
   useEffect(() => {
-    if (phase !== "declared" || !pendingChoice) return;
-    timerRef.current = setTimeout(() => {
-      const result = declareAndRoll(character, scene, pendingChoice);
-      setCharacter(result.character);
-      setActiveRoll(result.roll);
-      setPhase("rolled");
-    }, 400);
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally runs once per "declared" entry, not on every character/scene change
-  }, [phase, pendingChoice]);
+    store.ensureRoom(roomId, sceneFixture);
+    store.ensureCharacter(roomId, characterFixture);
+    return store.subscribe(() => forceRender((n) => n + 1));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- roomId/characterFixture.id identify the subscription; sceneFixture is only used to seed a room that doesn't exist yet
+  }, [roomId, characterFixture.id]);
 
-  const declare = useCallback((choice: DeclareChoice) => {
-    setPendingChoice(choice);
-    setPhase("declared");
-  }, []);
-
-  const assign = useCallback((targetKey: string, points: number) => {
-    setActiveRoll((roll) => {
-      if (!roll) return roll;
-      const next = { ...roll.allocations };
-      if (points <= 0) delete next[targetKey];
-      else next[targetKey] = points;
-      return { ...roll, allocations: next };
-    });
-  }, []);
-
-  const confirmAllocation = useCallback(() => {
-    setActiveRoll((roll) => {
-      if (!roll) return roll;
-      if (totalRollPoints(roll) !== Object.values(roll.allocations).reduce((s, n) => s + n, 0)) {
-        return roll; // not fully allocated yet; button should already be disabled
-      }
-      const outcome = resolveAllocation(character, scene, roll);
-      setCharacter(outcome.character);
-      setScene(outcome.scene);
-      setResolved(outcome);
-      setPhase("resolved");
-      return roll;
-    });
-  }, [character, scene]);
-
-  const playAgain = useCallback(() => {
-    setPhase("compose");
-    setPendingChoice(null);
-    setActiveRoll(null);
-    setResolved(null);
-  }, []);
+  const scene = store.getScene(roomId) ?? sceneStateFallback(sceneFixture);
+  const record = store.getCharacterRecord(roomId, characterFixture.id);
+  const character = record?.character ?? characterStateFallback(characterFixture);
 
   return {
-    phase,
+    phase: record?.phase ?? "compose",
     character,
     scene,
-    activeRoll,
-    resolved,
-    declare,
-    assign,
-    confirmAllocation,
-    playAgain,
+    activeRoll: record?.activeRoll ?? null,
+    resolved: record?.resolved ?? null,
+    declare: (choice) => store.declare(roomId, characterFixture.id, choice),
+    assign: (targetKey, points) => store.assign(roomId, characterFixture.id, targetKey, points),
+    confirmAllocation: () => store.confirmAllocation(roomId, characterFixture.id),
+    playAgain: () => store.playAgain(roomId, characterFixture.id),
+  };
+}
+
+// Fallbacks cover the one render before the mount effect above seeds the
+// store (React 18 runs effects after the first paint).
+function sceneStateFallback(fixture: SceneFixture): FixtureSceneState {
+  return {
+    id: fixture.id,
+    location: fixture.location,
+    objectiveTitle: fixture.objectiveTitle,
+    objectiveRating: fixture.objectiveRating,
+    objectiveChallenge: fixture.objectiveChallenge,
+    threats: fixture.threats,
+  };
+}
+
+function characterStateFallback(fixture: RosterCharacterFixture): FixtureCharacterState {
+  return {
+    id: fixture.id,
+    name: fixture.name,
+    concept: fixture.concept,
+    stats: fixture.stats,
+    blood: 0,
+    items: fixture.items.map((item) => ({ ...item, usesRemaining: item.maxUses })),
+    abilities: fixture.abilities,
+    injuriesMarked: 0,
+    downed: false,
+    retired: false,
   };
 }

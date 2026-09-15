@@ -15,6 +15,8 @@ export type Route =
   | { readonly name: "table-join" }
   | { readonly name: "claim"; readonly roomId: string }
   | { readonly name: "player"; readonly roomId: string }
+  | { readonly name: "gm"; readonly roomId: string }
+  | { readonly name: "table"; readonly roomId: string }
   | { readonly name: "demo" };
 
 function parseHash(hash: string): Route {
@@ -27,6 +29,12 @@ function parseHash(hash: string): Route {
   if (segments[0] === "claim" && segments[1]) return { name: "claim", roomId: segments[1] };
   if (segments[0] === "room" && segments[1] && segments[2] === "player") {
     return { name: "player", roomId: segments[1] };
+  }
+  if (segments[0] === "room" && segments[1] && segments[2] === "gm") {
+    return { name: "gm", roomId: segments[1] };
+  }
+  if (segments[0] === "room" && segments[1] && segments[2] === "table") {
+    return { name: "table", roomId: segments[1] };
   }
   if (segments[0] === "demo") return { name: "demo" };
   return { name: "landing" };

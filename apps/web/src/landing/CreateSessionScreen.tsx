@@ -14,6 +14,7 @@ import {
 import { fixtureSessionGateway as gateway } from "../session/gateway.js";
 import type { SessionRequestState } from "../session/sessionRequestState.js";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
+import { InvitePanel } from "../gm2/InvitePanel.js";
 
 /** docs/ETR_SESSION_FLOW.md section 3: `/create` — Create session (GM). */
 export function CreateSessionScreen(): JSX.Element {
@@ -188,46 +189,18 @@ export function CreateSessionScreen(): JSX.Element {
         </section>
       )}
 
-      {reveal && wroteDownSecrets && <InvitePanelStub roomId={reveal.accepted.roomId} />}
+      {reveal && wroteDownSecrets && (
+        <>
+          <InvitePanel roomId={reveal.accepted.roomId} roomCode={reveal.accepted.roomCode} />
+          <button
+            type="button"
+            className="primary-action"
+            onClick={() => navigate(`/room/${reveal.accepted.roomId}/gm`)}
+          >
+            Open the director console
+          </button>
+        </>
+      )}
     </main>
-  );
-}
-
-/**
- * A minimal stand-in for C03's `InvitePanel` (GM director console): the
- * room code, a passphrase hint that never re-shows the full passphrase, and
- * the current join count. The full desktop director console (scene/roster
- * controls) is C03's scope; this only satisfies C01's "GM-only invite
- * display" requirement so the GM has somewhere useful to land after create.
- */
-function InvitePanelStub({ roomId }: { readonly roomId: string }): JSX.Element {
-  // Fixture mode has no live subscription to re-render from; a manual
-  // refresh re-reads the gateway's in-memory state (join count changes
-  // when a player joins in another local surface during this tab's life).
-  const [, forceRefresh] = useState(0);
-  const stats = gateway.roomStats(roomId);
-  const hint = gateway.passphraseHint(roomId);
-
-  return (
-    <section className="invite-panel" aria-labelledby="invite-heading">
-      <h2 id="invite-heading">Invite</h2>
-      <p>
-        Passphrase hint: starts with "{hint?.firstChar}", {hint?.length} characters long. The full
-        passphrase is never shown again.
-      </p>
-      <p>
-        Players joined: {stats?.playerCount ?? 0}/6. Table display:{" "}
-        {stats?.tableClaimed ? "connected" : "not connected"}.
-      </p>
-      <button type="button" className="secondary-action" onClick={() => forceRefresh((t) => t + 1)}>
-        Refresh
-      </button>
-      <p>
-        The full director console (scene control, roster management, corrections) arrives with C03.
-      </p>
-      <button type="button" className="primary-action" onClick={() => navigate("/demo")}>
-        Open the fixture demo dashboard
-      </button>
-    </section>
   );
 }
