@@ -39,6 +39,7 @@ describe("decide: LoadScene / NextScene (matrix S1, S8)", () => {
         elite: false,
         flags: {},
         revealed: true,
+        notes: "",
       },
     ],
     reinforcementsMode: "book" as const,
@@ -189,6 +190,7 @@ describe("decide: EndRound (matrix S5-S6)", () => {
           flags: {},
           status: "active",
           revealed: true,
+          notes: "",
         },
       ],
     });
@@ -232,6 +234,7 @@ describe("decide: EndRound (matrix S5-S6)", () => {
           flags: {},
           status: "active",
           revealed: true,
+          notes: "",
         },
       ],
     });

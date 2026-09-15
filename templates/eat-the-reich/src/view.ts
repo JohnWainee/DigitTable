@@ -68,9 +68,10 @@ export interface ThreatPublicView {
   readonly status: "active" | "beaten" | "removed";
 }
 
-/** GM-only: every Threat, including unrevealed ones, carries `revealed`. */
+/** GM-only: every Threat, including unrevealed ones, carries `revealed` and its foreshadowing `notes`. */
 export interface ThreatGmView extends ThreatPublicView {
   readonly revealed: boolean;
+  readonly notes: string;
 }
 
 /**

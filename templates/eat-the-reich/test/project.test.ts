@@ -92,6 +92,17 @@ describe("project: objectives and threats (B03, matrix Appendix C 'GM-only notes
     expect(gmThreats[0]).toMatchObject({ revealed: false });
   });
 
+  it("a revealed Threat's GM-only foreshadowing notes never reach a player or the table (matrix Appendix C)", () => {
+    const state = stateWithScene({ threat: { notes: "a very secret foreshadowing note" } });
+    expect(eatTheReichTemplate.project(state, PLAYER_VIEWER).threats[0]).not.toHaveProperty(
+      "notes",
+    );
+    expect(eatTheReichTemplate.project(state, TABLE_VIEWER).threats[0]).not.toHaveProperty("notes");
+    expect(eatTheReichTemplate.project(state, GM_VIEWER).threats[0]).toMatchObject({
+      notes: "a very secret foreshadowing note",
+    });
+  });
+
   it("only the GM's Threat view carries the `revealed` field", () => {
     const state = stateWithScene();
     const playerThreat = eatTheReichTemplate.project(state, PLAYER_VIEWER).threats[0];

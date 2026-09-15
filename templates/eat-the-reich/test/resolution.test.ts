@@ -21,6 +21,7 @@ function threat(overrides: Partial<ThreatState> = {}): ThreatState {
     flags: {},
     status: "active",
     revealed: true,
+    notes: "",
     ...overrides,
   };
 }

@@ -192,6 +192,12 @@ export interface ThreatState {
   readonly status: "active" | "beaten" | "removed";
   /** GM-only; an unrevealed Threat never appears in a player/table projection (matrix Appendix C). */
   readonly revealed: boolean;
+  /**
+   * GM-only foreshadowing/flavor text (matrix Appendix C: "Foreshadowing
+   * lines for elites live in the GM-only notes field and never project to
+   * players or the table"). Never present on `ThreatPublicView`.
+   */
+  readonly notes: string;
 }
 
 /** One approved or struck bonus claim, recorded at GM review time (matrix P4). */

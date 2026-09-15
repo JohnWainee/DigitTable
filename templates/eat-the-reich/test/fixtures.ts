@@ -153,6 +153,7 @@ const DEFAULT_THREAT: ThreatState = {
   flags: {},
   status: "active",
   revealed: true,
+  notes: "",
 };
 
 const DEFAULT_SCENE: SceneState = {

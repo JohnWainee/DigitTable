@@ -21,6 +21,8 @@ export interface SceneThreatInput {
   readonly elite: boolean;
   readonly flags: ThreatFlags;
   readonly revealed: boolean;
+  /** GM-only; never projected to players/table (matrix Appendix C). */
+  readonly notes: string;
 }
 
 /**

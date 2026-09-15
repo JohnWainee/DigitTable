@@ -100,6 +100,7 @@ function worstCaseState(): EatTheReichState {
       },
       status: "active",
       revealed: true,
+      notes: "A reasonably long worst-case GM-only foreshadowing note for budget purposes.",
     };
   }
 

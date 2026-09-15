@@ -136,7 +136,7 @@ function toThreatPublicView(threat: ThreatState): ThreatPublicView {
 }
 
 function toThreatGmView(threat: ThreatState): ThreatGmView {
-  return { ...toThreatPublicView(threat), revealed: threat.revealed };
+  return { ...toThreatPublicView(threat), revealed: threat.revealed, notes: threat.notes };
 }
 
 function toObjectiveView(objective: ObjectiveState): ObjectiveView {
@@ -788,6 +788,7 @@ function decideAllocateResults(
           }
           if (
             primaryEngagedThreatId &&
+            ctx.state.threats[primaryEngagedThreatId] &&
             (result.threatRatingDelta !== 0 || result.threatAttackDelta !== 0)
           ) {
             const working = getThreatWorking(primaryEngagedThreatId);
@@ -805,8 +806,16 @@ function decideAllocateResults(
   const remainingAttackSuccessesAfterAllocation = Math.max(0, rawAttackSuccesses - defendPoints);
 
   // matrix O4: zero-success bump uses the RAW roll, not the post-defend remainder.
-  const attackBumpThreatId =
+  // Guarded against a Threat the GM removed (EditScene) between ReviewAction and this
+  // AllocateResults (matrix S05: "never silently applied to a missing threat, never
+  // crashes the transaction") — the bump simply does not apply to a Threat that no
+  // longer exists, rather than resurrecting it or throwing.
+  const rawAttackBumpThreatId =
     (roll.attackDiceRolled ?? 0) > 0 && rawAttackSuccesses === 0 ? primaryEngagedThreatId : null;
+  const attackBumpThreatId =
+    rawAttackBumpThreatId && ctx.state.threats[rawAttackBumpThreatId]
+      ? rawAttackBumpThreatId
+      : null;
   if (attackBumpThreatId) {
     const working = getThreatWorking(attackBumpThreatId);
     working.attack += 1;

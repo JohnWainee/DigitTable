@@ -413,6 +413,7 @@ function parseThreat(value: unknown, where: string): ThreatState {
     flags: parseThreatFlags(value.flags, `${where}.flags`),
     status,
     revealed: expectBoolean(value.revealed, `${where}.revealed`),
+    notes: expectString(value.notes, `${where}.notes`),
   };
 }
 
@@ -420,7 +421,7 @@ function parseThreat(value: unknown, where: string): ThreatState {
 
 const SCENE_OBJECTIVE_KINDS = ["primary", "secondary", "retreat"] as const;
 
-function parseSceneObjectiveInput(value: unknown, where: string): SceneObjectiveInput {
+export function parseSceneObjectiveInput(value: unknown, where: string): SceneObjectiveInput {
   if (!isRecord(value)) fail(where, "expected an object");
   const kind = value.kind;
   if (typeof kind !== "string" || !(SCENE_OBJECTIVE_KINDS as readonly string[]).includes(kind)) {
@@ -435,7 +436,7 @@ function parseSceneObjectiveInput(value: unknown, where: string): SceneObjective
   };
 }
 
-function parseSceneThreatInput(value: unknown, where: string): SceneThreatInput {
+export function parseSceneThreatInput(value: unknown, where: string): SceneThreatInput {
   if (!isRecord(value)) fail(where, "expected an object");
   return {
     id: expectString(value.id, `${where}.id`),
@@ -447,6 +448,7 @@ function parseSceneThreatInput(value: unknown, where: string): SceneThreatInput 
     elite: expectBoolean(value.elite, `${where}.elite`),
     flags: parseThreatFlags(value.flags, `${where}.flags`),
     revealed: expectBoolean(value.revealed, `${where}.revealed`),
+    notes: expectString(value.notes, `${where}.notes`),
   };
 }
 
@@ -1438,7 +1440,11 @@ function parseThreatView(value: unknown, where: string): ThreatPublicView | Thre
     status,
   };
   return "revealed" in value
-    ? { ...base, revealed: expectBoolean(value.revealed, `${where}.revealed`) }
+    ? {
+        ...base,
+        revealed: expectBoolean(value.revealed, `${where}.revealed`),
+        notes: expectString(value.notes, `${where}.notes`),
+      }
     : base;
 }
 

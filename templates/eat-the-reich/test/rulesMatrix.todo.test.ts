@@ -54,18 +54,17 @@ describe("Deferred to B05/manual (matrix P1 items, not cut, sequenced later)", (
   );
 });
 
-describe("B05 — original scene fixture, private content pack, property/budget/migration closure", () => {
+// B05 landed: Appendix C's four original scenes (test/scenes.test.ts,
+// test/playtest.test.ts), the content/private/*.json loader
+// (test/privateContent.test.ts, not exported from ./index.js — see the
+// module's own doc comment), and docs/ETR_PLAYTEST.md's S01-S05, S08, S09,
+// S10 bound as fixed-seed tests against the real shipped scene content
+// (test/playtest.test.ts). S06 and S07 are not implemented here: S06
+// (disconnect mid-roll) and S07's "late joiner's event tail may be empty"
+// proof need live client/reconnect/event-store infrastructure that doesn't
+// exist at the template level — Sonnet A's A05-A07.
+describe("B05 — remaining gaps, not cut, recorded for a future pass", () => {
   test.todo(
-    "Appendix C: the four original scenes (drop-forecourt, metro-platform, printworks, signal-mast) wired as a loadable scene catalog",
-  );
-  test.todo(
-    "content/private/*.json loader: reads a GM's own git-ignored rulebook content pack, never committed, never in shared Firestore documents",
-  );
-  test.todo("docs/ETR_PLAYTEST.md S01-S10: bound as fixed-seed engine-level tests where cheap");
-  test.todo(
-    "retry with the same commandId produces identical events, no double spend, for ReviewAction/AllocateResults/ChooseInjuryCategory/LoadScene/NextScene/EndRound/EditScene/CorrectCharacter/VoidRoll/GrantItem/UnlockAdvance/ReassignCharacter specifically (lifecycle.integration.test.ts covers ClaimCharacter and BeginAction only so far — the runCommand/priorReceipt mechanism is generic and already exercised, but per-command coverage is not exhaustive)",
-  );
-  test.todo(
-    "independent rules review, recorded under docs/reviews/, before B05 is called complete",
+    "retry with the same commandId produces identical events, no double spend, for LoadScene/NextScene/EndRound/EditScene/CorrectCharacter/VoidRoll/GrantItem/UnlockAdvance/ReassignCharacter/ChooseInjuryCategory specifically (lifecycle.integration.test.ts and playtest.test.ts's S02 cover ClaimCharacter/BeginAction/ReviewAction retries; the runCommand/priorReceipt mechanism is generic and already exercised there, but per-command coverage is not exhaustive)",
   );
 });
