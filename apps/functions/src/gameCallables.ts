@@ -6,7 +6,11 @@ import {
 } from "firebase-functions/v2/https";
 import type { Firestore } from "firebase-admin/firestore";
 import type { EatTheReichEvent } from "@digitable/template-eat-the-reich";
-import type { RoomCommandResult, StableErrorCode } from "@digitable/contracts";
+import {
+  FUNCTIONS_REGION,
+  type RoomCommandResult,
+  type StableErrorCode,
+} from "@digitable/contracts";
 import { grpcCodeFor } from "./httpsErrors.js";
 import {
   GameCommandInputError,
@@ -124,7 +128,7 @@ export function createGameCallables(deps: SubmitRoomCommandDependencies): {
 } {
   return {
     submitRoomCommand: onCall<unknown, Promise<RoomCommandResult<EatTheReichEvent>>>(
-      { enforceAppCheck: false },
+      { enforceAppCheck: false, region: FUNCTIONS_REGION },
       (request) => handleSubmitRoomCommand(deps, request),
     ),
   };
