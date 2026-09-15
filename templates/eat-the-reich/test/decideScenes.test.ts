@@ -58,6 +58,62 @@ describe("decide: LoadScene / NextScene (matrix S1, S8)", () => {
     expect(event.scene.objectives).toHaveLength(1);
   });
 
+  it("LoadScene never leaks GM-only Threat notes or unrevealed Threats to the shared event copy (matrix Appendix C)", () => {
+    const decision = eatTheReichTemplate.decide(
+      { state: scenelessState(), actor: GM_CTX, random: new FixedSequenceRandom([]) },
+      {
+        type: "LoadScene",
+        ...sceneInput,
+        threats: [
+          {
+            id: "revealed-threat",
+            name: "Revealed Threat",
+            rating: 4,
+            attack: 2,
+            challenge: 0,
+            solo: false,
+            elite: false,
+            flags: {},
+            revealed: true,
+            notes: "a public-facing gm note, still not for players",
+          },
+          {
+            id: "hidden-threat",
+            name: "The Hidden One",
+            rating: 8,
+            attack: 4,
+            challenge: 1,
+            solo: true,
+            elite: true,
+            flags: {},
+            revealed: false,
+            notes: "a very secret foreshadowing note",
+          },
+        ],
+      },
+    );
+    expect(decision.ok).toBe(true);
+    if (!decision.ok) return;
+    const gmEffect = decision.events[0]?.effects.find((e) => e.destination.kind === "gm");
+    const sharedEffect = decision.events[0]?.effects.find((e) => e.destination.kind === "shared");
+    if (gmEffect?.payload.type !== "SceneLoaded" || sharedEffect?.payload.type !== "SceneLoaded") {
+      throw new Error("expected SceneLoaded on both destinations");
+    }
+    expect(gmEffect.payload.scene.threats).toHaveLength(2);
+    expect(gmEffect.payload.scene.threats.find((t) => t.id === "hidden-threat")).toBeDefined();
+    expect(gmEffect.payload.scene.threats.find((t) => t.id === "revealed-threat")?.notes).toBe(
+      "a public-facing gm note, still not for players",
+    );
+
+    expect(sharedEffect.payload.scene.threats).toHaveLength(1);
+    expect(
+      sharedEffect.payload.scene.threats.find((t) => t.id === "hidden-threat"),
+    ).toBeUndefined();
+    expect(sharedEffect.payload.scene.threats.find((t) => t.id === "revealed-threat")?.notes).toBe(
+      "",
+    );
+  });
+
   it("LoadScene is rejected while another scene is already active", () => {
     const decision = eatTheReichTemplate.decide(
       { state: stateWithScene(), actor: GM_CTX, random: new FixedSequenceRandom([]) },
@@ -514,6 +570,41 @@ describe("decide: GM director commands (matrix §4 item 7, docs/ETR_SESSION_FLOW
     const after = eatTheReichTemplate.reduce(state, accepted.events[0]!.event);
     expect(after.objectives[OBJECTIVE_ID]?.rating).toBe(4);
     expect(after.threats[THREAT_ID]?.rating).toBe(2);
+  });
+
+  it("EditScene never leaks a newly added unrevealed Threat's notes or existence to the shared event copy", () => {
+    const state = stateWithScene();
+    const decision = eatTheReichTemplate.decide(
+      { state, actor: GM_CTX, random: new FixedSequenceRandom([]) },
+      {
+        type: "EditScene",
+        reason: "reinforcements arrive",
+        addThreats: [
+          {
+            id: "new-hidden-threat",
+            name: "A New Hidden Threat",
+            rating: 6,
+            attack: 3,
+            challenge: 0,
+            solo: false,
+            elite: false,
+            flags: {},
+            revealed: false,
+            notes: "secret staging note",
+          },
+        ],
+      },
+    );
+    expect(decision.ok).toBe(true);
+    if (!decision.ok) return;
+    const gmEffect = decision.events[0]?.effects.find((e) => e.destination.kind === "gm");
+    const sharedEffect = decision.events[0]?.effects.find((e) => e.destination.kind === "shared");
+    if (gmEffect?.payload.type !== "SceneEdited" || sharedEffect?.payload.type !== "SceneEdited") {
+      throw new Error("expected SceneEdited on both destinations");
+    }
+    expect(gmEffect.payload.addedThreats).toHaveLength(1);
+    expect(gmEffect.payload.addedThreats[0]?.notes).toBe("secret staging note");
+    expect(sharedEffect.payload.addedThreats).toEqual([]);
   });
 });
 

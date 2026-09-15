@@ -52,6 +52,9 @@ describe("Deferred to B05/manual (matrix P1 items, not cut, sequenced later)", (
   test.todo(
     "S3: retreat Objective creation — manual, GM uses AddObjective-equivalent via EditScene",
   );
+  test.todo(
+    "C5: Blood sharing between characters within arm's reach — P1; no dedicated ShareBlood command; manual fallback: GM moves Blood with two CorrectCharacter patches (bounded 0-10, reason required) — flagged by the 2026-09-17 independent review as the one cut P1 item this register had omitted; recorded now for parity with every other deferred item",
+  );
 });
 
 // B05 landed: Appendix C's four original scenes (test/scenes.test.ts,

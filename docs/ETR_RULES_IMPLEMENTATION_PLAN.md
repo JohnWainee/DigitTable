@@ -163,6 +163,7 @@ Unchanged from the matrix; B02 defaults are recorded in `templates/eat-the-reich
 1. Item use counts default to 3 (book's loot rule, p. 39) pending confirmation from John's sheets.
 2. Challenge vs. criticals defaults to "negates points" (matches the p. 38 worked example).
 3. Reinforcements mode defaults to "book" for the 2026-09-17 session; "simplified" is available via the GM's `SetSceneRules` command (B04), not a room-creation field (corrected 2026-09-14 per `docs/ETR_SESSION_FLOW.md` §7 reconciliation with A02).
+4. **Flagged by the 2026-09-17 independent review (`docs/reviews/2026-09-17-etr-rules-independent-review.md` §6 Finding 2):** `docs/ETR_SESSION_FLOW.md` §6.1 describes a declared roll's bonus-claim free-text note as "shown to the GM only" (no time bound stated), but §6.2's broader "nothing hidden here in ETR once rolled" rule is what the implementation actually applies — `RollViewFull.note` is public to every viewer once a roll moves past `"declared"`. The two spec passages are in tension; the implementation's choice (broad rule wins, note becomes public once rolled) is defensible and consistently applied, not a data-exposure defect (it is the player's own text about their own action), but the spec documents should be reconciled explicitly rather than left ambiguous. Not changed without a decision from Fable/John.
 
 ## 7. Contract proposals still open with Sonnet A
 
