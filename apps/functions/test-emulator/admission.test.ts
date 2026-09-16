@@ -66,6 +66,7 @@ describe("Phase 2 admission authority (apps/functions)", () => {
       readonly gmMemberId?: string | null;
       readonly roomStatus?: "active" | "archived";
       readonly tableSecret?: boolean;
+      readonly roomRevision?: number;
     } = {},
   ): Promise<{ readonly roomId: string; readonly roomCode: string }> {
     roomCounter += 1;
@@ -90,6 +91,7 @@ describe("Phase 2 admission authority (apps/functions)", () => {
         participantCount: overrides.participantCount ?? 0,
         tableSeatClaimed: overrides.tableSeatClaimed ?? false,
         gmMemberId: overrides.gmMemberId ?? null,
+        roomRevision: overrides.roomRevision ?? 0,
       }),
       db.doc(`rooms/${roomId}/meta/current`).set({
         roomStatus: overrides.roomStatus ?? "active",
@@ -359,6 +361,7 @@ describe("Phase 2 admission authority (apps/functions)", () => {
       participantCount: 0,
       tableSeatClaimed: false,
       gmMemberId: null,
+      roomRevision: 0,
     };
     const { tableSeatClaimed: _dropped, ...withoutTableSeatClaimed } = wellFormedAuthority;
     const { gmMemberId: _droppedGm, ...withoutGmMemberId } = wellFormedAuthority;

@@ -29,6 +29,19 @@ Unless a later, explicitly approved architecture revision says otherwise:
 - No licensed game text, art, audio, or terminology. Use original
   placeholder content only, and record its provenance (see
   `assets/generated/*/README.md` for the pattern).
+  - **Canonical policy clarification (B01, 2026-09-14, `docs/ETR_RULES_MATRIX.md`
+    §5):** ordinary game-mechanical structure and short field labels (the
+    seven *Eat the Reich* stat names; Blood; Objective, Threat, Challenge,
+    Attack ratings; success/critical thresholds; injury categories; Downed;
+    Last Stand; Loot; Flashback) may be implemented in code and shown in the
+    UI. Rulebook prose, character sheets, location and enemy entries, tables
+    of flavour, and artwork remain licensed and must never be committed.
+    Shipped fixtures (roster, scenes, items, abilities) are original
+    creations. A GM may load their own copy's content only from a private,
+    git-ignored owner content pack on their own machine
+    (`content/private/*.json`, never in the repository, never in shared
+    Firestore documents readable by other rooms). This is a clarification of
+    the existing boundary above, not a relaxation of it.
 - No generic rules-authoring DSL or remote/executable template content.
   Templates are trusted TypeScript packages shipped with a release.
 - No production credentials, secrets, or real player data in the repository
