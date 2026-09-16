@@ -139,6 +139,14 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
       await assertFails(get(uid, `rooms/${room}/uidBindings/${uid}`));
       await assertFails(get(uid, `rooms/${room}/snapshots/1`));
       await assertFails(get(uid, `roomCodes/CODE-1`));
+      // Phase 2 PR 3: room passphrase, separate table-code, and per-seat
+      // recovery-code hashes, plus the per-IP/per-room-code throttle counters.
+      await assertFails(get(uid, `rooms/${room}/admission/secret`));
+      await assertFails(get(uid, `rooms/${room}/admission/tableSecret`));
+      await assertFails(get(uid, `rooms/${room}/recovery/player-a`));
+      await assertFails(get(uid, `admissionThrottle/code-abc/byIp/def`));
+      await assertFails(get(uid, `admissionThrottle/ip-def/scope/all`));
+      await assertFails(get(uid, `admissionThrottle/uid-ghi/scope/all`));
     }
   });
 
@@ -224,6 +232,40 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
     );
     await assertFails(
       context(playerUid).firestore().doc(`rooms/${room}/receipts/player-a_command-1`).delete(),
+    );
+    await assertFails(
+      context(playerUid)
+        .firestore()
+        .doc(`rooms/${room}/admission/secret`)
+        .set({ hash: "forged", salt: "forged", iterations: 1 }),
+    );
+    await assertFails(
+      context(gmUid)
+        .firestore()
+        .doc(`rooms/${room}/recovery/player-a`)
+        .set({ hash: "forged", salt: "forged", iterations: 1 }),
+    );
+    await assertFails(
+      context(gmUid)
+        .firestore()
+        .doc(`rooms/${room}/admission/tableSecret`)
+        .set({ hash: "forged", salt: "forged", iterations: 1 }),
+    );
+    // A client that could reset or delete a throttle counter could defeat the throttle.
+    await assertFails(
+      context(playerUid)
+        .firestore()
+        .doc(`admissionThrottle/code-abc/byIp/def`)
+        .set({ windowStartMs: 0, count: 0 }),
+    );
+    await assertFails(
+      context(playerUid).firestore().doc(`admissionThrottle/code-abc/byIp/def`).delete(),
+    );
+    await assertFails(
+      context(playerUid)
+        .firestore()
+        .doc(`admissionThrottle/uid-${playerUid}/scope/all`)
+        .set({ windowStartMs: 0, count: 0 }),
     );
     await assertFails(
       context(playerUid)

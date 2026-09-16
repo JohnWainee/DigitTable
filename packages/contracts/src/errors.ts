@@ -14,6 +14,20 @@ export const STABLE_ERROR_CODES = [
   "PAYLOAD_TOO_LARGE",
   "UNKNOWN_ACTION",
   "INVALID_ALLOCATION",
+  "ROOM_FULL",
+  "ADMISSION_CLOSED",
+  "ROOM_NOT_FOUND",
+  "INVALID_PASSPHRASE",
+  "GM_SEAT_TAKEN",
+  /**
+   * A persisted document required for a decision (authority, room-code
+   * index, uid binding, or secret hash) exists but fails runtime validation
+   * — malformed data never defaults to a permissive state (open/active/zero
+   * capacity); the request is denied instead (Phase 2 PR 3 review).
+   */
+  "ROOM_DATA_INVALID",
+  /** The untrusted request payload failed runtime validation before any read (Phase 2 PR 3 second pass). */
+  "INVALID_REQUEST",
 ] as const;
 
 export type StableErrorCode = (typeof STABLE_ERROR_CODES)[number];

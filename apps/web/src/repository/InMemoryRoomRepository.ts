@@ -315,6 +315,9 @@ function createInitialAuthority(): AuthorityRecord<EatTheReichState> {
     nextSequence: 1,
     roomStatus: "active",
     gmMemberId: GM_MEMBER_ID,
+    admissionStatus: "open",
+    participantCount: 2,
+    tableSeatClaimed: false,
     state,
   };
 }

@@ -6,6 +6,8 @@ export * from "./command.js";
 export * from "./event.js";
 export * from "./size.js";
 export * from "./authority.js";
+export * from "./room.js";
+export * from "./admission.js";
 export * from "./projection.js";
 export * from "./template.js";
 export * from "./repository.js";
