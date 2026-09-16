@@ -20,7 +20,8 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:emulator": "firebase emulators:exec --only auth,firestore,database --project demo-digitable \"npm run test:emulator --workspaces --if-present\"",
+    "pretest:emulator": "npm run build --workspace @digitable/functions",
+    "test:emulator": "firebase emulators:exec --only auth,firestore,database,functions --project demo-digitable \"npm run test:emulator --workspaces --if-present\"",
     "build": "npm run build --workspaces --if-present",
     "check": "npm run format && npm run lint && npm run typecheck && npm run test"
   },

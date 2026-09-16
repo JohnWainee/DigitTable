@@ -18,9 +18,12 @@ export function grpcCodeFor(code: StableErrorCode): FunctionsErrorCode {
     case "ADMISSION_CLOSED":
     case "GM_SEAT_TAKEN":
     case "INVALID_PASSPHRASE":
+    case "INVALID_RECOVERY_CODE":
       return "permission-denied";
     case "RATE_LIMITED":
     case "ROOM_FULL":
+    case "INSUFFICIENT_BLOOD": // Sonnet B (B02/B03): a per-character resource pool (Blood) is exhausted.
+    case "ITEM_DEPLETED": // Sonnet B (B02/B03): an item/gear option is exhausted — same shape as above.
       return "resource-exhausted";
     case "ROOM_NOT_FOUND":
       return "not-found";
@@ -29,9 +32,26 @@ export function grpcCodeFor(code: StableErrorCode): FunctionsErrorCode {
       return "internal";
     case "REVISION_CONFLICT":
       return "aborted";
+    // Sonnet B's contract proposals (B02-B04, the six cases below): each
+    // rejects a command because current game/session state does not permit
+    // it right now (not the actor's turn, the character is downed/retired,
+    // the round or scene has unresolved rolls, or the session is paused) —
+    // the same "valid request, wrong state" shape as the two cases above.
     case "ROLL_ALREADY_RESOLVED":
     case "TEMPLATE_VERSION_MISMATCH":
+    case "NOT_YOUR_TURN":
+    case "CHARACTER_DOWNED":
+    case "CHARACTER_RETIRED":
+    case "ROUND_HAS_OPEN_ROLLS":
+    case "SCENE_HAS_OPEN_ROLLS":
+    case "SESSION_PAUSED":
       return "failed-precondition";
+    // Sonnet B (B02/B03): `claimCharacter`/reassign against a character
+    // already bound to another member — a genuine conflict with an
+    // existing binding, distinct from every "permission-denied"/
+    // "failed-precondition" case above.
+    case "CHARACTER_TAKEN":
+      return "already-exists";
     case "PAYLOAD_TOO_LARGE":
     case "UNKNOWN_ACTION":
     case "INVALID_ALLOCATION":

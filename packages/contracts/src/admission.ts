@@ -1,4 +1,5 @@
 import type { Capability } from "./template.js";
+import type { RoomId } from "./ids.js";
 
 /** Cap room membership at eight participant seats (docs/ARCHITECTURE.md section 11). */
 export const MAX_PARTICIPANT_SEATS = 8;
@@ -52,11 +53,28 @@ export type AdmissionCommand =
  * a reclaim by an already-bound identity (the same UID reconnecting) never
  * re-mints or re-exposes a credential, since it is shown exactly once at
  * creation (docs/ARCHITECTURE.md section 8).
+ *
+ * `roomId` (board task A05): a caller who joined by room *code* has no
+ * other way to learn the real `roomId` every server-side collection this
+ * platform exposes is addressed by — `roomCodes/{code}` is service-only,
+ * denied to every client role (`firestore.rules`), by design. Added here
+ * rather than requiring a second round trip.
+ *
+ * `roomRevision` (board task A05 independent review finding): the client
+ * has no authorized read path to `authority/current` (service-only), so
+ * without this field its only way to learn the room's revision was to read
+ * its own not-yet-written `projections/{viewerId}` document and guess `0`
+ * when absent — wrong for any member who joins after an earlier command
+ * has already been accepted. The transaction that resolves this request
+ * already has `authority.roomRevision` in scope; echoing it here is exact,
+ * not a guess.
  */
 export interface AdmissionAccepted {
+  readonly roomId: RoomId;
   readonly memberId: string;
   readonly capability: Capability;
   readonly recoveryCode: string | null;
+  readonly roomRevision: number;
 }
 
 /**

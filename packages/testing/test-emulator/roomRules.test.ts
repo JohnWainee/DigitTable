@@ -71,6 +71,13 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
         // Board task A03: createRoom's idempotency receipt and its own throttle tree.
         set(`createRoomReceipts/req-1`, { roomId: room, roomCode: "CODE-1", memberId: "gm-seat" }),
         set(`createRoomThrottle/uid-abc/scope/all`, { windowStartMs: 0, count: 1 }),
+        // Board task A06: recoverSeat's GM-visible audit trail and its own throttle tree.
+        set(`rooms/${room}/audit/audit-1`, {
+          type: "SeatRecovered",
+          memberId: "player-a",
+          occurredAtServer: 1,
+        }),
+        set(`recoveryThrottle/room-abc/byIp/def`, { windowStartMs: 0, count: 1 }),
       ]);
     });
   });
@@ -102,6 +109,26 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
     await assertFails(get(playerUid, `rooms/${room}/projections/table`));
     await assertSucceeds(get(gmUid, `rooms/${room}/events/gm/items/1`));
     await assertFails(get(tableUid, `rooms/${room}/events/gm/items/1`));
+  });
+
+  it("board task A06: restricts the seat-recovery audit trail to the GM seat only", async () => {
+    await assertSucceeds(get(gmUid, `rooms/${room}/audit/audit-1`));
+    await assertFails(get(playerUid, `rooms/${room}/audit/audit-1`));
+    await assertFails(get(tableUid, `rooms/${room}/audit/audit-1`));
+    await assertFails(get(outsiderUid, `rooms/${room}/audit/audit-1`));
+    await assertFails(
+      testEnv.unauthenticatedContext().firestore().doc(`rooms/${room}/audit/audit-1`).get(),
+    );
+    await assertSucceeds(list(gmUid, `rooms/${room}/audit`));
+    await assertFails(list(playerUid, `rooms/${room}/audit`));
+    // No client, including the GM, may write an audit entry directly.
+    await assertFails(
+      context(gmUid)
+        .firestore()
+        .doc(`rooms/${room}/audit/audit-2`)
+        .set({ type: "SeatRecovered", memberId: "forged", occurredAtServer: 1 }),
+    );
+    await assertFails(context(gmUid).firestore().doc(`rooms/${room}/audit/audit-1`).delete());
   });
 
   it("denies the GM and table seats another member's projection, receipt, and private events", async () => {
@@ -153,6 +180,11 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
       // Board task A03.
       await assertFails(get(uid, `createRoomReceipts/req-1`));
       await assertFails(get(uid, `createRoomThrottle/uid-abc/scope/all`));
+      // Board task A06: the recovery throttle tree is service-only for every
+      // capability, including the GM (the audit trail's own GM-read
+      // exception is asserted separately above; this tree carries no such
+      // exception).
+      await assertFails(get(uid, `recoveryThrottle/room-abc/byIp/def`));
     }
   });
 
@@ -295,6 +327,17 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
         .firestore()
         .doc(`createRoomThrottle/uid-abc/scope/all`)
         .set({ windowStartMs: 0, count: 0 }),
+    );
+    // Board task A06: a client that could reset or delete a recovery-throttle
+    // counter could defeat that throttle too.
+    await assertFails(
+      context(playerUid)
+        .firestore()
+        .doc(`recoveryThrottle/room-abc/byIp/def`)
+        .set({ windowStartMs: 0, count: 0 }),
+    );
+    await assertFails(
+      context(playerUid).firestore().doc(`recoveryThrottle/room-abc/byIp/def`).delete(),
     );
     await assertFails(
       testEnv.unauthenticatedContext().firestore().doc(`rooms/${room}/meta/current`).set({}),

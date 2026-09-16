@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **Phase 2 PR 3 (anonymous auth, code-plus-passphrase admission, and GM claim, PR #13) is ready for John's merge decision** after three independent review rounds, no blocking findings. **A02 (integration contracts, PR #15) and A03 (secure `createRoom`, PR #18, stacked on #13+#15) are also implemented on this branch and ready for John's merge decision**, A03 after an independent review round with one process-blocking finding (a formatting check that hadn't been re-run) and three substantive findings (UID-unscoped idempotency receipts, a discarded `sessionName`, a hardcoded replay `roomRevision`), all fixed with tests.
-- **Branch:** `sonnet-a/a03` (from `worktree-phase2-pr3-admission`, PR #13's branch, with `sonnet-a/a02` merged in)
-- **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom, stacked on the other two — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-14 by Sonnet A (task A03: independent review and fixes)
+- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **PR #13 (admission), #15 (A02 contracts), #18 (A03 createRoom), #23 (A04 game commands), #27 (A05 client repository), #30 (A06 partial: seat recovery), and #32 (A07 partial: region fix + runbook) are all implemented and ready for John's merge decision**, each after its own independent review round with findings fixed and tests added (none blocking; see each PR's own review doc under `docs/reviews/`).
+- **Branch:** `sonnet-a/a07` (from `sonnet-a/a06`, itself from `sonnet-a/a05`, itself from `sonnet-a/a04`, itself from `sonnet-a/a03`, itself from `worktree-phase2-pr3-admission`/PR #13's branch with `sonnet-a/a02` merged in)
+- **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
+- **Last updated:** 2026-09-15 by Sonnet A (task A07: region co-location fix, operations runbook, independent review, and this session's final report)
 
 ## Mission
 
@@ -254,6 +254,108 @@ Merge remains John's decision.
 ### Independent review
 
 One round: [`docs/reviews/2026-09-14-a03-createroom-independent-review.md`](docs/reviews/2026-09-14-a03-createroom-independent-review.md). No blocking finding in the security-relevant guarantees (atomicity, collision safety, secret handling, privilege/injection safety, throttling, rules enforcement — all independently verified PASS with test evidence). One process-blocking finding (a formatting check that hadn't been re-run after the last file was added — fixed) and three substantive findings, all fixed with tests: idempotency receipts were not scoped to the calling UID (fixed — `ROLE_FORBIDDEN` on a UID mismatch, which also corrected a test that had inadvertently exercised the insecure cross-identity case as the happy path), the validated `sessionName` was silently discarded (fixed — persisted to `meta/current`), and a replay hardcoded `roomRevision: 0` (fixed — reads the live value). One judgment call (a client's own recovery code persisted in `localStorage` until board task A06 consumes it) recorded as an explicit A06 follow-up rather than an A03 defect.
+
+Merge remains John's decision.
+
+## Tenth implementation PR: trusted game-command authority (board task A04) — READY FOR JOHN'S MERGE DECISION
+
+`sonnet-a/a04`, PR #23, commit `1113209` (stacked on PR #18's branch — see PR #23's description for the stacking note; retarget to `main` once #13, #15, and #18 merge). Adds a fourth callable, `submitRoomCommand`, implementing `docs/PHASE_2_PR4_PLAN.md`'s design for the current template's three commands (`BeginAction`, `SubmitOpposition`, `AllocateResults`). One transaction per invocation: resolve capability from `uidBindings` only (checked immediately — `AUTH_REQUIRED` before any other read) → prior-receipt lookup → full `authority/current` read (`parseAuthorityRecord`, fail-closed) → every live binding read (before any write) → `expectedRevision` check → platform authorization, using the client's own asserted `templateId`/`templateVersion` (`WireCommandRequest`) checked against the room's live values → command parse → `runCommand` → atomic writes of authority, receipt, every event's destination-partitioned copy, and every live viewer's projection (via `projectViewer`, matching the reserved `"gm"`/`"table"` viewer-ID convention). Idempotent both ways: an accepted retry short-circuits; a rejected retry replays the identical stored `code`/`message`. Seed generated once per invocation outside the transaction, reused across internal retries, never logged. `commandId` is UUID-shape-validated; `roomId` gets the same character-safety pattern `admission.ts`'s room codes use.
+
+Explicitly out of scope for this PR (documented, not silently dropped): synthetic revision-gated/anonymous-actor fixture-command tests (no current ETR command is revision-gated or anonymous) and Firestore write-count/size worst-case budget assertions (today's commands stay far under those limits).
+
+### Required checks — all pass locally
+
+- `npm run check` — formatting, lint (zero warnings), typecheck, and **321/321** default tests across 43 files passed.
+- `npm run build` — passed (`apps/functions` esbuild bundle 91.6kb; `apps/web` vite build).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **89/89** tests passed (16 `packages/testing`, 73 `apps/functions`).
+- `npm audit` — 13 moderate, unchanged from A01's baseline.
+- `git diff --check` — clean.
+
+### Independent review
+
+One round: [`docs/reviews/2026-09-14-a04-gamecommand-independent-review.md`](docs/reviews/2026-09-14-a04-gamecommand-independent-review.md). No blocking finding — all 10 required verification items passed with direct code-path tracing. One Medium finding (client template-version assertion was previously unreachable, so `TEMPLATE_VERSION_MISMATCH` could never fire — fixed) and three Low findings (hand-duplicated projection assembly instead of reusing `projectViewer`; `commandId`/`roomId` only length-bounded, not character-restricted; authority/bindings validation could throw before the `AUTH_REQUIRED` check), all fixed with regression tests.
+
+Merge remains John's decision.
+
+## Eleventh implementation PR: live client repository (board task A05) — READY FOR JOHN'S MERGE DECISION
+
+`sonnet-a/a05`, PR #27, commit `2ac90f4` (stacked on PR #23's branch — see PR #27's description for the stacking note; retarget to `main` once #13, #15, #18, #23 merge). The client half of A01/A03/A04's trusted authority: `FirebaseSessionClient` (create/join/claim, wrapping A01/A03's callables behind A02's client contracts) and `FirebaseRoomRepository` (the real `RoomRepository` — `dispatch` via `submitRoomCommand` with the client's own asserted template identity; `getProjection`/`subscribeToProjection` via direct Firestore reads/listeners on `rooms/{roomId}/projections/{viewerId}`, never `authority/current` or an event tail). Found and fixed a real gap while wiring this: neither `admitMember` nor `claimSeat` returned `roomId` or `roomRevision`, and `roomCodes/{code}` is service-only — `AdmissionAccepted` now carries both, server-resolved, at all three construction sites in `admissionAuthority.ts`. `anonymousAuth.ts`'s sign-in helpers now take an explicit `FirebaseApp` instead of silently resolving to the process-wide default. Infrastructure: the Functions emulator now starts for `npm run test:emulator` (`firebase.json`) — the first time any test in this repository has driven it over real HTTP transport. `apps/web` gains its own opt-in emulator suite (`vitest.emulator.config.ts` + `test-emulator/session.test.ts`).
+
+Known, documented, out-of-scope gap (not fixed here): the current pre-B02 template never connects "a player joined" to "a character exists" — that's Sonnet B's B02/B03 `ClaimCharacter` rework. The integration test seeds a placeholder character directly past `firestore.rules` (matching `admission.test.ts`'s own fixture pattern) purely to exercise the real accepted-command path end to end.
+
+### Required checks — all pass locally
+
+- `npm run check` — formatting, lint (zero warnings), typecheck, and **325/325** default tests across 43 files passed.
+- `npm run build` — passed (`apps/functions` esbuild bundle 92.1kb; `apps/web` vite build, no Firebase/test-emulator code in the production bundle — verified by grep).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **92/92** tests passed (16 `packages/testing`, 73 `apps/functions`, 3 `apps/web` — the new suite genuinely drives `createRoom` → `admitMember` → `submitRoomCommand` (accepted) → projection read end to end through the real emulators, plus a live `onSnapshot` proof and a real `ROOM_NOT_FOUND` rejection proof).
+- `npm audit` — 13 moderate, unchanged from A01's baseline.
+- `git diff --check` — clean.
+
+### Independent review
+
+One round: [`docs/reviews/2026-09-14-a05-client-repository-independent-review.md`](docs/reviews/2026-09-14-a05-client-repository-independent-review.md). No hard-blocking finding. One Medium finding (the client-side `roomRevision` approximation's stated reasoning was factually wrong — fixed properly with a small server-side change, `AdmissionAccepted` now echoes the transaction's real `authority.roomRevision`, rather than left as a documented limitation) and two Low findings (a duplicated error-mapping helper, a missing `onSnapshot` error callback), all fixed with tests.
+
+Merge remains John's decision.
+
+## Twelfth implementation PR: seat recovery / redemption (board task A06, partial) — READY FOR JOHN'S MERGE DECISION
+
+`sonnet-a/a06`, PR #30, commit `78a2d94` (stacked on PR #27's branch; retarget to `main` once #13, #15, #18, #23, #27 merge). Board task A06's full scope (outbox persistence/reconciliation, seat recovery/rotation/rebind, old-UID revocation, kick, bounded RTDB presence, reload/identity-loss tests) is large. This PR delivers the first-named, fully-specified item — seat recovery ("Redemption," `docs/ARCHITECTURE.md` section 8) — as its own reviewable slice.
+
+A fifth callable, `recoverSeat`: proves seat ownership by presenting a room code plus recovery code (never a client-asserted `memberId`) — the transaction scans every seated member's binding (bounded at `MAX_PARTICIPANT_SEATS + 1`) and checks the candidate code against each seat's `recovery/{memberId}` hash with no early exit. On match, in one transaction: revokes the old UID's `uidBindings` entry (skipped when the caller already holds it — the self-rotate case), binds the caller's UID to the seat, replaces the spent code with a freshly minted one (redemption invalidates it), and writes a GM-visible audit entry (`rooms/{roomId}/audit/{id}`, `memberId` only — no UID, no secret material). New independent throttle (`recoveryThrottle`, per-room-code+IP and per-IP) and stable error code (`INVALID_RECOVERY_CODE`).
+
+Explicitly deferred (see PR #30's description for the full list): client-side outbox persistence/reconciliation, a rotation command distinct from redemption, kick, and bounded RTDB presence (its own large plan-only subsystem, `docs/PHASE_2_PR5_PLAN.md`, still dependency-blocked on PR 3/4 merging). Reload-during-roll/identity-loss test scenarios not exercised (no outbox/reconnect machinery yet to test against).
+
+### Required checks — all pass locally
+
+- `npm run check` — formatting, lint (zero warnings), typecheck, and **325/325** default tests across 43 files passed.
+- `npm run build` — passed (`apps/functions` esbuild bundle 100.0kb; `apps/web` vite build, 79 modules).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **106/106** tests passed (17 `packages/testing`, 86 `apps/functions`, 3 `apps/web`).
+- `npm audit` — unchanged from A05's baseline.
+- `git diff --check` — clean.
+
+### Independent review
+
+One round: [`docs/reviews/2026-09-14-a06-recoverseat-independent-review.md`](docs/reviews/2026-09-14-a06-recoverseat-independent-review.md). No blocking finding. One Low finding — `packages/testing/test-emulator/roomRules.test.ts` had no rules-matrix coverage for the two new Firestore paths (`rooms/{roomId}/audit/{auditId}`, `recoveryThrottle/{document=**}`) — fixed with new/extended tests (GM-only audit read, no client write, fully service-only throttle tree). One Low documentation nuance noted (architecture doc says "deletes the old UID's presence"; the implementation deletes the Firestore `uidBindings` entry, since RTDB presence isn't implemented yet — tracked under the existing R5 residual, not a defect).
+
+Merge remains John's decision.
+
+## Thirteenth implementation PR: release integration, partial (board task A07) — READY FOR JOHN'S MERGE DECISION
+
+`sonnet-a/a07`, PR #32, commit `ef15eb2` plus a small post-review documentation fix (stacked on PR #30's branch; retarget to `main` once #13, #15, #18, #23, #27, #30 merge). A07's full board scope — full quality gates, emulator transport tests, privacy/security review, staging candidate prep, setup/resume/recovery/backup/restore runbook, verify configured regions, three-device rehearsal evidence — is not completable end-to-end from this branch alone: genuine rehearsal evidence needs `apps/web`'s production screens wired to the real backend, and they are not (Sonnet C's C01–C05 fixture engine lives on unmerged branches; a `sonnet-c/c06-integration` branch exists locally, unpushed, that appears to be exactly that integration in progress). Fabricating rehearsal evidence against a fixture engine would prove nothing about this backend, so none is included.
+
+What this PR does deliver:
+
+1. **A real, previously-unnoticed region-mismatch bug, fixed.** `docs/PHASE_2_DECISION_BRIEF.md` records staging Firestore in `us-west1` and directs recording the Functions region alongside it; neither the five `apps/functions` callables nor `apps/web`'s client SDK call had ever actually specified a region (both silently defaulted to `us-central1`, agreeing with each other locally but not by design). Added `FUNCTIONS_REGION = "us-west1"` to `packages/contracts/src/deployment.ts` (shared by both apps so they cannot drift apart independently again) and applied it everywhere. Verified live via the emulator's own registered function names (`us-west1-createRoom`, etc.), not just a type-level claim.
+2. **`docs/RUNBOOK.md`** — setup, resume-vs-recovery (with the architecture doc's R3/R4/R5 residuals stated as plain operational guidance), and backup/restore via standard `gcloud` tooling, explicitly marked unexercised against any real project. Includes the exact (unexecuted) staging deploy command sequence for John to run deliberately, region-verification steps, and an empty "deploy log" section never to be overwritten, only appended.
+
+### Required checks — all pass locally
+
+- `npm run check` — formatting, lint (zero warnings), typecheck, and **325/325** default tests across 43 files passed.
+- `npm run build` — passed (`apps/functions` esbuild bundle 100.2kb; `apps/web` vite build, 80 modules).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **106/106** tests passed (17 `packages/testing`, 86 `apps/functions`, 3 `apps/web`), with the emulator log confirming `us-west1`-qualified function names actually executing.
+- `npm audit` — unchanged from A06's baseline.
+- `git diff --check` — clean.
+
+### Independent review
+
+Two passes (the first stalled mid-run on a long-running background command and was re-run in the foreground to completion): [`docs/reviews/2026-09-14-a07-release-integration-independent-review.md`](docs/reviews/2026-09-14-a07-release-integration-independent-review.md). No blocking finding. One Low finding — `docs/RUNBOOK.md` section 8 imprecisely implied this branch's own `apps/web` held the fixture-engine files it named, when those files live only on Sonnet C's unmerged branches — fixed by clarifying that this branch's `apps/web` is a separate, more primitive, unrelated stub, and the cited files are cross-track information about Sonnet C's branches specifically.
+
+Merge remains John's decision.
+
+## C06 integration fixes (issue #14) — PRs #34 and #36, READY FOR JOHN'S MERGE DECISION
+
+Sonnet C's `sonnet-c/c06-integration` (PR #33) surfaced two `apps/functions` gaps while running its own full check/build/emulator pass, plus a third found live during the follow-up verification. All three are fixed here, stacked `sonnet-a/a07` → `sonnet-a/a08-integration-fixes` (PR #34) → `sonnet-a/a08-final` (PR #36):
+
+1. **`httpsErrors.ts` exhaustiveness** — `grpcCodeFor`'s switch had no case for B05's eight stable error codes or this repo's own `SESSION_PAUSED`. Fixed with semantically-grouped mappings (PR #34).
+2. **`test:emulator` silently ran against a stale/missing Functions build** — nothing in the pipeline built `apps/functions` before the emulator suite ran; a missing `dist/index.js` made the whole Functions emulator fail to load, surfacing as unmapped-error rejections everywhere. Fixed with a `pretest:emulator` npm lifecycle script (PR #34).
+3. **`admitMember`/`claimSeat` never wrote the newly-admitted member's own initial projection** — a known, documented-but-never-implemented residual from A03/A04, only caught by actually driving create → join → claim live against the real emulator. Fixed in `writeInitialProjection` (PR #36).
+
+**Verified live**, not just by unit test: merged this fix with `origin/sonnet-c/c06-integration` (`25b9dec`) in a throwaway verification worktree and ran the real UI against the real Functions/Firestore/Auth emulators through the full loop — create room → load scene → join player → claim character → declare action → GM reviews/rolls → player allocates → GM advances scene. Every step went through the real callables; nothing was mocked or faked. Full write-up, including two findings that could not be committed to this branch (a client-side auth-readiness race in `sonnet-c/c06-integration`'s own `apps/web/src/session/useRoomProjection.ts`, with a ready-to-apply patch; a stale `BeginAction`-rolls-immediately assumption in `gameCommand.test.ts`'s fixtures, needing a dedicated follow-up), is recorded on issue #14.
+
+### Required checks — all pass locally (PR #36's branch)
+
+- `npm run check` — 325/325 tests, 43 files, format/lint/typecheck clean.
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — 106/106 (17 `packages/testing` + 86 `apps/functions` + 3 `apps/web`), no regressions from the projection fix.
 
 Merge remains John's decision.
 
