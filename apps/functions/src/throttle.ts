@@ -96,10 +96,10 @@ export function throttleDocumentPaths(
   };
 }
 
-export interface ThrottleResult {
+export interface ThrottleResult<TBucket extends string = ThrottleBucket> {
   readonly allowed: boolean;
   /** Which bucket denied the request, when one did. */
-  readonly limitedBy: ThrottleBucket | null;
+  readonly limitedBy: TBucket | null;
 }
 
 const BUCKETS: readonly ThrottleBucket[] = ["code", "ip", "uid"];
@@ -199,6 +199,79 @@ export async function checkAndConsumeCreateRoomThrottle(
       return {
         bucket,
         decision: decideThrottle(existing, now, CREATE_ROOM_THROTTLE_LIMITS[bucket]),
+      };
+    });
+    const denied = decisions.find(({ decision }) => !decision.allowed);
+    if (denied !== undefined) {
+      return { allowed: false, limitedBy: denied.bucket };
+    }
+    decisions.forEach(({ decision }, index) => {
+      const ref = refs[index];
+      if (decision.next === null || ref === undefined) return;
+      txn.set(ref, {
+        ...decision.next,
+        expiresAt: Timestamp.fromMillis(
+          decision.next.windowStartMs + ADMISSION_THROTTLE_WINDOW_MS + TTL_GRACE_MS,
+        ),
+      });
+    });
+    return { allowed: true, limitedBy: null };
+  });
+}
+
+/**
+ * Board task A06: `recoverSeat` redemption, rate-limited "per room and
+ * source IP" with a brief lockout after a small number of failures
+ * (docs/ARCHITECTURE.md section 8) — tighter than admission's throttle
+ * since a successful redemption is rare and a burst of attempts against
+ * one room is the recovery-code brute-force threat this exists to bound.
+ * Kept in its own `recoveryThrottle` tree, independent of admission's and
+ * createRoom's, so each is tuned and reasoned about on its own.
+ */
+export const RECOVERY_THROTTLE_LIMITS = {
+  roomIp: 10,
+  ip: 30,
+} as const;
+
+export type RecoveryThrottleBucket = keyof typeof RECOVERY_THROTTLE_LIMITS;
+
+const RECOVERY_BUCKETS: readonly RecoveryThrottleBucket[] = ["roomIp", "ip"];
+
+export interface RecoveryThrottleSubject {
+  readonly roomCode: string;
+  readonly ip: string;
+}
+
+/** Service-only paths; the whole `recoveryThrottle` tree is denied to clients in `firestore.rules`. */
+export function recoveryThrottleDocumentPaths(
+  subject: RecoveryThrottleSubject,
+): Readonly<Record<RecoveryThrottleBucket, string>> {
+  const ip = throttleKey(subject.ip);
+  return {
+    roomIp: `recoveryThrottle/room-${throttleKey(subject.roomCode)}/byIp/${ip}`,
+    ip: `recoveryThrottle/ip-${ip}/scope/all`,
+  };
+}
+
+/** Same shape and transaction discipline as `checkAndConsumeCreateRoomThrottle`, over the `recoverSeat`-only bucket set. */
+export async function checkAndConsumeRecoveryThrottle(
+  db: Firestore,
+  subject: RecoveryThrottleSubject,
+  now: number,
+): Promise<ThrottleResult<RecoveryThrottleBucket>> {
+  const paths = recoveryThrottleDocumentPaths(subject);
+  const refs = RECOVERY_BUCKETS.map((bucket) => db.doc(paths[bucket]));
+  return db.runTransaction(async (txn) => {
+    const snapshots = await txn.getAll(...refs);
+    const decisions = RECOVERY_BUCKETS.map((bucket, index) => {
+      const snapshot = snapshots[index];
+      const existing =
+        snapshot !== undefined && snapshot.exists
+          ? parseAdmissionThrottleDocument(snapshot.data())
+          : null;
+      return {
+        bucket,
+        decision: decideThrottle(existing, now, RECOVERY_THROTTLE_LIMITS[bucket]),
       };
     });
     const denied = decisions.find(({ decision }) => !decision.allowed);

@@ -7,22 +7,31 @@ import {
 } from "firebase-functions/v2/https";
 import {
   AdmissionInputError,
+  FUNCTIONS_REGION,
+  RecoverySeatInputError,
   RoomDataError,
   SessionInputError,
   parseAdmitMemberInput,
   parseClaimSeatInput,
   parseCreateRoomInput,
+  parseRecoverSeatInput,
   type AdmissionAccepted,
   type AdmitMemberInput,
   type ClaimSeatInput,
   type CreateRoomAccepted,
+  type RecoverSeatAccepted,
   type StableErrorCode,
 } from "@digitable/contracts";
 import { admitMember as admitMemberTxn, claimSeat as claimSeatTxn } from "./admissionAuthority.js";
 import { createRoom as createRoomTxn, type CreateRoomResult } from "./createRoomAuthority.js";
+import { recoverSeat as recoverSeatTxn, type RecoverySeatResult } from "./recoverySeatAuthority.js";
 import { clientIpFrom } from "./clientIp.js";
 import { grpcCodeFor } from "./httpsErrors.js";
-import { checkAndConsumeAdmissionThrottle, checkAndConsumeCreateRoomThrottle } from "./throttle.js";
+import {
+  checkAndConsumeAdmissionThrottle,
+  checkAndConsumeCreateRoomThrottle,
+  checkAndConsumeRecoveryThrottle,
+} from "./throttle.js";
 import type { AdmissionResult } from "./admissionAuthority.js";
 
 /** Structured, content-free log sink; `firebase-functions/logger` in production, a recorder in tests. */
@@ -38,7 +47,7 @@ export interface AdmissionCallableDependencies {
   readonly now: () => number;
 }
 
-export type AdmissionCallableName = "admitMember" | "claimSeat" | "createRoom";
+export type AdmissionCallableName = "admitMember" | "claimSeat" | "createRoom" | "recoverSeat";
 
 /** The subset of the underlying HTTP request that per-IP throttling reads. */
 interface RawRequestMetadata {
@@ -51,6 +60,9 @@ export type AdmissionCallable = CallableFunction<unknown, Promise<AdmissionAccep
 
 /** A `createRoom` callable: untrusted JSON in, the accepted room+GM seat out (or an `HttpsError`). */
 export type CreateRoomCallable = CallableFunction<unknown, Promise<CreateRoomAccepted>>;
+
+/** A `recoverSeat` callable: untrusted JSON in, the rebound seat + fresh recovery code out (or an `HttpsError`). */
+export type RecoverSeatCallable = CallableFunction<unknown, Promise<RecoverSeatAccepted>>;
 
 function toHttpsError(code: StableErrorCode, message: string): HttpsError {
   // `details.code` is the stable code clients branch on; the gRPC status is
@@ -97,7 +109,11 @@ function parseInput<TInput>(parse: (value: unknown) => TInput, data: unknown): T
   try {
     return parse(data);
   } catch (error) {
-    if (error instanceof AdmissionInputError || error instanceof SessionInputError) {
+    if (
+      error instanceof AdmissionInputError ||
+      error instanceof SessionInputError ||
+      error instanceof RecoverySeatInputError
+    ) {
       throw toHttpsError("INVALID_REQUEST", "The request was malformed.");
     }
     throw error;
@@ -156,6 +172,28 @@ async function requireCreateRoomThrottle(
   }
 }
 
+/** Same shape as `requireThrottle`, over `recoverSeat`'s room-code+IP / IP-only bucket set (board task A06). */
+async function requireRecoveryThrottle(
+  deps: AdmissionCallableDependencies,
+  request: CallableRequest<unknown>,
+  roomCode: string,
+): Promise<void> {
+  const raw = request.rawRequest as unknown as RawRequestMetadata;
+  const ip = clientIpFrom({ ip: raw.ip, forwardedFor: raw.headers["x-forwarded-for"] });
+  let allowed: boolean;
+  try {
+    ({ allowed } = await checkAndConsumeRecoveryThrottle(deps.db, { roomCode, ip }, deps.now()));
+  } catch (error) {
+    if (error instanceof RoomDataError) {
+      throw toHttpsError("ROOM_DATA_INVALID", "This room's data could not be verified.");
+    }
+    throw error;
+  }
+  if (!allowed) {
+    throw toHttpsError("RATE_LIMITED", "Too many recovery attempts. Try again in a minute.");
+  }
+}
+
 /**
  * The shared callable pipeline: App Check monitoring → auth → payload
  * validation → throttle (per code+IP, per IP, per UID) → one Firestore
@@ -211,10 +249,35 @@ async function handleCreateRoom(
 }
 
 /**
- * Builds the three admission/room-creation callables against explicit
- * dependencies. The production instances in `src/index.ts` use the Admin
- * SDK's default Firestore, the Functions logger, and the wall clock;
- * emulator tests build their own with a recording logger and a
+ * `recoverSeat`'s own pipeline: App Check monitoring → auth → payload
+ * validation → throttle (per room-code+IP, per IP) → one Firestore
+ * transaction. Kept distinct from `handleAdmission` for the same reason
+ * `handleCreateRoom` is: `RecoverSeatInput` has no client-asserted capability
+ * request (the server determines the seat from the code alone), and the
+ * result type differs.
+ */
+async function handleRecoverSeat(
+  deps: AdmissionCallableDependencies,
+  request: CallableRequest<unknown>,
+): Promise<RecoverSeatAccepted> {
+  logAppCheckStatus(deps, request, "recoverSeat");
+  const uid = requireAuth(request);
+  const input = parseInput(parseRecoverSeatInput, request.data);
+  await requireRecoveryThrottle(deps, request, input.roomCode);
+
+  const result: RecoverySeatResult = await recoverSeatTxn(deps.db, uid, input);
+  if (!result.ok) {
+    deps.logger.info("admission.denied", { function: "recoverSeat", code: result.code });
+    throw toHttpsError(result.code, result.message);
+  }
+  return result.accepted;
+}
+
+/**
+ * Builds the four admission/room-creation/recovery callables against
+ * explicit dependencies. The production instances in `src/index.ts` use
+ * the Admin SDK's default Firestore, the Functions logger, and the wall
+ * clock; emulator tests build their own with a recording logger and a
  * controllable clock, then invoke `.run()` — the same handler a deployed
  * HTTPS request reaches.
  */
@@ -222,10 +285,11 @@ export function createAdmissionCallables(deps: AdmissionCallableDependencies): {
   readonly admitMember: AdmissionCallable;
   readonly claimSeat: AdmissionCallable;
   readonly createRoom: CreateRoomCallable;
+  readonly recoverSeat: RecoverSeatCallable;
 } {
   return {
     admitMember: onCall<unknown, Promise<AdmissionAccepted>>(
-      { enforceAppCheck: false },
+      { enforceAppCheck: false, region: FUNCTIONS_REGION },
       (request) =>
         handleAdmission<AdmitMemberInput>(
           deps,
@@ -235,18 +299,24 @@ export function createAdmissionCallables(deps: AdmissionCallableDependencies): {
           admitMemberTxn,
         ),
     ),
-    claimSeat: onCall<unknown, Promise<AdmissionAccepted>>({ enforceAppCheck: false }, (request) =>
-      handleAdmission<ClaimSeatInput>(
-        deps,
-        "claimSeat",
-        request,
-        parseClaimSeatInput,
-        claimSeatTxn,
-      ),
+    claimSeat: onCall<unknown, Promise<AdmissionAccepted>>(
+      { enforceAppCheck: false, region: FUNCTIONS_REGION },
+      (request) =>
+        handleAdmission<ClaimSeatInput>(
+          deps,
+          "claimSeat",
+          request,
+          parseClaimSeatInput,
+          claimSeatTxn,
+        ),
     ),
     createRoom: onCall<unknown, Promise<CreateRoomAccepted>>(
-      { enforceAppCheck: false },
+      { enforceAppCheck: false, region: FUNCTIONS_REGION },
       (request) => handleCreateRoom(deps, request),
+    ),
+    recoverSeat: onCall<unknown, Promise<RecoverSeatAccepted>>(
+      { enforceAppCheck: false, region: FUNCTIONS_REGION },
+      (request) => handleRecoverSeat(deps, request),
     ),
   };
 }

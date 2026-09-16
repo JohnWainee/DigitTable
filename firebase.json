@@ -21,6 +21,9 @@
     "database": {
       "port": 9000
     },
+    "functions": {
+      "port": 5001
+    },
     "ui": {
       "enabled": false
     },
