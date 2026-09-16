@@ -21,7 +21,6 @@ import {
   type TheatreScene,
   type VersionedTemplateRecord,
   type StableError,
-  type StableErrorCode,
   type ViewerContext,
   type ViewerProjection,
   type VisibleRoll,
@@ -228,14 +227,13 @@ function poolRejectionToStableError(rejection: PoolBuildRejection): StableError 
 }
 
 /**
- * Contract proposal for Sonnet A (B04, not yet posted/merged): add
- * `"SESSION_PAUSED"` to `packages/contracts/src/errors.ts`'s
- * `STABLE_ERROR_CODES`, matching `docs/ETR_SESSION_FLOW.md` §8's Pause
- * behavior. Template-local placeholder cast until then, same pattern as
- * B02/B03's error-code proposals.
+ * `SESSION_PAUSED` landed on `packages/contracts/src/errors.ts`'s
+ * `STABLE_ERROR_CODES` (Sonnet B's third contract proposal, accepted by
+ * Sonnet A on PR #19), matching `docs/ETR_SESSION_FLOW.md` §8's Pause
+ * behavior — no template-local placeholder cast is needed any more.
  */
 function pausedError(): StableError {
-  return { code: "SESSION_PAUSED" as StableErrorCode, message: "Session paused." };
+  return { code: "SESSION_PAUSED", message: "Session paused." };
 }
 
 function hasUnresolvedRoll(state: EatTheReichState, characterId: string): boolean {

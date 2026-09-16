@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **PR #13 (admission), #15 (A02 contracts), #18 (A03 createRoom), #23 (A04 game commands), #27 (A05 client repository), #30 (A06 partial: seat recovery), and #32 (A07 partial: region fix + runbook) are all implemented and ready for John's merge decision**, each after its own independent review round with findings fixed and tests added (none blocking; see each PR's own review doc under `docs/reviews/`).
-- **Branch:** `sonnet-a/a07` (from `sonnet-a/a06`, itself from `sonnet-a/a05`, itself from `sonnet-a/a04`, itself from `sonnet-a/a03`, itself from `worktree-phase2-pr3-admission`/PR #13's branch with `sonnet-a/a02` merged in)
-- **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-15 by Sonnet A (task A07: region co-location fix, operations runbook, independent review, and this session's final report)
+- **Status:** Phase 1A–1C, the Phase 2 preflight, Phase 2 PRs 1–3 (#13), A02 (#15) and A03 (#18) are merged to `main`. **Every remaining issue #14 track — Sonnet A's A04–A08 (PRs #23/#27/#30/#32/#34/#36 plus #19), Sonnet B's B01–B05 (PRs #17/#21/#25/#28/#29), Sonnet C's C01–C08 (PRs #20/#22/#24/#26/#31/#33/#35/#37) and Fable's F01–F05 docs (PR #16) — is merged together onto the current `main` on this branch as one integration candidate**, with the two follow-ups Sonnet A left open (stale emulator fixtures written against the placeholder template; the placeholder `initialState` test) resolved, and all three gates green (see "Issue #14 integration candidate" below).
+- **Branch:** `claude/issue-14-resume-cap2zr` (from `origin/main` @ `c5ad236`, the post-#18 merge), carrying merge commits of `origin/sonnet-a/a08-final`, `origin/sonnet-b/b05-fixtures-review`, `origin/sonnet-c/c08-recovery` and `origin/fable/etr-specifications` plus the integration fixes described below.
+- **PRs:** the integration candidate's own draft PR (see the issue #14 status comment for its number). The per-track PRs listed above stay open as the reviewed record of each slice; merging the candidate supersedes them (their heads are all ancestors of this branch).
+- **Last updated:** 2026-09-16 by Fable (issue #14 resume: cross-track integration candidate, stale fixture follow-ups, full gates)
 
 ## Mission
 
@@ -360,6 +360,35 @@ Sonnet C's `sonnet-c/c06-integration` (PR #33) surfaced two `apps/functions` gap
 
 Merge remains John's decision.
 
+## Issue #14 integration candidate — every remaining track merged onto `main`, READY FOR JOHN'S MERGE DECISION
+
+John merged PR #13 and PR #18 (with #15's content) to `main` on 2026-09-15. The remaining three stacks were each built against an older `main` or against each other (Sonnet C's branch already carried A04–A06 and B05; Sonnet A's A07/A08 fixes and Fable's docs were on neither), so no single open PR could be merged next without conflicts. This branch resolves that once, in merge order `origin/sonnet-a/a08-final` → `origin/sonnet-b/b05-fixtures-review` → `origin/sonnet-c/c08-recovery` → `origin/fable/etr-specifications`, each as a plain merge commit (no history rewritten on any track's branch).
+
+**Conflict resolutions** (all four conflicted files, every resolution recorded in the merge commit messages):
+
+- `packages/contracts/src/errors.ts` — kept the union of every stable error code: A's admission/creation/recovery codes, B's eight character/round codes, and A07's `SESSION_PAUSED` (Sonnet C's copy of B's codes lacked it).
+- `templates/eat-the-reich/src/engine.ts` — took B02–B05's real `schemaVersion` 4 `initialState` (full unclaimed roster, no scene) over A03's placeholder engine, with C's doc comment explaining why `memberIds` is no longer consumed.
+- `.gitignore` — kept both `.vitest/` and `content/private/`.
+- `CLAUDE_HANDOFF.md` — kept every track's status line.
+
+**Integration fixes on top of the merges** (the two follow-ups Sonnet A named on issue #14 but could not land from `sonnet-a/*`, plus what the merged tree itself surfaced):
+
+1. `apps/functions/test-emulator/gameCommand.test.ts` — rewritten against the real template: `seedRoom` now runs the GM's `LoadScene` (the opening scene of `ORIGINAL_MISSION`, same payload mapping the GM console uses) and the player's `ClaimCharacter` through `submitRoomCommand` before each scenario; `BeginAction` uses B03's declare shape and is asserted to emit the redacted shared `ActionDeclared` (stat `none`, note `null`) while the GM partition keeps the full declaration; the ADR-002 determinism proof now runs declare → GM `ReviewAction` and compares `playerFaces`; the privacy assertion checks the declaration note never reaches logs. Two tests added: `ReviewAction` is GM-only, and `BeginAction` with no active scene is rejected by the template itself. Every revision/sequence assertion is relative to the prepared baseline read back from the authority document.
+2. `apps/web/test-emulator/session.test.ts` — the GM loads the opening scene before the player claims and declares (B04's active-scene precondition), so the transport round trip asserts `roomRevision` 3 and an `ActionDeclared` shared event.
+3. `templates/eat-the-reich/test/initialState.test.ts` — A03's placeholder-engine expectations replaced with the real contract: full original roster unclaimed, no scene/objectives/threats, `paused`/`missionEnded` false, schema version from the manifest, no character ever pre-assigned to a member or the GM.
+4. `templates/eat-the-reich/src/engine.ts` — dropped the template-local `as StableErrorCode` cast on `SESSION_PAUSED` (lint failed on it once the real code existed in `packages/contracts`).
+
+**Not changed here:** no runtime behaviour beyond the merges themselves; Sonnet B's open `PoolInput` proposal (non-blocking per B) and the S06 client outbox residual (A06, deferred, John's call) remain exactly as the tracks left them.
+
+### Required checks — all pass locally (this branch head)
+
+- `npm run check` — format, lint, typecheck clean; **449/449 tests** (47 files, 11 `todo`, 1 skipped file).
+- `npm run build` — clean (functions bundle, web build).
+- `npm run test:emulator` — **108/108** (17 `packages/testing` + 88 `apps/functions` + 3 `apps/web`), up from Sonnet A's 106 by the two added `gameCommand` tests, with all five `us-west1-*` callables loaded from the freshly built bundle.
+- Environment note for anyone running the emulator suite behind an HTTPS proxy: `firebase-tools` sends *every* request, including the Database rules upload to `127.0.0.1:9000`, through `HTTPS_PROXY` and ignores `NO_PROXY`, which fails with `database.rules.json: Unable to parse JSON ... "request bl..."`. Run the suite with the proxy variables unset for that one localhost-only subprocess (`env -u HTTPS_PROXY -u https_proxy npm run test:emulator`); the emulator JARs must already be cached. This does not affect a normal workstation.
+
+Merge remains John's decision. Independent review of the integration itself (not the individual slices, which each carry their own review record) has not been run; the diff beyond the merges is confined to the four files above.
+
 ## Sonnet B — Eat the Reich rules implementation (issue #14, tasks B01–B05)
 
 - **Status:** B01 done, this branch. B02–B05 not started as of this handoff entry.
@@ -506,9 +535,8 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-1. **John decides whether to merge PR #13.** Both independent passes are recorded; the gate and emulator suite are green on the branch head. Merge via the PR (squash or merge commit, either is fine); then delete the `worktree-phase2-pr3-admission` branch and its worktree.
-2. Before a staging playtest, decide: (a) whether to encode the staging region (`us-west1` per the decision brief) in `firebase.json`/function options; (b) which PR owns **room creation** — minting the code, passphrase, table code, and empty GM seat (the GM cannot issue a table code today); (c) enabling the Firestore TTL policy on `admissionThrottle`'s `byIp`/`scope` collection groups.
-3. PR 4 (the trusted gameplay command authority) lands in `apps/functions` alongside the admission callables, reusing the Admin-SDK transaction shape, `httpsErrors.ts`, the throttle, and the emulator harness. Before App Check enforcement, verify on staging that `rawRequest.ip` resolves to the client (residual R2); until then the per-UID throttle bucket is the trustworthy bound.
-4. Keep both emulator projects opt-in via `npm run test:emulator` (`--workspaces --if-present` runs `packages/testing` and `apps/functions`); neither joins the default test project list. The command requires a JDK on `PATH`.
-5. Firebase CLI authentication was previously verified against staging project `powerglove-1cd23` (Functions/Firestore in `us-west1`, RTDB in `us-central1`, Anonymous sign-in enabled); this PR deploys nothing to it. Keep production uncreated.
-6. Do not pull forward RTDB client presence wiring (PR 5), recovery (PR 6), reconnect/outbox (PR 7), App Check enforcement, campaign tooling, safety controls, 3D, or a second template.
+1. **John decides whether to merge the issue #14 integration candidate** (this branch's draft PR). Merging it supersedes the per-track PRs #16, #17, #19–#37, whose heads are all ancestors of this branch; close them after the merge rather than merging each separately (they would conflict with each other on `main`).
+2. **Decide the S06 residual** (client-side outbox/receipt reconciliation after a disconnect between send and response; the server side is idempotent and tested): accept as a known residual for the 17 September session or block on it.
+3. **Staging deploy** per `docs/RUNBOOK.md` §3 (prepared, never executed), then the three-physical-device rehearsal per `docs/ETR_PLAYTEST.md`, recorded in `docs/reviews/2026-09-17-etr-session-rehearsal.md`. Fable runs that record's pass/fail when the devices are available.
+4. Keep both emulator projects opt-in via `npm run test:emulator`; the command requires a JDK on `PATH` (and the proxy note above where applicable).
+5. Keep production uncreated; deploy only within existing authorization.

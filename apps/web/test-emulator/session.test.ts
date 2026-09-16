@@ -1,6 +1,6 @@
 import { deleteApp, initializeApp, type FirebaseApp } from "firebase/app";
 import { asCommandId, asMemberId, asRoomId } from "@digitable/contracts";
-import type { EatTheReichCommand } from "@digitable/template-eat-the-reich";
+import { ORIGINAL_MISSION, type EatTheReichCommand } from "@digitable/template-eat-the-reich";
 import { createEmulatorTestEnvironment, type RulesTestEnvironment } from "@digitable/testing";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
@@ -87,6 +87,27 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
     });
 
     const playerMemberId = asMemberId(joined.memberId);
+    const gmMemberId = asMemberId(created.memberId);
+    const gmRepo = new FirebaseRoomRepository(gmApp, roomId, "gm", {
+      functions: emulator.functions,
+      firestore: emulator.firestore,
+    });
+
+    // B04: `BeginAction` requires an active scene, which only the GM's
+    // `LoadScene` creates (docs/ETR_SESSION_FLOW.md section 5) — the same
+    // opening-scene payload `apps/web`'s GM console sends (the GM-facing
+    // briefing is source-only and never part of the command).
+    const [openingScene] = ORIGINAL_MISSION;
+    if (!openingScene) throw new Error("ORIGINAL_MISSION has no opening scene");
+    const { gmBriefing: _gmBriefing, ...scenePayload } = openingScene;
+    const loadResult = await gmRepo.dispatch(gmMemberId, {
+      commandId: asCommandId(crypto.randomUUID()),
+      payload: { type: "LoadScene", ...scenePayload } satisfies EatTheReichCommand,
+    });
+    expect(loadResult.status).toBe("accepted");
+    if (loadResult.status !== "accepted") {
+      throw new Error(`LoadScene failed: ${loadResult.code} ${loadResult.message}`);
+    }
 
     // B02-B05's real roster/action loop (C06): a character is claimed via
     // `ClaimCharacter`, not pre-assigned at room creation (see
@@ -99,6 +120,9 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
       payload: { type: "ClaimCharacter", characterId: "rook" } satisfies EatTheReichCommand,
     });
     expect(claimResult.status).toBe("accepted");
+    if (claimResult.status !== "accepted") {
+      throw new Error(`ClaimCharacter failed: ${claimResult.code} ${claimResult.message}`);
+    }
 
     const beginAction: EatTheReichCommand = {
       type: "BeginAction",
@@ -118,8 +142,10 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
     if (dispatchResult.status !== "accepted") {
       throw new Error(`dispatch failed: ${dispatchResult.code} ${dispatchResult.message}`);
     }
-    expect(dispatchResult.roomRevision).toBe(2);
+    // LoadScene (1) -> ClaimCharacter (2) -> BeginAction (3).
+    expect(dispatchResult.roomRevision).toBe(3);
     expect(dispatchResult.sharedEvents).toHaveLength(1);
+    expect(dispatchResult.sharedEvents[0]).toMatchObject({ type: "ActionDeclared" });
 
     // The player reads their own updated projection through the real
     // Firestore SDK transport — never reconstructed from an event tail.
@@ -128,17 +154,13 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
       viewerId: playerMemberId,
       capability: "player",
     });
-    expect(playerProjection.roomRevision).toBe(2);
+    expect(playerProjection.roomRevision).toBe(3);
 
     // The GM reads the same room's GM projection through its own
     // independent identity/session, proving both viewers see the one
     // atomically-committed update.
-    const gmRepo = new FirebaseRoomRepository(gmApp, roomId, "gm", {
-      functions: emulator.functions,
-      firestore: emulator.firestore,
-    });
     const gmProjection = await gmRepo.getProjection({ roomId, viewerId: "gm", capability: "gm" });
-    expect(gmProjection.roomRevision).toBe(2);
+    expect(gmProjection.roomRevision).toBe(3);
   });
 
   it("rejects an unrecognized room code through the real callable boundary with a stable error code", async () => {

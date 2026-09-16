@@ -1,7 +1,7 @@
 import { getApps, initializeApp } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import { HttpsError, type CallableRequest } from "firebase-functions/v2/https";
-import { eatTheReichTemplate } from "@digitable/template-eat-the-reich";
+import { eatTheReichTemplate, ORIGINAL_MISSION } from "@digitable/template-eat-the-reich";
 import { asMemberId, asRoomId, type RoomCommandResult } from "@digitable/contracts";
 import { beforeAll, describe, expect, it } from "vitest";
 import { submitRoomCommand } from "../src/gameCommandAuthority.js";
@@ -11,11 +11,25 @@ import type { GameCommandLogger } from "../src/gameCommandAuthority.js";
 const TEMPLATE_ID = eatTheReichTemplate.manifest.templateId;
 const TEMPLATE_VERSION = eatTheReichTemplate.manifest.templateVersion;
 
+/** The one roster character every test claims; the roster is B02's original content. */
+const CHARACTER_ID = "rook";
+/** A note only the GM and the actor may ever see (`ActionDeclared` is redacted for the shared partition). */
+const PRIVATE_NOTE = "private-declaration-note-never-logged";
+
 /**
  * Board task A04's game-command authority proof, run against the real
  * Firestore emulator the same way `admission.test.ts`/`createRoom.test.ts`
  * prove their transactions: the Admin SDK talks to the emulator exactly as
  * a deployed Function would.
+ *
+ * Issue #14 integration: these fixtures were originally written against
+ * the placeholder template, whose `BeginAction` rolled dice immediately
+ * against a pre-assigned character. B02-B05's real template splits declare
+ * (`BeginAction`, player, no dice) from roll (`ReviewAction`, GM-only,
+ * server-seeded dice) and requires a claimed character and an active scene
+ * first, so `seedRoom` now runs the real `LoadScene` + `ClaimCharacter`
+ * commands through this same authority before each scenario. Every
+ * revision/sequence expectation is relative to that prepared baseline.
  */
 describe("submitRoomCommand (apps/functions, board task A04)", () => {
   let db: Firestore;
@@ -48,20 +62,52 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
     return { events, info: (event, fields) => events.push({ event, fields: { ...fields } }) };
   }
 
-  /** Seeds a fresh, isolated room with a real ETR campaign state: one GM, one player holding the one placeholder character, and (optionally) a table seat. */
-  async function seedRoom(
-    options: { readonly withTable?: boolean; readonly roomStatus?: "active" | "archived" } = {},
-  ): Promise<{
+  function loadScenePayload(): Record<string, unknown> {
+    const [opening] = ORIGINAL_MISSION;
+    if (!opening) throw new Error("ORIGINAL_MISSION has no opening scene");
+    // Same mapping `apps/web`'s GM console uses: the GM-facing briefing is
+    // source-only and never part of the command.
+    const { gmBriefing: _gmBriefing, ...payload } = opening;
+    return { type: "LoadScene", ...payload };
+  }
+
+  interface SeededRoom {
     readonly roomId: string;
     readonly gmMemberId: string;
     readonly playerMemberId: string;
     readonly tableMemberId: string | null;
-  }> {
+    readonly gmUid: string;
+    readonly playerUid: string;
+    readonly tableUid: string | null;
+    /** `roomRevision` after the prepared `LoadScene` + `ClaimCharacter` commands (0 when `prepare: false`). */
+    readonly roomRevision: number;
+    /** The next event sequence the room will assign (1 when `prepare: false`). */
+    readonly nextSequence: number;
+    /** Shared-partition event count after preparation. */
+    readonly sharedEventCount: number;
+  }
+
+  /**
+   * Seeds a fresh, isolated room with a real ETR campaign state: one GM, one
+   * player, and (optionally) a table seat. Unless `prepare: false`, the GM
+   * then loads the opening scene and the player claims a character through
+   * the real authority, so `BeginAction` is legal afterwards.
+   */
+  async function seedRoom(
+    options: {
+      readonly withTable?: boolean;
+      readonly roomStatus?: "active" | "archived";
+      readonly prepare?: boolean;
+    } = {},
+  ): Promise<SeededRoom> {
     roomCounter += 1;
     const roomId = `room-gamecmd-${RUN}-${roomCounter}`;
     const gmMemberId = `member-gm-${RUN}-${roomCounter}`;
     const playerMemberId = `member-player-${RUN}-${roomCounter}`;
     const tableMemberId = options.withTable ? `member-table-${RUN}-${roomCounter}` : null;
+    const gmUid = `uid-gm-${roomCounter}`;
+    const playerUid = `uid-player-${roomCounter}`;
+    const tableUid = options.withTable ? `uid-table-${roomCounter}` : null;
 
     const state = eatTheReichTemplate.initialState({
       roomId: asRoomId(roomId),
@@ -98,62 +144,141 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
         updatedAtServer: "2026-09-14T00:00:00.000Z",
         sessionName: "Test Cell",
       }),
-      db.doc(`rooms/${roomId}/uidBindings/uid-gm-${roomCounter}`).set({
+      db.doc(`rooms/${roomId}/uidBindings/${gmUid}`).set({
         memberId: gmMemberId,
         capability: "gm",
       }),
       db.doc(`rooms/${roomId}/bindings/${gmMemberId}`).set({
         memberId: gmMemberId,
-        uid: `uid-gm-${roomCounter}`,
+        uid: gmUid,
         capability: "gm",
       }),
-      db.doc(`rooms/${roomId}/uidBindings/uid-player-${roomCounter}`).set({
+      db.doc(`rooms/${roomId}/uidBindings/${playerUid}`).set({
         memberId: playerMemberId,
         capability: "player",
       }),
       db.doc(`rooms/${roomId}/bindings/${playerMemberId}`).set({
         memberId: playerMemberId,
-        uid: `uid-player-${roomCounter}`,
+        uid: playerUid,
         capability: "player",
       }),
     ];
-    if (tableMemberId !== null) {
+    if (tableMemberId !== null && tableUid !== null) {
       writes.push(
-        db.doc(`rooms/${roomId}/uidBindings/uid-table-${roomCounter}`).set({
+        db.doc(`rooms/${roomId}/uidBindings/${tableUid}`).set({
           memberId: tableMemberId,
           capability: "table",
         }),
         db.doc(`rooms/${roomId}/bindings/${tableMemberId}`).set({
           memberId: tableMemberId,
-          uid: `uid-table-${roomCounter}`,
+          uid: tableUid,
           capability: "table",
         }),
       );
     }
     await Promise.all(writes);
-    return { roomId, gmMemberId, playerMemberId, tableMemberId };
+
+    if (options.prepare !== false) {
+      const loaded = await submitRoomCommand(
+        roomId,
+        gmUid,
+        {
+          commandId: commandId(),
+          payload: loadScenePayload(),
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
+        { db, logger: recorder(), ...fixedClock() },
+      );
+      if (loaded.status !== "accepted") {
+        throw new Error(`seedRoom: LoadScene rejected: ${loaded.code} ${loaded.message}`);
+      }
+      const claimed = await submitRoomCommand(
+        roomId,
+        playerUid,
+        {
+          commandId: commandId(),
+          payload: { type: "ClaimCharacter", characterId: CHARACTER_ID },
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
+        { db, logger: recorder(), ...fixedClock() },
+      );
+      if (claimed.status !== "accepted") {
+        throw new Error(`seedRoom: ClaimCharacter rejected: ${claimed.code} ${claimed.message}`);
+      }
+    }
+
+    const prepared = (await db.doc(`rooms/${roomId}/authority/current`).get()).data() as {
+      readonly roomRevision: number;
+      readonly nextSequence: number;
+    };
+    const sharedEvents = await db.collection(`rooms/${roomId}/events/shared/items`).get();
+    return {
+      roomId,
+      gmMemberId,
+      playerMemberId,
+      tableMemberId,
+      gmUid,
+      playerUid,
+      tableUid,
+      roomRevision: prepared.roomRevision,
+      nextSequence: prepared.nextSequence,
+      sharedEventCount: sharedEvents.size,
+    };
   }
 
-  function beginActionPayload(actorMemberId: string): Record<string, unknown> {
+  /** The real B03 declaration shape: a stat-only pool, no items/abilities/bonus claims/engaged Threats. */
+  function beginActionPayload(): Record<string, unknown> {
     return {
       type: "BeginAction",
-      actorMemberId,
-      threatId: "enforcer",
-      actionId: "strong-arm-the-enforcer",
-      gearIds: [],
+      characterId: CHARACTER_ID,
+      stat: "SNEAK",
+      itemIds: [],
+      abilityIds: [],
+      bonusClaimIds: [],
+      engagedThreatIds: [],
+      note: PRIVATE_NOTE,
     };
+  }
+
+  function reviewActionPayload(rollId: string): Record<string, unknown> {
+    return { type: "ReviewAction", rollId, approvedClaimIds: [], engagedThreatIds: [] };
+  }
+
+  async function declare(
+    room: SeededRoom,
+    deps: Parameters<typeof submitRoomCommand>[3] = { db, logger: recorder(), ...fixedClock() },
+  ): Promise<string> {
+    const begin = await submitRoomCommand(
+      room.roomId,
+      room.playerUid,
+      {
+        commandId: commandId(),
+        payload: beginActionPayload(),
+        templateId: TEMPLATE_ID,
+        templateVersion: TEMPLATE_VERSION,
+      },
+      deps,
+    );
+    expect(begin.status).toBe("accepted");
+    if (begin.status !== "accepted") throw new Error("expected acceptance");
+    const declared = begin.sharedEvents[0] as { readonly rollId: string } | undefined;
+    if (!declared) throw new Error("BeginAction emitted no shared event");
+    return declared.rollId;
   }
 
   describe("engine-level transaction", () => {
     it("commits authority, receipt, shared+gm events, and every live viewer's projection atomically", async () => {
-      const { roomId, playerMemberId } = await seedRoom({ withTable: true });
+      const room = await seedRoom({ withTable: true });
+      const { roomId, playerMemberId } = room;
       const logger = recorder();
       const result = await submitRoomCommand(
         roomId,
-        `uid-player-${roomCounter}`,
+        room.playerUid,
         {
           commandId: commandId(),
-          payload: beginActionPayload(playerMemberId),
+          payload: beginActionPayload(),
           templateId: TEMPLATE_ID,
           templateVersion: TEMPLATE_VERSION,
         },
@@ -162,72 +287,98 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
 
       expect(result.status).toBe("accepted");
       if (result.status !== "accepted") throw new Error("expected acceptance");
-      expect(result.roomRevision).toBe(1);
+      const revision = room.roomRevision + 1;
+      expect(result.roomRevision).toBe(revision);
       expect(result.sharedEvents).toHaveLength(1);
-      expect(result.sharedEvents[0]).toMatchObject({ type: "ActionRolled" });
+      // The shared copy is the redacted one (B03): no stat, no note.
+      expect(result.sharedEvents[0]).toMatchObject({
+        type: "ActionDeclared",
+        characterId: CHARACTER_ID,
+        stat: "none",
+        note: null,
+      });
 
       const authority = (await db.doc(`rooms/${roomId}/authority/current`).get()).data();
-      expect(authority).toMatchObject({ roomRevision: 1, nextSequence: 2 });
+      expect(authority).toMatchObject({
+        roomRevision: revision,
+        nextSequence: room.nextSequence + 1,
+      });
 
-      const sharedEvent = (await db.doc(`rooms/${roomId}/events/shared/items/1`).get()).data();
-      expect(sharedEvent).toMatchObject({ payload: { type: "ActionRolled" } });
-      const gmEvent = (await db.doc(`rooms/${roomId}/events/gm/items/1`).get()).data();
-      expect(gmEvent).toMatchObject({ payload: { type: "ActionRolled" } });
+      const sequence = room.nextSequence;
+      const sharedEvent = (
+        await db.doc(`rooms/${roomId}/events/shared/items/${sequence}`).get()
+      ).data();
+      expect(sharedEvent).toMatchObject({ payload: { type: "ActionDeclared", note: null } });
+      const gmEvent = (await db.doc(`rooms/${roomId}/events/gm/items/${sequence}`).get()).data();
+      expect(gmEvent).toMatchObject({
+        payload: { type: "ActionDeclared", stat: "SNEAK", note: PRIVATE_NOTE },
+      });
 
       // Every live viewer got a freshly recomputed projection: player, gm, table.
       const playerProjection = (
         await db.doc(`rooms/${roomId}/projections/${playerMemberId}`).get()
       ).data();
-      expect(playerProjection).toMatchObject({ viewerId: playerMemberId, roomRevision: 1 });
+      expect(playerProjection).toMatchObject({ viewerId: playerMemberId, roomRevision: revision });
       const gmProjection = (await db.doc(`rooms/${roomId}/projections/gm`).get()).data();
-      expect(gmProjection).toMatchObject({ viewerId: "gm", roomRevision: 1 });
+      expect(gmProjection).toMatchObject({ viewerId: "gm", roomRevision: revision });
       const tableProjection = (await db.doc(`rooms/${roomId}/projections/table`).get()).data();
-      expect(tableProjection).toMatchObject({ viewerId: "table", roomRevision: 1 });
+      expect(tableProjection).toMatchObject({ viewerId: "table", roomRevision: revision });
+      // The table's projection never carries the actor's private declaration.
+      expect(JSON.stringify(tableProjection)).not.toContain(PRIVATE_NOTE);
     });
 
     it("a sequential retry with the same commandId short-circuits: no new event, unchanged authority", async () => {
-      const { roomId, playerMemberId } = await seedRoom();
+      const room = await seedRoom();
+      const { roomId } = room;
       const cmdId = commandId();
       const request = {
         commandId: cmdId,
-        payload: beginActionPayload(playerMemberId),
+        payload: beginActionPayload(),
         templateId: TEMPLATE_ID,
         templateVersion: TEMPLATE_VERSION,
       };
-      const first = await submitRoomCommand(roomId, `uid-player-${roomCounter}`, request, {
+      const first = await submitRoomCommand(roomId, room.playerUid, request, {
         db,
         logger: recorder(),
         ...fixedClock(),
       });
-      const second = await submitRoomCommand(roomId, `uid-player-${roomCounter}`, request, {
+      const second = await submitRoomCommand(roomId, room.playerUid, request, {
         db,
         logger: recorder(),
         ...fixedClock(),
       });
 
+      const revision = room.roomRevision + 1;
       expect(first.status).toBe("accepted");
-      expect(second).toMatchObject({ status: "accepted", roomRevision: 1, sharedEvents: [] });
+      expect(second).toMatchObject({
+        status: "accepted",
+        roomRevision: revision,
+        sharedEvents: [],
+      });
 
       const authority = (await db.doc(`rooms/${roomId}/authority/current`).get()).data();
-      expect(authority).toMatchObject({ roomRevision: 1 }); // not bumped a second time
+      expect(authority).toMatchObject({ roomRevision: revision }); // not bumped a second time
 
-      const secondEvent = await db.doc(`rooms/${roomId}/events/shared/items/2`).get();
+      const secondEvent = await db
+        .doc(`rooms/${roomId}/events/shared/items/${room.nextSequence + 1}`)
+        .get();
       expect(secondEvent.exists).toBe(false); // no second event was ever written
     });
 
     it("N concurrent duplicate commandId submissions produce exactly one event and identical responses", async () => {
-      const { roomId, playerMemberId } = await seedRoom();
+      const room = await seedRoom();
+      const { roomId } = room;
       const cmdId = commandId();
       const request = {
         commandId: cmdId,
-        payload: beginActionPayload(playerMemberId),
+        payload: beginActionPayload(),
         templateId: TEMPLATE_ID,
         templateVersion: TEMPLATE_VERSION,
       };
       const attempts = 6;
       const results = await Promise.all(
         Array.from({ length: attempts }, () =>
-          submitRoomCommand(roomId, `uid-player-${roomCounter}`, request, {
+          submitRoomCommand(roomId, room.playerUid, request, {
             db,
             logger: recorder(),
             ...fixedClock(),
@@ -235,21 +386,22 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
         ),
       );
       for (const result of results) {
-        expect(result).toMatchObject({ status: "accepted", roomRevision: 1 });
+        expect(result).toMatchObject({ status: "accepted", roomRevision: room.roomRevision + 1 });
       }
       const eventsSnap = await db.collection(`rooms/${roomId}/events/shared/items`).get();
-      expect(eventsSnap.size).toBe(1);
+      expect(eventsSnap.size).toBe(room.sharedEventCount + 1);
     });
 
     it("a table-capability actor cannot issue a game command; platform authorization rejects before the template ever runs", async () => {
-      const { roomId, tableMemberId } = await seedRoom({ withTable: true });
+      const room = await seedRoom({ withTable: true });
+      const { roomId } = room;
       const logger = recorder();
       const result = await submitRoomCommand(
         roomId,
-        `uid-table-${roomCounter}`,
+        room.tableUid ?? "",
         {
           commandId: commandId(),
-          payload: beginActionPayload(tableMemberId ?? ""),
+          payload: beginActionPayload(),
           templateId: TEMPLATE_ID,
           templateVersion: TEMPLATE_VERSION,
         },
@@ -259,31 +411,19 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
 
       // No event, no projection write of any kind from this attempt.
       const eventsSnap = await db.collection(`rooms/${roomId}/events/shared/items`).get();
-      expect(eventsSnap.size).toBe(0);
+      expect(eventsSnap.size).toBe(room.sharedEventCount);
       // A rejected receipt IS written under the table member's own private
       // partition (this authority's chosen design: store rejections too, so
       // a retry replays identically — docs/PHASE_2_PR4_PLAN.md §2.2 option
       // (a)), but no room-wide effect exists.
       const authority = (await db.doc(`rooms/${roomId}/authority/current`).get()).data();
-      expect(authority).toMatchObject({ roomRevision: 0 });
+      expect(authority).toMatchObject({ roomRevision: room.roomRevision });
     });
 
     it("a player cannot allocate another player's roll", async () => {
-      const { roomId, playerMemberId } = await seedRoom();
-      const begin = await submitRoomCommand(
-        roomId,
-        `uid-player-${roomCounter}`,
-        {
-          commandId: commandId(),
-          payload: beginActionPayload(playerMemberId),
-          templateId: TEMPLATE_ID,
-          templateVersion: TEMPLATE_VERSION,
-        },
-        { db, logger: recorder(), ...fixedClock() },
-      );
-      expect(begin.status).toBe("accepted");
-      if (begin.status !== "accepted") throw new Error("expected acceptance");
-      const rollId = (begin.sharedEvents[0] as { readonly rollId: string }).rollId;
+      const room = await seedRoom();
+      const { roomId } = room;
+      const rollId = await declare(room);
 
       const impostorUid = `uid-impostor-${roomCounter}`;
       await db.doc(`rooms/${roomId}/uidBindings/${impostorUid}`).set({
@@ -304,14 +444,60 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       expect(result).toMatchObject({ status: "rejected", code: "ROLE_FORBIDDEN" });
     });
 
-    it("rejects a stale expectedRevision with REVISION_CONFLICT and leaves authority unchanged", async () => {
-      const { roomId, playerMemberId } = await seedRoom();
+    it("a player cannot roll their own declaration: ReviewAction is GM-only (B03)", async () => {
+      const room = await seedRoom();
+      const rollId = await declare(room);
       const result = await submitRoomCommand(
-        roomId,
-        `uid-player-${roomCounter}`,
+        room.roomId,
+        room.playerUid,
         {
           commandId: commandId(),
-          payload: beginActionPayload(playerMemberId),
+          payload: reviewActionPayload(rollId),
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
+        { db, logger: recorder(), ...fixedClock() },
+      );
+      expect(result).toMatchObject({ status: "rejected", code: "ROLE_FORBIDDEN" });
+    });
+
+    it("rejects a declaration with no active scene (the real template's own precondition)", async () => {
+      const room = await seedRoom({ prepare: false });
+      const claimed = await submitRoomCommand(
+        room.roomId,
+        room.playerUid,
+        {
+          commandId: commandId(),
+          payload: { type: "ClaimCharacter", characterId: CHARACTER_ID },
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
+        { db, logger: recorder(), ...fixedClock() },
+      );
+      expect(claimed.status).toBe("accepted");
+      const result = await submitRoomCommand(
+        room.roomId,
+        room.playerUid,
+        {
+          commandId: commandId(),
+          payload: beginActionPayload(),
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
+        { db, logger: recorder(), ...fixedClock() },
+      );
+      expect(result).toMatchObject({ status: "rejected", code: "UNKNOWN_ACTION" });
+    });
+
+    it("rejects a stale expectedRevision with REVISION_CONFLICT and leaves authority unchanged", async () => {
+      const room = await seedRoom();
+      const { roomId } = room;
+      const result = await submitRoomCommand(
+        roomId,
+        room.playerUid,
+        {
+          commandId: commandId(),
+          payload: beginActionPayload(),
           templateId: TEMPLATE_ID,
           templateVersion: TEMPLATE_VERSION,
           expectedRevision: 99,
@@ -320,14 +506,14 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       );
       expect(result).toMatchObject({ status: "rejected", code: "REVISION_CONFLICT" });
       const authority = (await db.doc(`rooms/${roomId}/authority/current`).get()).data();
-      expect(authority).toMatchObject({ roomRevision: 0 });
+      expect(authority).toMatchObject({ roomRevision: room.roomRevision });
     });
 
     it("rejects an unrecognized command payload with UNKNOWN_ACTION", async () => {
-      const { roomId } = await seedRoom();
+      const room = await seedRoom();
       const result = await submitRoomCommand(
-        roomId,
-        `uid-player-${roomCounter}`,
+        room.roomId,
+        room.playerUid,
         {
           commandId: commandId(),
           payload: { type: "NotARealCommand" },
@@ -340,13 +526,13 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
     });
 
     it("an unauthenticated (unbound) UID is denied AUTH_REQUIRED", async () => {
-      const { roomId, playerMemberId } = await seedRoom();
+      const room = await seedRoom();
       const result = await submitRoomCommand(
-        roomId,
+        room.roomId,
         "uid-never-joined",
         {
           commandId: commandId(),
-          payload: beginActionPayload(playerMemberId),
+          payload: beginActionPayload(),
           templateId: TEMPLATE_ID,
           templateVersion: TEMPLATE_VERSION,
         },
@@ -356,7 +542,7 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
     });
 
     it("a rejected command's retry replays the identical rejection without re-deciding", async () => {
-      const { roomId } = await seedRoom();
+      const room = await seedRoom();
       const cmdId = commandId();
       const request = {
         commandId: cmdId,
@@ -364,12 +550,12 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
         templateId: TEMPLATE_ID,
         templateVersion: TEMPLATE_VERSION,
       };
-      const first = await submitRoomCommand(roomId, `uid-player-${roomCounter}`, request, {
+      const first = await submitRoomCommand(room.roomId, room.playerUid, request, {
         db,
         logger: recorder(),
         ...fixedClock(),
       });
-      const second = await submitRoomCommand(roomId, `uid-player-${roomCounter}`, request, {
+      const second = await submitRoomCommand(room.roomId, room.playerUid, request, {
         db,
         logger: recorder(),
         ...fixedClock(),
@@ -379,13 +565,15 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
     });
 
     it("an archived room denies every command with ROOM_ARCHIVED", async () => {
-      const { roomId, playerMemberId } = await seedRoom({ roomStatus: "archived" });
+      // No preparation: the platform guard rejects before the template
+      // could ever load a scene or claim a character in an archived room.
+      const room = await seedRoom({ roomStatus: "archived", prepare: false });
       const result = await submitRoomCommand(
-        roomId,
-        `uid-player-${roomCounter}`,
+        room.roomId,
+        room.playerUid,
         {
           commandId: commandId(),
-          payload: beginActionPayload(playerMemberId),
+          payload: beginActionPayload(),
           templateId: TEMPLATE_ID,
           templateVersion: TEMPLATE_VERSION,
         },
@@ -395,13 +583,13 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
     });
 
     it("rejects a client-asserted templateVersion that doesn't match the room's own (independent review finding: this guard was previously unreachable)", async () => {
-      const { roomId, playerMemberId } = await seedRoom();
+      const room = await seedRoom();
       const result = await submitRoomCommand(
-        roomId,
-        `uid-player-${roomCounter}`,
+        room.roomId,
+        room.playerUid,
         {
           commandId: commandId(),
-          payload: beginActionPayload(playerMemberId),
+          payload: beginActionPayload(),
           templateId: TEMPLATE_ID,
           templateVersion: "0.0.0-stale-client-build",
         },
@@ -411,19 +599,21 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
     });
 
     it("AUTH_REQUIRED fires before any authority/bindings data is read, even against a room with corrupted data (independent review finding)", async () => {
-      const { roomId } = await seedRoom();
+      const room = await seedRoom();
       // Corrupt the room's authority document *after* seeding it validly —
       // if capability resolution ran after this read (the pre-fix order),
       // an unauthenticated-for-this-room caller would get ROOM_DATA_INVALID
       // instead of AUTH_REQUIRED, disclosing that the room exists and is
       // corrupted to a caller who isn't even a member.
-      await db.doc(`rooms/${roomId}/authority/current`).update({ roomStatus: "not-a-real-status" });
+      await db
+        .doc(`rooms/${room.roomId}/authority/current`)
+        .update({ roomStatus: "not-a-real-status" });
       const result = await submitRoomCommand(
-        roomId,
+        room.roomId,
         "uid-never-joined-corrupted-room",
         {
           commandId: commandId(),
-          payload: beginActionPayload("member-doesnt-matter"),
+          payload: beginActionPayload(),
           templateId: TEMPLATE_ID,
           templateVersion: TEMPLATE_VERSION,
         },
@@ -433,72 +623,62 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
     });
 
     it("dice faces are reproducible from the injected seed regardless of which internal attempt commits (ADR-002)", async () => {
-      const { roomId, playerMemberId } = await seedRoom();
-      const result = await submitRoomCommand(
-        roomId,
-        `uid-player-${roomCounter}`,
-        {
-          commandId: commandId(),
-          payload: beginActionPayload(playerMemberId),
-          templateId: TEMPLATE_ID,
-          templateVersion: TEMPLATE_VERSION,
-        },
-        {
-          db,
-          logger: recorder(),
-          randomBytes: () => new Uint8Array(32).fill(1),
-          occurredAtServer: fixedClock().occurredAtServer,
-        },
-      );
-      expect(result.status).toBe("accepted");
-      if (result.status !== "accepted") throw new Error("expected acceptance");
-      const event = result.sharedEvents[0] as { readonly faces: readonly number[] | null };
-      // Same fixed seed byte (1) deterministically produces the same faces
-      // every run of this test — pinning the actual values here would be
-      // brittle to the RNG's internal algorithm; instead prove determinism
-      // by re-running decide with the identical seed via a second, distinct
-      // room and asserting the two independent draws match.
-      const second = await seedRoom();
-      const secondResult = await submitRoomCommand(
-        second.roomId,
-        `uid-player-${roomCounter}`,
-        {
-          commandId: commandId(),
-          payload: beginActionPayload(second.playerMemberId),
-          templateId: TEMPLATE_ID,
-          templateVersion: TEMPLATE_VERSION,
-        },
-        {
-          db,
-          logger: recorder(),
-          randomBytes: () => new Uint8Array(32).fill(1),
-          occurredAtServer: fixedClock().occurredAtServer,
-        },
-      );
-      expect(secondResult.status).toBe("accepted");
-      if (secondResult.status !== "accepted") throw new Error("expected acceptance");
-      const secondEvent = secondResult.sharedEvents[0] as {
-        readonly faces: readonly number[] | null;
-      };
-      expect(secondEvent.faces).toEqual(event.faces);
+      // B03: the dice are drawn by the GM's `ReviewAction`, not the
+      // player's declaration. Same fixed seed byte (1) deterministically
+      // produces the same faces every run — pinning the actual values here
+      // would be brittle to the RNG's internal algorithm; instead prove
+      // determinism by re-running the identical declare -> review pair in a
+      // second, distinct room and asserting the two independent draws match.
+      async function declareAndRoll(room: SeededRoom): Promise<readonly number[]> {
+        const rollId = await declare(room);
+        const reviewed = await submitRoomCommand(
+          room.roomId,
+          room.gmUid,
+          {
+            commandId: commandId(),
+            payload: reviewActionPayload(rollId),
+            templateId: TEMPLATE_ID,
+            templateVersion: TEMPLATE_VERSION,
+          },
+          {
+            db,
+            logger: recorder(),
+            randomBytes: () => new Uint8Array(32).fill(1),
+            occurredAtServer: fixedClock().occurredAtServer,
+          },
+        );
+        expect(reviewed.status).toBe("accepted");
+        if (reviewed.status !== "accepted") throw new Error("expected acceptance");
+        const rolled = reviewed.sharedEvents[0] as
+          { readonly type: string; readonly playerFaces: readonly number[] } | undefined;
+        if (!rolled) throw new Error("ReviewAction emitted no shared event");
+        expect(rolled.type).toBe("ActionRolled");
+        expect(rolled.playerFaces.length).toBeGreaterThan(0);
+        return rolled.playerFaces;
+      }
+
+      const first = await declareAndRoll(await seedRoom());
+      const second = await declareAndRoll(await seedRoom());
+      expect(second).toEqual(first);
     });
 
     it("never logs the random seed, the payload, or a rejected command's underlying state", async () => {
-      const { roomId, playerMemberId } = await seedRoom();
+      const room = await seedRoom();
       const logger = recorder();
       await submitRoomCommand(
-        roomId,
-        `uid-player-${roomCounter}`,
+        room.roomId,
+        room.playerUid,
         {
           commandId: commandId(),
-          payload: beginActionPayload(playerMemberId),
+          payload: beginActionPayload(),
           templateId: TEMPLATE_ID,
           templateVersion: TEMPLATE_VERSION,
         },
         { db, logger, ...fixedClock() },
       );
       const serialized = JSON.stringify(logger.events);
-      expect(serialized).not.toContain("strong-arm-the-enforcer");
+      expect(serialized).not.toContain(PRIVATE_NOTE);
+      expect(serialized).not.toContain("SNEAK");
       expect(logger.events.some((entry) => entry.event === "gameCommand.result")).toBe(true);
     });
   });
@@ -540,14 +720,14 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
     }
 
     it("rejects an unauthenticated call before any Firestore read", async () => {
-      const { roomId, playerMemberId } = await seedRoom();
+      const room = await seedRoom();
       await expectHttpsError(
         callable().run(
           request({
-            roomId,
+            roomId: room.roomId,
             command: {
               commandId: commandId(),
-              payload: beginActionPayload(playerMemberId),
+              payload: beginActionPayload(),
               templateId: TEMPLATE_ID,
               templateVersion: TEMPLATE_VERSION,
             },
@@ -572,19 +752,19 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
     });
 
     it("returns the accepted result through the callable, response shape matching RoomCommandResult", async () => {
-      const { roomId, playerMemberId } = await seedRoom();
+      const room = await seedRoom();
       const result: RoomCommandResult<unknown> = await callable().run(
         request(
           {
-            roomId,
+            roomId: room.roomId,
             command: {
               commandId: commandId(),
-              payload: beginActionPayload(playerMemberId),
+              payload: beginActionPayload(),
               templateId: TEMPLATE_ID,
               templateVersion: TEMPLATE_VERSION,
             },
           },
-          { uid: `uid-player-${roomCounter}` },
+          { uid: room.playerUid },
         ),
       );
       expect(result.status).toBe("accepted");
