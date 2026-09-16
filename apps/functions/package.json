@@ -21,6 +21,7 @@
   "devDependencies": {
     "@digitable/contracts": "*",
     "@digitable/engine": "*",
+    "@digitable/template-eat-the-reich": "*",
     "esbuild": "^0.28.2",
     "typescript": "^5.6.3",
     "vitest": "^5.0.0"

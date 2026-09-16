@@ -25,6 +25,7 @@ export function grpcCodeFor(code: StableErrorCode): FunctionsErrorCode {
     case "ROOM_NOT_FOUND":
       return "not-found";
     case "ROOM_DATA_INVALID":
+    case "ROOM_CREATION_FAILED":
       return "internal";
     case "REVISION_CONFLICT":
       return "aborted";
