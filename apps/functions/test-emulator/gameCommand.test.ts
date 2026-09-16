@@ -662,7 +662,7 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       expect(second).toEqual(first);
     });
 
-    it("never logs the random seed, the payload, or a rejected command's underlying state", async () => {
+    it("never logs the payload of an accepted or a rejected command", async () => {
       const room = await seedRoom();
       const logger = recorder();
       await submitRoomCommand(
@@ -676,10 +676,28 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
         },
         { db, logger, ...fixedClock() },
       );
+      // Integration review finding: the rejected path logs through the same
+      // sink and must be just as opaque — a rejection line carries the
+      // stable code, never the command that earned it.
+      const rejected = await submitRoomCommand(
+        room.roomId,
+        room.playerUid,
+        {
+          commandId: commandId(),
+          payload: { type: "NotARealCommand", note: PRIVATE_NOTE },
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
+        { db, logger, ...fixedClock() },
+      );
+      expect(rejected).toMatchObject({ status: "rejected", code: "UNKNOWN_ACTION" });
+
       const serialized = JSON.stringify(logger.events);
       expect(serialized).not.toContain(PRIVATE_NOTE);
       expect(serialized).not.toContain("SNEAK");
-      expect(logger.events.some((entry) => entry.event === "gameCommand.result")).toBe(true);
+      expect(serialized).not.toContain("NotARealCommand");
+      const results = logger.events.filter((entry) => entry.event === "gameCommand.result");
+      expect(results.map((entry) => entry.fields.status)).toEqual(["accepted", "rejected"]);
     });
   });
 
