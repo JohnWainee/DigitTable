@@ -12,3 +12,4 @@ export * from "./projection.js";
 export * from "./template.js";
 export * from "./repository.js";
 export * from "./session.js";
+export * from "./recovery.js";
