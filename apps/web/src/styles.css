@@ -256,6 +256,40 @@ input:focus-visible {
   max-width: 32rem;
 }
 
+/* Landing hero: original placeholder art with a CSS fallback underneath
+   (assets/generated/eat-the-reich/README.md has the provenance). */
+.hero-art {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  max-height: 22rem;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.hero-art-fallback {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0 2px, transparent 2px 4px),
+    linear-gradient(135deg, var(--fg, #1b1b1b), var(--accent));
+}
+
+.hero-art-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-art-image {
+    transition: none;
+  }
+}
+
 .landing-actions {
   display: flex;
   flex-direction: column;
@@ -501,6 +535,16 @@ input:focus-visible {
   background:
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0 2px, transparent 2px 4px),
     linear-gradient(135deg, var(--fg, #1b1b1b), var(--accent));
+}
+
+/* The GM console's scene director shows the same art, smaller. */
+.gm-screen .scene-card-art {
+  height: 8rem;
+}
+
+/* Shared table display: a taller banner from the 1024/1536 derivatives. */
+.scene-card-art--banner {
+  height: 14rem;
 }
 
 .scene-card-art-image {
@@ -798,7 +842,12 @@ input:focus-visible {
    display); a CSS multi-column flow keeps `TableDashboardScreen`'s DOM
    order (and reading order for a screen reader) unchanged. */
 @media (min-width: 1280px) {
+  .scene-card-art--banner {
+    height: 22rem;
+  }
+
   .table-screen {
+    max-width: 96rem;
     display: block;
     column-count: 2;
     column-gap: 2rem;

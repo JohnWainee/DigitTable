@@ -11,3 +11,6 @@ assets/generated
 # for this PR; format/lint/typecheck here targets the TypeScript engine.
 *.md
 .vitest
+
+# Raw evidence captured verbatim (model replies, run reports) — not reformatted.
+docs/evidence/**/*.json

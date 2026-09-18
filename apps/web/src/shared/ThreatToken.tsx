@@ -1,43 +1,22 @@
 import { useState } from "react";
 import { Icon } from "./Icon.js";
+import { threatArtSrc } from "./artPaths.js";
 
 export interface ThreatTokenProps {
   readonly threatId: string;
   readonly beaten?: boolean;
 }
 
-/** docs/ETR_ART_BRIEF.md section 3.4 asset manifest ids, matched against a substring of the real engine's own scene-authored threat id (e.g. `metro-platform-enforcer` -> `threat-enforcer`). */
-const THREAT_IMAGE_ID_BY_SUBSTRING: readonly (readonly [string, string])[] = [
-  ["enforcer", "threat-enforcer"],
-  ["warden", "threat-warden"],
-  ["patrol", "threat-patrol"],
-  ["rifle-squad", "threat-rifle-squad"],
-  ["plated-squad", "threat-plated-squad"],
-  ["marksman-nest", "threat-marksman-nest"],
-  ["armoured-truck", "threat-armoured-truck"],
-];
-
-function resolveImageId(threatId: string): string | null {
-  const lower = threatId.toLowerCase();
-  for (const [needle, imageId] of THREAT_IMAGE_ID_BY_SUBSTRING) {
-    if (lower.includes(needle)) return imageId;
-  }
-  return null;
-}
-
 /**
  * docs/ETR_ART_BRIEF.md section 5: "Threat: charcoal square with the
  * `threat` glyph; crossed out in crimson when beaten" — the default until
- * `/etr/<imageId>-128.webp` loads, and permanent for threat ids with no
- * generated art yet (a real engine-authored id, e.g. `signal-mast-warden`,
- * with no substring match), which is correct per the brief's cut list, not
- * a bug.
+ * the threat's `-128.webp` (see `artPaths.ts`) loads, and permanent for threat ids
+ * with no generated art (no substring match), which is correct per the
+ * brief's cut list, not a bug.
  */
 export function ThreatToken({ threatId, beaten }: ThreatTokenProps): JSX.Element {
-  const imageId = resolveImageId(threatId);
-  const [status, setStatus] = useState<"loading" | "loaded" | "error">(
-    imageId ? "loading" : "error",
-  );
+  const src = threatArtSrc(threatId);
+  const [status, setStatus] = useState<"loading" | "loaded" | "error">(src ? "loading" : "error");
 
   return (
     <span
@@ -51,7 +30,7 @@ export function ThreatToken({ threatId, beaten }: ThreatTokenProps): JSX.Element
       )}
       {status !== "error" && (
         <img
-          src={`/etr/${imageId}-128.webp`}
+          src={src ?? undefined}
           alt=""
           loading="lazy"
           decoding="async"

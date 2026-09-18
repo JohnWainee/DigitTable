@@ -1,0 +1,31 @@
+{
+  "ok_ids": [
+    "drop-forecourt",
+    "metro-platform",
+    "printworks",
+    "signal-mast"
+  ],
+  "missing_ids": [
+    "rook",
+    "vesper",
+    "halloran",
+    "orsolya",
+    "delphine",
+    "tallow"
+  ],
+  "orphan_files": [
+    "hero-1000.webp",
+    "hero-1600.webp",
+    "hero-600.webp",
+    "scene-drop-forecourt-1024.webp",
+    "scene-drop-forecourt-1536.webp",
+    "scene-metro-platform-1024.webp",
+    "scene-metro-platform-1536.webp",
+    "scene-printworks-1024.webp",
+    "scene-printworks-1536.webp",
+    "scene-signal-mast-1024.webp",
+    "scene-signal-mast-1536.webp",
+    "signal-mast-640.webp"
+  ],
+  "uncertain": []
+}

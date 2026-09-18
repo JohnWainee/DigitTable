@@ -1,4 +1,5 @@
 import type { Capability, RoomAdmissionAccepted, RoomId } from "@digitable/contracts";
+import { newUuid } from "../shared/uuid.js";
 
 const OWNERSHIP_STORAGE_KEY = "digitable.etr.ownership.v2";
 const CREATE_REQUEST_ID_KEY = "digitable.etr.createRequestId.v1";
@@ -68,11 +69,11 @@ export function getOrMintCreateRequestId(): string {
   try {
     const existing = window.sessionStorage.getItem(CREATE_REQUEST_ID_KEY);
     if (existing) return existing;
-    const minted = globalThis.crypto.randomUUID();
+    const minted = newUuid();
     window.sessionStorage.setItem(CREATE_REQUEST_ID_KEY, minted);
     return minted;
   } catch {
-    return globalThis.crypto.randomUUID();
+    return newUuid();
   }
 }
 

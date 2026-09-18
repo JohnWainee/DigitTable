@@ -100,7 +100,12 @@ export function TableDashboardScreen({ roomId }: TableDashboardScreenProps): JSX
         </p>
       )}
       <RouteMap currentSceneId={view.scene?.id ?? null} clearedSceneIds={clearedSceneIds(view)} />
-      <SceneCard scene={view.scene} objectives={view.objectives} threats={view.threats} />
+      <SceneCard
+        scene={view.scene}
+        objectives={view.objectives}
+        threats={view.threats}
+        artVariant="banner"
+      />
       <PartyStrip roster={view.roster} />
 
       {acting.length > 0 && (

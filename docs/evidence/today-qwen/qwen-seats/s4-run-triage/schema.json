@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "runs_with_failing_steps": { "type": "array", "items": { "type": "string" } },
+    "runs_with_console_errors": { "type": "array", "items": { "type": "string" } },
+    "runs_with_overflow": { "type": "array", "items": { "type": "string" } },
+    "unexpected_problems": { "type": "array", "items": { "type": "string" } },
+    "uncertain": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": ["runs_with_failing_steps", "runs_with_console_errors", "runs_with_overflow", "unexpected_problems", "uncertain"]
+}

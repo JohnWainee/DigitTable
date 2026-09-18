@@ -9,6 +9,7 @@ import { writeOwnershipRecord, ownershipFromAcceptedWithNames } from "../session
 import { joinRoom } from "../session/roomClient.js";
 import type { RoomAdmissionAccepted, SessionRequestState } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
+import { newUuid } from "../shared/uuid.js";
 
 /**
  * docs/ETR_SESSION_FLOW.md section 4.4: `/table` — join a shared display.
@@ -28,7 +29,7 @@ export function JoinTableScreen(): JSX.Element {
   async function handleSubmit(event: React.FormEvent): Promise<void> {
     event.preventDefault();
     if (request.status === "pending") return;
-    const requestId = globalThis.crypto.randomUUID();
+    const requestId = newUuid();
     setRequest({ status: "pending", requestId });
     const result = await joinRoom({
       requestId,

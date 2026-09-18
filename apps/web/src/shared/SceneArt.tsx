@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { sceneArtSrc } from "./artPaths.js";
 
 export interface SceneArtProps {
   readonly sceneId: string;
-  /** The scene's short name (`SceneView.title`) — shown as the condensed fallback caption, distinct from `SceneCard`'s own longer location description. */
+  /** The scene's short name (`SceneView.title`) — the alt text for a scene id with no authored description. */
   readonly title: string;
+  /** "banner" (shared table display) tries the 1024/1536 derivatives first, then the 640 card image, then the CSS fallback. */
+  readonly variant?: "card" | "banner";
 }
 
 const SCENE_ALT: Record<string, string> = {
@@ -16,40 +19,58 @@ const SCENE_ALT: Record<string, string> = {
     "A steel broadcast mast on a river bluff at night, its control cabin lit above the darkened city.",
 };
 
-type LoadStatus = "loading" | "loaded" | "error";
+type Stage = "large" | "small" | "none";
 
 /**
  * docs/ETR_ART_BRIEF.md section 5: the scene image slot's CSS fallback
  * (bone paper texture) is the default until the real `<img>` finishes
  * loading, and stays up if it never loads — missing or not-yet-generated
- * art never blocks play. `sceneId` maps to `/etr/<sceneId>-640.webp`
- * (C04's derivative naming convention); unrecognised or not-yet-generated
- * ids simply show the fallback forever, which is correct, not a bug.
+ * art never blocks play. Unrecognised ids simply show the fallback forever,
+ * which is correct, not a bug.
  *
- * c07 P2: the fallback no longer repeats the scene's title as visible
- * text — `SceneCard`'s own `<h2>` renders it immediately after this, so
- * a duplicate line here (visible for the whole "loading" window, not
- * just a flash) was pure repetition. The pattern alone is enough context
- * for the art slot; the `<img>`'s `alt` still carries the real
- * description for anyone using a screen reader once the image is present.
+ * The fallback carries no text: `SceneCard`'s own `<h2>` renders the title
+ * immediately after this, and the `<img>`'s `alt` carries the description
+ * for anyone using a screen reader once the image is present.
  */
-export function SceneArt({ sceneId, title }: SceneArtProps): JSX.Element {
-  const [status, setStatus] = useState<LoadStatus>("loading");
+export function SceneArt({ sceneId, title, variant = "card" }: SceneArtProps): JSX.Element {
+  const banner = variant === "banner";
+  const identity = `${sceneId}:${variant}`;
+  const initialStage: Stage = banner ? "large" : "small";
+  const [state, setState] = useState<{ identity: string; stage: Stage; loaded: boolean }>({
+    identity,
+    stage: initialStage,
+    loaded: false,
+  });
+  // Reused for a different scene/variant: start over instead of inheriting the last image's outcome.
+  if (state.identity !== identity) setState({ identity, stage: initialStage, loaded: false });
+  const { stage, loaded } =
+    state.identity === identity ? state : { stage: initialStage, loaded: false };
   const alt = SCENE_ALT[sceneId] ?? title;
 
+  function handleError(): void {
+    setState({ identity, stage: stage === "large" ? "small" : "none", loaded: false });
+  }
+
   return (
-    <div className="scene-card-art">
+    <div className={banner ? "scene-card-art scene-card-art--banner" : "scene-card-art"}>
       <div className="scene-card-art-fallback" aria-hidden="true" />
-      {status !== "error" && (
+      {stage !== "none" && (
         <img
-          src={`/etr/${sceneId}-640.webp`}
+          key={stage}
+          src={sceneArtSrc(sceneId, stage === "large" ? 1024 : 640)}
+          srcSet={
+            stage === "large"
+              ? `${sceneArtSrc(sceneId, 1024)} 1024w, ${sceneArtSrc(sceneId, 1536)} 1536w`
+              : undefined
+          }
+          sizes={stage === "large" ? "(min-width: 1280px) 46rem, 100vw" : undefined}
           alt={alt}
           loading="lazy"
           decoding="async"
           className="scene-card-art-image"
-          style={{ opacity: status === "loaded" ? 1 : 0 }}
-          onLoad={() => setStatus("loaded")}
-          onError={() => setStatus("error")}
+          style={{ opacity: loaded ? 1 : 0 }}
+          onLoad={() => setState({ identity, stage, loaded: true })}
+          onError={handleError}
         />
       )}
     </div>

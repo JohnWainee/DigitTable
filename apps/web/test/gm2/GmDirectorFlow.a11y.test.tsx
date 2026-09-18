@@ -262,6 +262,7 @@ describe("GM director console and table display (C03)", () => {
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     // Never a code/passphrase on the table.
     expect(screen.queryByText(roomCode)).not.toBeInTheDocument();
+    expect(screen.queryByText(tableCode)).not.toBeInTheDocument();
     expect(screen.queryByText(/wolfbane/i)).not.toBeInTheDocument();
 
     expect(await axe(document.body)).toHaveNoViolations();

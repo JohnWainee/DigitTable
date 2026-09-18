@@ -1,0 +1,20 @@
+{
+  "seat": "s4-run-triage",
+  "role": "analyst",
+  "model": "qwen3:4b",
+  "modelDigest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+  "startedUtc": "2026-09-18T20:12:27Z",
+  "wallSeconds": 5,
+  "curlExit": 0,
+  "doneReason": "stop",
+  "evalCount": 41,
+  "options": {
+    "temperature": 0,
+    "seed": 42,
+    "num_predict": 700,
+    "num_ctx": 8192,
+    "keep_alive": 0
+  },
+  "structuredOutput": true,
+  "capabilities": "analysis-only; no tools, no filesystem, no network beyond the local Ollama API"
+}

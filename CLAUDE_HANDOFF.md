@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** S06 client outbox and receipt reconciliation are implemented on top of the integrated Phase 2 candidate. Core persistence, identity scoping, receipt-first reconciliation, same-ID retry, UI reconnect state, and receipt-probe rules are covered and green. Independent review fixed one recovered-result defect but found that PR 7 is not complete: durable event-tail/presented-event deduplication, ordered recovered presentations, and physical-device evidence remain open.
-- **Branch:** `codex/s06-outbox-reconciliation` (from integrated candidate `daf2f23`)
+- **Status:** `factory/today-qwen` (base `e0ad252`, S06 outbox) is visually complete and playable on two devices against **local emulators**: a blocker set that would have crashed any phone on a plain-http LAN address is fixed, the shipped original art is fully wired with fallbacks, and a two-device runbook, evidence checklist, and browser driver are added. Phase 2 PR 7 (S06) is still **not** complete (event-tail dedup, ordered recovered presentations, physical-device evidence — see "Next action"). Nothing pushed, merged, or deployed.
+- **Branch:** `factory/today-qwen` (from `e0ad252`, itself `codex/s06-outbox-reconciliation`)
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-17 by Codex after two-agent S06 review and verification
+- **Last updated:** 2026-09-18 by Sonnet (Factory Qwen orchestrator) after an independent review pass
 
 ## Mission
 
@@ -359,6 +359,48 @@ Sonnet C's `sonnet-c/c06-integration` (PR #33) surfaced two `apps/functions` gap
 
 Merge remains John's decision.
 
+## Factory Qwen "today-qwen": two-device readiness and visual completion (2026-09-18)
+
+Full evidence, seat log, and commands: [`docs/evidence/today-qwen/README.md`](docs/evidence/today-qwen/README.md). Runbook: [`docs/PLAYTEST_TWO_DEVICE.md`](docs/PLAYTEST_TWO_DEVICE.md). Blank manual checklist: [`docs/evidence/today-qwen/CHECKLIST.md`](docs/evidence/today-qwen/CHECKLIST.md).
+
+1. **Blocker: `crypto.randomUUID` on plain-http LAN pages.** Undefined outside secure contexts, so create/join/claim/every command crashed on a phone (reproduced on untouched `e0ad252`: `docs/evidence/today-qwen/baseline-e0ad252-lan-run/`). `apps/web/src/shared/uuid.ts` `newUuid()` replaces all 7 call sites.
+2. **Blocker: emulator hosts hard-coded to `127.0.0.1`.** `apps/web/src/session/emulatorConfig.ts` now defaults to the page hostname (override `VITE_EMULATOR_HOST`); `firebase.lan.json` (opt-in 0.0.0.0 bind) and `scripts/playtest/lan-up.sh` stand up emulators + live-mode build + preview.
+3. **GM scene advance** defaulted to reloading the current scene; now defaults to the next mission scene, and `SceneDirector` derives its selection from the loaded scene at render (no effect, no remount, so typed reason text survives a scene change; from the final scene it wraps to the opening scene).
+4. **Art:** `artPaths.ts` is the single source of every `/etr/*.webp` URL; new `HeroArt` (landing), banner `SceneArt` variant for the table (1024/1536 -> 640 -> CSS fallback), GM scene image, per-scene keys; table layout widened. `test/shared/artManifest.test.ts` fails if any authored scene/character/threat id lacks its file. Provenance is unchanged and documented in `assets/generated/eat-the-reich/` (originals, approval still pending for public release).
+5. **Tooling:** `scripts/playtest/two-device-smoke.mjs` (Chrome DevTools Protocol, no new dependency) drives GM/player/table as isolated profiles through the full loop over any origin, with `--no-images`, `--block`, `--routes-only`, `--reload`; `scripts/qwen-seat.sh` is the bounded local Qwen seat runner (only `qwen3:4b` and `qwen2.5-coder:7b`, analysis-only). `eslint.config.js` ignores `scripts/**`; `.prettierignore` skips raw evidence JSON.
+6. **Qwen seats actually run** (5 runs; two were useful, three wrong or unusable; each output was independently verified before any use): see the seat table in the evidence README.
+
+### Commands and results (run in `/private/tmp/today-qwen-run`, a synced copy: this worktree is under `~/Documents`, where macOS blocks esbuild/Firebase startup)
+
+- `npm run check` — clean; first session recorded 478 passed / 11 todo (baseline 461); the second session re-ran it (identical sources, verified with `diff -rq`) and got exit 0 with **485 passed, 11 todo** across 54 files after adding one `uuid` test. The 461 → 478 delta was not reconciled test-by-test.
+- `npm run build` — clean.
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **107/107** (18 + 86 + 3).
+- `node scripts/playtest/two-device-smoke.mjs --base http://192.168.4.56:4173 --reload` (and `http://localhost:4173`, `--no-images`, `--block "*scene-*"`, `--routes-only`) — all steps pass; 0 console errors; 0 horizontal overflow at 375/768/1024/1280/1920.
+- `git diff --cached --check -- . ':!docs/evidence'` — clean. Over `docs/evidence/` it reports trailing whitespace/EOF newlines only inside raw, verbatim Qwen output files (`qwen-seats/*/response.txt`, `prompt.md`), which are intentionally not normalised.
+- Host note: `/usr/bin/git` failed here with an Xcode license prompt; `/Users/john/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/git` worked.
+
+### Independent review
+
+One independent pass by a fresh reviewer subagent (read-only, given the branch, `AGENTS.md`, and the intended behaviour, not the author's conclusions) on 2026-09-18. It could not run vitest or the build (macOS blocks esbuild under `~/Documents`), so test/build results above are the author's own, re-run on the synced copy. Verdict: **APPROVE WITH NITS**, no blocking defects. Verified with file/line evidence: all 7 `randomUUID` call sites converted and `newUuid()` correct (v4/variant bits, `getRandomValues` only, no entropy loss); emulator host stays gated on `VITE_FIREBASE_USE_EMULATOR`, `firebase.lan.json` is reachable only via `lan-up.sh --config`; every `/etr/*.webp` the UI can request exists and traces to a documented source PNG; `SceneArt` state machine (large -> 640 -> none, keyed per scene) has no error loops; the table screen renders no room/table/passphrase/recovery code and no controls; the Qwen evidence README matches the raw `meta.json`/`response.txt` files.
+
+Findings and dispositions:
+
+- **Docs said `SceneDirector` remounts on scene change; it does not** (it derives the default at render, and its test asserts no remount). Fixed in this handoff and the evidence README.
+- **`scripts/qwen-seat.sh` could be pointed at a non-loopback host via `OLLAMA_HOST_URL`, accepted a path-traversing seat id, depended on the caller's cwd, and put the request body in argv.** Fixed: loopback-only host check, seat-id allowlist, `cd` to repo root, body via stdin. Re-verified: the three refusals (host, seat id, 14B model) exit 64, and one 40-token real call still works (throwaway output deleted; not counted as a seat).
+- **`REVIEW_PLACEHOLDER` and an unsupported "documented in the runbook" claim.** Fixed here; the runbook now documents that the reason field is cleared on a refused advance.
+- **Reviewer said `TableDashboardScreen` has no test.** Partly wrong: `test/gm2/GmDirectorFlow.a11y.test.tsx` "table display ... no secrets" drives it through `App`. It did not assert the table code, which is now asserted. It still does not load a scene, so the `banner` variant on the table is covered by `artFallbacks.test.tsx` and the browser runs, not by a table-level unit test (left open).
+- **Nits fixed:** evidence README counts (18 source PNGs, not 20; 34 requested files, not 23); `lan-up.sh` uses a `mktemp -d` log directory and warns that it overwrites `apps/web/dist` with an emulator-baked bundle that must never be deployed; final-scene test now asserts the wrap target; added an all-zero-bytes `uuid` case.
+- **Nits left open (not fixed, by design or low value):** committed screenshots `*/04-gm-secrets-reveal-*.jpg` and `report.json` `roomCode` fields show throwaway `demo-digitable` emulator codes and the smoke script's fixed passphrase (not real secrets; noted in the evidence README); no `demo-` project guard on the emulator flag; a stale scene choice could revive on an A -> B -> A scene sequence; hero image `alt` may be better empty; `eslint.config.js` ignores all of `scripts/**` rather than adding a Node-globals override; the reviewer's 461 -> 478 test-count question is unreconciled.
+
+Nothing was reviewed by the same session that wrote the code; this is a second pass, not a substitute for the physical-device run.
+
+### Known gaps (not fixed here, deliberately)
+
+- No physical phone was used (Chrome emulation over the real LAN address only); iOS Safari not exercised.
+- No recovery-code entry UI: `sonnet-c/c08-recovery` (`97126b5`) adds one and cherry-picks cleanly onto `e0ad252` (tested in a scratch worktree, then removed). Not integrated because the brief limited integration to art and fallbacks; John's call.
+- The create/join/landing "Connected" strip is a 150 ms timer, not a link check (`useFixtureConnectionState`).
+- A GM/player command issued while the previous one is still being confirmed is refused client-side (by S06 design) and `SceneDirector` still clears its reason field (the runbook documents the refusal, and now the clearing).
+
 ## Definition of first playable
 
 After the later realtime PR, two players and one GM can join a room, load the sample encounter, resolve an opposed action, receive correctly isolated projections, reconnect without duplicating it, invoke anonymous safety controls, and review the timeline.
@@ -380,6 +422,7 @@ When pausing or finishing a material unit:
 
 ## Next action
 
+0. **Today:** run `docs/PLAYTEST_TWO_DEVICE.md` with a real phone and fill `docs/evidence/today-qwen/CHECKLIST.md`; decide on merging `sonnet-c/c08-recovery` (`97126b5`) and on merging `factory/today-qwen` (John's call; nothing has been pushed).
 1. Continue S06/Phase 2 PR 7 from `codex/s06-outbox-reconciliation`; do not call it complete yet. Implement authorized event-tail replay for timeline/theatre only, persist presented event IDs or an equivalent bounded cursor, and prove refresh does not re-fire an already-presented event (acceptance row 8).
 2. Replace the single `recoveredResult` slot with an ordered, deduplicated presentation queue so a later reconciled command (including `Pause`) cannot overwrite an earlier recovered `ActionResolved`. Preserve projections as the sole source of domain state.
 3. Restore the recovered summary's attack-success explanation from authorized presentation data without reconstructing domain state from events.
