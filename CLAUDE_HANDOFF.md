@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** S06 client outbox and receipt reconciliation are implemented on top of the integrated Phase 2 candidate. Core persistence, identity scoping, receipt-first reconciliation, same-ID retry, UI reconnect state, and receipt-probe rules are covered and green. Independent review fixed one recovered-result defect but found that PR 7 is not complete: durable event-tail/presented-event deduplication, ordered recovered presentations, and physical-device evidence remain open.
-- **Branch:** `codex/s06-outbox-reconciliation` (from integrated candidate `daf2f23`)
+- **Status:** S06 / Phase 2 PR 7 is implemented on this branch: client outbox and receipt reconciliation, authorized event-tail reads, a bounded persisted presentation ledger, an ordered projection-gated presentation queue, and shared-event redaction fixes. An independent post-implementation review returned approve-with-fixes; the medium fixes on the acting player's path were applied afterwards and have **not** been re-reviewed. **Not finished as a milestone:** acceptance row 22 (physical-device and staging rehearsal) has no evidence, and the open items in `docs/reviews/2026-09-18-s06-deepseek-factory-review.md` are unresolved. See "S06 event-tail presentation (DeepSeek factory run)".
+- **Branch:** `factory/today-deepseek` (worktree `.claude/worktrees/today-deepseek`; builds on `codex/s06-outbox-reconciliation` / integrated candidate `daf2f23`). Not pushed, not merged.
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-17 by Codex after two-agent S06 review and verification
+- **Last updated:** 2026-09-18 by Claude (Sonnet 5) after integrating the DeepSeek factory seats and re-verifying
 
 ## Mission
 
@@ -359,6 +359,41 @@ Sonnet C's `sonnet-c/c06-integration` (PR #33) surfaced two `apps/functions` gap
 
 Merge remains John's decision.
 
+## S06 event-tail presentation (DeepSeek factory run) — branch `factory/today-deepseek`, NOT PUSHED, NOT MERGED
+
+Closes the three code findings of [`docs/reviews/2026-09-17-s06-outbox-reconciliation-review.md`](docs/reviews/2026-09-17-s06-outbox-reconciliation-review.md) (acceptance row 8). Full record: [`docs/reviews/2026-09-18-s06-deepseek-factory-review.md`](docs/reviews/2026-09-18-s06-deepseek-factory-review.md). Seat provenance: [`docs/evidence/2026-09-18-deepseek-seats/`](docs/evidence/2026-09-18-deepseek-seats/README.md).
+
+What is on the branch:
+
+1. **Authorized event-tail reads** (commit `afd0ced`): `RoomRepository.readEventTail` / `readEventTailHead` / `presentationScope` for the Firebase and in-memory repositories. Per-partition cursors (`shared`, `gm`, `member`), a full-partition watermark so merged pages are globally ascending, no `actor` field, fail-closed envelope parsing. Presentation only; state is never rebuilt from events.
+2. **Bounded persisted presentation ledger** (`afd0ced`): acknowledged-id FIFO (512), sequence-lag expiry (300), roll contexts (64), merge-on-save for two tabs.
+3. **Ordered, projection-gated presentation queue** (this branch's follow-up commit): `useRoomProjection(..., { presentEvents: true })` returns `presentation` + `acknowledgePresentation`; the single `recoveredResult` slot is gone. An item is exposed only once the rendered projection's `roomRevision` has reached the item's. `PlayerDashboardScreen` derives its resolution summary from the queue (`presentationQueue.ts`), including the attack-success explanation (from observed `ActionRolled` context).
+4. **Recovered-command baseline:** with no ledger yet, the baseline is the partition head, except it is lowered to `acceptedSequence - 1` for commands `reconcilePending` just recovered, so a member's own recovered `ActionResolved` is not baselined away. The recovered sequences are kept across a failed head read (regression test d3, verified to fail without the fix).
+5. **Shared-event redaction fixes** (`templates/eat-the-reich/src/engine.ts`): the shared copies of `SceneEdited`, `RoundEnded` and `ActionResolved` no longer name Threats that were unrevealed before the command; the GM copy and the canonical event `reduce` consumes are unchanged. `templates/eat-the-reich/test/sharedEventRedaction.test.ts` (8 tests) fails against the pre-fix engine.
+6. **`docs/TWO_DEVICE_RUNBOOK.md`:** rewritten to match the code. Two physical devices over a LAN are **not** supported today (emulator endpoints are hard-coded to `127.0.0.1`, no LAN emulator config, `crypto.randomUUID()` unavailable on a plain-HTTP LAN origin).
+7. **Fixes from the independent review** (same commit): a sync requested while one is in flight now re-runs immediately instead of being dropped (previously the summary could arrive ~30 s after a dispatch); recovered sequences are recorded right after `reconcilePending` so a failed refresh cannot lose them; the summary no longer shows "Unresolved opposition" while an injury choice is pending, and an own `InjuryCategoryChosen` with no queued `ActionResolved` is acknowledged instead of pinning the cursor. Each hook fix has a test that was confirmed to fail with the bug reintroduced.
+
+### Verification (2026-09-18, this worktree, final tree)
+
+- `npm run check` — format, lint (zero warnings), typecheck, **565 tests passed | 11 todo** (58 files passed, 1 skipped).
+- `npm run build` — passed from an APFS clone under `/private/tmp` (`apps/web` 129 modules; the existing >500 kB chunk warning is unchanged).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — passed from that clone: **18/18** rules, **86/86** Functions, **3/3** web.
+- `git diff --check` — clean.
+- Not run: `npm audit`, any physical-device or staging session.
+
+### Open items (details and dispositions in the review record)
+
+- **Row 22:** no device or staging evidence. `docs/TWO_DEVICE_RUNBOOK.md` has a blank evidence table and says LAN devices are unsupported today.
+- **Player-private detail in shared event copies** (injury marks, `actorMemberId`, item/advance ids): product decision for John; none names an unrevealed Threat.
+- **`AllocateResults` accepts an unrevealed Threat target** (pre-existing rule; a player can mutate it and probe ids). Redaction does not close it.
+- **Reused engine event ids** (`session-paused`, `mission-ended`, `round-N-ended` after a round reset, `scene-edited-N`) would be dropped by the ledger's `eventId` dedupe for any future timeline/theatre consumer (reported by the reviewer; not re-verified).
+- **Resend path** returns no `acceptedSequence`, so with no ledger yet a recovered summary can still be baselined away (needs a callable-contract change).
+- Low: `attackSuccessesRolled` unavailable when the ledger is created after `ActionRolled`; blocked `localStorage` disables presentation; two tabs of one seat can each present a summary once.
+
+### DeepSeek seat evidence
+
+One `deepseek-v4-pro` design review (verdict AMEND, 11 findings) and four `deepseek-v4-flash` implementation seats (A ledger, B tail reads, C hook/UI, E redaction), each one attempt, all `completed`. Seats D and F were drafted but never dispatched. Seat-reported test results are self-reports from their own scratch worktrees; the numbers above are from the integrated tree. Raw transcripts are not committed.
+
 ## Definition of first playable
 
 After the later realtime PR, two players and one GM can join a room, load the sample encounter, resolve an opposed action, receive correctly isolated projections, reconnect without duplicating it, invoke anonymous safety controls, and review the timeline.
@@ -380,10 +415,9 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-1. Continue S06/Phase 2 PR 7 from `codex/s06-outbox-reconciliation`; do not call it complete yet. Implement authorized event-tail replay for timeline/theatre only, persist presented event IDs or an equivalent bounded cursor, and prove refresh does not re-fire an already-presented event (acceptance row 8).
-2. Replace the single `recoveredResult` slot with an ordered, deduplicated presentation queue so a later reconciled command (including `Pause`) cannot overwrite an earlier recovered `ActionResolved`. Preserve projections as the sole source of domain state.
-3. Restore the recovered summary's attack-success explanation from authorized presentation data without reconstructing domain state from events.
-4. Add a hook-level regression proving `useRoomProjection` refreshes the projection before exposing recovered presentation data.
-5. Re-run `npm run check`, `npm run build`, and `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator`. On this host, clone the worktree to `/private/tmp` first: directory enumeration of `/Users/john/Documents` blocks esbuild and Firebase startup before source is read. The 2026-09-17 temporary-clone run passed 18/18 rules tests, 86/86 Functions tests, and 3/3 web tests.
-6. Complete the three-device emulator and staging rehearsal required by acceptance row 22, record evidence, then obtain another independent review before merge.
-7. Keep production uncreated and do not pull forward App Check enforcement, campaign tooling, 3D, licensed content, or a second template.
+1. **Do not merge or push on the strength of this handoff alone.** `factory/today-deepseek` is local. Merge and push authority is John's.
+2. Get a second independent pass over the post-review fixes (hook resync, recovered-sequence retention, injury-summary handling) and decide the open items in `docs/reviews/2026-09-18-s06-deepseek-factory-review.md`, in particular whether other players may read a character's injury detail from the shared event partition.
+3. Acceptance row 22: either add the three small prerequisites for LAN devices (emulator endpoint host setting in `roomClient.ts`, a LAN-bound emulator config, a `getRandomValues`-based fallback for command ids) and run `docs/TWO_DEVICE_RUNBOOK.md` on real devices, or run the staging rehearsal (`docs/RUNBOOK.md` section 3, John only). Record evidence in the runbook's table only when a person actually ran it.
+4. Follow-ups that need their own change: unique engine event ids for repeatable events; rejecting unrevealed Threat targets for non-GM `AllocateResults`; returning `acceptedSequence` from the game-command callable.
+5. On this host run emulator suites from an APFS clone under `/private/tmp` (directory enumeration of `/Users/john/Documents` blocks esbuild and Firebase startup). Latest run: 18/18 rules, 86/86 Functions, 3/3 web.
+6. Keep production uncreated and do not pull forward App Check enforcement, campaign tooling, 3D, licensed content, or a second template.

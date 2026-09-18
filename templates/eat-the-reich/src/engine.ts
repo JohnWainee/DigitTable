@@ -899,7 +899,32 @@ function decideAllocateResults(
     injuryMark,
     injuryChoicePendingMode,
   };
-  return decided([broadcastEvent(`${roll.id}-resolved`, event, [{ kind: "shared" }])]);
+  // GM-only visibility guard (same boundary as `project()`): `allocations` and
+  // `threatDeltas` can name an unrevealed Threat if a non-GM client submits an
+  // id its projection never exposed. The shared copy keeps only entries for
+  // Threats revealed in the pre-command state; the GM copy and the canonical
+  // `event` (used by `reduce`) stay full-fidelity.
+  const redactedForShared: EatTheReichEvent = {
+    ...event,
+    allocations: event.allocations.filter(
+      (allocation) =>
+        allocation.target.kind !== "threat" ||
+        ctx.state.threats[allocation.target.threatId]?.revealed === true,
+    ),
+    threatDeltas: event.threatDeltas.filter(
+      (delta) => ctx.state.threats[delta.threatId]?.revealed === true,
+    ),
+  };
+  return decided([
+    {
+      eventId: `${roll.id}-resolved`,
+      event,
+      effects: [
+        { destination: { kind: "gm" }, payload: event },
+        { destination: { kind: "shared" }, payload: redactedForShared },
+      ],
+    },
+  ]);
 }
 
 function decideChooseInjuryCategory(
@@ -1137,8 +1162,25 @@ function decideEndRound(
     round: ctx.state.scene.round,
     reinforcementDeltas: deltas,
   };
+  // GM-only visibility guard (same boundary as `project()`): `deltas` covers
+  // every Threat, including unrevealed ones. The shared copy carries only
+  // deltas for Threats a player/table projection already shows; the GM copy
+  // and the canonical `event` (used by `reduce`) stay full-fidelity.
+  const redactedForShared: EatTheReichEvent = {
+    ...event,
+    reinforcementDeltas: deltas.filter(
+      (delta) => ctx.state.threats[delta.threatId]?.revealed === true,
+    ),
+  };
   return decided([
-    broadcastEvent(`round-${ctx.state.scene.round}-ended`, event, [{ kind: "shared" }]),
+    {
+      eventId: `round-${ctx.state.scene.round}-ended`,
+      event,
+      effects: [
+        { destination: { kind: "gm" }, payload: event },
+        { destination: { kind: "shared" }, payload: redactedForShared },
+      ],
+    },
   ]);
 }
 
@@ -1200,6 +1242,7 @@ function decideEditScene(
     }
   }
 
+  const removedThreatIds = command.removeThreatIds ?? [];
   const fullEvent: EatTheReichEvent = {
     type: "SceneEdited",
     reason: command.reason,
@@ -1208,11 +1251,23 @@ function decideEditScene(
     updatedObjectives,
     updatedThreats,
     removedObjectiveIds: command.removeObjectiveIds ?? [],
-    removedThreatIds: command.removeThreatIds ?? [],
+    removedThreatIds,
   };
+  // GM-only visibility guard (same boundary as `project()`): `updatedThreats`
+  // and `removedThreatIds` may name an unrevealed Threat and must not reach
+  // the shared partition. A Threat added by this same command is covered by
+  // `addedThreats` redaction below and never appears in these arrays.
+  const updatedThreatsForShared = updatedThreats.filter(
+    (update) => ctx.state.threats[update.threatId]?.revealed === true,
+  );
+  const removedThreatIdsForShared = removedThreatIds.filter(
+    (id) => ctx.state.threats[id]?.revealed === true,
+  );
   const redactedForOthers: EatTheReichEvent = {
     ...fullEvent,
     addedThreats: redactThreatsForShared(addedThreats),
+    updatedThreats: updatedThreatsForShared,
+    removedThreatIds: removedThreatIdsForShared,
   };
   return decided([
     {

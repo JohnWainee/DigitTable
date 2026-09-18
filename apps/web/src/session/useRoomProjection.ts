@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   asMemberId,
   asRoomId,
   type Capability,
   type CommandId,
+  type EventTailPartition,
   type RoomCommandResult,
   type RoomDispatchFailure,
   type RoomRepository,
@@ -15,42 +16,107 @@ import type {
   EatTheReichEvent,
   EatTheReichView,
 } from "@digitable/template-eat-the-reich";
+import {
+  PresentationLedgerStorage,
+  PresentationSession,
+  emptyLedgerData,
+  type PresentationLedgerData,
+  type PresentableEvent,
+  type RollContext,
+} from "./presentationLedger.js";
 import { ensureLiveAuthReady, getRoomRepository } from "./roomClient.js";
 
 type Repository = RoomRepository<EatTheReichCommand, EatTheReichEvent, EatTheReichView>;
 export type RoomProjectionStatus = "connecting" | "live" | "reconnecting" | "not-found";
+
+/**
+ * A presentable event decorated with the roll context presentation needs
+ * (`Defended: removed N attack successes`). `attackSuccessesRolled` is only
+ * meaningful for `ActionResolved`; it is `null` for every other event, and
+ * for a resolution whose `ActionRolled` context was never observed.
+ */
+export type PresentationItem = PresentableEvent<EatTheReichEvent> & {
+  readonly attackSuccessesRolled: number | null;
+};
+
+export interface UseRoomProjectionOptions {
+  /** Opt in to authorized event-tail presentation. Default false: no tail is read at all. */
+  readonly presentEvents?: boolean;
+  /** Test seam; defaults to window.localStorage. */
+  readonly storage?: Storage;
+}
 
 export interface RoomProjectionState {
   readonly status: RoomProjectionStatus;
   readonly projection: ViewerProjection<EatTheReichView> | null;
   readonly lastError: RoomDispatchFailure | null;
   readonly pending: boolean;
-  readonly recoveredResult: RoomCommandResult<EatTheReichEvent> | null;
+  /** Ordered, unacknowledged, revision-gated presentation queue. Never a source of domain state. */
+  readonly presentation: readonly PresentationItem[];
+  readonly acknowledgePresentation: (eventId: string) => void;
   readonly dispatch: (
     commandId: CommandId,
     payload: EatTheReichCommand,
   ) => Promise<RoomCommandResult<EatTheReichEvent>>;
 }
 
-/** Projections remain the sole source of domain state; recovered events are presentation only. */
+/** Most private first, matching `presentationLedger.ts`'s stored-copy preference. */
+const PARTITION_ORDER: readonly EventTailPartition[] = ["gm", "member", "shared"];
+
+const rollContextOf = (event: EatTheReichEvent): RollContext | null =>
+  event.type === "ActionRolled"
+    ? { rollId: event.rollId, attackSuccessesRolled: event.attackSuccessesRolled }
+    : null;
+
+/**
+ * Adds the roll context presentation needs. Called when publishing (inside an
+ * async effect or an event handler, never during render), so no ref is read
+ * while rendering.
+ */
+function decorate(
+  items: readonly PresentableEvent<EatTheReichEvent>[],
+  session: PresentationSession<EatTheReichEvent>,
+): readonly PresentationItem[] {
+  return items.map((item) => ({
+    ...item,
+    attackSuccessesRolled:
+      item.payload.type === "ActionResolved"
+        ? session.attackSuccessesRolled(item.payload.rollId)
+        : null,
+  }));
+}
+
+/**
+ * Projections remain the sole source of domain state. With `presentEvents`,
+ * the authorized event tail is read for presentation only: it is never
+ * replayed to reconstruct or mutate domain state, and no item is exposed
+ * before the rendered projection has caught up to that item's revision.
+ */
 export function useRoomProjection(
   roomId: string,
   memberId: string,
   capability: Capability,
+  options?: UseRoomProjectionOptions,
 ): RoomProjectionState {
+  const presentEvents = options?.presentEvents ?? false;
+  const storage = options?.storage;
   const [status, setStatus] = useState<RoomProjectionStatus>("connecting");
   const [projection, setProjection] = useState<ViewerProjection<EatTheReichView> | null>(null);
   const [lastError, setLastError] = useState<RoomDispatchFailure | null>(null);
   const [pending, setPending] = useState(false);
-  const [recoveredResult, setRecoveredResult] =
-    useState<RoomCommandResult<EatTheReichEvent> | null>(null);
+  const [published, setPublished] = useState<readonly PresentationItem[]>([]);
   const repositoryRef = useRef<Repository | null>(null);
+  const sessionRef = useRef<PresentationSession<EatTheReichEvent> | null>(null);
   const dispatching = useRef(false);
   const syncRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     let cancelled = false;
     let syncing = false;
+    // A sync requested while one is in flight (e.g. right after a dispatch)
+    // must not be dropped: the running pass may have read before the command
+    // committed and would otherwise leave the next pass a full backoff away.
+    let resync = false;
     let delay = 2000;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let unsubscribeProjection: Unsubscribe | undefined;
@@ -64,13 +130,75 @@ export function useRoomProjection(
       capability,
     };
 
+    let ledgerStore: PresentationLedgerStorage | null = null;
+    let session: PresentationSession<EatTheReichEvent> | null = null;
+    // `reconcilePending` drains the outbox exactly once, so sequences it
+    // recovered must outlive a failed baseline attempt (e.g. a head read that
+    // throws) until a baseline has actually been decided and persisted.
+    const recoveredSequences: number[] = [];
+
     function receive(next: ViewerProjection<EatTheReichView>): void {
       if (cancelled) return;
       setProjection((prior) => (!prior || next.roomRevision >= prior.roomRevision ? next : prior));
     }
 
+    /**
+     * Reads the authorized event tail forward from the presentation ledger,
+     * publishing unacknowledged events. `recoveredSequences` holds the
+     * sequences `reconcilePending` recovered and is used only for the
+     * no-ledger baseline below.
+     */
+    async function syncTail(): Promise<void> {
+      const repo = repository;
+      if (cancelled || !presentEvents || !repo) return;
+      ledgerStore ??= new PresentationLedgerStorage(
+        storage ?? window.localStorage,
+        repo.presentationScope(member),
+      );
+      if (!session) {
+        const stored = ledgerStore.load();
+        let initial: PresentationLedgerData;
+        if (stored) {
+          initial = stored;
+        } else {
+          const head = await repo.readEventTailHead(member, viewer);
+          if (cancelled) return;
+          const baseline = { shared: head.shared, gm: head.gm, member: head.member };
+          if (recoveredSequences.length > 0) {
+            // Never baseline away a just-recovered command's own events.
+            const lowestAccepted = Math.min(...recoveredSequences);
+            for (const partition of PARTITION_ORDER) {
+              baseline[partition] = Math.max(0, Math.min(head[partition], lowestAccepted - 1));
+            }
+          }
+          initial = emptyLedgerData(baseline);
+          ledgerStore.save(initial);
+        }
+        recoveredSequences.length = 0;
+        session = new PresentationSession<EatTheReichEvent>({
+          store: ledgerStore,
+          initial,
+          rollContextOf,
+        });
+        sessionRef.current = session;
+      }
+      const active = session;
+      if (!active) return;
+      for (let page = 0; page < 4; page += 1) {
+        const tail = await repo.readEventTail(member, viewer, active.fetchCursor());
+        if (cancelled) return;
+        active.ingest(tail.records);
+        if (!tail.hasMore) break;
+      }
+      if (!cancelled) setPublished(decorate(active.pending(), active));
+    }
+
     async function sync(): Promise<void> {
-      if (cancelled || syncing || !repository || !memberId) return;
+      if (cancelled || !repository || !memberId) return;
+      if (syncing) {
+        resync = true;
+        return;
+      }
       syncing = true;
       clearTimeout(timer);
       try {
@@ -82,6 +210,14 @@ export function useRoomProjection(
         if (cancelled) return;
         const results = await repository.reconcilePending(member);
         if (cancelled) return;
+        // Recorded before any further await: `reconcilePending` drains the
+        // outbox once, so a later failed refresh must not lose these.
+        if (presentEvents && !session) {
+          for (const result of results) {
+            if (result.status === "accepted" && result.acceptedSequence !== undefined)
+              recoveredSequences.push(result.acceptedSequence);
+          }
+        }
         if (results.length) {
           // Refresh first: never show a recovered result over stale domain state.
           receive(await repository.getProjection(viewer));
@@ -89,7 +225,6 @@ export function useRoomProjection(
           for (const result of results) {
             if (result.status === "rejected")
               setLastError({ capability, code: result.code, message: result.message });
-            else setRecoveredResult(result);
           }
         }
         const remaining = repository.pendingCommands(member);
@@ -98,17 +233,25 @@ export function useRoomProjection(
         );
         setStatus(navigator.onLine ? "live" : "reconnecting");
         delay = remaining.length ? Math.min(delay * 2, 30000) : 30000;
+        try {
+          await syncTail();
+        } catch {
+          // Presentation never blocks game state: a tail failure is retried
+          // on the next sync and never touches status/lastError.
+        }
       } catch {
         if (!cancelled) setStatus("reconnecting");
         delay = Math.min(delay * 2, 30000);
       } finally {
         syncing = false;
+        const again = resync;
+        resync = false;
         if (!cancelled && repository && memberId) {
           timer = setTimeout(
             () => {
               void sync();
             },
-            delay + Math.random() * 500,
+            again ? 0 : delay + Math.random() * 500,
           );
         }
       }
@@ -126,7 +269,7 @@ export function useRoomProjection(
       .then(() => {
         if (cancelled) return;
         setProjection(null);
-        setRecoveredResult(null);
+        setPublished([]);
         setLastError(null);
         if (!repository || !memberId) {
           setStatus("not-found");
@@ -150,9 +293,25 @@ export function useRoomProjection(
       unsubscribeErrors?.();
       window.removeEventListener("online", online);
       window.removeEventListener("offline", offline);
+      session = null;
+      sessionRef.current = null;
       syncRef.current = () => {};
     };
-  }, [roomId, memberId, capability]);
+  }, [roomId, memberId, capability, presentEvents, storage]);
+
+  const acknowledgePresentation = useCallback((eventId: string): void => {
+    const session = sessionRef.current;
+    if (!session) return;
+    session.acknowledge(eventId);
+    setPublished(decorate(session.pending(), session));
+  }, []);
+
+  // PROJECTION-BEFORE-PRESENTATION: a derived rule, not call ordering, so no
+  // render ever exposes an item whose revision exceeds the rendered projection.
+  const presentation = useMemo<readonly PresentationItem[]>(() => {
+    if (!projection) return [];
+    return published.filter((item) => item.roomRevision <= projection.roomRevision);
+  }, [published, projection]);
 
   async function dispatch(
     commandId: CommandId,
@@ -203,5 +362,13 @@ export function useRoomProjection(
     }
   }
 
-  return { status, projection, lastError, pending, recoveredResult, dispatch };
+  return {
+    status,
+    projection,
+    lastError,
+    pending,
+    presentation,
+    acknowledgePresentation,
+    dispatch,
+  };
 }

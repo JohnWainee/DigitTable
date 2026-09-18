@@ -11,3 +11,6 @@ assets/generated
 # for this PR; format/lint/typecheck here targets the TypeScript engine.
 *.md
 .vitest
+
+# Verbatim seat outcome/spec records: kept byte-exact as evidence, never reformatted.
+docs/evidence/2026-09-18-deepseek-seats

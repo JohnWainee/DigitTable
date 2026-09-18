@@ -119,7 +119,13 @@ export function ConfirmSummary2({
       detail: "Attack increased — no successes were removed this roll.",
     });
   }
-  if (resolved.remainingAttackSuccessesAfterAllocation > 0 && !resolved.injuryMark) {
+  // While an injury choice is pending its mark has not arrived yet: the choice
+  // is what resolves these successes, so they are not "unresolved".
+  if (
+    resolved.remainingAttackSuccessesAfterAllocation > 0 &&
+    !resolved.injuryMark &&
+    !resolved.injuryChoicePendingMode
+  ) {
     lines.push({
       label: "Unresolved opposition",
       detail: `${resolved.remainingAttackSuccessesAfterAllocation} attack success(es) got through.`,

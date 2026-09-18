@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { navigate } from "../router.js";
 import { ConnectionStatusStrip } from "../shell/ConnectionStatusStrip.js";
 import { FixtureModeBanner } from "../shell/FixtureModeBanner.js";
 import { readOwnershipRecord } from "../session/ownership.js";
 import { useRoomProjection } from "../session/useRoomProjection.js";
+import { isHeldForResolution, selectOwnResolution } from "../session/presentationQueue.js";
 import { asCommandId, type RoomCommandResult } from "@digitable/contracts";
 import type {
   AllocationTarget,
@@ -19,28 +20,10 @@ import { ComposeStep2 } from "./ComposeStep2.js";
 import { DeclaredWaiting } from "./DeclaredWaiting.js";
 import { AllocationPanel2 } from "./AllocationPanel2.js";
 import { ChooseInjuryPanel2 } from "./ChooseInjuryPanel2.js";
-import { ConfirmSummary2, type ActionResolvedEvent } from "./ConfirmSummary2.js";
+import { ConfirmSummary2 } from "./ConfirmSummary2.js";
 
 export interface PlayerDashboardScreenProps {
   readonly roomId: string;
-}
-
-/**
- * A normally resolved roll is intentionally absent from the next viewer
- * projection, so reconnect presentation cannot match a recovered event
- * through `view.rolls`. The event's server-authored character id is the
- * durable link to this player's sheet instead.
- */
-export function findRecoveredActionResolution(
-  result: RoomCommandResult<EatTheReichEvent> | null,
-  characterId: string,
-  dismissedCommandId: string | null,
-): ActionResolvedEvent | undefined {
-  if (result?.status !== "accepted" || result.commandId === dismissedCommandId) return undefined;
-  return result.sharedEvents.find(
-    (event): event is ActionResolvedEvent =>
-      event.type === "ActionResolved" && event.characterId === characterId,
-  );
 }
 
 function isFullRoll(view: RollView): view is RollViewFull {
@@ -51,18 +34,32 @@ function isFullRoll(view: RollView): view is RollViewFull {
 export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): JSX.Element {
   const ownership = readOwnershipRecord();
   const memberId = ownership?.roomId === roomId ? ownership.memberId : "";
-  const { status, projection, dispatch, lastError, pending, recoveredResult } = useRoomProjection(
-    roomId,
-    memberId,
-    "player",
-  );
+  const {
+    status,
+    projection,
+    dispatch,
+    lastError,
+    pending,
+    presentation,
+    acknowledgePresentation,
+  } = useRoomProjection(roomId, memberId, "player", { presentEvents: true });
   const connection = status === "not-found" ? "signed-out" : status;
-  const [dismissedRecovery, setDismissedRecovery] = useState<string | null>(null);
+  const selfId = projection?.view.self?.id ?? null;
   const [error, setError] = useState<string | null>(null);
-  const [pendingResolution, setPendingResolution] = useState<{
-    readonly event: ActionResolvedEvent;
-    readonly attackSuccessesRolled: number;
-  } | null>(null);
+
+  // The dashboard has no interactive event-driven UI beyond the recovered
+  // resolution, so every other queued item is presentation-neutral and can
+  // be acknowledged immediately (once per render pass).
+  useEffect(() => {
+    if (!selfId) return;
+    const acknowledged = new Set<string>();
+    for (const item of presentation) {
+      if (isHeldForResolution(presentation, item, selfId) || acknowledged.has(item.eventId))
+        continue;
+      acknowledged.add(item.eventId);
+      acknowledgePresentation(item.eventId);
+    }
+  }, [presentation, selfId, acknowledgePresentation]);
 
   if (!ownership || ownership.roomId !== roomId) {
     return (
@@ -121,34 +118,12 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
   async function handleAllocate(
     allocations: readonly { readonly dieFaceIndex: number; readonly target: AllocationTarget }[],
     rollId: string,
-    attackSuccessesRolled: number,
   ): Promise<void> {
-    const result = await handleDispatch({ type: "AllocateResults", rollId, allocations });
-    if (result.status === "accepted") {
-      const resolved = result.sharedEvents.find(
-        (event): event is ActionResolvedEvent => event.type === "ActionResolved",
-      );
-      if (resolved) setPendingResolution({ event: resolved, attackSuccessesRolled });
-    }
+    await handleDispatch({ type: "AllocateResults", rollId, allocations });
   }
 
   async function handleChooseInjury(categoryId: string, rollId: string): Promise<void> {
-    const result = await handleDispatch({ type: "ChooseInjuryCategory", rollId, categoryId });
-    if (result.status === "accepted") {
-      const chosen = result.sharedEvents.find((event) => event.type === "InjuryCategoryChosen");
-      if (chosen && chosen.type === "InjuryCategoryChosen") {
-        setPendingResolution((prev) =>
-          prev
-            ? {
-                ...prev,
-                event: { ...prev.event, injuryMark: chosen.mark, injuryChoicePendingMode: null },
-              }
-            : prev,
-        );
-      } else {
-        setPendingResolution(null);
-      }
-    }
+    await handleDispatch({ type: "ChooseInjuryCategory", rollId, categoryId });
   }
 
   async function handlePause(): Promise<void> {
@@ -168,15 +143,7 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
   const view: EatTheReichView = projection.view;
   const ownRollView = view.rolls.find((r) => r.characterId === self.id);
   const ownRoll = ownRollView && isFullRoll(ownRollView) ? ownRollView : null;
-  const recoveredEvent = findRecoveredActionResolution(recoveredResult, self.id, dismissedRecovery);
-  const resolution =
-    pendingResolution ??
-    (recoveredEvent
-      ? {
-          event: recoveredEvent,
-          attackSuccessesRolled: ownRoll?.attackSuccessesRolled ?? 0,
-        }
-      : null);
+  const resolution = selectOwnResolution(presentation, self.id);
 
   let body: JSX.Element;
   let announcement: string;
@@ -206,8 +173,7 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
         threats={view.threats}
         attackSuccessesRolled={resolution.attackSuccessesRolled}
         onContinue={() => {
-          setPendingResolution(null);
-          setDismissedRecovery(recoveredResult?.commandId ?? null);
+          for (const eventId of resolution.eventIds) acknowledgePresentation(eventId);
         }}
       />
     );
@@ -230,7 +196,7 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
         roll={ownRoll}
         character={self}
         onConfirm={(allocations) => {
-          void handleAllocate(allocations, ownRoll.rollId, ownRoll.attackSuccessesRolled ?? 0);
+          void handleAllocate(allocations, ownRoll.rollId);
         }}
       />
     );

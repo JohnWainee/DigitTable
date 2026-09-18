@@ -1,0 +1,59 @@
+{
+ "runId": "today-deepseek-2026-09-18",
+ "contractId": "s06-realtime-presentation",
+ "taskId": "flash-A",
+ "title": "V4 Flash builder: leaf A",
+ "seat": "flash-builder",
+ "worktree": "/private/tmp/dt-seats/wt-A",
+ "promptFile": "flashA.prompt.md",
+ "contextPaths": [
+  "packages/contracts/src/eventTail.ts",
+  "apps/web/src/repository/commandOutbox.ts",
+  "apps/web/test/memoryStorage.ts",
+  "AGENTS.md",
+  "apps/web/src/session/presentationLedger.ts",
+  "apps/web/test/session/presentationLedger.test.ts"
+ ],
+ "policyRoots": [
+  "apps",
+  "packages",
+  "templates",
+  "docs",
+  "firestore.rules",
+  "firebase.json",
+  "firebase.lan.json",
+  "package.json",
+  "AGENTS.md",
+  "tsconfig.base.json",
+  "vitest.config.ts",
+  "eslint.config.js"
+ ],
+ "policyDeny": [
+  ".env",
+  "content/private",
+  "node_modules",
+  ".git",
+  ".claude",
+  "apps/web/.env",
+  "apps/web/.env.local",
+  "apps/functions/.env",
+  "apps/functions/.secret.local"
+ ],
+ "contractAllow": [
+  "packages/contracts/src/eventTail.ts",
+  "apps/web/src/repository/commandOutbox.ts",
+  "apps/web/test/memoryStorage.ts",
+  "AGENTS.md",
+  "apps/web/src/session/presentationLedger.ts",
+  "apps/web/test/session/presentationLedger.test.ts"
+ ],
+ "contractDeny": [
+  "templates/eat-the-reich/src/privateContent.ts"
+ ],
+ "eventLog": "/private/tmp/dt-seats/evidence/pilot-events.jsonl",
+ "sessionsRoot": "/private/tmp/dt-seats/evidence/sessions",
+ "outcomeFile": "/private/tmp/dt-seats/evidence/flash-A.outcome.json",
+ "tokenCeiling": 2500000,
+ "maxWallClockMs": 2400000,
+ "maxRetries": 1
+}

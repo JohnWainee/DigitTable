@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { asCommandId, type RoomCommandResult } from "@digitable/contracts";
 import type { EatTheReichEvent } from "@digitable/template-eat-the-reich";
-import { findRecoveredActionResolution } from "../../src/player2/PlayerDashboardScreen.js";
+import type { PresentationItem } from "../../src/session/useRoomProjection.js";
+import { selectOwnResolution } from "../../src/session/presentationQueue.js";
 
-const resolved: Extract<EatTheReichEvent, { type: "ActionResolved" }> = {
+type ActionResolved = Extract<EatTheReichEvent, { type: "ActionResolved" }>;
+
+const resolved: ActionResolved = {
   type: "ActionResolved",
   rollId: "roll-rook-1",
   characterId: "rook",
@@ -19,25 +21,32 @@ const resolved: Extract<EatTheReichEvent, { type: "ActionResolved" }> = {
   injuryChoicePendingMode: null,
 };
 
-function recovered(
-  events: readonly EatTheReichEvent[] = [resolved],
-): RoomCommandResult<EatTheReichEvent> {
+function queued(event: EatTheReichEvent, eventId: string, sequence: number): PresentationItem {
   return {
-    status: "accepted",
-    commandId: asCommandId("11111111-1111-4111-8111-111111111111"),
-    roomRevision: 8,
-    sharedEvents: events,
+    eventId,
+    commandId: `cmd-${eventId}`,
+    sequence,
+    roomRevision: sequence,
+    payload: event,
+    partitions: ["shared"],
+    attackSuccessesRolled: 3,
   };
 }
 
-describe("recovered action resolution", () => {
+describe("recovered action resolution selection", () => {
   it("matches the server-authored character after the resolved roll has left the projection", () => {
-    expect(findRecoveredActionResolution(recovered(), "rook", null)).toEqual(resolved);
+    const selection = selectOwnResolution([queued(resolved, "event-1", 8)], "rook");
+    expect(selection?.event).toEqual(resolved);
+    expect(selection?.attackSuccessesRolled).toBe(3);
+    expect(selection?.eventIds).toEqual(["event-1"]);
   });
 
-  it("does not present another character's or an already dismissed resolution", () => {
-    const result = recovered();
-    expect(findRecoveredActionResolution(result, "vesper", null)).toBeUndefined();
-    expect(findRecoveredActionResolution(result, "rook", result.commandId)).toBeUndefined();
+  it("does not present another character's resolution", () => {
+    const queue = [queued(resolved, "event-1", 8)];
+    expect(selectOwnResolution(queue, "vesper")).toBeNull();
+  });
+
+  it("does not return a dismissed (acknowledged, now absent) resolution", () => {
+    expect(selectOwnResolution([], "rook")).toBeNull();
   });
 });
