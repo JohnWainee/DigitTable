@@ -10,6 +10,7 @@ export * from "./room.js";
 export * from "./admission.js";
 export * from "./projection.js";
 export * from "./template.js";
+export * from "./eventTail.js";
 export * from "./repository.js";
 export * from "./session.js";
 export * from "./recovery.js";

@@ -2,6 +2,12 @@ import {
   type AuthorityRecord,
   type AuthorizedMemberContext,
   type Capability,
+  type EventDestination,
+  type EventEnvelope,
+  type EventTailCursor,
+  type EventTailPage,
+  type EventTailPartition,
+  type EventTailRecord,
   type MemberId,
   type RoomCommandRequest,
   type RoomCommandResult,
@@ -25,6 +31,7 @@ import {
   type EatTheReichState,
   type EatTheReichView,
 } from "@digitable/template-eat-the-reich";
+import { assembleTailPage, authorizedPartitions, clampTailLimit } from "./eventTail.js";
 
 const PLATFORM_VERSION = "0.0.0-local";
 
@@ -71,6 +78,16 @@ export class InMemoryRoomRepository implements RoomRepository<
   private readonly roomId: RoomId;
   private readonly capabilities = new Map<MemberId, Capability>();
   private readonly receipts = new Map<string, AcceptedCommandReceipt>();
+  /**
+   * Append-only presentation log of every newly accepted command's envelopes,
+   * in emission order. Never a reconstruction path: `readEventTail` only
+   * copies these records back out for timeline/theatre display. Replays from
+   * a `priorReceipt` emit no new envelopes and add nothing here.
+   */
+  private readonly eventLog: {
+    readonly destination: EventDestination;
+    readonly envelope: EventEnvelope<EatTheReichEvent>;
+  }[] = [];
   private readonly listeners = new Set<ChangeListener>();
   private readonly errorListeners = new Set<ErrorListener>();
 
@@ -168,6 +185,9 @@ export class InMemoryRoomRepository implements RoomRepository<
 
     this.authority = result.authority;
     this.receipts.set(receiptKey, result.receipt);
+    if (priorReceipt === undefined) {
+      for (const delivered of result.envelopes) this.eventLog.push(delivered);
+    }
     const sharedEvents = result.envelopes
       .filter((delivered) => delivered.destination.kind === "shared")
       .map((delivered) => delivered.envelope.payload);
@@ -177,6 +197,86 @@ export class InMemoryRoomRepository implements RoomRepository<
       commandId: request.commandId,
       roomRevision: result.authority.roomRevision,
       sharedEvents,
+    });
+  }
+
+  /** See `RoomRepository.presentationScope`. Fixture mode is not identity-bound. */
+  presentationScope(memberId: MemberId): string {
+    return JSON.stringify(["fixture", this.roomId, memberId]);
+  }
+
+  /**
+   * The partition a stored envelope belongs to for `memberId`/`viewer`, or
+   * `null` when the viewer is not authorized to see it. `member` is visible
+   * only to the member whose own partition it is; `gm` only to the GM seat.
+   */
+  private partitionFor(
+    destination: EventDestination,
+    memberId: MemberId,
+    viewer: ViewerContext,
+  ): EventTailPartition | null {
+    const authorized = new Set(authorizedPartitions(viewer.capability));
+    switch (destination.kind) {
+      case "shared":
+        return authorized.has("shared") ? "shared" : null;
+      case "gm":
+        return authorized.has("gm") ? "gm" : null;
+      case "member":
+        return authorized.has("member") && destination.memberId === memberId ? "member" : null;
+    }
+  }
+
+  private tailRecords(
+    memberId: MemberId,
+    viewer: ViewerContext,
+    after: EventTailCursor,
+    limit: number,
+  ): Partial<Record<EventTailPartition, EventTailRecord<EatTheReichEvent>[]>> {
+    const perPartition: Partial<Record<EventTailPartition, EventTailRecord<EatTheReichEvent>[]>> =
+      {};
+    for (const { destination, envelope } of this.eventLog) {
+      const partition = this.partitionFor(destination, memberId, viewer);
+      if (partition === null) continue;
+      if (envelope.sequence <= after[partition]) continue;
+      const bucket = (perPartition[partition] ??= []);
+      if (bucket.length >= limit) continue;
+      bucket.push({
+        eventId: envelope.eventId,
+        commandId: envelope.commandId,
+        sequence: envelope.sequence,
+        roomRevision: envelope.roomRevision,
+        partition,
+        payload: envelope.payload,
+      });
+    }
+    return perPartition;
+  }
+
+  /** See `RoomRepository.readEventTail`. */
+  readEventTail(
+    memberId: MemberId,
+    viewer: ViewerContext,
+    after: EventTailCursor,
+    limit?: number,
+  ): Promise<EventTailPage<EatTheReichEvent>> {
+    const pageLimit = clampTailLimit(limit);
+    return Promise.resolve(
+      assembleTailPage(this.tailRecords(memberId, viewer, after, pageLimit), after, pageLimit),
+    );
+  }
+
+  /** See `RoomRepository.readEventTailHead`. */
+  readEventTailHead(memberId: MemberId, viewer: ViewerContext): Promise<EventTailCursor> {
+    const sequences: Record<EventTailPartition, number> = { shared: 0, gm: 0, member: 0 };
+    for (const { destination, envelope } of this.eventLog) {
+      const partition = this.partitionFor(destination, memberId, viewer);
+      if (partition === null) continue;
+      if (envelope.sequence > sequences[partition]) sequences[partition] = envelope.sequence;
+    }
+    return Promise.resolve({
+      shared: sequences.shared,
+      gm: sequences.gm,
+      member: sequences.member,
     });
   }
 

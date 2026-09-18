@@ -1,5 +1,16 @@
 import type { FirebaseApp } from "firebase/app";
-import { doc, getDoc, getDocFromServer, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocFromServer,
+  getDocsFromServer,
+  limit as firestoreLimit,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { FunctionsError } from "firebase/functions";
 import {
@@ -8,6 +19,10 @@ import {
   receiptIdFor,
   STABLE_ERROR_CODES,
   type Capability,
+  type EventTailCursor,
+  type EventTailPage,
+  type EventTailPartition,
+  type EventTailRecord,
   type MemberId,
   type RoomCommandRequest,
   type RoomCommandResult,
@@ -28,6 +43,13 @@ import { callable, getRoomFunctions, type FunctionsEmulatorConfig } from "../fir
 import { getRoomFirestore, type FirestoreEmulatorConfig } from "../firebase/firestore.js";
 import { stableErrorFromThrown } from "../firebase/functionsError.js";
 import { CommandOutbox, type PendingCommand } from "./commandOutbox.js";
+import {
+  assembleTailPage,
+  authorizedPartitions,
+  clampTailLimit,
+  parseTailDocument,
+  partitionCollectionPath,
+} from "./eventTail.js";
 
 export interface RoomRepositoryEmulatorConfig {
   readonly functions: FunctionsEmulatorConfig;
@@ -183,13 +205,31 @@ export class FirebaseRoomRepository implements RoomRepository<
   }
 
   private outbox(memberId: MemberId): CommandOutbox {
+    const uid = this.identity();
+    const storage = this.storage ?? (typeof window !== "undefined" ? window.localStorage : null);
+    if (!storage) throw new Error("Persistent storage unavailable.");
+    return new CommandOutbox(storage, this.projectKey(), uid, this.roomId, memberId);
+  }
+
+  /**
+   * The signed-in UID, throwing if there is none or it changed since this
+   * repository first saw one. Extracted so `outbox` and `presentationScope`
+   * share the exact same identity check.
+   */
+  private identity(): string {
     const uid = getAuth(this.app).currentUser?.uid;
     if (!uid || (this.uid !== null && this.uid !== uid)) throw new Error("Identity changed.");
     this.uid = uid;
-    const storage = this.storage ?? (typeof window !== "undefined" ? window.localStorage : null);
-    if (!storage) throw new Error("Persistent storage unavailable.");
-    const project = `${this.app.options.projectId ?? this.app.name}:${this.emulator ? `${this.emulator.firestore.host}:${this.emulator.firestore.port}` : "live"}`;
-    return new CommandOutbox(storage, project, uid, this.roomId, memberId);
+    return uid;
+  }
+
+  /**
+   * The project discriminator that scopes this browser's persisted outbox
+   * entries (and presentation scope). Unchanged from the original `outbox`
+   * derivation so already-persisted keys keep working.
+   */
+  private projectKey(): string {
+    return `${this.app.options.projectId ?? this.app.name}:${this.emulator ? `${this.emulator.firestore.host}:${this.emulator.firestore.port}` : "live"}`;
   }
 
   pendingCommands(memberId: MemberId): readonly RoomCommandRequest<EatTheReichCommand>[] {
@@ -309,6 +349,9 @@ export class FirebaseRoomRepository implements RoomRepository<
             commandId: request.commandId,
             roomRevision: receipt.roomRevision,
             sharedEvents,
+            ...(typeof receipt.acceptedSequence === "number"
+              ? { acceptedSequence: receipt.acceptedSequence }
+              : {}),
           };
         }
         this.complete(memberId, result);
@@ -331,6 +374,90 @@ export class FirebaseRoomRepository implements RoomRepository<
       throw new Error(`No projection exists yet for viewer "${viewer.viewerId}".`);
     }
     return parseViewerProjection(snapshot.data());
+  }
+
+  /**
+   * `RoomRepository.presentationScope`: identity-scoped key for cached
+   * presentation state. Reuses `outbox`'s identity check, then serializes the
+   * same project derivation `outbox` uses so it changes with project, UID,
+   * room, or member.
+   */
+  presentationScope(memberId: MemberId): string {
+    const uid = this.identity();
+    return JSON.stringify([this.projectKey(), uid, this.roomId, memberId]);
+  }
+
+  /**
+   * `RoomRepository.readEventTail`: one bounded, merge-watermarked page from
+   * the partitions `viewer` may read. Each partition is an independent
+   * indexed range query (single-field `sequence`), so no composite index is
+   * required. The identity is re-checked after every read so a replacement
+   * identity never receives another identity's result (mirroring
+   * `reconcilePending`).
+   */
+  async readEventTail(
+    memberId: MemberId,
+    viewer: ViewerContext,
+    after: EventTailCursor,
+    limit?: number,
+  ): Promise<EventTailPage<EatTheReichEvent>> {
+    this.identity(); // Identity check before the reads.
+    const pageLimit = clampTailLimit(limit);
+    const partitions = authorizedPartitions(viewer.capability);
+    const db = getRoomFirestore(this.app, this.emulator?.firestore);
+    const perPartition = await Promise.all(
+      partitions.map(async (partition) => {
+        const path = partitionCollectionPath(this.roomId, partition, memberId);
+        const snapshot = await getDocsFromServer(
+          query(
+            collection(db, path),
+            where("sequence", ">", after[partition]),
+            orderBy("sequence", "asc"),
+            firestoreLimit(pageLimit),
+          ),
+        );
+        const records = snapshot.docs.map((stored) =>
+          parseTailDocument(partition, stored.id, stored.data(), (payload) =>
+            eatTheReichTemplate.schemas.parseEvent(payload),
+          ),
+        );
+        return [partition, records] as const;
+      }),
+    );
+    this.identity(); // Never return another identity's read result.
+    const merged: Partial<
+      Record<EventTailPartition, readonly EventTailRecord<EatTheReichEvent>[]>
+    > = {};
+    for (const [partition, records] of perPartition) merged[partition] = records;
+    return assembleTailPage(merged, after, pageLimit);
+  }
+
+  /**
+   * `RoomRepository.readEventTailHead`: the latest stored sequence per
+   * authorized partition, or `0` when empty or not applicable to the viewer.
+   */
+  async readEventTailHead(memberId: MemberId, viewer: ViewerContext): Promise<EventTailCursor> {
+    this.identity(); // Identity check before the reads.
+    const partitions = authorizedPartitions(viewer.capability);
+    const db = getRoomFirestore(this.app, this.emulator?.firestore);
+    const heads = await Promise.all(
+      partitions.map(async (partition) => {
+        const path = partitionCollectionPath(this.roomId, partition, memberId);
+        const snapshot = await getDocsFromServer(
+          query(collection(db, path), orderBy("sequence", "desc"), firestoreLimit(1)),
+        );
+        const stored = snapshot.docs[0];
+        if (!stored) return [partition, 0] as const;
+        const record = parseTailDocument(partition, stored.id, stored.data(), (payload) =>
+          eatTheReichTemplate.schemas.parseEvent(payload),
+        );
+        return [partition, record.sequence] as const;
+      }),
+    );
+    this.identity(); // Never return another identity's read result.
+    const sequences: Record<EventTailPartition, number> = { shared: 0, gm: 0, member: 0 };
+    for (const [partition, sequence] of heads) sequences[partition] = sequence;
+    return { shared: sequences.shared, gm: sequences.gm, member: sequences.member };
   }
 
   /**

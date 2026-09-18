@@ -2,6 +2,7 @@ import type { CommandId, MemberId } from "./ids.js";
 import type { StableErrorCode } from "./errors.js";
 import type { Capability, ViewerContext } from "./template.js";
 import type { ViewerProjection } from "./projection.js";
+import type { EventTailCursor, EventTailPage } from "./eventTail.js";
 
 /**
  * A caller-supplied command dispatch request. `commandId` must be minted by
@@ -28,6 +29,12 @@ export interface RoomCommandAccepted<TEvent> {
   readonly roomRevision: number;
   /** The subset of emitted events sent to the "shared" destination, in emission order. */
   readonly sharedEvents: readonly TEvent[];
+  /**
+   * The first room sequence this command emitted, when a reconciler learned it
+   * from the durable receipt. Presentation uses it only to avoid baselining
+   * past the events of a recovered command; never to reconstruct state.
+   */
+  readonly acceptedSequence?: number;
 }
 
 export interface RoomCommandRejected {
@@ -92,6 +99,37 @@ export interface RoomRepository<TCommand, TEvent, TView> {
 
   /** One-shot fetch of a viewer's current projection. */
   getProjection(viewer: ViewerContext): Promise<ViewerProjection<TView>>;
+
+  /**
+   * Reads one bounded page of events strictly after `after` from the
+   * partitions this viewer is authorized to read (shared, the member's own,
+   * and `gm` for the GM seat). For timeline/theatre presentation only: the
+   * result must never be used to reconstruct or mutate domain state.
+   * Implementations validate every stored document before returning it.
+   */
+  readEventTail(
+    memberId: MemberId,
+    viewer: ViewerContext,
+    after: EventTailCursor,
+    limit?: number,
+  ): Promise<EventTailPage<TEvent>>;
+
+  /**
+   * An opaque, identity-scoped key under which a client may persist
+   * presentation state (which events it has already presented) for this
+   * member. It must change whenever the signed-in identity, room, or seat
+   * changes, so one identity's presentation history is never applied to
+   * another. Throws if the identity is not (or is no longer) usable, matching
+   * the repository's own outbox identity checks.
+   */
+  presentationScope(memberId: MemberId): string;
+
+  /**
+   * The latest stored sequence per authorized partition. A device with no
+   * presentation history uses this as its baseline so a late join or a
+   * cleared browser never replays the room's past as new theatre.
+   */
+  readEventTailHead(memberId: MemberId, viewer: ViewerContext): Promise<EventTailCursor>;
 
   /**
    * Live projection updates for one viewer. A real backend delivers these
