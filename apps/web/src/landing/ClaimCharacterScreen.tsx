@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { navigate } from "../router.js";
-import {
-  ConnectionStatusStrip,
-  useFixtureConnectionState,
-} from "../shell/ConnectionStatusStrip.js";
+import { ConnectionStatusStrip } from "../shell/ConnectionStatusStrip.js";
 import { FixtureModeBanner } from "../shell/FixtureModeBanner.js";
 import { readOwnershipRecord } from "../session/ownership.js";
 import { useRoomProjection } from "../session/useRoomProjection.js";
@@ -19,10 +16,14 @@ export interface ClaimCharacterScreenProps {
 
 /** docs/ETR_SESSION_FLOW.md section 4.3: `ClaimCharacterScreen`, derived from the real `roster` projection (C06). */
 export function ClaimCharacterScreen({ roomId }: ClaimCharacterScreenProps): JSX.Element {
-  const connection = useFixtureConnectionState();
   const ownership = readOwnershipRecord();
   const memberId = ownership?.roomId === roomId ? ownership.memberId : "";
-  const { status, projection, dispatch } = useRoomProjection(roomId, memberId, "player");
+  const { status, projection, dispatch, pending, lastError } = useRoomProjection(
+    roomId,
+    memberId,
+    "player",
+  );
+  const connection = status === "not-found" ? "signed-out" : status;
   const [announcement, setAnnouncement] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -78,9 +79,14 @@ export function ClaimCharacterScreen({ roomId }: ClaimCharacterScreenProps): JSX
       <FixtureModeBanner />
       <h1>Pick your character</h1>
       <LiveRegion politeness="polite" message={announcement} />
-      {error && (
+      {pending && (
+        <p role="status">
+          Your action is awaiting confirmation. Reconnecting will check it automatically.
+        </p>
+      )}
+      {(error || lastError) && (
         <p role="alert" className="error-message">
-          {error}
+          {error ?? lastError?.message}
         </p>
       )}
 
@@ -112,7 +118,7 @@ export function ClaimCharacterScreen({ roomId }: ClaimCharacterScreenProps): JSX
                   <button
                     type="button"
                     className="primary-action"
-                    disabled={Boolean(mine)}
+                    disabled={pending || Boolean(mine)}
                     onClick={() => {
                       void handleClaim(character.id, character.name);
                     }}

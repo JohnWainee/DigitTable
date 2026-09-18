@@ -1,6 +1,6 @@
 import { deleteApp, initializeApp, type FirebaseApp } from "firebase/app";
 import { asCommandId, asMemberId, asRoomId } from "@digitable/contracts";
-import type { EatTheReichCommand } from "@digitable/template-eat-the-reich";
+import { ORIGINAL_MISSION, type EatTheReichCommand } from "@digitable/template-eat-the-reich";
 import { createEmulatorTestEnvironment, type RulesTestEnvironment } from "@digitable/testing";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
@@ -8,6 +8,8 @@ import {
   type SessionEmulatorConfig,
 } from "../src/session/FirebaseSessionClient.js";
 import { FirebaseRoomRepository } from "../src/repository/FirebaseRoomRepository.js";
+import { CommandOutbox } from "../src/repository/commandOutbox.js";
+import { MemoryStorage } from "../test/memoryStorage.js";
 
 /**
  * Board task A05's required proof: the client's real callable HTTP/SDK
@@ -81,12 +83,26 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
     expect(joined.roomId).toBe(created.roomId);
 
     const roomId = asRoomId(created.roomId);
-    const playerRepo = new FirebaseRoomRepository(playerApp, roomId, "player", {
-      functions: emulator.functions,
-      firestore: emulator.firestore,
-    });
+    const storage = new MemoryStorage();
+    const playerRepo = new FirebaseRoomRepository(
+      playerApp,
+      roomId,
+      "player",
+      {
+        functions: emulator.functions,
+        firestore: emulator.firestore,
+      },
+      storage,
+    );
 
     const playerMemberId = asMemberId(joined.memberId);
+    const outbox = new CommandOutbox(
+      storage,
+      "demo-digitable:127.0.0.1:8080",
+      await playerSession.ensureSignedIn(),
+      roomId,
+      playerMemberId,
+    );
 
     // B02-B05's real roster/action loop (C06): a character is claimed via
     // `ClaimCharacter`, not pre-assigned at room creation (see
@@ -94,11 +110,54 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
     // comment) — claim one of the real roster characters before the real
     // `BeginAction` shape (stat/itemIds/abilityIds/bonusClaimIds/
     // engagedThreatIds/note) can be dispatched for it.
-    const claimResult = await playerRepo.dispatch(playerMemberId, {
+    const claimRequest = {
       commandId: asCommandId(crypto.randomUUID()),
       payload: { type: "ClaimCharacter", characterId: "rook" } satisfies EatTheReichCommand,
+    };
+    // Failure injection: model a command persisted immediately before the
+    // browser lost its response. With no receipt yet, reconnect retries the
+    // exact ID and the authority accepts it once.
+    outbox.remember(claimRequest);
+    await playerRepo.reconcilePending(playerMemberId);
+    expect(outbox.read()).toEqual([]);
+    const afterClaim = await playerRepo.getProjection({
+      roomId,
+      viewerId: playerMemberId,
+      capability: "player",
     });
-    expect(claimResult.status).toBe("accepted");
+    expect(afterClaim.roomRevision).toBe(1);
+
+    // Failure injection: model a lost response after commit by restoring
+    // the already-accepted request to the browser outbox. Reconciliation
+    // finds the private receipt and clears it without another revision.
+    outbox.remember(claimRequest);
+    await playerRepo.reconcilePending(playerMemberId);
+    expect(outbox.read()).toEqual([]);
+    const afterReceiptReconciliation = await playerRepo.getProjection({
+      roomId,
+      viewerId: playerMemberId,
+      capability: "player",
+    });
+    expect(afterReceiptReconciliation.roomRevision).toBe(1);
+
+    const gmRepo = new FirebaseRoomRepository(
+      gmApp,
+      roomId,
+      "gm",
+      {
+        functions: emulator.functions,
+        firestore: emulator.firestore,
+      },
+      storage,
+    );
+    expect(
+      (
+        await gmRepo.dispatch(asMemberId(created.memberId), {
+          commandId: asCommandId(crypto.randomUUID()),
+          payload: { type: "LoadScene", ...ORIGINAL_MISSION[0]! },
+        })
+      ).status,
+    ).toBe("accepted");
 
     const beginAction: EatTheReichCommand = {
       type: "BeginAction",
@@ -118,7 +177,7 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
     if (dispatchResult.status !== "accepted") {
       throw new Error(`dispatch failed: ${dispatchResult.code} ${dispatchResult.message}`);
     }
-    expect(dispatchResult.roomRevision).toBe(2);
+    expect(dispatchResult.roomRevision).toBe(3);
     expect(dispatchResult.sharedEvents).toHaveLength(1);
 
     // The player reads their own updated projection through the real
@@ -128,17 +187,13 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
       viewerId: playerMemberId,
       capability: "player",
     });
-    expect(playerProjection.roomRevision).toBe(2);
+    expect(playerProjection.roomRevision).toBe(3);
 
     // The GM reads the same room's GM projection through its own
     // independent identity/session, proving both viewers see the one
     // atomically-committed update.
-    const gmRepo = new FirebaseRoomRepository(gmApp, roomId, "gm", {
-      functions: emulator.functions,
-      firestore: emulator.firestore,
-    });
     const gmProjection = await gmRepo.getProjection({ roomId, viewerId: "gm", capability: "gm" });
-    expect(gmProjection.roomRevision).toBe(2);
+    expect(gmProjection.roomRevision).toBe(3);
   });
 
   it("rejects an unrecognized room code through the real callable boundary with a stable error code", async () => {

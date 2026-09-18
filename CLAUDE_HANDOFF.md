@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Phase 1A–1C, the Phase 2 preflight, and Phase 2 PRs 1–2 are merged to `main`. **PR #13 (admission), #15 (A02 contracts), #18 (A03 createRoom), #23 (A04 game commands), #27 (A05 client repository), #30 (A06 partial: seat recovery), and #32 (A07 partial: region fix + runbook) are all implemented and ready for John's merge decision**, each after its own independent review round with findings fixed and tests added (none blocking; see each PR's own review doc under `docs/reviews/`).
-- **Branch:** `sonnet-a/a07` (from `sonnet-a/a06`, itself from `sonnet-a/a05`, itself from `sonnet-a/a04`, itself from `sonnet-a/a03`, itself from `worktree-phase2-pr3-admission`/PR #13's branch with `sonnet-a/a02` merged in)
+- **Status:** S06 client outbox and receipt reconciliation are implemented on top of the integrated Phase 2 candidate. Core persistence, identity scoping, receipt-first reconciliation, same-ID retry, UI reconnect state, and receipt-probe rules are covered and green. Independent review fixed one recovered-result defect but found that PR 7 is not complete: durable event-tail/presented-event deduplication, ordered recovered presentations, and physical-device evidence remain open.
+- **Branch:** `codex/s06-outbox-reconciliation` (from integrated candidate `daf2f23`)
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-15 by Sonnet A (task A07: region co-location fix, operations runbook, independent review, and this session's final report)
+- **Last updated:** 2026-09-17 by Codex after two-agent S06 review and verification
 
 ## Mission
 
@@ -380,9 +380,10 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-1. **John decides whether to merge PR #13.** Both independent passes are recorded; the gate and emulator suite are green on the branch head. Merge via the PR (squash or merge commit, either is fine); then delete the `worktree-phase2-pr3-admission` branch and its worktree.
-2. Before a staging playtest, decide: (a) whether to encode the staging region (`us-west1` per the decision brief) in `firebase.json`/function options; (b) which PR owns **room creation** — minting the code, passphrase, table code, and empty GM seat (the GM cannot issue a table code today); (c) enabling the Firestore TTL policy on `admissionThrottle`'s `byIp`/`scope` collection groups.
-3. PR 4 (the trusted gameplay command authority) lands in `apps/functions` alongside the admission callables, reusing the Admin-SDK transaction shape, `httpsErrors.ts`, the throttle, and the emulator harness. Before App Check enforcement, verify on staging that `rawRequest.ip` resolves to the client (residual R2); until then the per-UID throttle bucket is the trustworthy bound.
-4. Keep both emulator projects opt-in via `npm run test:emulator` (`--workspaces --if-present` runs `packages/testing` and `apps/functions`); neither joins the default test project list. The command requires a JDK on `PATH`.
-5. Firebase CLI authentication was previously verified against staging project `powerglove-1cd23` (Functions/Firestore in `us-west1`, RTDB in `us-central1`, Anonymous sign-in enabled); this PR deploys nothing to it. Keep production uncreated.
-6. Do not pull forward RTDB client presence wiring (PR 5), recovery (PR 6), reconnect/outbox (PR 7), App Check enforcement, campaign tooling, safety controls, 3D, or a second template.
+1. Continue S06/Phase 2 PR 7 from `codex/s06-outbox-reconciliation`; do not call it complete yet. Implement authorized event-tail replay for timeline/theatre only, persist presented event IDs or an equivalent bounded cursor, and prove refresh does not re-fire an already-presented event (acceptance row 8).
+2. Replace the single `recoveredResult` slot with an ordered, deduplicated presentation queue so a later reconciled command (including `Pause`) cannot overwrite an earlier recovered `ActionResolved`. Preserve projections as the sole source of domain state.
+3. Restore the recovered summary's attack-success explanation from authorized presentation data without reconstructing domain state from events.
+4. Add a hook-level regression proving `useRoomProjection` refreshes the projection before exposing recovered presentation data.
+5. Re-run `npm run check`, `npm run build`, and `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator`. On this host, clone the worktree to `/private/tmp` first: directory enumeration of `/Users/john/Documents` blocks esbuild and Firebase startup before source is read. The 2026-09-17 temporary-clone run passed 18/18 rules tests, 86/86 Functions tests, and 3/3 web tests.
+6. Complete the three-device emulator and staging rehearsal required by acceptance row 22, record evidence, then obtain another independent review before merge.
+7. Keep production uncreated and do not pull forward App Check enforcement, campaign tooling, 3D, licensed content, or a second template.

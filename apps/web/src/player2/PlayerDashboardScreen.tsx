@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { navigate } from "../router.js";
-import {
-  ConnectionStatusStrip,
-  useFixtureConnectionState,
-} from "../shell/ConnectionStatusStrip.js";
+import { ConnectionStatusStrip } from "../shell/ConnectionStatusStrip.js";
 import { FixtureModeBanner } from "../shell/FixtureModeBanner.js";
 import { readOwnershipRecord } from "../session/ownership.js";
 import { useRoomProjection } from "../session/useRoomProjection.js";
@@ -28,16 +25,39 @@ export interface PlayerDashboardScreenProps {
   readonly roomId: string;
 }
 
+/**
+ * A normally resolved roll is intentionally absent from the next viewer
+ * projection, so reconnect presentation cannot match a recovered event
+ * through `view.rolls`. The event's server-authored character id is the
+ * durable link to this player's sheet instead.
+ */
+export function findRecoveredActionResolution(
+  result: RoomCommandResult<EatTheReichEvent> | null,
+  characterId: string,
+  dismissedCommandId: string | null,
+): ActionResolvedEvent | undefined {
+  if (result?.status !== "accepted" || result.commandId === dismissedCommandId) return undefined;
+  return result.sharedEvents.find(
+    (event): event is ActionResolvedEvent =>
+      event.type === "ActionResolved" && event.characterId === characterId,
+  );
+}
+
 function isFullRoll(view: RollView): view is RollViewFull {
   return "declaredStat" in view;
 }
 
 /** docs/ETR_SESSION_FLOW.md section 1: `/room/:roomId/player`, driven entirely by the real projection (C06) — no fixture engine. */
 export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): JSX.Element {
-  const connection = useFixtureConnectionState();
   const ownership = readOwnershipRecord();
   const memberId = ownership?.roomId === roomId ? ownership.memberId : "";
-  const { status, projection, dispatch } = useRoomProjection(roomId, memberId, "player");
+  const { status, projection, dispatch, lastError, pending, recoveredResult } = useRoomProjection(
+    roomId,
+    memberId,
+    "player",
+  );
+  const connection = status === "not-found" ? "signed-out" : status;
+  const [dismissedRecovery, setDismissedRecovery] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pendingResolution, setPendingResolution] = useState<{
     readonly event: ActionResolvedEvent;
@@ -148,34 +168,47 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
   const view: EatTheReichView = projection.view;
   const ownRollView = view.rolls.find((r) => r.characterId === self.id);
   const ownRoll = ownRollView && isFullRoll(ownRollView) ? ownRollView : null;
+  const recoveredEvent = findRecoveredActionResolution(recoveredResult, self.id, dismissedRecovery);
+  const resolution =
+    pendingResolution ??
+    (recoveredEvent
+      ? {
+          event: recoveredEvent,
+          attackSuccessesRolled: ownRoll?.attackSuccessesRolled ?? 0,
+        }
+      : null);
 
   let body: JSX.Element;
   let announcement: string;
 
   if (
-    pendingResolution &&
-    pendingResolution.event.injuryChoicePendingMode &&
-    !pendingResolution.event.injuryMark
+    resolution &&
+    resolution.event.injuryChoicePendingMode &&
+    !resolution.event.injuryMark &&
+    ownRoll?.status === "awaiting_injury_choice"
   ) {
     body = (
       <ChooseInjuryPanel2
         character={self}
-        mode={pendingResolution.event.injuryChoicePendingMode}
+        mode={resolution.event.injuryChoicePendingMode}
         onChoose={(categoryId) => {
-          void handleChooseInjury(categoryId, pendingResolution.event.rollId);
+          void handleChooseInjury(categoryId, resolution.event.rollId);
         }}
       />
     );
     announcement = "Choose an injury category.";
-  } else if (pendingResolution) {
+  } else if (resolution) {
     body = (
       <ConfirmSummary2
-        resolved={pendingResolution.event}
+        resolved={resolution.event}
         character={self}
         objectives={view.objectives}
         threats={view.threats}
-        attackSuccessesRolled={pendingResolution.attackSuccessesRolled}
-        onContinue={() => setPendingResolution(null)}
+        attackSuccessesRolled={resolution.attackSuccessesRolled}
+        onContinue={() => {
+          setPendingResolution(null);
+          setDismissedRecovery(recoveredResult?.commandId ?? null);
+        }}
       />
     );
     announcement = "Action resolved.";
@@ -224,9 +257,14 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
       <ConnectionStatusStrip state={connection} />
       <FixtureModeBanner />
       <LiveRegion politeness="polite" message={announcement} />
-      {error && (
+      {pending && (
+        <p role="status">
+          Your action is awaiting confirmation. Reconnecting will check it automatically.
+        </p>
+      )}
+      {(error || lastError) && (
         <p role="alert" className="error-message">
-          {error}
+          {error ?? lastError?.message}
         </p>
       )}
       {view.paused && (

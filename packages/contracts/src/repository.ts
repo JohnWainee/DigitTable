@@ -80,6 +80,16 @@ export interface RoomRepository<TCommand, TEvent, TView> {
     request: RoomCommandRequest<TCommand>,
   ): Promise<RoomCommandResult<TEvent>>;
 
+  /**
+   * Reconciles commands persisted before a reload or an ambiguous network
+   * failure. Implementations remove commands with a durable receipt and
+   * retry receipt-less commands with their original command ID.
+   */
+  reconcilePending(memberId: MemberId): Promise<readonly RoomCommandResult<TEvent>[]>;
+
+  /** Saved commands still awaiting a definitive server outcome. */
+  pendingCommands(memberId: MemberId): readonly RoomCommandRequest<TCommand>[];
+
   /** One-shot fetch of a viewer's current projection. */
   getProjection(viewer: ViewerContext): Promise<ViewerProjection<TView>>;
 

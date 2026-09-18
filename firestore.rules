@@ -62,7 +62,16 @@ service cloud.firestore {
         allow write: if false;
       }
       match /receipts/{receiptId} {
-        allow read: if isOwnMember(roomId, resource.data.memberId);
+        // The path check permits an actor to probe its own not-yet-created
+        // receipt during reconnect. The resource-data check remains for
+        // existing documents. Command IDs are UUIDs and member IDs are
+        // server-minted, so another member cannot construct this prefix.
+        allow get: if isOwnMember(roomId, resource.data.memberId)
+          || (isMember(roomId)
+            && resource == null
+            && binding(roomId).data.memberId.matches('^[A-Za-z0-9-]+$')
+            && receiptId.matches('^' + binding(roomId).data.memberId + '_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'));
+        allow list: if isOwnMember(roomId, resource.data.memberId);
         allow write: if false;
       }
       match /snapshots/{sequence} { allow read, write: if false; }

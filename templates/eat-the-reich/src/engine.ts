@@ -21,7 +21,6 @@ import {
   type TheatreScene,
   type VersionedTemplateRecord,
   type StableError,
-  type StableErrorCode,
   type ViewerContext,
   type ViewerProjection,
   type VisibleRoll,
@@ -235,7 +234,7 @@ function poolRejectionToStableError(rejection: PoolBuildRejection): StableError 
  * B02/B03's error-code proposals.
  */
 function pausedError(): StableError {
-  return { code: "SESSION_PAUSED" as StableErrorCode, message: "Session paused." };
+  return stableError("SESSION_PAUSED", "Session paused.");
 }
 
 function hasUnresolvedRoll(state: EatTheReichState, characterId: string): boolean {

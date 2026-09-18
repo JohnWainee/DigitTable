@@ -1,8 +1,5 @@
 import { navigate } from "../router.js";
-import {
-  ConnectionStatusStrip,
-  useFixtureConnectionState,
-} from "../shell/ConnectionStatusStrip.js";
+import { ConnectionStatusStrip } from "../shell/ConnectionStatusStrip.js";
 import { FixtureModeBanner } from "../shell/FixtureModeBanner.js";
 import { readOwnershipRecord } from "../session/ownership.js";
 import { useRoomProjection } from "../session/useRoomProjection.js";
@@ -40,11 +37,11 @@ function clearedSceneIds(view: EatTheReichView): readonly string[] {
  * Appendix C), this screen just never asks for more.
  */
 export function TableDashboardScreen({ roomId }: TableDashboardScreenProps): JSX.Element {
-  const connection = useFixtureConnectionState();
   const ownership = readOwnershipRecord();
   const memberId = ownership?.roomId === roomId ? ownership.memberId : "";
   const isTable = ownership?.roomId === roomId && ownership.capability === "table";
   const { status, projection } = useRoomProjection(roomId, memberId, "table");
+  const connection = status === "not-found" ? "signed-out" : status;
 
   if (!isTable) {
     return (

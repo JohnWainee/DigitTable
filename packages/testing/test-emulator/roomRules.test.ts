@@ -102,6 +102,15 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
     await assertFails(get(otherUid, `rooms/${room}/events/member-player-a/items/1`));
   });
 
+  it("lets a member probe only its own missing UUID receipt during reconnect", async () => {
+    const commandId = "11111111-1111-4111-8111-111111111111";
+    await assertSucceeds(get(playerUid, `rooms/${room}/receipts/player-a_${commandId}`));
+    await assertFails(get(otherUid, `rooms/${room}/receipts/player-a_${commandId}`));
+    await assertFails(get(gmUid, `rooms/${room}/receipts/player-a_${commandId}`));
+    await assertFails(get(playerUid, `rooms/${room}/receipts/player-b_${commandId}`));
+    await assertFails(get(playerUid, `rooms/${room}/receipts/player-a_not-a-uuid`));
+  });
+
   it("limits reserved projections and event partitions to their matching capability", async () => {
     await assertSucceeds(get(gmUid, `rooms/${room}/projections/gm`));
     await assertFails(get(playerUid, `rooms/${room}/projections/gm`));

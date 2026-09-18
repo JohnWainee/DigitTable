@@ -57,6 +57,16 @@ export class InMemoryRoomRepository implements RoomRepository<
   EatTheReichEvent,
   EatTheReichView
 > {
+  reconcilePending(_memberId: MemberId): Promise<readonly RoomCommandResult<EatTheReichEvent>[]> {
+    // Fixture commands resolve in-process; there is no ambiguous transport
+    // failure or durable browser outbox to reconcile.
+    return Promise.resolve([]);
+  }
+
+  pendingCommands(_memberId: MemberId): readonly RoomCommandRequest<EatTheReichCommand>[] {
+    return [];
+  }
+
   private authority: AuthorityRecord<EatTheReichState>;
   private readonly roomId: RoomId;
   private readonly capabilities = new Map<MemberId, Capability>();

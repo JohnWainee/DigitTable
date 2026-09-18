@@ -1,7 +1,12 @@
 import type { FirebaseApp } from "firebase/app";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, getDocFromServer, onSnapshot } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { FunctionsError } from "firebase/functions";
 import {
   asTemplateId,
+  parseCommandReceiptDocument,
+  receiptIdFor,
+  STABLE_ERROR_CODES,
   type Capability,
   type MemberId,
   type RoomCommandRequest,
@@ -22,6 +27,7 @@ import { eatTheReichTemplate } from "@digitable/template-eat-the-reich";
 import { callable, getRoomFunctions, type FunctionsEmulatorConfig } from "../firebase/functions.js";
 import { getRoomFirestore, type FirestoreEmulatorConfig } from "../firebase/firestore.js";
 import { stableErrorFromThrown } from "../firebase/functionsError.js";
+import { CommandOutbox, type PendingCommand } from "./commandOutbox.js";
 
 export interface RoomRepositoryEmulatorConfig {
   readonly functions: FunctionsEmulatorConfig;
@@ -107,6 +113,15 @@ export class FirebaseRoomRepository implements RoomRepository<
   private readonly capability: Capability;
   private readonly emulator: RoomRepositoryEmulatorConfig | undefined;
   private readonly errorListeners = new Set<(failure: RoomDispatchFailure) => void>();
+  private uid: string | null = null;
+  private readonly waiting = new Map<
+    string,
+    {
+      promise: Promise<RoomCommandResult<EatTheReichEvent>>;
+      resolve: (result: RoomCommandResult<EatTheReichEvent>) => void;
+    }
+  >();
+  private readonly sending = new Set<string>();
 
   /**
    * `capability` is this browser tab's own seat capability (known once from
@@ -120,6 +135,7 @@ export class FirebaseRoomRepository implements RoomRepository<
     roomId: RoomId,
     capability: Capability,
     emulator?: RoomRepositoryEmulatorConfig,
+    private readonly storage?: Storage,
   ) {
     this.app = app;
     this.roomId = roomId;
@@ -136,37 +152,176 @@ export class FirebaseRoomRepository implements RoomRepository<
    * never from a client-asserted identity (board task A04, §1).
    */
   async dispatch(
-    _memberId: MemberId,
+    memberId: MemberId,
     request: RoomCommandRequest<EatTheReichCommand>,
   ): Promise<RoomCommandResult<EatTheReichEvent>> {
-    const fn = callable<SubmitRoomCommandWireRequest, RoomCommandResult<EatTheReichEvent>>(
-      getRoomFunctions(this.app, this.emulator?.functions),
-      "submitRoomCommand",
-    );
-    const wire: SubmitRoomCommandWireRequest = {
-      roomId: this.roomId,
-      command: {
-        commandId: request.commandId,
-        payload: request.payload,
-        ...(request.expectedRevision === undefined
-          ? {}
-          : { expectedRevision: request.expectedRevision }),
-        templateId: eatTheReichTemplate.manifest.templateId,
-        templateVersion: eatTheReichTemplate.manifest.templateVersion,
-      },
-    };
-    let result: RoomCommandResult<EatTheReichEvent>;
+    let entry: PendingCommand;
     try {
-      const response = await fn(wire);
-      result = response.data;
-    } catch (error) {
-      const { code, message } = stableErrorFromThrown(error);
-      result = { status: "rejected", commandId: request.commandId, code, message };
+      entry = this.outbox(memberId).remember(request);
+    } catch {
+      return {
+        status: "rejected",
+        commandId: request.commandId,
+        code: "INVALID_REQUEST",
+        message:
+          "Could not save this action safely. Check browser storage and your signed-in seat before trying again.",
+      };
     }
+    const existing = this.waiting.get(request.commandId);
+    if (existing) return existing.promise;
+    let resolve!: (result: RoomCommandResult<EatTheReichEvent>) => void;
+    const promise = new Promise<RoomCommandResult<EatTheReichEvent>>((done) => {
+      resolve = done;
+    });
+    this.waiting.set(request.commandId, { promise, resolve });
+    // A failed transport leaves the promise and saved command pending.
+    // Reconciliation settles it only after a definitive outcome is known.
+    void this.send(memberId, entry).catch(() => {
+      /* Reconnect will retry. */
+    });
+    return promise;
+  }
+
+  private outbox(memberId: MemberId): CommandOutbox {
+    const uid = getAuth(this.app).currentUser?.uid;
+    if (!uid || (this.uid !== null && this.uid !== uid)) throw new Error("Identity changed.");
+    this.uid = uid;
+    const storage = this.storage ?? (typeof window !== "undefined" ? window.localStorage : null);
+    if (!storage) throw new Error("Persistent storage unavailable.");
+    const project = `${this.app.options.projectId ?? this.app.name}:${this.emulator ? `${this.emulator.firestore.host}:${this.emulator.firestore.port}` : "live"}`;
+    return new CommandOutbox(storage, project, uid, this.roomId, memberId);
+  }
+
+  pendingCommands(memberId: MemberId): readonly RoomCommandRequest<EatTheReichCommand>[] {
+    return this.outbox(memberId)
+      .read()
+      .map((entry) => entry.request);
+  }
+
+  private async send(
+    memberId: MemberId,
+    entry: PendingCommand,
+  ): Promise<RoomCommandResult<EatTheReichEvent> | null> {
+    const { request } = entry;
+    if (this.sending.has(request.commandId)) return null;
+    this.outbox(memberId); // Check identity again immediately before sending.
+    this.sending.add(request.commandId);
+    try {
+      const fn = callable<SubmitRoomCommandWireRequest, RoomCommandResult<EatTheReichEvent>>(
+        getRoomFunctions(this.app, this.emulator?.functions),
+        "submitRoomCommand",
+      );
+      const wire: SubmitRoomCommandWireRequest = {
+        roomId: this.roomId,
+        command: {
+          commandId: request.commandId,
+          payload: request.payload,
+          ...(request.expectedRevision === undefined
+            ? {}
+            : { expectedRevision: request.expectedRevision }),
+          templateId: entry.templateId,
+          templateVersion: entry.templateVersion,
+        },
+      };
+      let result: RoomCommandResult<EatTheReichEvent>;
+      try {
+        const response = await fn(wire);
+        result = response.data;
+      } catch (error) {
+        // Only explicit, validated application rejections are terminal.
+        // Timeouts, unavailable/internal errors and malformed replies are
+        // ambiguous even when the request may already have committed.
+        if (
+          !(error instanceof FunctionsError) ||
+          !isRecord(error.details) ||
+          !STABLE_ERROR_CODES.includes(error.details.code as (typeof STABLE_ERROR_CODES)[number])
+        )
+          return null;
+        const { code, message } = stableErrorFromThrown(error);
+        result = { status: "rejected", commandId: request.commandId, code, message };
+      }
+      if (
+        result.commandId !== request.commandId ||
+        (result.status !== "accepted" && result.status !== "rejected")
+      )
+        return null;
+      this.complete(memberId, result);
+      return result;
+    } finally {
+      this.sending.delete(request.commandId);
+    }
+  }
+
+  private complete(memberId: MemberId, result: RoomCommandResult<EatTheReichEvent>): void {
+    this.outbox(memberId).forget(result.commandId);
+    this.waiting.get(result.commandId)?.resolve(result);
+    this.waiting.delete(result.commandId);
     if (result.status === "rejected") {
       this.notifyError({ capability: this.capability, code: result.code, message: result.message });
     }
-    return result;
+  }
+
+  async reconcilePending(
+    memberId: MemberId,
+  ): Promise<readonly RoomCommandResult<EatTheReichEvent>[]> {
+    const outbox = this.outbox(memberId);
+    const results: RoomCommandResult<EatTheReichEvent>[] = [];
+    const db = getRoomFirestore(this.app, this.emulator?.firestore);
+    for (const entry of outbox.read()) {
+      const { request } = entry;
+      if (this.sending.has(request.commandId)) continue;
+      const receiptId = receiptIdFor(memberId, request.commandId);
+      const snapshot = await getDocFromServer(
+        doc(db, `rooms/${this.roomId}/receipts/${receiptId}`),
+      );
+      this.outbox(memberId); // Never continue under a replacement identity.
+      if (snapshot.exists()) {
+        const receipt = parseCommandReceiptDocument(snapshot.data());
+        if (
+          receipt.memberId !== memberId ||
+          receipt.commandId !== request.commandId ||
+          receipt.receiptId !== receiptId
+        ) {
+          throw new Error("Receipt identity mismatch.");
+        }
+        let result: RoomCommandResult<EatTheReichEvent>;
+        if (receipt.status === "rejected") {
+          result = {
+            status: "rejected",
+            commandId: request.commandId,
+            code: receipt.code!,
+            message: receipt.message!,
+          };
+        } else {
+          const sharedEvents: EatTheReichEvent[] = [];
+          if (receipt.acceptedSequence !== null) {
+            const event = await getDocFromServer(
+              doc(db, `rooms/${this.roomId}/events/shared/items/${receipt.acceptedSequence}`),
+            );
+            if (event.exists()) {
+              const data = event.data();
+              if (data.commandId !== request.commandId) throw new Error("Event identity mismatch.");
+              sharedEvents.push(eatTheReichTemplate.schemas.parseEvent(data.payload));
+            }
+          }
+          result = {
+            status: "accepted",
+            commandId: request.commandId,
+            roomRevision: receipt.roomRevision,
+            sharedEvents,
+          };
+        }
+        this.complete(memberId, result);
+        results.push(result);
+        continue;
+      }
+      // No durable outcome exists. Retrying the identical command ID is
+      // safe: the trusted transaction either commits it once or returns its
+      // existing receipt if a concurrent/lost invocation already won.
+      const result = await this.send(memberId, entry);
+      if (result) results.push(result);
+    }
+    return results;
   }
 
   async getProjection(viewer: ViewerContext): Promise<ViewerProjection<EatTheReichView>> {

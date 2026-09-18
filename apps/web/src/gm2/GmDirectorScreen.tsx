@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { navigate } from "../router.js";
-import {
-  ConnectionStatusStrip,
-  useFixtureConnectionState,
-} from "../shell/ConnectionStatusStrip.js";
+import { ConnectionStatusStrip } from "../shell/ConnectionStatusStrip.js";
 import { FixtureModeBanner } from "../shell/FixtureModeBanner.js";
 import { readOwnershipRecord } from "../session/ownership.js";
 import { useRoomProjection } from "../session/useRoomProjection.js";
@@ -33,11 +30,17 @@ function isFullRoll(view: RollView): view is RollViewFull {
 
 /** docs/ETR_SESSION_FLOW.md section 1: `/room/:roomId/gm` — the director console, driven entirely by the real projection (C06/C07). */
 export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element {
-  const connection = useFixtureConnectionState();
   const ownership = readOwnershipRecord();
   const memberId = ownership?.roomId === roomId ? ownership.memberId : "";
   const isGm = ownership?.roomId === roomId && ownership.capability === "gm";
-  const { status, projection, dispatch } = useRoomProjection(roomId, memberId, "gm");
+  const {
+    status,
+    projection,
+    dispatch,
+    lastError,
+    pending: commandPending,
+  } = useRoomProjection(roomId, memberId, "gm");
+  const connection = status === "not-found" ? "signed-out" : status;
   const [correctingCharacterId, setCorrectingCharacterId] = useState<string | null>(null);
   const [missionEndReason, setMissionEndReason] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -106,9 +109,14 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
       <FixtureModeBanner />
       <h1>Director console</h1>
       <LiveRegion politeness="polite" message={pendingAnnouncement} />
-      {error && (
+      {commandPending && (
+        <p role="status">
+          Your action is awaiting confirmation. Reconnecting will check it automatically.
+        </p>
+      )}
+      {(error || lastError) && (
         <p role="alert" className="error-message">
-          {error}
+          {error ?? lastError?.message}
         </p>
       )}
       {view.paused && (
