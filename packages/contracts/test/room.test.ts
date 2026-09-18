@@ -2,9 +2,12 @@ import { describe, expect, it } from "vitest";
 import {
   asCommandId,
   asMemberId,
+  asTemplateId,
   MAX_SECRET_ITERATIONS,
   parseAdmissionThrottleDocument,
   parseAuthorityAdmissionFields,
+  parseAuthorityRecord,
+  parseCommandReceiptDocument,
   parseHashedSecretDocument,
   parseRoomCodeDocument,
   parseUidBindingDocument,
@@ -20,12 +23,71 @@ describe("room persistence contracts", () => {
   });
 });
 
+describe("parseCommandReceiptDocument (board task A04)", () => {
+  const acceptedReceipt = {
+    receiptId: "member-rook_command-1",
+    memberId: "member-rook",
+    commandId: "command-1",
+    status: "accepted",
+    acceptedSequence: 3,
+    roomRevision: 2,
+  };
+  const rejectedReceipt = {
+    receiptId: "member-rook_command-2",
+    memberId: "member-rook",
+    commandId: "command-2",
+    status: "rejected",
+    acceptedSequence: null,
+    roomRevision: 1,
+    code: "ROLL_ALREADY_RESOLVED",
+    message: "This roll has already been resolved.",
+  };
+
+  it("accepts a well-formed accepted receipt", () => {
+    expect(parseCommandReceiptDocument(acceptedReceipt)).toMatchObject({
+      status: "accepted",
+      acceptedSequence: 3,
+      roomRevision: 2,
+    });
+  });
+
+  it("accepts a well-formed rejected receipt, carrying code and message", () => {
+    expect(parseCommandReceiptDocument(rejectedReceipt)).toMatchObject({
+      status: "rejected",
+      code: "ROLL_ALREADY_RESOLVED",
+      message: "This roll has already been resolved.",
+    });
+  });
+
+  it("fails closed on a rejected receipt missing its code", () => {
+    const { code: _omit, ...malformed } = rejectedReceipt;
+    expect(() => parseCommandReceiptDocument(malformed)).toThrow(RoomDataError);
+  });
+
+  it("fails closed on a rejected receipt with a code outside StableErrorCode", () => {
+    expect(() =>
+      parseCommandReceiptDocument({ ...rejectedReceipt, code: "NOT_A_REAL_CODE" }),
+    ).toThrow(RoomDataError);
+  });
+
+  it("fails closed on an unrecognized status", () => {
+    expect(() => parseCommandReceiptDocument({ ...acceptedReceipt, status: "pending" })).toThrow(
+      RoomDataError,
+    );
+  });
+
+  it("fails closed on a missing document", () => {
+    expect(() => parseCommandReceiptDocument(undefined)).toThrow(RoomDataError);
+  });
+});
+
 const validAuthority = {
   roomStatus: "active",
   admissionStatus: "open",
   participantCount: 3,
   tableSeatClaimed: false,
   gmMemberId: "member-gm",
+  roomRevision: 0,
 };
 
 /**
@@ -74,6 +136,10 @@ describe("parseAuthorityAdmissionFields (fails closed)", () => {
     ],
     ["truthy non-boolean tableSeatClaimed", { ...validAuthority, tableSeatClaimed: "yes" }],
     ["non-string gmMemberId", { ...validAuthority, gmMemberId: 42 }],
+    ["missing roomRevision", { ...validAuthority, roomRevision: undefined }],
+    ["negative roomRevision", { ...validAuthority, roomRevision: -1 }],
+    ["fractional roomRevision", { ...validAuthority, roomRevision: 1.5 }],
+    ["string roomRevision", { ...validAuthority, roomRevision: "0" }],
   ])("throws RoomDataError for %s", (_label, data) => {
     expect(() => parseAuthorityAdmissionFields(data)).toThrow(RoomDataError);
   });
@@ -161,5 +227,73 @@ describe("parseAdmissionThrottleDocument (fails closed)", () => {
     ["missing count (must not read as a fresh window)", { windowStartMs: 1 }],
   ])("throws RoomDataError for %s", (_label, data) => {
     expect(() => parseAdmissionThrottleDocument(data)).toThrow(RoomDataError);
+  });
+});
+
+describe("parseAuthorityRecord (board task A04, fails closed)", () => {
+  const fakeTemplate = {
+    manifest: { templateId: asTemplateId("fixture-template"), currentSchemaVersion: 1 },
+    schemas: {
+      parseState: (value: unknown): { readonly count: number } => {
+        if (
+          typeof value !== "object" ||
+          value === null ||
+          typeof (value as { count?: unknown }).count !== "number"
+        ) {
+          throw new Error("bad state");
+        }
+        return value as { readonly count: number };
+      },
+    },
+  };
+  const validRecord = {
+    ...validAuthority,
+    platformVersion: "0.0.0",
+    templateId: "fixture-template",
+    templateVersion: "0.1.0",
+    schemaVersion: 1,
+    roomRevision: 4,
+    nextSequence: 7,
+    state: { count: 2 },
+  };
+
+  it("accepts a well-formed record, delegating state to the template's parser", () => {
+    const record = parseAuthorityRecord(validRecord, fakeTemplate);
+    expect(record).toMatchObject({
+      platformVersion: "0.0.0",
+      templateId: "fixture-template",
+      roomRevision: 4,
+      nextSequence: 7,
+      state: { count: 2 },
+    });
+  });
+
+  it("rejects a templateId that does not match the template being loaded", () => {
+    expect(() =>
+      parseAuthorityRecord({ ...validRecord, templateId: "other-template" }, fakeTemplate),
+    ).toThrow(RoomDataError);
+  });
+
+  it("rejects a schemaVersion that does not match currentSchemaVersion exactly (no migration attempted here)", () => {
+    expect(() => parseAuthorityRecord({ ...validRecord, schemaVersion: 2 }, fakeTemplate)).toThrow(
+      RoomDataError,
+    );
+  });
+
+  it("rejects malformed state via the template's own parseState, never defaulting it", () => {
+    expect(() =>
+      parseAuthorityRecord({ ...validRecord, state: { wrong: "shape" } }, fakeTemplate),
+    ).toThrow(RoomDataError);
+  });
+
+  it.each([
+    ["missing platformVersion", { ...validRecord, platformVersion: undefined }],
+    ["negative roomRevision", { ...validRecord, roomRevision: -1 }],
+    ["fractional nextSequence", { ...validRecord, nextSequence: 1.5 }],
+    ["nextSequence below 1", { ...validRecord, nextSequence: 0 }],
+    // Reuses parseAuthorityAdmissionFields's own fail-closed checks.
+    ["unknown roomStatus", { ...validRecord, roomStatus: "paused" }],
+  ])("throws RoomDataError for %s", (_label, data) => {
+    expect(() => parseAuthorityRecord(data, fakeTemplate)).toThrow(RoomDataError);
   });
 });
