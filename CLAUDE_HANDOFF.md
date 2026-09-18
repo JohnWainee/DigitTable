@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
 - **Status:** Phase 1A–1C, the Phase 2 preflight, Phase 2 PRs 1–3 (#13), A02 (#15) and A03 (#18) are merged to `main`. **Every remaining issue #14 track — Sonnet A's A04–A08 (PRs #23/#27/#30/#32/#34/#36 plus #19), Sonnet B's B01–B05 (PRs #17/#21/#25/#28/#29), Sonnet C's C01–C08 (PRs #20/#22/#24/#26/#31/#33/#35/#37) and Fable's F01–F05 docs (PR #16) — is merged together onto the current `main` on this branch as one integration candidate**, with the two follow-ups Sonnet A left open (stale emulator fixtures written against the placeholder template; the placeholder `initialState` test) resolved, all three gates green, and the integration independently reviewed with no blocking findings (see "Issue #14 integration candidate" below).
-- **Branch:** `claude/issue-14-resume-cap2zr` (from `origin/main` @ `c5ad236`, the post-#18 merge), carrying merge commits of `origin/sonnet-a/a08-final`, `origin/sonnet-b/b05-fixtures-review`, `origin/sonnet-c/c08-recovery` and `origin/fable/etr-specifications` plus the integration fixes described below.
-- **PRs:** the integration candidate's own draft PR (see the issue #14 status comment for its number). The per-track PRs listed above stay open as the reviewed record of each slice; merging the candidate supersedes them (their heads are all ancestors of this branch).
-- **Last updated:** 2026-09-16 by Fable (issue #14 resume: cross-track integration candidate, stale fixture follow-ups, full gates, independent review of the integration)
+- **Branch:** `claude/issue-14-resume-cap2zr` (from `origin/main` @ `c5ad236`, the post-#18 merge), carrying merge commits of `origin/sonnet-a/a08-final`, `origin/sonnet-b/b05-fixtures-review`, `origin/sonnet-c/c08-recovery` and `origin/fable/etr-specifications` plus the integration fixes described below. `claude/issue-14-resume-continue-yrnn6a` fast-forwarded to the same tip on 2026-09-18 and is where the S06 work below lands next.
+- **PRs:** PR #38 is the integration candidate's own draft PR (open, draft, independently reviewed with no blocking findings). The per-track PRs listed above stay open as the reviewed record of each slice; merging #38 supersedes them (their heads are all ancestors of this branch).
+- **Last updated:** 2026-09-18 — branch `claude/issue-14-resume-continue-yrnn6a` fast-forwarded to `claude/issue-14-resume-cap2zr` (PR #38); John decided to implement the S06 client outbox residual (see Next action) rather than accept it as a known gap.
 
 ## Mission
 
@@ -535,8 +535,8 @@ When pausing or finishing a material unit:
 
 ## Next action
 
-1. **John decides whether to merge the issue #14 integration candidate** (this branch's draft PR). Merging it supersedes the per-track PRs #16, #17, #19–#37, whose heads are all ancestors of this branch; close them after the merge rather than merging each separately (they would conflict with each other on `main`).
-2. **Decide the S06 residual** (client-side outbox/receipt reconciliation after a disconnect between send and response; the server side is idempotent and tested): accept as a known residual for the 17 September session or block on it.
+1. **John decides whether to merge the issue #14 integration candidate** (PR #38, from `claude/issue-14-resume-cap2zr`). Merging it supersedes the per-track PRs #16, #17, #19–#37, whose heads are all ancestors of this branch; close them after the merge rather than merging each separately (they would conflict with each other on `main`).
+2. **S06 residual — decided, not yet built.** John chose to implement the client-side outbox/receipt reconciliation after a disconnect between send and response, rather than accept it as a known gap for the 17 September session (the server side is already idempotent and tested). Implementation work is queued on `claude/issue-14-resume-continue-yrnn6a`; not started as of this update — next session should research the existing idempotency/receipt mechanism (`apps/functions/src/gameCommandAuthority.ts` and friends) and the current client command-sending path (`apps/web/src`) before writing code, then implement, test, and record an independent review here per the handoff protocol.
 3. **Staging deploy** per `docs/RUNBOOK.md` §3 (prepared, never executed), then the three-physical-device rehearsal per `docs/ETR_PLAYTEST.md`, recorded in `docs/reviews/2026-09-17-etr-session-rehearsal.md`. Fable runs that record's pass/fail when the devices are available.
 4. Keep both emulator projects opt-in via `npm run test:emulator`; the command requires a JDK on `PATH` (and the proxy note above where applicable).
 5. Keep production uncreated; deploy only within existing authorization.
