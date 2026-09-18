@@ -1,0 +1,32 @@
+{
+  "breaks_on_insecure_http": [
+    {
+      "file_and_line": "apps/web/src/session/roomClient.ts (lines 37-44)",
+      "api": "crypto.randomUUID() and crypto.subtle",
+      "reason": "crypto.randomUUID() and crypto.subtle are undefined in plain-http contexts, and the emulator URLs are hard-coded to 127.0.0.1, which is unreachable from a phone."
+    }
+  ],
+  "hard_coded_hosts_unreachable_from_phone": [
+    "apps/web/src/session/roomClient.ts (lines 37-44)"
+  ],
+  "works_fine": [
+    "apps/web/src/gm2/GmDirectorScreen.tsx:86",
+    "apps/web/src/landing/ClaimCharacterScreen.tsx:33",
+    "apps/web/src/landing/JoinScreen.tsx:26",
+    "apps/web/src/landing/JoinTableScreen.tsx:31",
+    "apps/web/src/repository/InMemoryRoomRepository.ts:138",
+    "apps/web/src/player2/PlayerDashboardScreen.tsx:116",
+    "apps/web/src/session/RoomEngineStore.ts:24",
+    "apps/web/src/session/ownership.ts:71",
+    "apps/web/src/session/ownership.ts:75",
+    "packages/engine/src/secretHash.ts:39",
+    "packages/engine/src/secretHash.ts:46",
+    "packages/engine/src/secretHash.ts:59",
+    "packages/engine/src/secretHash.ts:88",
+    "packages/engine/src/roomCode.ts:23"
+  ],
+  "uncertain": [
+    "apps/web/src/firebase/anonymousAuth.ts (lines 31-37)",
+    "The code does not use crypto.randomUUID() or crypto.subtle, so it is not affected by the insecure context. However, it connects to an emulator, which might be unreachable from a phone if the emulator is not accessible from the phone's network."
+  ]
+}

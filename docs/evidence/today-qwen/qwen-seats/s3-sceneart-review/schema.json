@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "trace_two_failures": { "type": "array", "items": { "type": "string" } },
+    "blank_slot_without_fallback": { "type": "string" },
+    "prop_change_without_key": { "type": "string" },
+    "call_site_prevents_it": { "type": "boolean" },
+    "uncertain": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": ["trace_two_failures", "blank_slot_without_fallback", "prop_change_without_key", "call_site_prevents_it", "uncertain"]
+}

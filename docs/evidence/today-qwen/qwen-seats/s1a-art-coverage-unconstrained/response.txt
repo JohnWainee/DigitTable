@@ -1,0 +1,84 @@
+We are given:
+1. Loader rules (verbatim)
+2. Content ids (used in the game)
+3. Files in the public art folder
+
+We need to do two things:
+a) For each content id in the "Content ids" list, determine if the image file exists (OK) or would fall back to CSS/glyph (MISSING).
+b) List every file in the folder that no loader rule can ever request (ORPHAN).
+
+Let's break down the content ids and the loader rules.
+
+First, the content ids:
+
+Scene ids (for SceneArt):
+- drop-forecourt
+- metro-platform
+- printworks
+- signal-mast
+
+Character ids (for PortraitImage):
+- rook
+- vesper
+- halloran
+- orsolya
+- delphine
+- tallow
+
+Threat ids (for ThreatToken):
+- drop-forecourt-patrol-a
+- drop-forecourt-patrol-b
+- metro-platform-plated-squad
+- metro-platform-enforcer
+- printworks-rifle-squad
+- printworks-marksman-nest
+- signal-mast-armoured-truck
+- signal-mast-warden
+
+Now, the loader rules:
+
+1. SceneArt: 
+   - `img src={`/etr/${sceneId}-640.webp`}`
+   - So for a scene id (e.g., "drop-forecourt"), the file would be: `drop-forecourt-640.webp`
+
+2. PortraitImage:
+   - size="card": `/etr/${characterId}-512.webp` -> so for character id "rook", file: `rook-512.webp`
+   - size="token": `/etr/${characterId}-token-128.webp` -> so for character id "rook", file: `rook-token-128.webp`
+
+3. ThreatToken:
+   - The threat id is a string that is mapped to an image id (from the table) and then the file is: `/etr/${imageId}-128.webp`
+   - The table: 
+        enforcer -> threat-enforcer
+        warden -> threat-warden
+        patrol -> threat-patrol
+        rifle-squad -> threat-rifle-squad
+        plated-squad -> threat-plated-squad
+        marksman-nest -> threat-marksman-nest
+        armoured-truck -> threat-armoured-truck
+
+   - Note: The threat ids in the content list are of the form: [location]-[type]-[suffix] (e.g., "drop-forecourt-patrol-a")
+     But the loader rule says: "threat id lower-cased; first matching substring in this ordered table picks imageId"
+
+   - However, the table is for the base threat types (without the location and suffix). The rule says: "threat id lower-cased; first matching substring"
+
+   - Let's look at the threat ids in the content list (they are given as strings, but note the rule says "threat id lower-cased"). We'll convert to lower for matching.
+
+   - The table of imageIds (as they appear in the file) is:
+        threat-enforcer -> imageId: "enforcer"
+        threat-warden -> imageId: "warden"
+        ... etc.
+
+   - But the rule says: the threat id (which is a string) is lower-cased and then we look for the first matching substring in the table.
+
+   - Example: 
+        threat id: "drop-forecourt-patrol-a" -> lower-cased: "drop-forecourt-patrol-a"
+        We look for the first substring that matches one of the table entries (which are: "enforcer", "warden", "patrol", ...). 
+        The table entries are the base threat types (without the location and suffix). 
+
+   - However, note the table is ordered: 
+        enforcer -> threat-enforcer
+        warden -> threat-warden
+        patrol -> threat-patrol
+        ... 
+
+   - The rule says: "first matching substring". So we are looking for the longest prefix? Actually, it says "substring", but in the context of the table, it's likely that the table entries are

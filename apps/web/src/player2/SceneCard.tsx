@@ -7,10 +7,17 @@ export interface SceneCardProps {
   readonly scene: EatTheReichView["scene"];
   readonly objectives: EatTheReichView["objectives"];
   readonly threats: EatTheReichView["threats"];
+  /** "banner" is the large-display variant (shared table). */
+  readonly artVariant?: "card" | "banner";
 }
 
 /** docs/ETR_SESSION_FLOW.md section 6: scene title/art, primary Objective, revealed Threats — derived from the real projection (C06). */
-export function SceneCard({ scene, objectives, threats }: SceneCardProps): JSX.Element {
+export function SceneCard({
+  scene,
+  objectives,
+  threats,
+  artVariant = "card",
+}: SceneCardProps): JSX.Element {
   if (!scene) {
     return (
       <section className="scene-card" aria-labelledby="scene-heading">
@@ -28,7 +35,7 @@ export function SceneCard({ scene, objectives, threats }: SceneCardProps): JSX.E
 
   return (
     <section className="scene-card" aria-labelledby="scene-heading">
-      <SceneArt sceneId={scene.id} title={scene.title} />
+      <SceneArt key={scene.id} sceneId={scene.id} title={scene.title} variant={artVariant} />
       <h2 id="scene-heading">{scene.title}</h2>
       {scene.locationLabel !== scene.title && (
         <p className="scene-card-description">{scene.locationLabel}</p>

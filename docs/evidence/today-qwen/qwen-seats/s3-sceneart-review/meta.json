@@ -1,0 +1,20 @@
+{
+  "seat": "s3-sceneart-review",
+  "role": "code-reader",
+  "model": "qwen2.5-coder:7b",
+  "modelDigest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+  "startedUtc": "2026-09-18T20:12:03Z",
+  "wallSeconds": 11,
+  "curlExit": 0,
+  "doneReason": "stop",
+  "evalCount": 93,
+  "options": {
+    "temperature": 0,
+    "seed": 42,
+    "num_predict": 900,
+    "num_ctx": 8192,
+    "keep_alive": 0
+  },
+  "structuredOutput": true,
+  "capabilities": "analysis-only; no tools, no filesystem, no network beyond the local Ollama API"
+}

@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "breaks_on_insecure_http": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file_and_line": { "type": "string" },
+          "api": { "type": "string" },
+          "reason": { "type": "string" }
+        },
+        "required": ["file_and_line", "api", "reason"]
+      }
+    },
+    "hard_coded_hosts_unreachable_from_phone": { "type": "array", "items": { "type": "string" } },
+    "works_fine": { "type": "array", "items": { "type": "string" } },
+    "uncertain": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": ["breaks_on_insecure_http", "hard_coded_hosts_unreachable_from_phone", "works_fine", "uncertain"]
+}

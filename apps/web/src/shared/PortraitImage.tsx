@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { portraitArtSrc } from "./artPaths.js";
 
 export interface PortraitImageProps {
   readonly characterId: string;
@@ -49,8 +50,7 @@ export function PortraitImage({
   ]
     .filter(Boolean)
     .join(" ");
-  const src =
-    size === "card" ? `/etr/${characterId}-512.webp` : `/etr/${characterId}-token-128.webp`;
+  const src = portraitArtSrc(characterId, size);
 
   return (
     <span className={classes} aria-hidden="true">

@@ -5,6 +5,7 @@ import {
   type SceneDefinition,
 } from "@digitable/template-eat-the-reich";
 import { Icon } from "../shared/Icon.js";
+import { SceneArt } from "../shared/SceneArt.js";
 
 export interface SceneDirectorProps {
   readonly scene: EatTheReichView["scene"];
@@ -22,6 +23,17 @@ export interface SceneDirectorProps {
     fields: { readonly rating?: number; readonly attack?: number; readonly challenge?: number },
     reason: string,
   ) => void;
+}
+
+/** The opening scene when none is loaded, otherwise the scene after the current one (wrapping to any other scene), so "Advance scene" never defaults to reloading the current scene. */
+function defaultSceneId(currentSceneId: string | null): string {
+  if (currentSceneId === null) return ORIGINAL_MISSION[0]!.sceneId;
+  const index = ORIGINAL_MISSION.findIndex((s) => s.sceneId === currentSceneId);
+  return (
+    ORIGINAL_MISSION[index + 1]?.sceneId ??
+    ORIGINAL_MISSION.find((s) => s.sceneId !== currentSceneId)?.sceneId ??
+    ORIGINAL_MISSION[0]!.sceneId
+  );
 }
 
 type EditableTarget =
@@ -53,9 +65,14 @@ export function SceneDirector({
   onSetSceneRules,
   onEditRating,
 }: SceneDirectorProps): JSX.Element {
-  const [selectedSceneId, setSelectedSceneId] = useState<string>(
-    ORIGINAL_MISSION.find((s) => s.sceneId !== scene?.id)?.sceneId ?? ORIGINAL_MISSION[0]!.sceneId,
-  );
+  // The GM's explicit pick only counts for the scene it was made in; once the loaded scene changes
+  // the default (next scene in mission order) applies again. Derived at render: no effect, no remount.
+  const currentSceneId = scene?.id ?? null;
+  const [choice, setChoice] = useState<{ forSceneId: string | null; sceneId: string } | null>(null);
+  const selectedSceneId =
+    choice !== null && choice.forSceneId === currentSceneId
+      ? choice.sceneId
+      : defaultSceneId(currentSceneId);
   const [reason, setReason] = useState("");
   const [rulesReason, setRulesReason] = useState("");
   const [editTargetKey, setEditTargetKey] = useState<string>("");
@@ -120,6 +137,7 @@ export function SceneDirector({
   return (
     <section className="step" aria-labelledby="scene-director-heading">
       <h2 id="scene-director-heading">Scene director</h2>
+      {scene && <SceneArt key={scene.id} sceneId={scene.id} title={scene.title} />}
       {scene ? (
         <p>
           <strong>{scene.title}</strong> &mdash; round {scene.round}
@@ -192,7 +210,7 @@ export function SceneDirector({
         <select
           id="scene-select"
           value={selectedSceneId}
-          onChange={(e) => setSelectedSceneId(e.target.value)}
+          onChange={(e) => setChoice({ forSceneId: currentSceneId, sceneId: e.target.value })}
         >
           {ORIGINAL_MISSION.map((definition) => (
             <option key={definition.sceneId} value={definition.sceneId}>

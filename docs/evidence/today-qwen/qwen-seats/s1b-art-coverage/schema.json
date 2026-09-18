@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "properties": {
+    "ok_ids": { "type": "array", "items": { "type": "string" } },
+    "missing_ids": { "type": "array", "items": { "type": "string" } },
+    "orphan_files": { "type": "array", "items": { "type": "string" } },
+    "uncertain": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": ["ok_ids", "missing_ids", "orphan_files", "uncertain"]
+}

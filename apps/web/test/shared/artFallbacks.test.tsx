@@ -1,8 +1,11 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { SceneArt } from "../../src/shared/SceneArt.js";
 import { PortraitImage } from "../../src/shared/PortraitImage.js";
 import { ThreatToken } from "../../src/shared/ThreatToken.js";
+import { HeroArt } from "../../src/shared/HeroArt.js";
+import { SceneCard } from "../../src/player2/SceneCard.js";
+import { LandingScreen } from "../../src/landing/LandingScreen.js";
 
 /**
  * C04 (docs/ETR_ART_BRIEF.md section 5): every image slot's CSS fallback
@@ -59,5 +62,66 @@ describe("art fallbacks (C04)", () => {
     const img = container.querySelector("img")!;
     expect(img.getAttribute("src")).toBe("/etr/threat-enforcer-128.webp");
     expect(container.querySelector(".threat-token--beaten")).toBeInTheDocument();
+  });
+});
+
+describe("large-display and hero art fallbacks", () => {
+  it("the banner variant tries the large derivative, then the 640 card image, then the CSS fallback", () => {
+    const { container } = render(
+      <SceneArt sceneId="metro-platform" title="Metro" variant="banner" />,
+    );
+    let img = container.querySelector("img")!;
+    expect(img.getAttribute("src")).toBe("/etr/scene-metro-platform-1024.webp");
+    expect(img.getAttribute("srcset")).toContain("scene-metro-platform-1536.webp 1536w");
+
+    fireEvent.error(img);
+    img = container.querySelector("img")!;
+    expect(img.getAttribute("src")).toBe("/etr/metro-platform-640.webp");
+
+    fireEvent.error(img);
+    expect(container.querySelector("img")).not.toBeInTheDocument();
+    expect(container.querySelector(".scene-card-art-fallback")).toBeInTheDocument();
+  });
+
+  it("the hero shows real alt text with responsive candidates and keeps the fallback if it never loads", () => {
+    const { container } = render(<HeroArt />);
+    const img = container.querySelector("img")!;
+    expect(img.alt.length).toBeGreaterThan(10);
+    expect(img.getAttribute("srcset")).toContain("hero-1600.webp 1600w");
+    expect(container.querySelector(".hero-art-fallback")).toBeInTheDocument();
+    fireEvent.error(img);
+    expect(container.querySelector("img")).not.toBeInTheDocument();
+    expect(container.querySelector(".hero-art-fallback")).toBeInTheDocument();
+  });
+
+  it("SceneArt starts over when the same instance is reused for another scene", () => {
+    const { container, rerender } = render(<SceneArt sceneId="printworks" title="A" />);
+    fireEvent.error(container.querySelector("img")!);
+    expect(container.querySelector("img")).not.toBeInTheDocument();
+    rerender(<SceneArt sceneId="signal-mast" title="B" />);
+    expect(container.querySelector("img")!.getAttribute("src")).toBe("/etr/signal-mast-640.webp");
+  });
+
+  it("SceneCard passes the banner variant through to its art (shared table display)", () => {
+    const scene = {
+      id: "printworks",
+      title: "Printworks",
+      locationLabel: "Print hall",
+      round: 1,
+      actedThisRound: [],
+      reinforcementsMode: "book" as const,
+      status: "active" as const,
+    };
+    const { container } = render(
+      <SceneCard scene={scene} objectives={[]} threats={[]} artVariant="banner" />,
+    );
+    expect(container.querySelector(".scene-card-art--banner img")!.getAttribute("src")).toBe(
+      "/etr/scene-printworks-1024.webp",
+    );
+  });
+
+  it("the landing screen renders the hero art", () => {
+    const { container } = render(<LandingScreen />);
+    expect(container.querySelector(".landing-hero .hero-art img")).toBeInTheDocument();
   });
 });

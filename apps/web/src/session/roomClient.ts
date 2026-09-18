@@ -15,6 +15,7 @@ import type {
 } from "@digitable/template-eat-the-reich";
 import { firebaseBootstrap } from "./firebaseBootstrap.js";
 import { FirebaseSessionClient, type SessionEmulatorConfig } from "./FirebaseSessionClient.js";
+import { emulatorConfigFor } from "./emulatorConfig.js";
 import { FirebaseRoomRepository } from "../repository/FirebaseRoomRepository.js";
 import { roomEngineStore } from "./RoomEngineStore.js";
 
@@ -26,23 +27,21 @@ import { roomEngineStore } from "./RoomEngineStore.js";
  * that decision, so every screen calls the same three functions
  * (`createRoom`/`joinRoom`/`getRoomRepository`) regardless of mode.
  *
- * `VITE_FIREBASE_USE_EMULATOR=true` (see `apps/web/.env.example`) points
- * live mode at the local Firebase emulator suite (ports match
- * `firebase.json`) instead of a real project — this is how "live mode
- * against the emulator" and "fixture mode" both stay reachable from one
- * build without a real deployed backend.
+ * `VITE_FIREBASE_USE_EMULATOR=true` (see `docs/PLAYTEST_TWO_DEVICE.md`)
+ * points live mode at the local Firebase emulator suite (ports match
+ * `firebase.json`; host per `emulatorConfig.ts`) instead of a real project —
+ * this is how "live mode against the emulator" and "fixture mode" both stay
+ * reachable from one build without a real deployed backend.
  */
 export const isLiveMode: boolean = firebaseBootstrap !== null;
 
-const USE_EMULATOR = import.meta.env.VITE_FIREBASE_USE_EMULATOR === "true";
-
-const emulatorConfig: SessionEmulatorConfig | undefined = USE_EMULATOR
-  ? {
-      auth: { url: "http://127.0.0.1:9099" },
-      functions: { host: "127.0.0.1", port: 5001 },
-      firestore: { host: "127.0.0.1", port: 8080 },
-    }
-  : undefined;
+const emulatorConfig: SessionEmulatorConfig | undefined = emulatorConfigFor(
+  {
+    VITE_FIREBASE_USE_EMULATOR: import.meta.env.VITE_FIREBASE_USE_EMULATOR as string | undefined,
+    VITE_EMULATOR_HOST: import.meta.env.VITE_EMULATOR_HOST as string | undefined,
+  },
+  typeof window === "undefined" ? undefined : window.location.hostname,
+);
 
 let liveSessionClient: FirebaseSessionClient | null = null;
 function getLiveSessionClient(): FirebaseSessionClient {

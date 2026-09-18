@@ -12,5 +12,8 @@ assets/generated
 *.md
 .vitest
 
-# Verbatim seat outcome/spec records: kept byte-exact as evidence, never reformatted.
+# Raw evidence captured verbatim (model replies, run reports) — not reformatted.
+docs/evidence/**/*.json
+
+# Verbatim DeepSeek seat outcome/spec records are kept byte-exact as evidence.
 docs/evidence/2026-09-18-deepseek-seats

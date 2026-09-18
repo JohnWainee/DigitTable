@@ -1,0 +1,243 @@
+{
+  "base": "http://192.168.4.56:4173",
+  "startedAt": "2026-09-18T20:24:51.462Z",
+  "noImages": false,
+  "blocked": [],
+  "devices": {},
+  "steps": [
+    {
+      "name": "signed-out route audit across four viewports",
+      "ok": true,
+      "ms": 20126,
+      "detail": [
+        {
+          "route": "#/",
+          "heading": "Eat the Reich",
+          "alert": null,
+          "actionable": 3,
+          "overflow": {
+            "375": 0,
+            "768": 0,
+            "1280": 0,
+            "1920": 0
+          }
+        },
+        {
+          "route": "#/create",
+          "heading": "Create a session",
+          "alert": null,
+          "actionable": 4,
+          "overflow": {
+            "375": 0,
+            "768": 0,
+            "1280": 0,
+            "1920": 0
+          }
+        },
+        {
+          "route": "#/join",
+          "heading": "Join a session",
+          "alert": null,
+          "actionable": 4,
+          "overflow": {
+            "375": 0,
+            "768": 0,
+            "1280": 0,
+            "1920": 0
+          }
+        },
+        {
+          "route": "#/table",
+          "heading": "Join as the table display",
+          "alert": null,
+          "actionable": 3,
+          "overflow": {
+            "375": 0,
+            "768": 0,
+            "1280": 0,
+            "1920": 0
+          }
+        },
+        {
+          "route": "#/claim/no-such-room",
+          "heading": null,
+          "alert": "You need to join this session before picking a character.",
+          "actionable": 1,
+          "overflow": {
+            "375": 0,
+            "768": 0,
+            "1280": 0,
+            "1920": 0
+          }
+        },
+        {
+          "route": "#/room/no-such-room/player",
+          "heading": null,
+          "alert": "You need to join and claim a character before opening the dashboard.",
+          "actionable": 1,
+          "overflow": {
+            "375": 0,
+            "768": 0,
+            "1280": 0,
+            "1920": 0
+          }
+        },
+        {
+          "route": "#/room/no-such-room/gm",
+          "heading": null,
+          "alert": "You can’t do that from this seat.",
+          "actionable": 1,
+          "overflow": {
+            "375": 0,
+            "768": 0,
+            "1280": 0,
+            "1920": 0
+          }
+        },
+        {
+          "route": "#/room/no-such-room/table",
+          "heading": null,
+          "alert": "This display isn’t connected to a room.",
+          "actionable": 1,
+          "overflow": {
+            "375": 0,
+            "768": 0,
+            "1280": 0,
+            "1920": 0
+          }
+        },
+        {
+          "route": "#/definitely/not/a/route",
+          "heading": "Eat the Reich",
+          "alert": null,
+          "actionable": 3,
+          "overflow": {
+            "375": 0,
+            "768": 0,
+            "1280": 0,
+            "1920": 0
+          }
+        }
+      ]
+    }
+  ],
+  "overflows": [],
+  "routeAudit": [
+    {
+      "route": "#/",
+      "heading": "Eat the Reich",
+      "alert": null,
+      "actionable": 3,
+      "overflow": {
+        "375": 0,
+        "768": 0,
+        "1280": 0,
+        "1920": 0
+      }
+    },
+    {
+      "route": "#/create",
+      "heading": "Create a session",
+      "alert": null,
+      "actionable": 4,
+      "overflow": {
+        "375": 0,
+        "768": 0,
+        "1280": 0,
+        "1920": 0
+      }
+    },
+    {
+      "route": "#/join",
+      "heading": "Join a session",
+      "alert": null,
+      "actionable": 4,
+      "overflow": {
+        "375": 0,
+        "768": 0,
+        "1280": 0,
+        "1920": 0
+      }
+    },
+    {
+      "route": "#/table",
+      "heading": "Join as the table display",
+      "alert": null,
+      "actionable": 3,
+      "overflow": {
+        "375": 0,
+        "768": 0,
+        "1280": 0,
+        "1920": 0
+      }
+    },
+    {
+      "route": "#/claim/no-such-room",
+      "heading": null,
+      "alert": "You need to join this session before picking a character.",
+      "actionable": 1,
+      "overflow": {
+        "375": 0,
+        "768": 0,
+        "1280": 0,
+        "1920": 0
+      }
+    },
+    {
+      "route": "#/room/no-such-room/player",
+      "heading": null,
+      "alert": "You need to join and claim a character before opening the dashboard.",
+      "actionable": 1,
+      "overflow": {
+        "375": 0,
+        "768": 0,
+        "1280": 0,
+        "1920": 0
+      }
+    },
+    {
+      "route": "#/room/no-such-room/gm",
+      "heading": null,
+      "alert": "You can’t do that from this seat.",
+      "actionable": 1,
+      "overflow": {
+        "375": 0,
+        "768": 0,
+        "1280": 0,
+        "1920": 0
+      }
+    },
+    {
+      "route": "#/room/no-such-room/table",
+      "heading": null,
+      "alert": "This display isn’t connected to a room.",
+      "actionable": 1,
+      "overflow": {
+        "375": 0,
+        "768": 0,
+        "1280": 0,
+        "1920": 0
+      }
+    },
+    {
+      "route": "#/definitely/not/a/route",
+      "heading": "Eat the Reich",
+      "alert": null,
+      "actionable": 3,
+      "overflow": {
+        "375": 0,
+        "768": 0,
+        "1280": 0,
+        "1920": 0
+      }
+    }
+  ],
+  "finishedAt": "2026-09-18T20:25:11.615Z",
+  "ok": true,
+  "consoleByDevice": {
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  }
+}

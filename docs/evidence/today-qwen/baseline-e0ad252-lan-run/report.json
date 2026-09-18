@@ -1,0 +1,99 @@
+{
+  "base": "http://192.168.4.56:4174",
+  "startedAt": "2026-09-18T20:14:27.506Z",
+  "noImages": false,
+  "blocked": [],
+  "devices": {
+    "gm": {
+      "origin": "http://192.168.4.56:4174",
+      "isSecureContext": false,
+      "hasRandomUUID": false,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like ",
+      "heroImage": null
+    },
+    "player": {
+      "origin": "http://192.168.4.56:4174",
+      "isSecureContext": false,
+      "hasRandomUUID": false,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like ",
+      "heroImage": null
+    },
+    "table": {
+      "origin": "http://192.168.4.56:4174",
+      "isSecureContext": false,
+      "hasRandomUUID": false,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like ",
+      "heroImage": null
+    }
+  },
+  "steps": [
+    {
+      "name": "landing renders on every device",
+      "ok": true,
+      "ms": 1298,
+      "detail": {
+        "gm": {
+          "origin": "http://192.168.4.56:4174",
+          "isSecureContext": false,
+          "hasRandomUUID": false,
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like ",
+          "heroImage": null
+        },
+        "player": {
+          "origin": "http://192.168.4.56:4174",
+          "isSecureContext": false,
+          "hasRandomUUID": false,
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like ",
+          "heroImage": null
+        },
+        "table": {
+          "origin": "http://192.168.4.56:4174",
+          "isSecureContext": false,
+          "hasRandomUUID": false,
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like ",
+          "heroImage": null
+        }
+      }
+    },
+    {
+      "name": "GM creates a session and receives the one-time codes",
+      "ok": false,
+      "ms": 16221,
+      "error": "[gm] timed out waiting for: #session-name",
+      "context": {
+        "gm": {
+          "alerts": [],
+          "screenshot": "03-gm-FAILED-1280x800.jpg"
+        },
+        "player": {
+          "alerts": [],
+          "screenshot": "04-player-FAILED-375x812.jpg"
+        },
+        "table": {
+          "alerts": [],
+          "screenshot": "05-table-FAILED-1920x1080.jpg"
+        }
+      }
+    }
+  ],
+  "overflows": [],
+  "finishedAt": "2026-09-18T20:14:45.349Z",
+  "ok": false,
+  "consoleByDevice": {
+    "gm": {
+      "consoleErrors": [
+        "TypeError: globalThis.crypto.randomUUID is not a function\n    at GT (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:51:105839)\n    at ZT (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:51:108589)\n    at Qo (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:6:16905)\n    at ou (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:8:43801)\n    at Xl (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:8:39575)\n    at Jl (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:8:39503)\n    at ql (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:8:39357)\n    at Fl (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:8:35746)\n    at zl (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:8:36549)\n    at wa (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:6:3270)",
+        "TypeError: globalThis.crypto.randomUUID is not a function\n    at GT (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:51:105839)\n    at ZT (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:51:108589)\n    at Qo (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:6:16905)\n    at ou (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:8:43801)\n    at Xl (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:8:39575)\n    at Jl (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:8:39503)\n    at ql (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:8:39357)\n    at Fl (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:8:35746)\n    at zl (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:8:36549)\n    at wa (http://192.168.4.56:4174/assets/index-CCSXWBx4.js:6:3270)"
+      ],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  }
+}

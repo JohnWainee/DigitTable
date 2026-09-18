@@ -19,6 +19,7 @@ import { PendingActionsPanel } from "./PendingActionsPanel.js";
 import { RosterPanel } from "./RosterPanel.js";
 import { GmToolsPanel } from "./GmToolsPanel.js";
 import { CorrectionDialog } from "./CorrectionDialog.js";
+import { newUuid } from "../shared/uuid.js";
 
 export interface GmDirectorScreenProps {
   readonly roomId: string;
@@ -83,7 +84,7 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
 
   async function send(payload: EatTheReichCommand): Promise<void> {
     setError(null);
-    const result = await dispatch(asCommandId(globalThis.crypto.randomUUID()), payload);
+    const result = await dispatch(asCommandId(newUuid()), payload);
     if (result.status === "rejected") setError(result.message);
   }
 

@@ -8,6 +8,7 @@ import { STATS } from "@digitable/template-eat-the-reich";
 import { asCommandId } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
 import { PortraitImage } from "../shared/PortraitImage.js";
+import { newUuid } from "../shared/uuid.js";
 import { Icon, STAT_ICON_NAMES, STAT_LABELS } from "../shared/Icon.js";
 
 export interface ClaimCharacterScreenProps {
@@ -30,7 +31,7 @@ export function ClaimCharacterScreen({ roomId }: ClaimCharacterScreenProps): JSX
   async function handleClaim(characterId: string, name: string): Promise<void> {
     if (!ownership || ownership.roomId !== roomId) return;
     setError(null);
-    const result = await dispatch(asCommandId(globalThis.crypto.randomUUID()), {
+    const result = await dispatch(asCommandId(newUuid()), {
       type: "ClaimCharacter",
       characterId,
     });

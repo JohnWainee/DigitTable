@@ -54,6 +54,7 @@ export default tseslint.config(
       "**/coverage/**",
       "**/node_modules/**",
       ".claude/**",
+      "scripts/**",
       "assets/**",
       "eslint.config.js",
     ],

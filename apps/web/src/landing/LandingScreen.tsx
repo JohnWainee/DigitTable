@@ -11,6 +11,7 @@ import {
   type LocalOwnershipRecord,
 } from "../session/ownership.js";
 import { isLiveMode } from "../session/roomClient.js";
+import { HeroArt } from "../shared/HeroArt.js";
 
 function resumeRoute(ownership: LocalOwnershipRecord): string {
   if (ownership.capability === "gm") return `/room/${ownership.roomId}/gm`;
@@ -35,6 +36,7 @@ export function LandingScreen(): JSX.Element {
       <ConnectionStatusStrip state={connection} />
       <FixtureModeBanner />
       <header className="landing-hero">
+        <HeroArt />
         <h1>Eat the Reich</h1>
         <p>
           Vampire commandos, occupied Paris. Start a session, join one, or pick up where you left

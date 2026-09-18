@@ -21,6 +21,7 @@ import { DeclaredWaiting } from "./DeclaredWaiting.js";
 import { AllocationPanel2 } from "./AllocationPanel2.js";
 import { ChooseInjuryPanel2 } from "./ChooseInjuryPanel2.js";
 import { ConfirmSummary2 } from "./ConfirmSummary2.js";
+import { newUuid } from "../shared/uuid.js";
 
 export interface PlayerDashboardScreenProps {
   readonly roomId: string;
@@ -110,7 +111,7 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
     payload: Parameters<typeof dispatch>[1],
   ): Promise<RoomCommandResult<EatTheReichEvent>> {
     setError(null);
-    const result = await dispatch(asCommandId(globalThis.crypto.randomUUID()), payload);
+    const result = await dispatch(asCommandId(newUuid()), payload);
     if (result.status === "rejected") setError(result.message);
     return result;
   }

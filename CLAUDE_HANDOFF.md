@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** S06 / Phase 2 PR 7 is implemented on this branch: client outbox and receipt reconciliation, authorized event-tail reads, a bounded persisted presentation ledger, an ordered projection-gated presentation queue, and shared-event redaction fixes. An independent post-implementation review returned approve-with-fixes; the medium fixes on the acting player's path were applied afterwards and have **not** been re-reviewed. **Not finished as a milestone:** acceptance row 22 (physical-device and staging rehearsal) has no evidence, and the open items in `docs/reviews/2026-09-18-s06-deepseek-factory-review.md` are unresolved. See "S06 event-tail presentation (DeepSeek factory run)".
-- **Branch:** `factory/today-deepseek` (worktree `.claude/worktrees/today-deepseek`; builds on `codex/s06-outbox-reconciliation` / integrated candidate `daf2f23`). Not pushed, not merged.
+- **Status:** Integration candidate combines S06 reconnect/event presentation fixes with the original-art, responsive UI, and private-LAN two-device playtest tooling. Both source branches passed their own full gates and independent reviews; this integrated tree must pass the combined gate and emulator suite before promotion. Physical-device evidence remains open.
+- **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; DeepSeek commits `afd0ced`/`4406e47` plus Qwen commit `80462a1`). Not yet pushed or merged.
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-18 by Claude (Sonnet 5) after integrating the DeepSeek factory seats and re-verifying
+- **Last updated:** 2026-09-18 by Codex during verified DeepSeek/Qwen integration
 
 ## Mission
 
