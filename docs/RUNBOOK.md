@@ -96,6 +96,12 @@ history rather than committing an environment file. Hosting serves `apps/web/dis
 
 ### Deploy log
 
+- **2026-09-19 HST — Codex — sourcebook roster Hosting deploy:** built the web client from reviewed commit
+  `5e8907b` with the registered staging Firebase configuration and deployed Hosting only to
+  `powerglove-1cd23`. The custom domain <https://digitable.signal-bleed.com> returned the new
+  `index-D8nuHDtl.js` bundle over valid HTTPS; the public bundle contains all six approved names:
+  Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint.
+
 - **2026-09-18 HST / 2026-09-19 UTC — Codex — staging:** deployed the integration candidate based on commit
   `1af191e` to Firebase project `powerglove-1cd23`: Firestore rules, RTDB rules, all five `us-west1` callable
   Functions, and Hosting. The Functions deployment required removing local workspace packages from the deployed
