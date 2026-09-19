@@ -100,7 +100,11 @@ history rather than committing an environment file. Hosting serves `apps/web/dis
   `5e8907b` with the registered staging Firebase configuration and deployed Hosting only to
   `powerglove-1cd23`. The custom domain <https://digitable.signal-bleed.com> returned the new
   `index-D8nuHDtl.js` bundle over valid HTTPS; the public bundle contains all six approved names:
-  Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint.
+  Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint. A follow-up diagnosis found that room creation still used
+  the prior roster because the callable backend had not accompanied the Hosting release. All five Functions
+  were then deployed from the same commit. A fresh-room `two-device-smoke.mjs --reload` run against the custom
+  domain passed all 17 GM/player/table steps with no layout failures. Existing rooms retain their stored roster
+  by design and must not be used to assess a roster update.
 
 - **2026-09-18 HST / 2026-09-19 UTC — Codex — staging:** deployed the integration candidate based on commit
   `1af191e` to Firebase project `powerglove-1cd23`: Firestore rules, RTDB rules, all five `us-west1` callable
