@@ -120,6 +120,13 @@ history rather than committing an environment file. Hosting serves `apps/web/dis
   and 1,344 controls with zero control issues, overflow states, hard axe violations, or failures. Evidence is in
   `/private/tmp/digitable-staging-smoke-7` and `/private/tmp/digitable-ui-audit-staging` on the operator machine.
   Physical-device rehearsal remains open; no backend rules or Functions were redeployed.
+- **2026-09-18 HST — Codex — recovery/security Hosting redeploy:** added the lost-identity recovery form backed
+  by the existing `recoverSeat` callable, rotated replacement-code handling, and removed recovery credentials
+  from local persistence (including automatic scrubbing of legacy records). Updated Firebase dependencies;
+  `npm audit --omit=dev` is clean. The only full-audit residuals are in the local Firebase CLI dependency tree,
+  whose npm-proposed remediation is an incompatible downgrade. `npm run check` passed with 681 tests and 11
+  todo; builds passed; emulator suites passed 18 + 86 + 4 tests; the live three-surface smoke passed every step
+  after Hosting deployment. No rules or Functions runtime code changed or was redeployed.
 
 ## 4. Local dev loop (setup for iteration, not staging)
 

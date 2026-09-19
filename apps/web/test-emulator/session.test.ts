@@ -38,6 +38,7 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
   // fixes).
   let gmApp: FirebaseApp;
   let playerApp: FirebaseApp;
+  let recoveryApp: FirebaseApp;
   let testEnv: RulesTestEnvironment;
 
   beforeAll(async () => {
@@ -49,11 +50,17 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
     };
     gmApp = initializeApp(config, `gm-${RUN}`);
     playerApp = initializeApp(config, `player-${RUN}`);
+    recoveryApp = initializeApp(config, `recovery-${RUN}`);
     testEnv = await createEmulatorTestEnvironment();
   });
 
   afterAll(async () => {
-    await Promise.all([deleteApp(gmApp), deleteApp(playerApp), testEnv.cleanup()]);
+    await Promise.all([
+      deleteApp(gmApp),
+      deleteApp(playerApp),
+      deleteApp(recoveryApp),
+      testEnv.cleanup(),
+    ]);
   });
 
   it("creates a room, joins a player, dispatches a real command through the callable transport, and both viewers see updated projections", async () => {
@@ -208,6 +215,45 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
     expect(result.ok).toBe(false);
     if (result.ok) throw new Error("expected rejection");
     expect(result.code).toBe("ROOM_NOT_FOUND");
+  });
+
+  it("recovers a player seat through the real callable transport and rotates the code", async () => {
+    const gmSession = new FirebaseSessionClient(gmApp, emulator);
+    const playerSession = new FirebaseSessionClient(playerApp, emulator);
+    const recoverySession = new FirebaseSessionClient(recoveryApp, emulator);
+    const created = await gmSession.createRoom({
+      requestId: `req-${RUN}-recovery`,
+      sessionName: "Recovery Cell",
+      passphrase: "recovery-passphrase",
+      creatorDisplayName: "Director",
+    });
+    if (!created.ok) throw new Error(`createRoom failed: ${created.code}`);
+    const joined = await playerSession.joinRoom({
+      requestId: `req-${RUN}-recovery-join`,
+      roomCode: created.roomCode,
+      passphrase: "recovery-passphrase",
+      requestedCapability: "player",
+      displayName: "Recovered Player",
+    });
+    if (!joined.ok || !joined.recoveryCode)
+      throw new Error("player admission did not issue a code");
+
+    const recovered = await recoverySession.recoverSeat({
+      roomCode: created.roomCode,
+      recoveryCode: joined.recoveryCode,
+    });
+    expect(recovered.ok).toBe(true);
+    if (!recovered.ok) throw new Error(`recoverSeat failed: ${recovered.code}`);
+    expect(recovered.memberId).toBe(joined.memberId);
+    expect(recovered.recoveryCode).not.toBe(joined.recoveryCode);
+
+    const spent = await recoverySession.recoverSeat({
+      roomCode: created.roomCode,
+      recoveryCode: joined.recoveryCode,
+    });
+    expect(spent.ok).toBe(false);
+    if (spent.ok) throw new Error("spent recovery code was accepted");
+    expect(spent.code).toBe("INVALID_RECOVERY_CODE");
   });
 
   it("live-subscribes to projection updates via a real Firestore onSnapshot listener", async () => {

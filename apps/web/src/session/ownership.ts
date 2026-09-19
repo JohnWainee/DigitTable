@@ -1,4 +1,10 @@
-import type { Capability, RoomAdmissionAccepted, RoomId } from "@digitable/contracts";
+import {
+  asRoomId,
+  type Capability,
+  type RecoverSeatAccepted,
+  type RoomAdmissionAccepted,
+  type RoomId,
+} from "@digitable/contracts";
 import { newUuid } from "../shared/uuid.js";
 
 const OWNERSHIP_STORAGE_KEY = "digitable.etr.ownership.v2";
@@ -33,7 +39,9 @@ export function ownershipFromAcceptedWithNames(
     roomCode: accepted.roomCode,
     memberId: accepted.memberId,
     capability: accepted.capability,
-    recoveryCode: accepted.recoveryCode,
+    // Recovery credentials are display-once secrets. Persisting them would
+    // turn any script or later user of this browser into a seat takeover.
+    recoveryCode: null,
     displayName,
     sessionName,
   };
@@ -42,7 +50,14 @@ export function ownershipFromAcceptedWithNames(
 export function readOwnershipRecord(): LocalOwnershipRecord | null {
   try {
     const raw = window.localStorage.getItem(OWNERSHIP_STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as LocalOwnershipRecord) : null;
+    if (!raw) return null;
+    const record = JSON.parse(raw) as LocalOwnershipRecord;
+    if (record.recoveryCode !== null) {
+      const scrubbed = { ...record, recoveryCode: null };
+      window.localStorage.setItem(OWNERSHIP_STORAGE_KEY, JSON.stringify(scrubbed));
+      return scrubbed;
+    }
+    return record;
   } catch {
     return null;
   }
@@ -50,10 +65,30 @@ export function readOwnershipRecord(): LocalOwnershipRecord | null {
 
 export function writeOwnershipRecord(record: LocalOwnershipRecord): void {
   try {
-    window.localStorage.setItem(OWNERSHIP_STORAGE_KEY, JSON.stringify(record));
+    window.localStorage.setItem(
+      OWNERSHIP_STORAGE_KEY,
+      JSON.stringify({ ...record, recoveryCode: null }),
+    );
   } catch {
     // Storage unavailable (private browsing, quota) — resume simply won't be offered.
   }
+}
+
+export function ownershipFromRecoverySeat(
+  accepted: RecoverSeatAccepted,
+  roomCode: string,
+  displayName: string,
+  sessionName: string,
+): LocalOwnershipRecord {
+  return {
+    roomId: asRoomId(accepted.roomId),
+    roomCode,
+    memberId: accepted.memberId,
+    capability: accepted.capability,
+    recoveryCode: null,
+    displayName,
+    sessionName,
+  };
 }
 
 export function clearOwnershipRecord(): void {

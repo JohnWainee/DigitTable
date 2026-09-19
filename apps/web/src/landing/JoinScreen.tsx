@@ -5,21 +5,38 @@ import {
   useFixtureConnectionState,
 } from "../shell/ConnectionStatusStrip.js";
 import { FixtureModeBanner } from "../shell/FixtureModeBanner.js";
-import { writeOwnershipRecord, ownershipFromAcceptedWithNames } from "../session/ownership.js";
-import { joinRoom } from "../session/roomClient.js";
+import {
+  ownershipFromAcceptedWithNames,
+  ownershipFromRecoverySeat,
+  writeOwnershipRecord,
+  type LocalOwnershipRecord,
+} from "../session/ownership.js";
+import { joinRoom, recoverSeat } from "../session/roomClient.js";
+import type { RecoverSeatResult } from "../session/FirebaseSessionClient.js";
 import type { RoomAdmissionAccepted, SessionRequestState } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
 import { newUuid } from "../shared/uuid.js";
+import { resumeRoute } from "./resumeRoute.js";
+
+type JoinMode = "join" | "recover";
 
 /** docs/ETR_SESSION_FLOW.md section 4.2: `/join` — Player join by code + passphrase. */
 export function JoinScreen(): JSX.Element {
   const connection = useFixtureConnectionState();
+  const [mode, setMode] = useState<JoinMode>("join");
   const [roomCode, setRoomCode] = useState("");
   const [passphrase, setPassphrase] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [request, setRequest] = useState<SessionRequestState<RoomAdmissionAccepted>>({
     status: "idle",
   });
+  const [recoveryRoomCode, setRecoveryRoomCode] = useState("");
+  const [recoveryCode, setRecoveryCode] = useState("");
+  const [recoveryDisplayName, setRecoveryDisplayName] = useState("");
+  const [recoveryRequest, setRecoveryRequest] = useState<
+    SessionRequestState<Extract<RecoverSeatResult, { readonly ok: true }>>
+  >({ status: "idle" });
+  const [recoveredOwnership, setRecoveredOwnership] = useState<LocalOwnershipRecord | null>(null);
 
   async function handleSubmit(event: React.FormEvent): Promise<void> {
     event.preventDefault();
@@ -41,7 +58,140 @@ export function JoinScreen(): JSX.Element {
     }
   }
 
+  async function handleRecoverSubmit(event: React.FormEvent): Promise<void> {
+    event.preventDefault();
+    if (recoveryRequest.status === "pending") return;
+    const requestId = newUuid();
+    setRecoveryRequest({ status: "pending", requestId });
+    const normalizedRoomCode = recoveryRoomCode.toUpperCase();
+    const result = await recoverSeat({ roomCode: normalizedRoomCode, recoveryCode });
+    if (result.ok) {
+      setRecoveryRequest({ status: "accepted", requestId, result });
+      const ownership = ownershipFromRecoverySeat(
+        result,
+        normalizedRoomCode,
+        recoveryDisplayName,
+        "",
+      );
+      writeOwnershipRecord(ownership);
+      setRecoveredOwnership(ownership);
+    } else {
+      setRecoveryRequest({
+        status: "rejected",
+        requestId,
+        code: result.code,
+        message: result.message,
+      });
+    }
+  }
+
   const accepted = request.status === "accepted" ? request.result : null;
+  const recovered = recoveryRequest.status === "accepted" ? recoveryRequest.result : null;
+
+  if (mode === "recover") {
+    return (
+      <main className="landing-screen">
+        <ConnectionStatusStrip state={connection} />
+        <FixtureModeBanner />
+        <h1>Recover your seat</h1>
+        <p>
+          Lost this browser or cleared its storage? Redeem the recovery code you were shown when you
+          first joined to get your seat back.
+        </p>
+
+        {!recovered && (
+          <form
+            className="session-form"
+            onSubmit={(event) => {
+              void handleRecoverSubmit(event);
+            }}
+          >
+            <div className="form-field">
+              <label htmlFor="recover-room-code">Room code</label>
+              <input
+                id="recover-room-code"
+                type="text"
+                required
+                autoCapitalize="characters"
+                pattern="[A-Za-z0-9-]+"
+                value={recoveryRoomCode}
+                onChange={(event) => setRecoveryRoomCode(event.target.value)}
+              />
+            </div>
+            <div className="form-field">
+              <label htmlFor="recovery-code">Recovery code</label>
+              <input
+                id="recovery-code"
+                type="text"
+                required
+                autoComplete="off"
+                value={recoveryCode}
+                onChange={(event) => setRecoveryCode(event.target.value)}
+              />
+            </div>
+            <div className="form-field">
+              <label htmlFor="recover-display-name">Your display name</label>
+              <input
+                id="recover-display-name"
+                type="text"
+                required
+                maxLength={40}
+                value={recoveryDisplayName}
+                onChange={(event) => setRecoveryDisplayName(event.target.value)}
+              />
+            </div>
+            <button
+              type="submit"
+              className="primary-action"
+              disabled={recoveryRequest.status === "pending"}
+            >
+              {recoveryRequest.status === "pending" ? "Recovering…" : "Recover my seat"}
+            </button>
+            {recoveryRequest.status === "rejected" && (
+              <p role="alert" className="error-message">
+                {recoveryRequest.message}
+              </p>
+            )}
+          </form>
+        )}
+
+        <LiveRegion
+          politeness="polite"
+          message={
+            recoveryRequest.status === "pending"
+              ? "Recovering your seat…"
+              : recovered
+                ? "Seat recovered."
+                : ""
+          }
+        />
+
+        {recovered && (
+          <section className="reveal-card" aria-labelledby="recover-reveal-heading">
+            <h2 id="recover-reveal-heading">Your new recovery code — shown once</h2>
+            <p>
+              Redeeming a code invalidates it. Save this replacement somewhere private; it is not
+              stored in this browser.
+            </p>
+            <p className="reveal-code">{recovered.recoveryCode}</p>
+            <button
+              type="button"
+              className="primary-action"
+              onClick={() => recoveredOwnership && navigate(resumeRoute(recoveredOwnership))}
+            >
+              I wrote it down — continue
+            </button>
+          </section>
+        )}
+
+        {!recovered && (
+          <button type="button" className="secondary-action" onClick={() => setMode("join")}>
+            Back to join by code
+          </button>
+        )}
+      </main>
+    );
+  }
 
   return (
     <main className="landing-screen">
@@ -135,6 +285,12 @@ export function JoinScreen(): JSX.Element {
             Continue
           </button>
         </section>
+      )}
+
+      {!accepted && (
+        <button type="button" className="secondary-action" onClick={() => setMode("recover")}>
+          Lost your browser? Recover your seat
+        </button>
       )}
     </main>
   );

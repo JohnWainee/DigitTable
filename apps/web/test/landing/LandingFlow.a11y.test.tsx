@@ -203,4 +203,51 @@ describe("Landing / create / join / claim (C01)", () => {
     await user.click(screen.getByRole("button", { name: /forget this session/i }));
     expect(screen.queryByRole("heading", { name: /^resume$/i })).not.toBeInTheDocument();
   });
+
+  it("recovers a lost seat, rotates the code, and rejects the spent code", async () => {
+    const user = userEvent.setup();
+    renderApp("#/");
+    const { roomCode } = await createSession(user);
+
+    window.localStorage.clear();
+    goTo("#/join");
+    await user.type(screen.getByLabelText(/room code/i), roomCode);
+    await user.type(screen.getByLabelText(/^passphrase$/i), "wolfbane");
+    await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
+    await user.click(screen.getByRole("button", { name: /^join session$/i }));
+    await screen.findByRole("heading", { name: /your recovery code/i });
+    const originalCode = screen.getByText(/^[A-Z0-9]{6,}$/).textContent;
+
+    window.localStorage.clear();
+    goTo("#/");
+    goTo("#/join");
+    await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+    await user.type(screen.getByLabelText(/^room code$/i), roomCode);
+    await user.type(screen.getByLabelText(/recovery code/i), originalCode);
+    await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
+    await user.click(screen.getByRole("button", { name: /^recover my seat$/i }));
+
+    expect(
+      await screen.findByRole("heading", { name: /your new recovery code/i }),
+    ).toBeInTheDocument();
+    const replacementCode = screen.getByText(/^[A-Z0-9]{6,}$/).textContent;
+    expect(replacementCode).not.toBe(originalCode);
+    expect(window.localStorage.getItem("digitable.etr.ownership.v2")).not.toContain(
+      replacementCode,
+    );
+
+    await user.click(screen.getByRole("button", { name: /i wrote it down — continue/i }));
+    expect(
+      await screen.findByRole("heading", { name: /pick your character/i }),
+    ).toBeInTheDocument();
+
+    window.localStorage.clear();
+    goTo("#/join");
+    await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+    await user.type(screen.getByLabelText(/^room code$/i), roomCode);
+    await user.type(screen.getByLabelText(/recovery code/i), originalCode);
+    await user.type(screen.getByLabelText(/your display name/i), "Someone else");
+    await user.click(screen.getByRole("button", { name: /^recover my seat$/i }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(/code not recognised/i);
+  });
 });

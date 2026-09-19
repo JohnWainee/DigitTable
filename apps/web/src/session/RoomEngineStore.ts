@@ -8,6 +8,7 @@ import {
   type JoinRoomInput,
   type JoinRoomResult,
   type MemberId,
+  type RecoverSeatInput,
   type RoomId,
 } from "@digitable/contracts";
 import {
@@ -17,6 +18,7 @@ import {
   type HashedSecret,
 } from "@digitable/engine";
 import { InMemoryRoomRepository } from "../repository/InMemoryRoomRepository.js";
+import type { RecoverSeatResult } from "./FirebaseSessionClient.js";
 
 const CODE_ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";
 
@@ -34,6 +36,8 @@ interface FixtureRoom {
   readonly sessionName: string;
   readonly passphraseHash: HashedSecret;
   readonly repository: InMemoryRoomRepository;
+  readonly capabilitiesByMember: Map<MemberId, Capability>;
+  readonly recoveryHashesByMember: Map<MemberId, HashedSecret>;
   tableClaimed: boolean;
   playerCount: number;
 }
@@ -92,6 +96,7 @@ export class RoomEngineStore {
     const gmMemberId = asMemberId(`member-${randomCode(8).toLowerCase()}`);
     const passphraseHash = await hashSecret(input.passphrase);
     const recoveryCode = generateRecoveryCode();
+    const recoveryHash = await hashSecret(recoveryCode);
 
     const room: FixtureRoom = {
       roomId,
@@ -100,6 +105,8 @@ export class RoomEngineStore {
       sessionName: input.sessionName,
       passphraseHash,
       repository: new InMemoryRoomRepository(roomId, gmMemberId),
+      capabilitiesByMember: new Map([[gmMemberId, "gm"]]),
+      recoveryHashesByMember: new Map([[gmMemberId, recoveryHash]]),
       tableClaimed: false,
       playerCount: 0,
     };
@@ -148,9 +155,14 @@ export class RoomEngineStore {
     }
     const memberId = asMemberId(`member-${randomCode(8).toLowerCase()}`);
     room.repository.registerMember(memberId, input.requestedCapability);
+    room.capabilitiesByMember.set(memberId, input.requestedCapability);
     if (input.requestedCapability === "player") room.playerCount += 1;
     if (input.requestedCapability === "table") room.tableClaimed = true;
-    const recoveryCode = input.requestedCapability === "player" ? generateRecoveryCode() : null;
+    let recoveryCode: string | null = null;
+    if (input.requestedCapability === "player") {
+      recoveryCode = generateRecoveryCode();
+      room.recoveryHashesByMember.set(memberId, await hashSecret(recoveryCode));
+    }
     return {
       ok: true,
       roomId: room.roomId,
@@ -160,6 +172,21 @@ export class RoomEngineStore {
       recoveryCode,
       roomRevision: 0,
     };
+  }
+
+  async recoverSeat(input: RecoverSeatInput): Promise<RecoverSeatResult> {
+    const room = this.roomsByCode.get(input.roomCode.toUpperCase());
+    if (room) {
+      for (const [memberId, hash] of room.recoveryHashesByMember) {
+        if (!(await verifySecret(input.recoveryCode, hash))) continue;
+        const capability = room.capabilitiesByMember.get(memberId);
+        if (!capability) continue;
+        const recoveryCode = generateRecoveryCode();
+        room.recoveryHashesByMember.set(memberId, await hashSecret(recoveryCode));
+        return { ok: true, roomId: room.roomId, memberId, capability, recoveryCode };
+      }
+    }
+    return { ok: false, code: "INVALID_RECOVERY_CODE", message: "Code not recognised." };
   }
 
   getRepository(roomId: RoomId): InMemoryRoomRepository | null {
