@@ -527,7 +527,7 @@ async function auditModal(gm) {
 
   // ---- Scenarios that layout-viewport resizing cannot reach. Each MUST execute at least one check;
   // an exception, or an emulation this Chrome cannot perform, is a FAILURE and never a silent skip. ----
-  async function scenario(name, viewport, body, { informational = false } = {}) {
+  async function scenario(name, viewport, body, { informationalChecks = [] } = {}) {
     const record = {
       viewport: viewport.name,
       size: `${viewport.width}x${viewport.height}`,
@@ -543,10 +543,12 @@ async function auditModal(gm) {
       record.notes.push(`threw: ${error.message}`);
     }
     if (Object.keys(record.checks).length === 0) fail(`modal-${name}`, "no checks were executed");
-    record.informational = informational;
+    // Only the NAMED checks may be non-gating; any other failing check in the scenario still fails the run.
+    record.informationalChecks = informationalChecks;
     for (const [k, v] of Object.entries(record.checks)) {
       if (v) continue;
-      if (informational) console.log(`INFO modal-${name}: ${k} failed (recorded, not gating)`);
+      if (informationalChecks.includes(k))
+        console.log(`INFO modal-${name}: ${k} failed (recorded, not gating)`);
       else fail(`modal-${name}`, `${k} failed`);
     }
     report.modal.push(record);
@@ -648,10 +650,12 @@ async function auditModal(gm) {
   // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
   // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
   // the handoff.
-  for (const [vp, px, informational] of [
-    [byName["phone-small"], 24, false],
-    [byName["phone"], 32, false],
-    [byName["phone-small"], 32, true],
+  for (const [vp, px, informationalChecks] of [
+    [byName["phone-small"], 24, []],
+    [byName["phone"], 32, []],
+    // Only the two geometry checks the console's overflow can break are non-gating here; the sheet's own
+    // bodyKeepsRoom / actionsReachable / reasonReachable still gate.
+    [byName["phone-small"], 32, ["dialogInsideViewport", "noPageOverflow"]],
   ]) {
     await scenario(
       `text-${px === 24 ? "150" : "200"}-${vp.name}`,
@@ -691,7 +695,7 @@ async function auditModal(gm) {
           { fullPage: false },
         );
       },
-      { informational },
+      { informationalChecks },
     );
   }
   await applyViewport(gm, byName["desktop"]);

@@ -6,14 +6,27 @@ const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), summary, audio[controls], video[controls], [contenteditable]:not([contenteditable="false"]), [tabindex]:not([tabindex="-1"])';
 
 /**
- * Whether Tab could actually land on `el` right now: not `display: none`/`visibility: hidden`, and not
- * inside a collapsed `<details>` (only that details' own `<summary>` stays reachable). The trap wraps
- * to the first/last *reachable* control, so a hidden one at either end can never make it swallow Tab.
+ * Whether Tab could actually land on `el` right now: not `display: none`/`visibility: hidden`, not
+ * inside a collapsed `<details>` (only that details' own `<summary>` stays reachable), not inside a
+ * disabled fieldset or an inert subtree, and, for radios, only the checked one of a group. The trap
+ * wraps to the first/last *reachable* control, so an unreachable one at either end can never make it
+ * swallow Tab. Not modelled: positive `tabindex` ordering (unused in the app) and elements added to
+ * `<body>` after the sheet mounted (the inert set is a mount-time snapshot; the app has one sheet and
+ * no other dynamic body portals).
  */
 function isReachable(el: HTMLElement): boolean {
   const details = el.closest("details");
   if (details && !details.open && !(el.tagName === "SUMMARY" && el.parentElement === details)) {
     return false;
+  }
+  if (el.closest("fieldset[disabled], [inert]")) return false;
+  // Browsers put only the checked radio of a group in the tab order.
+  if (el instanceof HTMLInputElement && el.type === "radio" && el.name && !el.checked) {
+    const scope: ParentNode = el.form ?? el.ownerDocument;
+    const groupHasChecked = Array.from(
+      scope.querySelectorAll<HTMLInputElement>('input[type="radio"]'),
+    ).some((other) => other.name === el.name && other.checked);
+    if (groupHasChecked) return false;
   }
   // Absent in jsdom and older engines: fall through to "reachable".
   return typeof el.checkVisibility === "function"
@@ -83,9 +96,10 @@ export function SheetDialog({
       child.setAttribute("inert", "");
       madeInert.push(child);
     }
+    headingRef.current?.focus();
+    // Counted only once nothing above can throw, so a failed mount never leaks the scroll lock.
     openSheets += 1;
     document.documentElement.classList.add("sheet-open");
-    headingRef.current?.focus();
     return () => {
       for (const child of madeInert) child.removeAttribute("inert");
       openSheets -= 1;

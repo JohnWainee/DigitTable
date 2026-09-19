@@ -193,7 +193,7 @@ describe("SheetDialog", () => {
     expect(appWasInertWhenFocusReturned).toBe(false);
   });
 
-  it("keeps root scroll locked until the LAST of several open sheets closes", async () => {
+  it("keeps root scroll locked until the LAST of several open sheets closes", () => {
     function Two(): JSX.Element {
       const [a, setA] = useState(true);
       const [b, setB] = useState(true);
@@ -268,6 +268,120 @@ describe("SheetDialog", () => {
     const shiftNotCancelled = fireEvent.keyDown(first, { key: "Tab", shiftKey: true });
     expect(shiftNotCancelled).toBe(false);
     expect(summary).toHaveFocus();
+  });
+
+  it("includes links and contenteditable regions in the cycle: Tab from a trailing one wraps to the first control", () => {
+    render(
+      <SheetDialog titleId="d-title" title="Cycle" onClose={() => {}} footer={null}>
+        <button type="button">First</button>
+        <a href="#end">Trailing link</a>
+      </SheetDialog>,
+    );
+    const dialog = screen.getByRole("dialog");
+    const link = within(dialog).getByRole("link", { name: /trailing link/i });
+    link.focus();
+    // The link is the LAST focusable: the trap itself (not the browser's natural order) must cancel
+    // Tab and wrap. Without a[href] in the selector the trap would not act at all.
+    expect(fireEvent.keyDown(link, { key: "Tab" })).toBe(false);
+    expect(within(dialog).getByRole("button", { name: "First" })).toHaveFocus();
+  });
+
+  it("treats a contenteditable region as focusable for the trap", () => {
+    render(
+      <SheetDialog titleId="e-title" title="Edit" onClose={() => {}} footer={null}>
+        <button type="button">First</button>
+        <div contentEditable suppressContentEditableWarning role="textbox" aria-label="Notes">
+          notes
+        </div>
+      </SheetDialog>,
+    );
+    const dialog = screen.getByRole("dialog");
+    const editor = within(dialog).getByRole("textbox", { name: /notes/i });
+    const first = within(dialog).getByRole("button", { name: "First" });
+    const focusFirst = vi.spyOn(first, "focus");
+    // jsdom cannot focus a contenteditable that has no tabindex, so present it as the active element.
+    Object.defineProperty(document, "activeElement", { configurable: true, get: () => editor });
+    try {
+      // The editor is the last focusable (no tabindex: only the contenteditable selector finds it),
+      // so the trap itself must cancel Tab and wrap to the first control.
+      expect(fireEvent.keyDown(editor, { key: "Tab" })).toBe(false);
+      expect(focusFirst).toHaveBeenCalled();
+    } finally {
+      Reflect.deleteProperty(document, "activeElement");
+    }
+  });
+
+  it("skips controls the engine reports as not visible when choosing where Tab wraps", () => {
+    // jsdom has no checkVisibility, so model one: anything with the `hidden` attribute is invisible.
+    Object.defineProperty(Element.prototype, "checkVisibility", {
+      configurable: true,
+      writable: true,
+      value(this: Element) {
+        return !this.hasAttribute("hidden");
+      },
+    });
+    try {
+      render(
+        <SheetDialog
+          titleId="v-title"
+          title="Hidden"
+          onClose={() => {}}
+          footer={
+            <>
+              <button type="button">Last visible</button>
+              <button type="button" hidden>
+                Ghost
+              </button>
+            </>
+          }
+        >
+          <button type="button">First</button>
+        </SheetDialog>,
+      );
+      const dialog = screen.getByRole("dialog");
+      const lastVisible = within(dialog).getByRole("button", { name: "Last visible" });
+      lastVisible.focus();
+      // "Ghost" is last in the DOM but not visible: "Last visible" is the real last stop.
+      expect(fireEvent.keyDown(lastVisible, { key: "Tab" })).toBe(false);
+      expect(within(dialog).getByRole("button", { name: "First" })).toHaveFocus();
+    } finally {
+      Reflect.deleteProperty(Element.prototype, "checkVisibility");
+    }
+  });
+
+  it("does not count an unchecked radio (group has a checked one), a disabled-fieldset control, or an inert subtree as tab stops", () => {
+    render(
+      <SheetDialog
+        titleId="r-title"
+        title="Radios"
+        onClose={() => {}}
+        footer={
+          <>
+            <label>
+              <input type="radio" name="g" defaultChecked /> Checked
+            </label>
+            <label>
+              <input type="radio" name="g" /> Unchecked sibling
+            </label>
+            <fieldset disabled>
+              <button type="button">Disabled group button</button>
+            </fieldset>
+            <div ref={(node) => node?.setAttribute("inert", "")}>
+              <button type="button">Inert subtree button</button>
+            </div>
+          </>
+        }
+      >
+        <button type="button">First</button>
+      </SheetDialog>,
+    );
+    const dialog = screen.getByRole("dialog");
+    const checked = within(dialog).getByRole("radio", { name: "Checked" });
+    checked.focus();
+    // Everything after the checked radio is unreachable, so it is the real last stop: the trap itself
+    // must cancel Tab and wrap. Each filter is needed for that (removing any one leaves a phantom last).
+    expect(fireEvent.keyDown(checked, { key: "Tab" })).toBe(false);
+    expect(within(dialog).getByRole("button", { name: "First" })).toHaveFocus();
   });
 
   it("has no axe violations open", async () => {
