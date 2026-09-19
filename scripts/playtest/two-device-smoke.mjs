@@ -621,6 +621,11 @@ async function main() {
 
     await step("landing Resume goes straight to the claimed dashboard with one h1", async () => {
       await goto(player, "#/");
+      // Record every route the click passes through; a `/claim/` entry means Resume detoured via the picker.
+      await ev(
+        player,
+        `(() => { window.__hashLog = [location.hash]; window.addEventListener("hashchange", () => window.__hashLog.push(location.hash)); return true; })()`,
+      );
       await clickText(player, "button", /^Resume session$/);
       await waitFor(
         player,
@@ -636,8 +641,9 @@ async function main() {
       );
       const h1s = await ev(player, `document.querySelectorAll("h1").length`);
       if (h1s !== 1) throw new Error(`expected exactly one h1 on the player dashboard, saw ${h1s}`);
-      if (await ev(player, `document.body.textContent.includes("Pick your character")`)) {
-        throw new Error("Resume passed through the character picker");
+      const hashLog = await ev(player, `window.__hashLog`);
+      if (hashLog.some((hash) => hash.includes("/claim/"))) {
+        throw new Error(`Resume passed through the character picker: ${hashLog.join(" -> ")}`);
       }
       await shot(player, "resume-dashboard");
     });

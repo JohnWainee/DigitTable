@@ -132,7 +132,7 @@ export function CreateSessionScreen(): JSX.Element {
 
       {accepted && !readyAcknowledged && (
         <section className="reveal-card" aria-labelledby="reveal-heading">
-          <h2 id="reveal-heading">Write these down — shown once</h2>
+          <h2 id="reveal-heading">Write these down — all but the room code are shown only once</h2>
           <dl>
             <dt>Room code</dt>
             <dd>{accepted.roomCode}</dd>

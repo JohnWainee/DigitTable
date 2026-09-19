@@ -71,6 +71,34 @@ describe("Landing Resume routing (F6)", () => {
     expect(window.location.hash).toBe(`#/claim/${roomId}`);
   });
 
+  it("does not flash a claim alert while forwarding an unclaimed player, and leaves GM and table seats alone", async () => {
+    const user = userEvent.setup();
+    const { roomCode, roomId, gmOwnership } = await createSessionAsGm(user);
+    const playerOwnership = await joinAsPlayer(user, roomCode);
+
+    // Watch every alert that ever mounts while the dashboard forwards to the picker.
+    const alertTexts: string[] = [];
+    const observer = new MutationObserver(() => {
+      for (const node of document.querySelectorAll('[role="alert"]')) {
+        alertTexts.push(node.textContent ?? "");
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    goTo(`#/room/${roomId}/player`);
+    await screen.findByRole("heading", { name: /pick your character/i });
+    observer.disconnect();
+    expect(alertTexts.filter((t) => /claim a character before opening/i.test(t))).toEqual([]);
+
+    // A GM or table seat that opens the player route is not sent to the picker.
+    for (const capability of ["gm", "table"] as const) {
+      writeOwnershipRecord({ ...gmOwnership, capability });
+      goTo(`#/room/${roomId}/player`);
+      await screen.findByText(/claim a character before opening the dashboard/i);
+      expect(window.location.hash).toBe(`#/room/${roomId}/player`);
+    }
+    expect(playerOwnership.capability).toBe("player");
+  });
+
   it("still resumes the GM at the console and the table seat at the display", async () => {
     const user = userEvent.setup();
     const { roomId, gmOwnership } = await createSessionAsGm(user);

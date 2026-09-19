@@ -33,8 +33,10 @@ function isFullRoll(view: RollView): view is RollViewFull {
 /** docs/ETR_SESSION_FLOW.md section 1: `/room/:roomId/gm` — the director console, driven entirely by the real projection (C06/C07). */
 export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element {
   const ownership = readOwnershipRecord();
-  const memberId = ownership?.roomId === roomId ? ownership.memberId : "";
   const isGm = ownership?.roomId === roomId && ownership.capability === "gm";
+  // Only the GM seat subscribes: a visitor holding some other seat (or none)
+  // must not start a GM-viewer projection subscription just to be refused.
+  const memberId = isGm ? ownership.memberId : "";
   const {
     status,
     projection,

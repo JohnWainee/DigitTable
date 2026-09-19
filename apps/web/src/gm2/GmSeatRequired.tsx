@@ -11,7 +11,8 @@ export interface GmSeatRequiredProps {
  * What `/room/:roomId/gm` shows a visitor who does not hold the GM seat
  * (review F6). It says what the page is and where to go next, using only
  * what this browser already knows about itself (its own saved seat): it
- * fetches nothing from the room and never echoes the room id or any seat
+ * fetches nothing from the room (`GmDirectorScreen` starts no projection
+ * subscription without the GM seat) and never echoes the room id or any seat
  * detail, so an unauthorized visitor cannot use it to learn whether the
  * room exists or who is in it. A seat saved for a different room is
  * treated exactly like no seat.
