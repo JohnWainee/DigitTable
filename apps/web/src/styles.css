@@ -1,85 +1,153 @@
-:root {
-  /* `light dark` was declared here with no dark-mode CSS actually
-     implemented, so a browser in dark mode picked its own dark default
-     colors for unstyled form controls (white button text on our
-     explicit white button backgrounds — invisible; found live-testing
-     C01 in a real browser, not caught by jsdom/axe). Pinned to `light`
-     until C04/C05 implement the art brief's real dark palette
-     (docs/ETR_ART_BRIEF.md palette table) with matching
-     `@media (prefers-color-scheme: dark)` rules; every custom button
-     class below also sets `color` explicitly so this isn't the only
-     guard. */
-  color-scheme: light;
-  --bg: #f5f0e6;
-  --fg: #1b1b1b;
-  --accent: #8a1f1f;
-  --border: #3a3a3a;
-  --focus: #1a6fbf;
+/*
+ * Ink-black punk reskin ("D" reskin, 2026-09-18).
+ *
+ * Visual language: near-black ink surfaces, hard-offset "misregistered" print
+ * shadows, condensed uppercase display type, mono stamp labels, and a
+ * distressed print grain. Every colour is an original token below, chosen to
+ * sit with the existing generated art pack (crimson, electric cyan, amber and
+ * bone paper: assets/generated/eat-the-reich/README.md) pushed to a louder,
+ * higher-energy register. No licensed art, text, or typeface is used: fonts
+ * are system stacks, and the grain/halftone/tape/hazard textures are drawn
+ * here with CSS gradients and one inline SVG feTurbulence tile (procedural,
+ * no raster source; provenance in assets/generated/eat-the-reich/README.md,
+ * "UI reskin textures").
+ *
+ * Behaviour is unchanged: this file only restyles existing class names and
+ * elements. Non-negotiables kept here (each has a regression test in
+ * apps/web/test/styles/reskinContract.test.ts):
+ *   - every control >= 44px tall and 16px type (no iOS focus-zoom);
+ *   - pop-outs (the `.sheet`) sized from the visual viewport, safe-area aware,
+ *     internally scrolling, and never wider/taller than what is visible;
+ *   - no animation outside `prefers-reduced-motion: no-preference`;
+ *   - visible >= 3:1 focus ring and >= 3:1 control boundaries on ink.
+ */
 
-  /* docs/ETR_ART_BRIEF.md section 2 palette table (C04). --bg/--fg/--accent
-     above are Phase 1's names for --bone/--charcoal/--crimson and stay as
-     the primary tokens already used throughout; these add the brief's
-     exact names/hexes (--crimson matches --accent) and the four colors
-     Phase 1 never needed. */
-  --bone: var(--bg);
-  --charcoal: var(--fg);
-  --crimson: var(--accent);
-  --crimson-hot: #c42b2b;
-  --cyan: #4fc3e8;
-  --amber: #d9a441;
-  --ash: #6e6a66;
+:root {
+  color-scheme: dark;
+
+  /* Ink (surfaces) */
+  --ink-0: #050506;
+  --ink-1: #0d0d10;
+  --ink-2: #16161c;
+  --ink-3: #20202a;
+  --rule: #4a4a56;
+
+  /* Paper (text). --dim/--mute keep >= 6:1 on --ink-2. */
+  --paper: #f3ecda;
+  --dim: #b4ad9f;
+  --mute: #9a9488;
+
+  /* Punk accents. Each is >= 4.6:1 against --ink-2 (or is used as a fill
+     carrying --ink-0 text at >= 5.6:1). */
+  --acid: #ffe600;
+  --riot: #ff3348;
+  --riot-deep: #c8102e;
+  --cyan: #22e6ff;
+  --pink: #ff3fae;
+  --volt: #c6ff1a;
+
+  /* Legacy token names kept so older rules and tests still resolve. */
+  --bg: var(--ink-0);
+  --fg: var(--paper);
+  --accent: var(--riot);
+  --border: var(--mute);
+  --focus: var(--acid);
+  --bone: #ede4d1;
+  --charcoal: #151517;
+  --crimson: var(--riot-deep);
+  --crimson-hot: var(--riot);
+  --amber: var(--acid);
+  --ash: var(--mute);
+
+  --font-display:
+    "Impact", "Haettenschweiler", "Arial Narrow Bold", "Oswald", "Arial Narrow", system-ui,
+    sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Procedural print grain: one fractal-noise tile, white speckle at low alpha. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+  --halftone: radial-gradient(rgba(243, 236, 218, 0.07) 1px, transparent 1.6px);
+  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffe600' d='M3 8h18l-9 10z'/%3E%3C/svg%3E");
+
+  --tap: 3rem;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  background: var(--ink-0);
+}
+
+/* A pop-out is open: the page behind it must not scroll. */
+html.sheet-open {
+  overflow: hidden;
+}
+
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--fg);
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
+  min-height: 100vh;
+  background-color: var(--ink-0);
+  background-image:
+    radial-gradient(ellipse 80% 100% at 15% 0%, rgba(255, 51, 72, 0.2), transparent 70%),
+    radial-gradient(ellipse 70% 100% at 100% 8%, rgba(34, 230, 255, 0.1), transparent 70%),
+    var(--grain), var(--halftone);
+  background-size:
+    100% 34rem,
+    100% 34rem,
+    180px 180px,
+    7px 7px;
+  background-repeat: no-repeat, no-repeat, repeat, repeat;
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  overflow-wrap: break-word;
 }
 
-.app-shell {
-  min-height: 100%;
+::selection {
+  background: var(--pink);
+  color: var(--ink-0);
 }
 
-.surface-switcher {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--border);
+/* ---------- Typography ---------- */
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-synthesis-weight: none;
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-wrap: balance;
 }
 
-.surface-switcher button {
-  min-width: 44px;
-  min-height: 44px;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border);
-  background: white;
-  color: var(--fg);
-  cursor: pointer;
+h1 {
+  font-size: clamp(2.4rem, 11vw, 4.25rem);
+  color: var(--paper);
+  text-shadow: 3px 3px 0 var(--riot-deep);
+  transform: rotate(-0.6deg);
+  transform-origin: left center;
 }
 
-.surface-switcher button[aria-pressed="true"] {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: white;
+h2 {
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  padding-left: 0.65rem;
+  border-left: 0.5rem solid var(--acid);
+  color: var(--paper);
 }
 
-.player-screen {
-  max-width: 40rem;
-  margin: 0 auto;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+h3 {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  color: var(--cyan);
 }
 
 /* Review F7: the player dashboard's page-level heading. Compact so it does
@@ -90,22 +158,185 @@ body {
   font-size: 1.25rem;
 }
 
-/* The director console and shared-table display use more of the available
-   width than the phone-first player surface, since both are expected on
-   desktop-class devices (docs/PHASE_1C_PLAN.md: "a director console is
-   expected to use more available width"; docs/ARCHITECTURE.md section 6:
-   the table surface is a shared/large display). Both still work down to
-   phone width via the same flex column and wrapping list layout. */
-.gm-screen,
-.table-screen {
-  max-width: 64rem;
-  margin: 0 auto;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+p {
+  margin: 0;
 }
 
+a,
+.link-button {
+  color: var(--cyan);
+}
+
+strong {
+  color: var(--acid);
+  font-weight: 700;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+li + li {
+  margin-top: 0.35rem;
+}
+
+.form-hint,
+.landing-resume-caveat {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--dim);
+}
+
+/* ---------- Focus ---------- */
+
+:focus-visible {
+  outline: 3px solid var(--acid);
+  outline-offset: 3px;
+}
+
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* ---------- Screen shells ---------- */
+
+.landing-screen,
+.player-screen,
+.gm-screen,
+.table-screen {
+  margin: 0 auto;
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
+    max(2.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.landing-screen,
+.player-screen {
+  max-width: 42rem;
+}
+
+.gm-screen {
+  max-width: 68rem;
+}
+
+.table-screen {
+  max-width: 96rem;
+}
+
+.landing-screen > *,
+.player-screen > *,
+.gm-screen > *,
+.table-screen > * {
+  min-width: 0;
+}
+
+/* ---------- Panels (torn-paper cards with hard misregistered shadows) ---------- */
+
+.step,
+.scene-card,
+.landing-resume,
+.reveal-card,
+.invite-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem 1rem 1.25rem;
+  background:
+    var(--grain),
+    linear-gradient(180deg, var(--ink-2), var(--ink-1)) padding-box;
+  background-size:
+    180px 180px,
+    auto;
+  border: 2px solid var(--paper);
+  box-shadow: 6px 6px 0 var(--riot-deep);
+}
+
+/* Masking-tape strip: purely decorative, clipped to the card so it can never overflow. */
+.step::before,
+.scene-card::before {
+  content: "";
+  position: absolute;
+  top: -0.7rem;
+  right: 1.25rem;
+  width: 4.5rem;
+  height: 1.3rem;
+  background: rgba(255, 230, 0, 0.88);
+  transform: rotate(3deg);
+  pointer-events: none;
+  opacity: 0.9;
+  mix-blend-mode: normal;
+  clip-path: polygon(0 8%, 4% 0, 9% 10%, 100% 0, 96% 50%, 100% 100%, 5% 92%, 0 100%, 3% 50%);
+}
+
+.invite-panel,
+.reveal-card {
+  border-color: var(--acid);
+  box-shadow: 6px 6px 0 var(--riot-deep);
+  background-color: var(--ink-1);
+}
+
+.landing-resume {
+  border-color: var(--cyan);
+  box-shadow: 6px 6px 0 rgba(34, 230, 255, 0.35);
+}
+
+.scene-card {
+  gap: 0.75rem;
+}
+
+.scene-card-description {
+  color: var(--dim);
+  font-style: italic;
+}
+
+.scene-card-objective,
+.scene-card-threats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Fieldsets: inset panels with a taped, stamped label instead of a bare legend. */
+fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 1.1rem 0.85rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 2px solid var(--rule);
+  background: rgba(5, 5, 6, 0.55);
+}
+
+legend {
+  padding: 0.15rem 0.65rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-0);
+  background: var(--cyan);
+  transform: rotate(-1deg);
+}
+
+.pending-action-card,
+.roster-panel-list li,
+.threat-list li,
+.roster-card {
+  border: 2px solid var(--rule);
+  background: rgba(5, 5, 6, 0.55);
+  padding: 0.85rem;
+}
+
+.pending-actions-list,
+.roster-panel-list,
 .threat-list,
 .character-list {
   list-style: none;
@@ -113,38 +344,264 @@ body {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
-.threat-list li {
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-}
-
-.gm-hidden {
-  font-style: italic;
-}
-
-.step {
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 1rem;
+.pending-action-card {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-/* A fieldset defaults to min-width: min-content and a select is as wide as its longest option,
-   so the GM scene-edit target select pushed the console 40px wide at 375px. */
-fieldset {
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
+.roster-panel-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.gm-hidden {
+  font-style: italic;
+  color: var(--dim);
+}
+
+/* ---------- Buttons ---------- */
+
+button {
+  font: inherit;
+}
+
+.primary-action,
+.secondary-action,
+.link-button,
+.stepper-controls button {
+  min-height: var(--tap);
+  min-width: var(--tap);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.primary-action,
+.secondary-action {
+  padding: 0.7rem 1.25rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-synthesis-weight: none;
+  font-size: 1.15rem;
+  line-height: 1.1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  border: 2px solid var(--ink-0);
+  border-radius: 0;
+  transition: none;
+}
+
+.primary-action {
+  background: var(--acid);
+  color: var(--ink-0);
+  box-shadow: 4px 4px 0 var(--riot);
+}
+
+.secondary-action {
+  background: var(--ink-0);
+  color: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 4px 4px 0 rgba(34, 230, 255, 0.35);
+}
+
+@media (hover: hover) {
+  .primary-action:hover:not(:disabled),
+  .secondary-action:hover:not(:disabled) {
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0 var(--riot);
+  }
+
+  .secondary-action:hover:not(:disabled) {
+    background: var(--ink-3);
+    box-shadow: 6px 6px 0 rgba(34, 230, 255, 0.5);
+  }
+}
+
+.primary-action:active:not(:disabled),
+.secondary-action:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--riot);
+}
+
+.primary-action:disabled,
+.secondary-action:disabled {
+  background: var(--ink-3);
+  color: var(--mute);
+  border: 2px dashed var(--mute);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.link-button {
+  padding: 0.5rem 0;
+  border: 0;
+  background: none;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-align: left;
+}
+
+.landing-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.landing-actions--primary {
+  padding-top: 0.5rem;
+}
+
+/* ---------- Forms ---------- */
+
+.session-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
   min-width: 0;
 }
 
-select {
+label {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: var(--paper);
+}
+
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  display: block;
+  width: 100%;
   max-width: 100%;
+  min-width: 0;
+  min-height: var(--tap);
+  padding: 0.65rem 0.8rem;
+  font: inherit;
+  font-size: 1rem; /* 16px: below this iOS Safari zooms the page on focus */
+  line-height: 1.3;
+  color: var(--paper);
+  background-color: var(--ink-0);
+  border: 2px solid var(--mute);
+  border-radius: 0;
+  box-shadow: inset 3px 3px 0 rgba(0, 0, 0, 0.6);
+  transition: none;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  border-color: var(--acid);
+  outline-offset: 2px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--mute);
+  opacity: 1;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  color: var(--mute);
+  border-style: dashed;
+  cursor: not-allowed;
+}
+
+/* Native <select>: the browser owns the option popup (an OS picker on touch
+   devices, an edge-aware popup on desktop), so it can never clip off screen;
+   we own only the closed control. Long option text is ellipsised, not wrapped
+   into a wider control (the earlier 375px GM overflow). */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.75rem;
+  background-image: var(--chevron);
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 1rem 1rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+option,
+optgroup {
+  background: var(--ink-2);
+  color: var(--paper);
+  font-size: 1rem;
+}
+
+/* Custom check/radio: drawn boxes on a >= 48px row (the label is the tap target). */
+input[type="checkbox"],
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  display: inline-grid;
+  place-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  margin: 0;
+  background: var(--ink-0);
+  border: 2px solid var(--paper);
+  border-radius: 0;
+  cursor: pointer;
+}
+
+input[type="radio"] {
+  border-radius: 50%;
+}
+
+input[type="checkbox"]::after {
+  content: "";
+  width: 0.95rem;
+  height: 0.95rem;
+  background: var(--ink-0);
+  clip-path: polygon(12% 48%, 0 66%, 42% 100%, 100% 14%, 84% 0, 40% 62%);
+  transform: scale(0);
+}
+
+input[type="radio"]::after {
+  content: "";
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--ink-0);
+  transform: scale(0);
+}
+
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+  background: var(--acid);
+  border-color: var(--acid);
+}
+
+input[type="checkbox"]:checked::after,
+input[type="radio"]:checked::after {
+  transform: scale(1);
+}
+
+input[type="checkbox"]:disabled,
+input[type="radio"]:disabled {
+  border-style: dashed;
+  border-color: var(--mute);
+  background: transparent;
+  cursor: not-allowed;
 }
 
 .gear-list {
@@ -153,309 +610,372 @@ select {
   gap: 0.5rem;
 }
 
-.gear-option {
+.gear-option,
+.form-field--checkbox {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  min-height: 44px;
-}
-
-.primary-action {
-  min-height: 44px;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--accent);
-  background: var(--accent);
-  color: white;
+  gap: 0.85rem;
+  min-height: var(--tap);
+  padding: 0.4rem 0.65rem;
+  border: 2px solid transparent;
+  font-family: var(--font-body);
   font-size: 1rem;
+  letter-spacing: 0;
+  line-height: 1.3;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.primary-action:disabled {
-  opacity: 0.5;
+.form-field--checkbox {
+  flex-direction: row;
+}
+
+.gear-option:has(:checked) {
+  border-color: var(--acid);
+  background: rgba(255, 230, 0, 0.1);
+}
+
+.gear-option:has(:disabled) {
+  color: var(--mute);
   cursor: not-allowed;
 }
 
-.allocation-list {
+/* Disclosure ("Why?"): inline, in flow, never a floating pop-out. */
+details {
+  border: 2px dashed var(--mute);
+  background: rgba(5, 5, 6, 0.5);
+}
+
+summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: var(--tap);
+  padding: 0.5rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  cursor: pointer;
+  list-style: none;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+summary::before {
+  content: "";
+  flex: none;
+  width: 0.7rem;
+  height: 0.7rem;
+  background: var(--cyan);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+details[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+details[open] > summary {
+  border-bottom: 2px dashed var(--mute);
+}
+
+details > :not(summary) {
+  margin: 0;
+  padding: 0.75rem 0.85rem;
+}
+
+details ul {
+  padding-left: 2rem;
+}
+
+.pool-summary {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  font-size: 1.05rem;
 }
 
-.allocation-stepper {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
+/* ---------- Status, alerts, banners ---------- */
 
-.stepper-controls {
-  display: flex;
+.connection-status {
+  align-self: flex-start;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.3rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  border: 1px solid var(--mute);
+  background: var(--ink-0);
 }
 
-.stepper-controls button {
-  min-width: 44px;
-  min-height: 44px;
-  font-size: 1.25rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border);
-  background: white;
-  color: var(--fg);
-  cursor: pointer;
+.connection-status--live {
+  color: var(--cyan);
+  border-color: var(--cyan);
 }
 
-.stepper-controls button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.connection-status--connecting {
+  color: var(--dim);
 }
 
-.stepper-value {
-  min-width: 2.5rem;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 0.5rem;
+.connection-status--reconnecting {
+  color: var(--acid);
+  border-color: var(--acid);
+  font-weight: 700;
 }
 
-.stepper-value:focus-visible,
-button:focus-visible,
-input:focus-visible {
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
+.connection-status--signed-out {
+  color: var(--riot);
+  border-color: var(--riot);
+  font-weight: 700;
 }
 
-.live-region {
-  font-weight: 600;
-}
-
-.error-message {
-  color: var(--accent);
-  font-weight: 600;
-}
-
-/* C01: landing / create / join / claim / table-join screens
-   (docs/ETR_SESSION_FLOW.md sections 1, 3, 4). */
-
-.landing-screen {
-  max-width: 40rem;
-  margin: 0 auto;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+.connection-status-icon {
+  color: currentColor;
 }
 
 .fixture-banner {
-  margin: 0;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--amber, #d9a441);
-  border-radius: 0.5rem;
-  background: rgba(217, 164, 65, 0.15);
-  font-weight: 600;
-}
-
-.connection-status {
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-.connection-status--reconnecting,
-.connection-status--signed-out {
-  color: var(--accent);
-  font-weight: 600;
-}
-
-.landing-hero p {
-  max-width: 32rem;
-}
-
-/* Landing hero: original placeholder art with a CSS fallback underneath
-   (assets/generated/eat-the-reich/README.md has the provenance). */
-.hero-art {
   position: relative;
-  aspect-ratio: 16 / 9;
-  max-height: 22rem;
-  margin-bottom: 1rem;
-  border-radius: 0.5rem;
-  overflow: hidden;
+  margin: 0;
+  padding: 0.85rem 0.85rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--acid);
+  background: var(--ink-1);
+  border: 2px solid var(--acid);
 }
 
-.hero-art-fallback {
+.fixture-banner::before {
+  content: "";
   position: absolute;
-  inset: 0;
-  background:
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0 2px, transparent 2px 4px),
-    linear-gradient(135deg, var(--fg, #1b1b1b), var(--accent));
+  inset: 0 0 auto 0;
+  height: 0.35rem;
+  background: repeating-linear-gradient(-45deg, var(--acid) 0 0.6rem, var(--ink-0) 0.6rem 1.2rem);
 }
 
-.hero-art-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: opacity 0.3s ease;
+[role="alert"],
+.error-message {
+  padding: 0.65rem 0.85rem;
+  color: var(--paper);
+  font-weight: 600;
+  background: rgba(255, 51, 72, 0.16);
+  border-left: 0.4rem solid var(--riot);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-art-image {
-    transition: none;
-  }
+[role="status"].form-hint {
+  padding: 0.4rem 0.75rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--acid);
+  border-left: 0.4rem solid var(--acid);
+  background: rgba(255, 230, 0, 0.08);
 }
 
-.landing-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+.live-region {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--cyan);
 }
 
-.landing-actions--primary {
-  border-top: 1px solid var(--border);
-  padding-top: 1rem;
-}
+/* ---------- Landing / hero / one-time codes ---------- */
 
-.secondary-action {
-  min-height: 44px;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border);
-  background: white;
-  color: var(--fg);
-  cursor: pointer;
-}
-
-.link-button {
-  min-height: 44px;
-  padding: 0.5rem 0;
-  border: none;
-  background: none;
-  color: var(--focus);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.landing-resume {
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.landing-resume-caveat {
-  font-size: 0.85rem;
-  color: var(--ash, #6e6a66);
-}
-
-.session-form {
+.landing-hero {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.form-field {
+.landing-hero p {
+  max-width: 32rem;
+  font-size: 1.1rem;
+  color: var(--dim);
+}
+
+.hero-art,
+.scene-card-art {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--paper);
+  background: var(--ink-0);
+  /* Ragged torn top and bottom edges. */
+  clip-path: polygon(
+    0 2%,
+    6% 0,
+    14% 2.5%,
+    23% 0.5%,
+    34% 2%,
+    47% 0,
+    58% 2.5%,
+    70% 0.5%,
+    82% 2%,
+    93% 0,
+    100% 1.5%,
+    100% 97.5%,
+    91% 100%,
+    79% 97.5%,
+    66% 100%,
+    52% 97.8%,
+    38% 100%,
+    24% 97.5%,
+    11% 100%,
+    0 98%
+  );
+}
+
+.hero-art {
+  aspect-ratio: 16 / 9;
+  max-height: 22rem;
+  width: 100%;
+}
+
+.hero-art-fallback,
+.scene-card-art-fallback {
+  position: absolute;
+  inset: 0;
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.form-field input[type="text"],
-.form-field input[type="password"] {
-  min-height: 44px;
-  padding: 0.5rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  background: white;
-  color: var(--fg);
-}
-
-.form-field--checkbox {
-  flex-direction: row;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  padding: 0.5rem;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-synthesis-weight: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--paper);
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.04) 0 2px, transparent 2px 5px),
+    linear-gradient(135deg, var(--ink-0), var(--riot-deep));
 }
 
-.form-field--checkbox input {
-  width: 1.5rem;
-  height: 1.5rem;
+.hero-art-image,
+.scene-card-art-image,
+.portrait-image,
+.threat-token-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.form-hint {
-  font-size: 0.85rem;
-  color: var(--ash, #6e6a66);
-  margin: 0;
+/* Halftone dot overlay over the art: print texture, never hides content. */
+.hero-art::after,
+.scene-card-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: var(--halftone);
+  background-size: 5px 5px;
+  mix-blend-mode: multiply;
+  opacity: 0.6;
 }
 
-.reveal-card,
-.invite-panel {
-  border: 2px solid var(--accent);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+.scene-card-art {
+  height: 10rem;
+}
+
+.gm-screen .scene-card-art {
+  height: 8rem;
+}
+
+.scene-card-art--banner {
+  height: 14rem;
 }
 
 .reveal-card dl {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.25rem 1rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.5rem 1rem;
   margin: 0;
 }
 
 .reveal-card dt {
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cyan);
 }
 
 .reveal-card dd {
   margin: 0;
-  font-family: ui-monospace, "SFMono-Regular", monospace;
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  color: var(--acid);
+  overflow-wrap: anywhere;
 }
 
 .reveal-code {
-  font-family: ui-monospace, "SFMono-Regular", monospace;
-  font-size: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 1.35rem;
   letter-spacing: 0.1em;
+  color: var(--acid);
 }
+
+/* ---------- Roster / portraits / party ---------- */
 
 .roster-grid {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: 1.1rem;
 }
 
 .roster-card {
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.6rem;
+  box-shadow: 4px 4px 0 var(--rule);
+}
+
+.roster-card-portrait,
+.party-portrait {
+  position: relative;
+  flex: none;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 2px solid var(--paper);
+  background: var(--ink-0);
 }
 
 .roster-card-portrait {
-  position: relative;
   width: 3rem;
   height: 3rem;
-  border-radius: 50%;
-  overflow: hidden;
-  flex: none;
-}
-
-.roster-card-portrait--downed {
-  box-shadow: 0 0 0 2px var(--accent);
 }
 
 .roster-card-portrait--card {
   width: 5rem;
   height: 5rem;
+}
+
+.roster-card-portrait--downed {
+  border-color: var(--riot);
+  box-shadow:
+    0 0 0 3px var(--ink-0),
+    0 0 0 5px var(--riot);
+}
+
+.party-portrait {
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 0.75rem;
 }
 
 .portrait-image-fallback {
@@ -464,24 +984,11 @@ input:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--fg, #1b1b1b);
-  color: var(--bg, #f5f0e6);
+  background: var(--ink-3);
+  color: var(--acid);
+  font-family: var(--font-display);
   font-weight: 700;
-}
-
-.portrait-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: opacity 0.3s ease;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .portrait-image {
-    transition: none;
-  }
+  font-synthesis-weight: none;
 }
 
 .stat-line {
@@ -491,108 +998,108 @@ input:focus-visible {
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem 0.75rem;
+  font-family: var(--font-mono);
   font-size: 0.85rem;
 }
 
+.stat-line li + li {
+  margin-top: 0;
+}
+
 .stat-label {
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--cyan);
 }
 
 .roster-status {
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .roster-status--mine {
-  color: var(--accent);
+  color: var(--acid);
 }
 
-/* C02: player dashboard (scene card, party strip, compose/allocate/confirm). */
-
-.scene-card {
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 1rem;
+.party-strip {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
-.scene-card-art {
-  position: relative;
-  height: 10rem;
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
-
-/* c07 P1: the scene's longer location sentence, shown once beneath the
-   short title — never rendered at all when they're identical (an unknown
-   scene id has no separate description), so the two never duplicate. */
-.scene-card-description {
+.party-strip ul {
+  list-style: none;
   margin: 0;
-  color: var(--ash, #6e6a66);
-  font-style: italic;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
-/* docs/ETR_ART_BRIEF.md section 5: bone paper texture with a faint noise
-   grain, the scene title in condensed type — the default until the real
-   image loads, and permanent if it never does. */
-.scene-card-art-fallback {
-  position: absolute;
-  inset: 0;
+.party-strip li + li {
+  margin-top: 0;
+}
+
+.party-member {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  text-align: center;
+  gap: 0.5rem;
+  min-height: var(--tap);
+  padding: 0.3rem 1rem 0.3rem 0.35rem;
+  border: 2px solid var(--rule);
+  border-radius: 999px;
+  background: var(--ink-1);
+}
+
+.party-member--self {
+  border-color: var(--acid);
+  box-shadow: 3px 3px 0 var(--riot-deep);
+}
+
+.party-member-details {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.party-member-name {
   font-weight: 700;
-  font-family: "Oswald", "Arial Narrow", system-ui, sans-serif;
-  color: var(--bg, #f5f0e6);
-  background:
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0 2px, transparent 2px 4px),
-    linear-gradient(135deg, var(--fg, #1b1b1b), var(--accent));
 }
 
-/* The GM console's scene director shows the same art, smaller. */
-.gm-screen .scene-card-art {
-  height: 8rem;
+.party-member-stats {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--dim);
 }
 
-/* Shared table display: a taller banner from the 1024/1536 derivatives. */
-.scene-card-art--banner {
-  height: 14rem;
+.party-member-stats .etr-icon {
+  margin: 0 0.2em 0 0.5em;
 }
 
-.scene-card-art-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: opacity 0.3s ease;
+.party-member-stats .etr-icon:first-child {
+  margin-left: 0;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .scene-card-art-image {
-    transition: none;
-  }
-}
+/* ---------- Threats, icons, dice ---------- */
 
 .threat-beaten {
   text-decoration: line-through;
-  color: var(--ash, #6e6a66);
+  color: var(--mute);
 }
 
 .threat-token {
   position: relative;
   display: inline-flex;
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 0.3rem;
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.5rem;
   overflow: hidden;
-  vertical-align: -0.4rem;
-  margin-right: 0.4rem;
-  background: var(--fg, #1b1b1b);
+  vertical-align: -0.55rem;
   flex: none;
+  background: var(--ink-0);
+  border: 2px solid var(--riot);
 }
 
 .threat-token-fallback {
@@ -601,16 +1108,11 @@ input:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--bg, #f5f0e6);
+  color: var(--riot);
 }
 
-.threat-token-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: opacity 0.3s ease;
+.threat-token--beaten {
+  border-color: var(--mute);
 }
 
 .threat-token--beaten .threat-token-image,
@@ -628,10 +1130,10 @@ input:focus-visible {
   content: "";
   position: absolute;
   top: 50%;
-  left: 10%;
-  right: 10%;
-  height: 2px;
-  background: var(--crimson-hot, var(--accent));
+  left: 8%;
+  right: 8%;
+  height: 3px;
+  background: var(--riot);
 }
 
 .threat-token-cross::before {
@@ -642,49 +1144,20 @@ input:focus-visible {
   transform: rotate(-45deg);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .threat-token-image {
-    transition: none;
-  }
+.etr-icon {
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: -0.15em;
+  flex: none;
 }
 
-.party-strip ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+.stat-icon {
+  margin-right: 0.3em;
+  color: var(--cyan);
 }
 
-.party-member {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0.25rem 0.75rem 0.25rem 0.25rem;
-}
-
-.party-member--self {
-  border-color: var(--accent);
-}
-
-.party-member-details {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-}
-
-.party-member-stats {
-  font-size: 0.75rem;
-  color: var(--ash, #6e6a66);
-}
-
-.party-portrait {
-  width: 2rem;
-  height: 2rem;
-  font-size: 0.75rem;
+.connection-status-icon {
+  margin-right: 0.1em;
 }
 
 .dice-chip-row {
@@ -693,152 +1166,432 @@ input:focus-visible {
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.6rem;
+}
+
+.dice-chip-row li + li {
+  margin-top: 0;
 }
 
 .die-chip {
-  min-width: 44px;
-  min-height: 44px;
+  min-width: var(--tap);
+  min-height: var(--tap);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.5rem;
-  border: 2px solid var(--border);
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.85rem;
+  font-synthesis-weight: none;
+  font-size: 1.05rem;
+  color: var(--paper);
+  background: var(--ink-0);
+  border: 2px solid var(--paper);
+  box-shadow: 3px 3px 0 var(--rule);
 }
 
 .die-chip--success {
-  border-color: var(--focus);
+  color: var(--ink-0);
+  background: var(--volt);
+  border-color: var(--volt);
 }
 
 .die-chip--critical {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: white;
+  color: var(--ink-0);
+  background: var(--pink);
+  border-color: var(--pink);
+  box-shadow: 3px 3px 0 var(--riot-deep);
 }
 
 .die-chip--discard {
-  border-color: var(--ash, #6e6a66);
-  color: var(--ash, #6e6a66);
-  opacity: 0.7;
+  color: var(--mute);
+  border-style: dashed;
+  border-color: var(--mute);
+  box-shadow: none;
 }
 
-/* C03: GM director console and table display. */
+/* ---------- Allocation stepper (GM correction sheet and shared use) ---------- */
 
-.pending-actions-list,
-.roster-panel-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.pending-action-card {
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.roster-panel-list li {
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 0.5rem 0.75rem;
-}
-
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  z-index: 10;
-}
-
-.modal {
-  background: var(--bg, #f5f0e6);
-  color: var(--fg, #1b1b1b);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  max-width: 24rem;
-  width: 100%;
+.allocation-list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
+.allocation-stepper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.stepper-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.stepper-controls button {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--paper);
+  background: var(--ink-0);
+  border: 2px solid var(--paper);
+  border-radius: 0;
+  box-shadow: 3px 3px 0 var(--rule);
+}
+
+.stepper-controls button:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 var(--rule);
+}
+
+.stepper-controls button:disabled {
+  color: var(--mute);
+  border-style: dashed;
+  border-color: var(--mute);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.stepper-value {
+  min-width: 3.5rem;
+  padding: 0.5rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--acid);
+  background: var(--ink-0);
+  border: 2px solid var(--mute);
+}
+
+.stepper-value:focus-visible {
+  outline: 3px solid var(--acid);
+  outline-offset: 2px;
+}
+
+.allocation-die-group {
+  border-color: var(--pink);
+}
+
+/* ---------- Route map (shared table display) ---------- */
+
 .route-map {
   width: 100%;
-  max-width: 32rem;
+  max-width: 34rem;
   height: auto;
-  background: var(--bg, #f5f0e6);
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
+  background: var(--ink-1);
+  border: 2px solid var(--paper);
+  box-shadow: 6px 6px 0 var(--riot-deep);
 }
 
 .route-map-river {
-  stroke: var(--cyan, #4fc3e8);
-  stroke-width: 2;
-  opacity: 0.5;
+  stroke: var(--cyan);
+  stroke-width: 2.2;
+  opacity: 0.55;
 }
 
 .route-map-route {
-  stroke: var(--ash, #6e6a66);
-  stroke-width: 0.6;
-  stroke-dasharray: 2 1.5;
+  stroke: var(--acid);
+  stroke-width: 0.9;
+  stroke-dasharray: 2.4 1.6;
 }
 
 .route-map-node {
-  stroke: var(--fg, #1b1b1b);
+  stroke: var(--paper);
   stroke-width: 1;
-  fill: var(--bg, #f5f0e6);
+  fill: var(--ink-0);
 }
 
 .route-map-node--current {
-  fill: var(--accent);
+  fill: var(--riot);
 }
 
 .route-map-node--cleared {
-  fill: var(--bg, #f5f0e6);
+  fill: var(--mute);
 }
 
-/* F05 P1: distance-to-objective sector rings, behind the route. */
 .route-map-sector-ring {
-  stroke: var(--border);
-  stroke-width: 0.4;
-  opacity: 0.35;
+  stroke: var(--paper);
+  stroke-width: 0.35;
+  opacity: 0.25;
 }
 
-/* F05 P1: replaces the earlier plain cross-out on a cleared node. */
 .route-map-cleared-stamp rect {
-  fill: var(--bg, #f5f0e6);
-  stroke: var(--accent);
-  stroke-width: 0.6;
+  fill: var(--ink-0);
+  stroke: var(--pink);
+  stroke-width: 0.7;
 }
 
 .route-map-cleared-stamp text {
-  font-size: 3.2px;
+  font-family: var(--font-display);
+  font-size: 3.4px;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  fill: var(--accent);
+  letter-spacing: 0.08em;
+  fill: var(--pink);
 }
 
 .route-map-label {
-  font-size: 4px;
-  fill: var(--fg, #1b1b1b);
+  font-family: var(--font-mono);
+  font-size: 4.2px;
+  font-weight: 700;
+  fill: var(--paper);
 }
 
+/* ---------- Pop-out: bottom sheet (narrow) / centred card (wide) ----------
+   One pattern for every modal (SheetDialog). The backdrop is sized to the
+   VISUAL viewport (--vv-* set by useVisualViewportBox when an on-screen
+   keyboard, pinch-zoom or dynamic browser chrome makes it differ from the
+   layout viewport; otherwise the 100dvh fallback applies), the sheet never
+   exceeds it, and only the body scrolls, so the title and the action row stay
+   on screen and reachable. Safe-area insets keep it clear of notches, rounded
+   corners and the home indicator. */
+
+.sheet-backdrop {
+  position: fixed;
+  z-index: 100;
+  top: var(--vv-top, 0px);
+  left: var(--vv-left, 0px);
+  width: var(--vv-width, 100%);
+  height: var(--vv-height, 100vh);
+  height: var(--vv-height, 100dvh);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /* A strip of backdrop stays visible above the sheet so it reads as a sheet, not a page. */
+  padding: max(env(safe-area-inset-top), 1.5rem) env(safe-area-inset-right) 0
+    env(safe-area-inset-left);
+  background: rgba(3, 3, 4, 0.82);
+  overscroll-behavior: contain;
+  touch-action: none;
+}
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 40rem;
+  max-height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  color: var(--paper);
+  background-color: var(--ink-1);
+  background-image: var(--grain);
+  background-size: 180px 180px;
+  border: 2px solid var(--paper);
+  border-bottom: 0;
+  box-shadow: 0 -6px 0 var(--riot);
+  touch-action: auto;
+}
+
+.sheet-header {
+  flex: none;
+  padding: 0.6rem 1rem 0.75rem;
+  border-bottom: 2px solid var(--rule);
+}
+
+.sheet-header h2 {
+  font-size: clamp(1.4rem, 5.5vw, 1.9rem);
+}
+
+.sheet-grip {
+  display: block;
+  width: 3.5rem;
+  height: 0.3rem;
+  margin: 0 auto 0.7rem;
+  background: var(--mute);
+}
+
+.sheet-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-block: 1rem;
+}
+
+.sheet-footer {
+  flex: none;
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  background: var(--ink-2);
+  border-top: 2px solid var(--rule);
+}
+
+.sheet-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+/* Wide: a centred card with room around it instead of an edge-attached sheet. */
+@media (min-width: 40.0625rem) {
+  .sheet-backdrop {
+    align-items: center;
+    padding: 1.5rem;
+  }
+
+  .sheet {
+    max-height: min(100%, 44rem);
+    border-bottom: 2px solid var(--paper);
+    box-shadow: 8px 8px 0 var(--riot);
+  }
+
+  .sheet-grip {
+    display: none;
+  }
+}
+
+/* Short viewports (landscape phones, or a phone with the keyboard open):
+   reclaim vertical room for the scrolling body. */
+@media (max-height: 34rem) {
+  .sheet-backdrop {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .sheet-grip {
+    display: none;
+  }
+
+  .sheet-header {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .sheet-body {
+    padding-block: 0.75rem;
+    gap: 0.85rem;
+  }
+
+  .sheet-footer {
+    padding-top: 0.5rem;
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* ---------- Larger layouts ---------- */
+
+@media (min-width: 48rem) {
+  .landing-screen,
+  .player-screen {
+    max-width: 46rem;
+  }
+
+  .landing-actions--primary {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .landing-actions--primary > * {
+    flex: 1 1 14rem;
+  }
+}
+
+/* Director console: DOM order is preserved (column flow), so reading and tab
+   order are unchanged; only the visual arrangement uses the width. */
+@media (min-width: 68.75rem) {
+  .gm-screen {
+    display: block;
+    column-count: 2;
+    column-gap: 2.5rem;
+  }
+
+  .gm-screen > * {
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+  }
+
+  .gm-screen > h1 {
+    column-span: all;
+  }
+
+  /* See .table-screen below: an absolutely positioned decoration can be fragmented into the wrong column. */
+  .gm-screen .step::before {
+    display: none;
+  }
+}
+
+/* Shared table display: a read-only wall/TV surface, larger type, two columns. */
+@media (min-width: 80rem) {
+  .table-screen {
+    display: block;
+    column-count: 2;
+    column-gap: 3rem;
+    font-size: 1.15rem;
+  }
+
+  .table-screen > * {
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+  }
+
+  .table-screen > h1 {
+    column-span: all;
+    font-size: 5rem;
+  }
+
+  .scene-card-art--banner {
+    height: 22rem;
+  }
+
+  .table-screen .route-map {
+    max-width: 100%;
+  }
+
+  /* An absolutely positioned decoration can be fragmented into the wrong
+     column by multi-column layout, so the display surface goes without it. */
+  .table-screen .scene-card::before {
+    display: none;
+  }
+}
+
+@media (min-width: 110rem) {
+  .table-screen {
+    font-size: 1.4rem;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+/* Entrance motion exists only when the visitor has not asked for less. */
 @media (prefers-reduced-motion: no-preference) {
+  .sheet {
+    animation: sheet-rise 0.18s ease-out;
+  }
+
+  .sheet-backdrop {
+    animation: sheet-fade 0.18s ease-out;
+  }
+
+  .hero-art-image,
+  .scene-card-art-image,
+  .portrait-image,
+  .threat-token-image {
+    transition: opacity 0.3s ease;
+  }
+
   .route-map-node--current {
     animation: route-map-pulse 2s ease-in-out infinite;
+  }
+}
+
+@keyframes sheet-rise {
+  from {
+    transform: translateY(1.5rem);
+    opacity: 0;
+  }
+}
+
+@keyframes sheet-fade {
+  from {
+    opacity: 0;
   }
 }
 
@@ -852,71 +1605,47 @@ input:focus-visible {
   }
 }
 
-/* F05 P1: the shared-table display gets a two-column layout once there's
-   room for it (docs/ARCHITECTURE.md section 6: table is a large/desktop
-   display); a CSS multi-column flow keeps `TableDashboardScreen`'s DOM
-   order (and reading order for a screen reader) unchanged. */
-@media (min-width: 1280px) {
-  .scene-card-art--banner {
-    height: 22rem;
-  }
-
-  .table-screen {
-    max-width: 96rem;
-    display: block;
-    column-count: 2;
-    column-gap: 2rem;
-  }
-
-  .table-screen > * {
-    break-inside: avoid;
-  }
-
-  .table-screen > h1 {
-    column-span: all;
-  }
-}
-
-/* C04: icon sprite (docs/ETR_ART_BRIEF.md section 3.5). */
-
-.etr-icon {
-  width: 1.1em;
-  height: 1.1em;
-  vertical-align: -0.15em;
-  flex: none;
-}
-
-.stat-icon {
-  margin-right: 0.3em;
-}
-
-.connection-status-icon {
-  margin-right: 0.35em;
-  color: var(--ash, #6e6a66);
-}
-
-.connection-status--live .connection-status-icon {
-  color: var(--cyan, #4fc3e8);
-}
-
-.connection-status--reconnecting .connection-status-icon,
-.connection-status--signed-out .connection-status-icon {
-  color: var(--accent);
-}
-
-.party-member-stats .etr-icon {
-  margin: 0 0.2em 0 0.5em;
-}
-
-.party-member-stats .etr-icon:first-child {
-  margin-left: 0;
-}
-
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+
+  h1 {
+    transform: none;
+  }
+
+  .primary-action:hover:not(:disabled),
+  .secondary-action:hover:not(:disabled),
+  .primary-action:active:not(:disabled),
+  .secondary-action:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* ---------- Forced colors (Windows High Contrast) ---------- */
+
+@media (forced-colors: active) {
+  .primary-action,
+  .secondary-action,
+  .stepper-controls button {
+    border: 2px solid ButtonText;
+  }
+
+  input[type="checkbox"]:checked,
+  input[type="radio"]:checked {
+    background: Highlight;
+    border-color: Highlight;
+  }
+
+  input[type="checkbox"]:checked::after,
+  input[type="radio"]:checked::after {
+    background: HighlightText;
+  }
+
+  .sheet {
+    border: 2px solid CanvasText;
   }
 }
