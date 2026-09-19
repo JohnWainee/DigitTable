@@ -1364,7 +1364,8 @@ details ul {
   z-index: 100;
   top: var(--vv-top, 0px);
   left: var(--vv-left, 0px);
-  width: var(--vv-width, 100%);
+  /* 100vw, not 100%: with scrollbar-gutter: stable a fixed box's 100% excludes the gutter. */
+  width: var(--vv-width, 100vw);
   height: var(--vv-height, 100vh);
   display: flex;
   align-items: flex-end;
@@ -1374,9 +1375,12 @@ details ul {
     env(safe-area-inset-left);
   background: rgba(3, 3, 4, 0.82);
   overscroll-behavior: contain;
-  /* Never `none`: an ancestor's touch-action cannot be re-enabled by a descendant, so `none` here
-     would disable pinch-zoom for the whole page while a sheet is open (WCAG 1.4.4). */
-  touch-action: pinch-zoom;
+  /* Deliberately unrestricted. An ancestor's touch-action cannot be re-enabled by a descendant, so
+     `none` here would disable pinch-zoom for the whole page while a sheet is open (WCAG 1.4.4), and
+     `pinch-zoom` alone would forbid one-finger panning of a zoomed page, stranding the sheet's title
+     and actions off the visual viewport. The page behind cannot scroll (`html.sheet-open`) and
+     `overscroll-behavior: contain` stops scroll chaining, so nothing needs restricting. */
+  touch-action: auto;
 }
 
 /* `var(--vv-height, 100dvh)` must live behind @supports: a var() whose value is invalid on an
@@ -1443,8 +1447,15 @@ details ul {
   border-top: 2px solid var(--rule);
   /* Backstop for large text on a small screen: the action row may scroll, but can never take the
      whole sheet and squeeze the body away (WCAG 1.4.4 at 200% text on a 320px-wide phone). */
-  max-height: calc(var(--vv-height, 100dvh) * 0.4);
+  max-height: calc(var(--vv-height, 100vh) * 0.4);
   overflow-y: auto;
+}
+
+/* Same rule as the backdrop's height: dvh only where supported, and AFTER the base rule so it wins. */
+@supports (height: 100dvh) {
+  .sheet-footer {
+    max-height: calc(var(--vv-height, 100dvh) * 0.4);
+  }
 }
 
 /* Two columns while each button has room, one full-width column otherwise (narrow or large text). */

@@ -148,7 +148,10 @@ describe("reskin stylesheet contract", () => {
       // An ancestor's touch-action cannot be re-enabled by a descendant, so a full-screen backdrop with
       // `none` would disable pinch-zoom for the whole page while a sheet is open.
       expect(css).not.toMatch(/touch-action:\s*none/);
-      expect(declaration(rulesFor(/^\.sheet-backdrop$/), "touch-action")).toEqual(["pinch-zoom"]);
+      // `pinch-zoom` alone would also forbid one-finger panning of a zoomed page (the sheet's
+      // title/actions could be stranded off the visual viewport), so nothing is restricted.
+      expect(css).not.toMatch(/touch-action:\s*pinch-zoom/);
+      expect(declaration(rulesFor(/^\.sheet-backdrop$/), "touch-action")).toEqual(["auto"]);
       expect(html).toContain("viewport-fit=cover"); // required for env(safe-area-inset-*)
       expect(html).toContain("interactive-widget=resizes-content");
     });
@@ -167,7 +170,7 @@ describe("reskin stylesheet contract", () => {
       );
       expect(declaration(backdrop, "top")).toContain("var(--vv-top, 0px)");
       expect(declaration(backdrop, "left")).toContain("var(--vv-left, 0px)");
-      expect(declaration(backdrop, "width")).toContain("var(--vv-width, 100%)");
+      expect(declaration(backdrop, "width")).toContain("var(--vv-width, 100vw)");
       expect(declaration(backdrop, "position")).toEqual(["fixed"]);
     });
 
@@ -195,8 +198,16 @@ describe("reskin stylesheet contract", () => {
 
     it("lets the action row scroll on its own and stack to one column, so large text cannot squeeze the body away", () => {
       const footer = rulesFor(/^\.sheet-footer$/);
-      expect(declaration(footer, "max-height")[0]).toContain("var(--vv-height");
+      // vh base, dvh override behind @supports (an invalid var() would otherwise drop the cap).
+      expect(declaration(footer, "max-height")).toEqual([
+        "calc(var(--vv-height, 100vh) * 0.4)",
+        "calc(var(--vv-height, 100dvh) * 0.4)",
+      ]);
       expect(declaration(footer, "overflow-y")).toContain("auto");
+      // Large text: long legends and stepper rows wrap instead of widening the page.
+      expect(declaration(rulesFor(/^legend$/), "overflow-wrap")).toContain("anywhere");
+      expect(declaration(rulesFor(/^legend$/), "max-width")).toContain("100%");
+      expect(declaration(rulesFor(/^\.stepper-controls$/), "flex-wrap")).toContain("wrap");
       expect(declaration(rulesFor(/^\.sheet-actions$/), "grid-template-columns")[0]).toMatch(
         /^repeat\(auto-fit, minmax\(min\(100%, 9rem\), 1fr\)\)$/,
       );
