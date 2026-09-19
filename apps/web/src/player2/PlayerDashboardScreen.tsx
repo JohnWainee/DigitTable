@@ -75,10 +75,11 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
   // projection says this seat has no claimed character, forward to the
   // picker; `replaceRoute` so Back does not bounce straight off it again.
   const seatHasNoCharacter = Boolean(projection) && !projection?.view.self;
-  const ownsSeatInRoom = ownership?.roomId === roomId;
+  const ownsPlayerSeatInRoom = ownership?.roomId === roomId && ownership.capability === "player";
+  const forwardToPicker = ownsPlayerSeatInRoom && seatHasNoCharacter;
   useEffect(() => {
-    if (ownsSeatInRoom && seatHasNoCharacter) replaceRoute(`/claim/${roomId}`);
-  }, [ownsSeatInRoom, seatHasNoCharacter, roomId]);
+    if (forwardToPicker) replaceRoute(`/claim/${roomId}`);
+  }, [forwardToPicker, roomId]);
 
   if (!ownership || ownership.roomId !== roomId) {
     return (
@@ -111,6 +112,19 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
   const self = projection?.view.self ?? null;
 
   if (projection && !self) {
+    // A player seat is being forwarded to the picker by the effect above:
+    // show a plain interim state, not an alert that would be announced and
+    // then immediately replaced.
+    if (forwardToPicker) {
+      return (
+        <main className="player-screen">
+          <ConnectionStatusStrip state={connection} />
+          <FixtureModeBanner />
+          <PageHeading />
+          <p>Taking you to character selection&hellip;</p>
+        </main>
+      );
+    }
     return (
       <main className="player-screen">
         <ConnectionStatusStrip state={connection} />

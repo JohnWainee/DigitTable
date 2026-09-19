@@ -1,8 +1,9 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { asRoomId } from "@digitable/contracts";
+import { roomEngineStore } from "../../src/session/RoomEngineStore.js";
 import { writeOwnershipRecord, type LocalOwnershipRecord } from "../../src/session/ownership.js";
 import { expectNavigableHeadingOutline } from "../accessibility/headingOutline.js";
 import {
@@ -82,6 +83,24 @@ describe("GM console for a visitor without the GM seat (F6)", () => {
     expect(screen.getByRole("alert")).toHaveTextContent(/you have a player seat/i);
     await user.click(screen.getByRole("button", { name: /go to your dashboard/i }));
     expect(window.location.hash).toBe(`#/room/${roomId}/player`);
+  });
+
+  it("starts no GM projection subscription for a visitor without the GM seat", async () => {
+    const user = userEvent.setup();
+    const { roomCode, roomId } = await createSessionAsGm(user);
+    await joinAsPlayer(user, roomCode);
+    const repository = roomEngineStore.getRepository(asRoomId(roomId))!;
+    const subscribe = vi.spyOn(repository, "subscribeToProjection");
+
+    goTo(`#/room/${roomId}/gm`);
+    await screen.findByRole("button", { name: /go to your dashboard/i });
+    // Let the hook's auth-readiness promise settle before asserting nothing subscribed.
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(subscribe).not.toHaveBeenCalled();
+    subscribe.mockRestore();
   });
 
   it("points the table seat back to the table display", async () => {

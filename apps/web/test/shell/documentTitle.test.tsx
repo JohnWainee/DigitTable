@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
@@ -26,6 +28,12 @@ describe("document title (F4)", () => {
     expect(LIVE_DOCUMENT_TITLE).not.toMatch(/fixture/i);
   });
 
+  it("ships a plain static title so a live tab is correct before any script runs", () => {
+    const html = readFileSync(resolve(import.meta.dirname, "../../index.html"), "utf8");
+    expect(html).toMatch(/<title>Eat the Reich<\/title>/);
+    expect(html).not.toMatch(/fixture/i);
+  });
+
   it("labels the tab as a fixture when the app boots without Firebase configuration", async () => {
     const { App } = await import("../../src/App.js");
     window.location.hash = "#/";
@@ -34,6 +42,9 @@ describe("document title (F4)", () => {
   });
 
   it("leaves the tab title plain when the app boots in live mode", async () => {
+    // `resetModules` re-evaluates the app graph so `isLiveMode` is re-read; react
+    // and react-dom are externalized by vitest, so the statically imported `render`
+    // still drives the same React instance.
     vi.resetModules();
     vi.doMock("../../src/session/roomClient.js", async (importOriginal) => ({
       ...(await importOriginal<Record<string, unknown>>()),
