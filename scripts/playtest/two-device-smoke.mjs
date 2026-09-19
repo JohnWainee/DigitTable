@@ -590,6 +590,58 @@ async function main() {
       },
     );
 
+    // Review F4-F7 (docs/reviews/2026-09-18-staging-independent-playtest-review.md).
+    await step("page title, GM invite copy, and unauthorized-seat guidance", async () => {
+      const title = await ev(gm, `document.title`);
+      if (/fixture/i.test(title)) throw new Error(`live build title mentions fixture: "${title}"`);
+      const invite = await ev(gm, `document.querySelector(".invite-panel")?.textContent ?? ""`);
+      if (/neither is shown/i.test(invite)) throw new Error(`invite copy is stale: "${invite}"`);
+      if (!/passphrase is shown only when you create/i.test(invite)) {
+        throw new Error(`invite copy does not explain the passphrase: "${invite}"`);
+      }
+      const roomId = await ev(player, `location.hash.match(/room\\/([^/]+)\\/player/)?.[1] ?? ""`);
+      if (!roomId) throw new Error("could not read the room id from the player route");
+      await goto(player, `#/room/${roomId}/gm`);
+      await waitFor(
+        player,
+        `document.body.textContent.includes("player seat")`,
+        15000,
+        "GM guidance",
+      );
+      const guidance = await ev(player, `document.body.textContent`);
+      if (/can.t do that from this seat/i.test(guidance))
+        throw new Error("terse GM refusal is back");
+      if ((await ev(player, `document.querySelectorAll("h1").length`)) !== 1) {
+        throw new Error("unauthorized GM page must have exactly one h1");
+      }
+      await shot(player, "gm-route-as-player");
+      await clickText(player, "button", /^Go to your dashboard$/);
+      await waitFor(player, `location.hash.endsWith("/player")`, 15000, "back on the dashboard");
+    });
+
+    await step("landing Resume goes straight to the claimed dashboard with one h1", async () => {
+      await goto(player, "#/");
+      await clickText(player, "button", /^Resume session$/);
+      await waitFor(
+        player,
+        `location.hash.endsWith("/player") && document.querySelector("h1")?.textContent === "Player dashboard"`,
+        30000,
+        "dashboard after Resume",
+      );
+      await waitFor(
+        player,
+        `document.body.textContent.includes("Choose an action") || document.body.textContent.includes("Declared")`,
+        30000,
+        "dashboard content after Resume",
+      );
+      const h1s = await ev(player, `document.querySelectorAll("h1").length`);
+      if (h1s !== 1) throw new Error(`expected exactly one h1 on the player dashboard, saw ${h1s}`);
+      if (await ev(player, `document.body.textContent.includes("Pick your character")`)) {
+        throw new Error("Resume passed through the character picker");
+      }
+      await shot(player, "resume-dashboard");
+    });
+
     if (DO_RELOAD) {
       await step("player reload restores the seat and dashboard without re-joining", async () => {
         await ev(player, `location.reload()`);

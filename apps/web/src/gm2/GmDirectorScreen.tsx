@@ -13,6 +13,7 @@ import type {
   SceneDefinition,
 } from "@digitable/template-eat-the-reich";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
+import { GmSeatRequired } from "./GmSeatRequired.js";
 import { InvitePanel } from "./InvitePanel.js";
 import { SceneDirector } from "./SceneDirector.js";
 import { PendingActionsPanel } from "./PendingActionsPanel.js";
@@ -49,12 +50,12 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
   if (!isGm) {
     return (
       <main className="gm-screen">
-        <ConnectionStatusStrip state={connection} />
+        {/* No connection strip: a visitor without the GM seat has no seat to
+            connect, and the strip's signed-out copy ("Your seat is on another
+            identity. Enter your recovery code.") would contradict this guidance. */}
         <FixtureModeBanner />
-        <p role="alert">You can&rsquo;t do that from this seat.</p>
-        <button type="button" className="primary-action" onClick={() => navigate("/")}>
-          Back to start
-        </button>
+        <h1>Director console</h1>
+        <GmSeatRequired roomId={roomId} ownership={ownership} />
       </main>
     );
   }

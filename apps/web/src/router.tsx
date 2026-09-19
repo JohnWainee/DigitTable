@@ -42,6 +42,17 @@ export function navigate(path: string): void {
   window.location.hash = path.startsWith("/") ? path : `/${path}`;
 }
 
+/**
+ * Like `navigate`, but replaces the current history entry, for automatic
+ * redirects: the Back button must not return to the route that just
+ * redirected away (it would immediately redirect again). `replaceState`
+ * does not fire `hashchange`, so listeners are notified explicitly.
+ */
+export function replaceRoute(path: string): void {
+  window.history.replaceState(null, "", `#${path.startsWith("/") ? path : `/${path}`}`);
+  window.dispatchEvent(new HashChangeEvent("hashchange"));
+}
+
 export function useRoute(): Route {
   const [route, setRoute] = useState<Route>(() => parseHash(window.location.hash));
   useEffect(() => {

@@ -8,6 +8,7 @@ import { GmDirectorScreen } from "./gm2/GmDirectorScreen.js";
 import { TableDashboardScreen } from "./table2/TableDashboardScreen.js";
 import { useRoute } from "./router.js";
 import { IconSprite } from "./shared/IconSprite.js";
+import { useDocumentTitle } from "./shell/documentTitle.js";
 import "./styles.css";
 
 /**
@@ -21,6 +22,7 @@ import "./styles.css";
  */
 export function App(): JSX.Element {
   const route = useRoute();
+  useDocumentTitle();
 
   return (
     <>

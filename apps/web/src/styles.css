@@ -82,6 +82,14 @@ body {
   gap: 1.25rem;
 }
 
+/* Review F7: the player dashboard's page-level heading. Compact so it does
+   not push the scene card down on a phone; the step and scene headings below
+   it stay the visual focus. */
+.player-screen > h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
 /* The director console and shared-table display use more of the available
    width than the phone-first player surface, since both are expected on
    desktop-class devices (docs/PHASE_1C_PLAN.md: "a director console is

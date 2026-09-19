@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { navigate } from "../router.js";
+import { navigate, replaceRoute } from "../router.js";
 import { ConnectionStatusStrip } from "../shell/ConnectionStatusStrip.js";
 import { FixtureModeBanner } from "../shell/FixtureModeBanner.js";
 import { readOwnershipRecord } from "../session/ownership.js";
@@ -29,6 +29,15 @@ export interface PlayerDashboardScreenProps {
 
 function isFullRoll(view: RollView): view is RollViewFull {
   return "declaredStat" in view;
+}
+
+/**
+ * The page-level heading of every state this route renders (review F7), so
+ * heading navigation always has a top-level landmark: the scene, party, and
+ * step headings below it are all `h2`.
+ */
+function PageHeading(): JSX.Element {
+  return <h1>Player dashboard</h1>;
 }
 
 /** docs/ETR_SESSION_FLOW.md section 1: `/room/:roomId/player`, driven entirely by the real projection (C06) — no fixture engine. */
@@ -62,11 +71,21 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
     }
   }, [presentation, selfId, acknowledgePresentation]);
 
+  // Resume (and any direct visit) lands here for a player. Once the real
+  // projection says this seat has no claimed character, forward to the
+  // picker; `replaceRoute` so Back does not bounce straight off it again.
+  const seatHasNoCharacter = Boolean(projection) && !projection?.view.self;
+  const ownsSeatInRoom = ownership?.roomId === roomId;
+  useEffect(() => {
+    if (ownsSeatInRoom && seatHasNoCharacter) replaceRoute(`/claim/${roomId}`);
+  }, [ownsSeatInRoom, seatHasNoCharacter, roomId]);
+
   if (!ownership || ownership.roomId !== roomId) {
     return (
       <main className="player-screen">
         <ConnectionStatusStrip state={connection} />
         <FixtureModeBanner />
+        <PageHeading />
         <p role="alert">You need to join and claim a character before opening the dashboard.</p>
         <button type="button" className="primary-action" onClick={() => navigate("/join")}>
           Go to join
@@ -80,6 +99,7 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
       <main className="player-screen">
         <ConnectionStatusStrip state={connection} />
         <FixtureModeBanner />
+        <PageHeading />
         <p role="alert">This session has ended, or fixture mode lost it on reload.</p>
         <button type="button" className="primary-action" onClick={() => navigate("/")}>
           Back to start
@@ -95,6 +115,7 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
       <main className="player-screen">
         <ConnectionStatusStrip state={connection} />
         <FixtureModeBanner />
+        <PageHeading />
         <p role="alert">Claim a character before opening the dashboard.</p>
         <button
           type="button"
@@ -136,6 +157,7 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
       <main className="player-screen">
         <ConnectionStatusStrip state={connection} />
         <FixtureModeBanner />
+        <PageHeading />
         <p>Loading&hellip;</p>
       </main>
     );
@@ -223,6 +245,7 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
     <main className="player-screen">
       <ConnectionStatusStrip state={connection} />
       <FixtureModeBanner />
+      <PageHeading />
       <LiveRegion politeness="polite" message={announcement} />
       {pending && (
         <p role="status">

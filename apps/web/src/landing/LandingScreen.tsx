@@ -12,12 +12,7 @@ import {
 } from "../session/ownership.js";
 import { isLiveMode } from "../session/roomClient.js";
 import { HeroArt } from "../shared/HeroArt.js";
-
-function resumeRoute(ownership: LocalOwnershipRecord): string {
-  if (ownership.capability === "gm") return `/room/${ownership.roomId}/gm`;
-  if (ownership.capability === "table") return `/room/${ownership.roomId}/table`;
-  return `/claim/${ownership.roomId}`;
-}
+import { resumeRoute } from "./resumeRoute.js";
 
 /** docs/ETR_SESSION_FLOW.md section 1: `/` — Landing: Create / Join / Resume. */
 export function LandingScreen(): JSX.Element {
