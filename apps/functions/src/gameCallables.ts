@@ -128,7 +128,7 @@ export function createGameCallables(deps: SubmitRoomCommandDependencies): {
 } {
   return {
     submitRoomCommand: onCall<unknown, Promise<RoomCommandResult<EatTheReichEvent>>>(
-      { enforceAppCheck: false, region: FUNCTIONS_REGION },
+      { enforceAppCheck: false, invoker: "public", region: FUNCTIONS_REGION },
       (request) => handleSubmitRoomCommand(deps, request),
     ),
   };

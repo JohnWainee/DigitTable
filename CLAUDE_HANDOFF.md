@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Integration candidate combines S06 reconnect/event presentation fixes with the original-art, responsive UI, and private-LAN two-device playtest tooling. Both source branches passed their own full gates and independent reviews; this integrated tree must pass the combined gate and emulator suite before promotion. Physical-device evidence remains open.
-- **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; DeepSeek commits `afd0ced`/`4406e47` plus Qwen commit `80462a1`). Not yet pushed or merged.
+- **Status:** Staging is deployed and the automated three-surface live smoke passes end to end at <https://powerglove-1cd23.web.app>. The run covered GM, phone-sized player, and shared table browser contexts against the deployed Firebase backend, including reload recovery. Physical-device evidence remains open.
+- **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; DeepSeek commits `afd0ced`/`4406e47` plus Qwen commit `80462a1`). Integration commit `1af191e` is pushed; the staging-release follow-up is being committed and pushed from this branch.
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-18 by Codex during verified DeepSeek/Qwen integration
+- **Last updated:** 2026-09-18 by Codex after verified staging deployment
 
 ## Mission
 
@@ -12,6 +12,10 @@ Build DigiTable as a reusable narrative-RPG play surface, with *Eat the Reich* a
 Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/private state separation, lore outside sessions, local resilience, broadcasts, safety-minded play, and deliberate deploy controls. Do not port its self-contained HTML/no-build architecture.
 
 ## Current state
+
+- **Playable staging candidate is online:** Firebase Hosting, Firestore/RTDB rules, and the five `us-west1` callable Functions (`createRoom`, `admitMember`, `claimSeat`, `submitRoomCommand`, `recoverSeat`) are deployed to project `powerglove-1cd23`. Cloud Run invoker bindings were explicitly verified/repaired to permit unauthenticated transport to the callable boundary; every operation still requires and validates Firebase Auth inside the callable pipeline.
+- **Live release verification passes:** `node scripts/playtest/two-device-smoke.mjs --base https://powerglove-1cd23.web.app --out /private/tmp/digitable-staging-smoke-6 --reload --port 9335` passed all 13 steps on 2026-09-18 HST / 2026-09-19 UTC, with no horizontal overflow at 375, 768, 1024, 1280, or 1920 px. This is isolated-browser-context evidence, not yet two physical devices.
+- **Next action:** conduct the same flow on two physical devices (one GM, one player; the GM device may open the table view in a second tab if a third display is unavailable), record any usability defects, then promote through the normal PR/merge decision. Do not create a production Firebase project until that decision is explicit.
 
 - Repository is initialized and connected to GitHub.
 - Architecture work (PR #1, PR #2) is merged to `main`.

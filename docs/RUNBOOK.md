@@ -1,10 +1,9 @@
 # Operations runbook: setup, resume, recovery, backup, restore
 
 Board task A07. Scope: the network/persistence slice Sonnet A owns (`apps/functions`, `packages/contracts`,
-`packages/engine`, the Firestore/RTDB data model). This is an **operational runbook for a real deploy**, not a
-description of anything this session has executed — no deploy has been run under this task; every `firebase` command
-below is written for John (or whoever holds deploy authority) to run deliberately, one at a time, reading the
-output before proceeding. Nothing here creates a new Firebase project, a production project, or any paid resource.
+`packages/engine`, the Firestore/RTDB data model). This is the **operational runbook for staging deploys**. The
+first staging candidate was deployed on 2026-09-18; the commands below are the repeatable procedure for later
+releases. Nothing here creates a new Firebase project, a production project, or any paid resource.
 
 ## 0. What "done" means here, and what it doesn't
 
@@ -13,16 +12,15 @@ built and independently reviewed: `createRoom`, `admitMember`, `claimSeat`, `sub
 
 It does **not** cover, because these do not exist yet:
 
-- **Client-side outbox/reconnect** (deferred in A06; no automatic retry-on-reconnect exists — a dropped connection
-  today means the player re-invokes the same callable by hand, or the app does, once that UI exists).
+- **Cross-device recovery automation.** Same-browser reconnect and durable command reconciliation exist, but a
+  lost browser identity still requires the one-time recovery-code flow described in section 6.
 - **RTDB presence** (Phase 2 PR 5, `docs/PHASE_2_PR5_PLAN.md` — plan-only, not implemented).
 - **App Check enforcement** — currently monitoring-only (`enforceAppCheck: false` on every callable,
   `docs/ARCHITECTURE.md` section 11); a request without a valid token is logged, never blocked.
 - **Automated backup/retention/deletion** — `docs/ARCHITECTURE.md` section 8's retention table is explicitly
   "proposed... do not automate deletion until product approves values." Nothing in this repository automates it.
-- **A real deployed staging candidate.** As of this task, `sonnet-a/a01`–`a06` (PRs #13/#15/#18/#23/#27/#30) are
-  independently reviewed but **unmerged** — merge authority is John's. Nothing has been deployed to
-  `powerglove-1cd23` under any of this work. Section 3 below prepares the exact commands for when John chooses to.
+- **Production promotion.** A staging integration candidate is live on `powerglove-1cd23`, but the stacked PRs
+  remain unmerged and no production Firebase project exists. Merge and production authority remain John's.
 
 ## 1. Prerequisites (one-time, per operator machine)
 
@@ -61,17 +59,17 @@ Confirm the listed location matches `us-west1`. If it does not, **stop** — dep
 against a Firestore database in a different region would violate the decision brief's co-location intent and
 should not proceed without a fresh decision, not a runbook workaround.
 
-## 3. Preparing a versioned staging candidate (commands to run, not run here)
+## 3. Preparing or updating a versioned staging candidate
 
-None of the following has been executed under this task. This is the exact sequence John would run once he has
-decided to merge the A01–A06 branches (this repository's merge authority) and wants a staging deploy:
+The 2026-09-18 staging release followed this sequence from the reviewed integration branch. Repeat it for later
+staging candidates after the intended commits are integrated and reviewed:
 
 ```
 # 1. From a checkout of `main` after merging #13, #15, #18, #23, #27, #30 (in that dependency order):
 npm ci
-npm run check          # full gate: format, lint, typecheck, 325/325 unit tests
+npm run check          # full gate: format, lint, typecheck, currently 589 passing / 11 todo
 npm run build           # functions bundle + web build
-PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator   # 106/106 across all three suites
+PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator   # currently 18 + 86 + 3 passing
 
 # 2. Deploy rules first (Firestore + RTDB), separately from functions, so a rules regression
 #    is caught and rollback-able independently of function code:
@@ -80,18 +78,35 @@ npx firebase deploy --only firestore:rules,database --project powerglove-1cd23
 # 3. Deploy functions:
 npx firebase deploy --only functions --project powerglove-1cd23
 
-# 4. Record the deployed commit SHA and the Firebase CLI's own release/version output
+# 4. Build the web client with the registered staging web-app configuration, then deploy Hosting:
+VITE_FIREBASE_API_KEY=<staging-web-api-key> \
+VITE_FIREBASE_AUTH_DOMAIN=powerglove-1cd23.firebaseapp.com \
+VITE_FIREBASE_PROJECT_ID=powerglove-1cd23 \
+VITE_FIREBASE_APP_ID=1:564246956157:web:a3c97624113c72c54f8914 \
+npm run build --workspace @digitable/web
+npx firebase deploy --only hosting --project powerglove-1cd23
+
+# 5. Record the deployed commit SHA and the Firebase CLI's own release/version output
 #    (printed at the end of the functions deploy) in this file's "Deploy log" section below —
 #    that pairing is the "versioned staging candidate."
 ```
 
-Do not deploy `hosting` (no `apps/web` production build pipeline or CDN target is configured in `firebase.json`
-today — `apps/web` is exercised locally/in CI, not served from Firebase Hosting yet). Do not pass `--force`.
+Do not pass `--force`. The Firebase web API key is public configuration, but keep the build command in operator
+history rather than committing an environment file. Hosting serves `apps/web/dist` with an SPA rewrite.
 
 ### Deploy log
 
-*(Empty. No deploy has occurred under board tasks A01–A07. Fill in commit SHA, timestamp, and operator name at
-the first real staging deploy, and keep every subsequent entry — do not overwrite this section.)*
+- **2026-09-18 HST / 2026-09-19 UTC — Codex — staging:** deployed the integration candidate based on commit
+  `1af191e` to Firebase project `powerglove-1cd23`: Firestore rules, RTDB rules, all five `us-west1` callable
+  Functions, and Hosting. The Functions deployment required removing local workspace packages from the deployed
+  Functions package's `devDependencies` (the production bundle already contains their compiled code). The Cloud
+  Run services were assigned `allUsers` the transport-level `roles/run.invoker` role; this is required for
+  Firebase callable clients, while Firebase Auth and platform authorization remain enforced inside every
+  callable. Hosting is live at <https://powerglove-1cd23.web.app>.
+- **Live verification:** `node scripts/playtest/two-device-smoke.mjs --base
+  https://powerglove-1cd23.web.app --out /private/tmp/digitable-staging-smoke-6 --reload --port 9335` passed all
+  13 GM/player/table steps, responsive overflow checks at five widths, and player reload recovery. Evidence used
+  isolated browser contexts on one machine; the physical two-device rehearsal is still pending.
 
 ## 4. Local dev loop (setup for iteration, not staging)
 
@@ -113,10 +128,9 @@ not enforce or care about region).
 
 ## 5. Session setup (creating and joining a room)
 
-This is the real, reviewed flow — not a fixture. As of this task, the only client exercising it end-to-end is
-`apps/web/test-emulator/session.test.ts` (A05); the production `apps/web` UI screens (Sonnet C's C01–C05) still
-run against a `TEMPORARY` fixture engine, not this real backend (see section 8 below — this is the honest gap
-this runbook cannot paper over).
+This is the real, reviewed flow — not a fixture. Both the emulator integration suite and the deployed `apps/web`
+GM/player/table surfaces exercise it end to end against Firebase. Section 8 records the remaining physical-device
+verification gap.
 
 1. **Create a room**: `createRoom` callable (`apps/functions/src/createRoomAuthority.ts`). Caller supplies
    `requestId` (client-minted, idempotency key), `sessionName`, `passphrase`, `creatorDisplayName`. Server mints
@@ -145,10 +159,9 @@ guidance to players:
 - **Same browser/device, same session** (the common case: a page reload, a brief network blip): the client's
   existing Firebase Auth anonymous UID is still valid and still bound (`uidBindings/{uid}` still points at the
   member's seat). Re-subscribing to `rooms/{roomId}/projections/{viewerId}` (`FirebaseRoomRepository`,
-  A05) picks up the live state with no new admission call needed. **There is currently no outbox** — any command
-  the player was mid-composing when the connection dropped is lost client-side; only commands the server already
-  accepted (and thus wrote a receipt/event for) survive. This is a real, acknowledged gap (A06's deferred scope),
-  not something this runbook can work around operationally.
+  A05) picks up the live state with no new admission call needed. S06's durable outbox retains submitted commands
+  across reloads and reconciles them with server receipts; the live staging smoke verifies that the claimed seat
+  and dashboard restore after reload without rejoining.
 - **Lost browser identity** (cleared storage, new device, reinstalled app — the anonymous UID itself is gone):
   the player's old `uidBindings` entry is orphaned and unreachable to them. This is what `recoverSeat` is for
   (board task A06, independently reviewed, `docs/reviews/2026-09-14-a06-recoverseat-independent-review.md`):
@@ -218,33 +231,14 @@ without an actual export/import cycle against real data:
    not been tested; treat any real restore as also requiring a fresh `npm run test:emulator` pass against a
    *copy* of the restored data before trusting it for live play.
 
-## 8. The one gap this runbook cannot close: `apps/web` still runs on fixtures
+## 8. Remaining rehearsal gap: physical devices
 
-As of this task, the production-facing screens in `apps/web` (Sonnet C's C01–C05) are wired to a `TEMPORARY`
-fixture engine (`FixtureSessionGateway.ts`, `fixturePlayLoop.ts`, `fixturePlayLoopStore.ts`, `etrTemp.ts` per
-C05's own status comment on issue #14), not to the real `FirebaseSessionClient`/`FirebaseRoomRepository` this
-runbook's setup/resume/recovery flow describes. **Note (independent A07 review, Low finding):** those specific
-fixture-engine files live only on Sonnet C's own unmerged branches (confirmed via `git ls-tree -r
-sonnet-c/c06-integration`), not anywhere in this branch's (`sonnet-a/a07`'s) own `apps/web/src` tree — which is
-still the older Phase 1A/1C local-role-simulation harness (`InMemoryRoomRepository`), an even more primitive,
-unrelated stub that never reached the fixture-engine stage at all. The conclusion is the same either way (the
-production screens a rehearsal would exercise are not wired to the real backend), but the C01–C05 fixture engine
-itself is cross-track information about Sonnet C's branches, not something present in this checkout. A
-`sonnet-c/c06-integration` branch exists locally (unpushed as of this task, confirmed via `git branch -a` showing
-no matching `remotes/origin/sonnet-c/c06-integration`) that appears to be exactly this integration work in
-progress.
+The production-facing GM, player, and table screens are wired to the real Firebase backend and have passed the
+live staging smoke described in the deploy log. That run used three isolated Chrome browser contexts on one
+machine, including a phone-sized player viewport; it proves backend integration and cross-context propagation,
+but not real Wi-Fi/cellular behavior, mobile browser chrome, touch ergonomics, or sleep/wake behavior.
 
-**Consequence for A07's own acceptance criteria**: genuine three-device rehearsal evidence — real players, on
-real devices, driving the real screens through the real backend — is not honestly producible yet, because the
-screens a rehearsal would exercise are not yet wired to the backend this runbook documents. Per A07's own
-instruction to "explicitly mark physical-device checks pending if only browser contexts available," this is
-marked **pending**, more strongly than that: not just the physical-device half, but the whole rehearsal, is
-blocked on the fixture-to-real-backend integration landing first. Fabricating rehearsal evidence against the
-fixture engine would test nothing this runbook is actually about, so none is included here.
-
-**What is real and independently reviewed**: every flow this runbook describes (create/join/claim/act/recover)
-has been exercised end-to-end through the real Firebase Functions and Firestore emulators (section 4), not
-mocked or faked, by `apps/web/test-emulator/session.test.ts` and every `apps/functions/test-emulator/*.test.ts`
-file, and each slice's independent review is recorded under `docs/reviews/`. What is not yet real is the
-*production UI's* wiring to that backend — a distinct, substantial, cross-cutting task that touches Sonnet C's
-screens as much as Sonnet A's backend, already apparently claimed and in progress elsewhere as of this task.
+Before production promotion, run one complete session on at least two physical devices: one as GM and one as
+player. A third display should exercise the table surface when available; otherwise the GM device may use a
+second tab. Record device/browser versions and any failures alongside the deploy log. This physical-device check
+is the only remaining rehearsal evidence gap, not a fixture-integration blocker.

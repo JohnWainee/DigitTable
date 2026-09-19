@@ -289,7 +289,7 @@ export function createAdmissionCallables(deps: AdmissionCallableDependencies): {
 } {
   return {
     admitMember: onCall<unknown, Promise<AdmissionAccepted>>(
-      { enforceAppCheck: false, region: FUNCTIONS_REGION },
+      { enforceAppCheck: false, invoker: "public", region: FUNCTIONS_REGION },
       (request) =>
         handleAdmission<AdmitMemberInput>(
           deps,
@@ -300,7 +300,7 @@ export function createAdmissionCallables(deps: AdmissionCallableDependencies): {
         ),
     ),
     claimSeat: onCall<unknown, Promise<AdmissionAccepted>>(
-      { enforceAppCheck: false, region: FUNCTIONS_REGION },
+      { enforceAppCheck: false, invoker: "public", region: FUNCTIONS_REGION },
       (request) =>
         handleAdmission<ClaimSeatInput>(
           deps,
@@ -311,11 +311,11 @@ export function createAdmissionCallables(deps: AdmissionCallableDependencies): {
         ),
     ),
     createRoom: onCall<unknown, Promise<CreateRoomAccepted>>(
-      { enforceAppCheck: false, region: FUNCTIONS_REGION },
+      { enforceAppCheck: false, invoker: "public", region: FUNCTIONS_REGION },
       (request) => handleCreateRoom(deps, request),
     ),
     recoverSeat: onCall<unknown, Promise<RecoverSeatAccepted>>(
-      { enforceAppCheck: false, region: FUNCTIONS_REGION },
+      { enforceAppCheck: false, invoker: "public", region: FUNCTIONS_REGION },
       (request) => handleRecoverSeat(deps, request),
     ),
   };
