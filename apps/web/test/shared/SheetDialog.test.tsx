@@ -384,6 +384,63 @@ describe("SheetDialog", () => {
     expect(within(dialog).getByRole("button", { name: "First" })).toHaveFocus();
   });
 
+  it("with no radio checked, only the FIRST radio of the group is a tab stop", () => {
+    render(
+      <SheetDialog
+        titleId="n-title"
+        title="Unchecked group"
+        onClose={() => {}}
+        footer={
+          <>
+            <label>
+              <input type="radio" name="none" /> One
+            </label>
+            <label>
+              <input type="radio" name="none" /> Two
+            </label>
+            <label>
+              <input type="radio" name="none" /> Three
+            </label>
+          </>
+        }
+      >
+        <button type="button">First</button>
+      </SheetDialog>,
+    );
+    const dialog = screen.getByRole("dialog");
+    const one = within(dialog).getByRole("radio", { name: "One" });
+    one.focus();
+    // "One" is the group's only tab stop and the last reachable control: Tab must wrap from it.
+    expect(fireEvent.keyDown(one, { key: "Tab" })).toBe(false);
+    expect(within(dialog).getByRole("button", { name: "First" })).toHaveFocus();
+  });
+
+  it("does not treat the first legend of a disabled fieldset as disabled", () => {
+    render(
+      <SheetDialog
+        titleId="l-title"
+        title="Legend"
+        onClose={() => {}}
+        footer={
+          <fieldset disabled>
+            <legend>
+              <button type="button">Enabled in legend</button>
+            </legend>
+            <button type="button">Disabled body</button>
+          </fieldset>
+        }
+      >
+        <button type="button">First</button>
+      </SheetDialog>,
+    );
+    const dialog = screen.getByRole("dialog");
+    const inLegend = within(dialog).getByRole("button", { name: "Enabled in legend" });
+    inLegend.focus();
+    // The legend's button is enabled (last reachable); the fieldset's other button is not.
+    expect(fireEvent.keyDown(inLegend, { key: "Tab" })).toBe(false);
+    expect(within(dialog).getByRole("button", { name: "First" })).toHaveFocus();
+  });
+
   it("has no axe violations open", async () => {
     const user = userEvent.setup();
     render(<Harness />);
