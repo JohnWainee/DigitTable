@@ -1,7 +1,7 @@
 # Claude implementation handoff
 
 - **Status:** Staging is deployed and the automated three-surface live smoke passes end to end at <https://powerglove-1cd23.web.app>. The run covered GM, phone-sized player, and shared table browser contexts against the deployed Firebase backend, including reload recovery. Physical-device evidence remains open.
-- **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; DeepSeek commits `afd0ced`/`4406e47` plus Qwen commit `80462a1`). Integration commit `1af191e` is pushed; the staging-release follow-up is being committed and pushed from this branch.
+- **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; DeepSeek commits `afd0ced`/`4406e47` plus Qwen commit `80462a1`). Verified staging release commit `d1294cc` is pushed to `origin/factory/today-integration`; the worktree was clean immediately afterward.
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
 - **Last updated:** 2026-09-18 by Codex after verified staging deployment
 
@@ -16,6 +16,33 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
 - **Playable staging candidate is online:** Firebase Hosting, Firestore/RTDB rules, and the five `us-west1` callable Functions (`createRoom`, `admitMember`, `claimSeat`, `submitRoomCommand`, `recoverSeat`) are deployed to project `powerglove-1cd23`. Cloud Run invoker bindings were explicitly verified/repaired to permit unauthenticated transport to the callable boundary; every operation still requires and validates Firebase Auth inside the callable pipeline.
 - **Live release verification passes:** `node scripts/playtest/two-device-smoke.mjs --base https://powerglove-1cd23.web.app --out /private/tmp/digitable-staging-smoke-6 --reload --port 9335` passed all 13 steps on 2026-09-18 HST / 2026-09-19 UTC, with no horizontal overflow at 375, 768, 1024, 1280, or 1920 px. This is isolated-browser-context evidence, not yet two physical devices.
 - **Next action:** conduct the same flow on two physical devices (one GM, one player; the GM device may open the table view in a second tab if a third display is unavailable), record any usability defects, then promote through the normal PR/merge decision. Do not create a production Firebase project until that decision is explicit.
+
+## Claude takeover checkpoint
+
+Start in `/Users/john/Documents/ChatGPT/DigiTable/.claude/worktrees/today-integration` on branch
+`factory/today-integration`. Run `git status --short --branch` and confirm the branch tracks
+`origin/factory/today-integration` at or after `d1294cc`. Do not reconstruct the integration from the older stacked
+branches; this branch is the reviewed, deployed aggregate.
+
+The live staging URL is <https://powerglove-1cd23.web.app>, backed by Firebase project `powerglove-1cd23`.
+Anonymous Auth must remain enabled. The callable Functions run in `us-west1`; their Cloud Run services require
+public transport-level invocation (`allUsers` with `roles/run.invoker`), while every handler enforces Firebase
+Auth and platform authorization internally. If a browser reports a generic callable failure before application
+logs appear, inspect that IAM binding first. Do not commit Firebase web configuration in an environment file;
+the public staging build values and deploy procedure are recorded in [`docs/RUNBOOK.md`](docs/RUNBOOK.md).
+
+The last verified gates were:
+
+- `npm run check` — 589 tests passed, 11 todo.
+- `npm run build` — Functions and web production builds passed; Vite reports a non-blocking large-chunk warning.
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — 18 testing-package, 86 Functions, and 3 web emulator tests passed.
+- `node scripts/playtest/two-device-smoke.mjs --base https://powerglove-1cd23.web.app --out /private/tmp/digitable-staging-smoke-6 --reload --port 9335` — all 13 live steps passed.
+- Independent integration/deployment review: approved with no code, runtime, security, or documentation blockers.
+
+The only release-evidence gap is a physical two-device rehearsal. After that rehearsal, fix and retest any found
+issues, update this file and the deploy log, then commit and push verified changes. Do not merge the stacked PRs,
+promote to production, provision paid resources, or create a production Firebase project without John's explicit
+direction.
 
 - Repository is initialized and connected to GitHub.
 - Architecture work (PR #1, PR #2) is merged to `main`.
