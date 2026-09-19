@@ -112,6 +112,14 @@ history rather than committing an environment file. Hosting serves `apps/web/dis
   on the GM console once the opening scene loads; the CSS fix is committed on `factory/today-integration` but
   **Hosting has not been redeployed**, so <https://powerglove-1cd23.web.app> still serves the unfixed build until
   step 4 above is run.
+- **2026-09-18 HST — Codex — consolidated Hosting redeploy:** consolidated the independently reviewed F1 and
+  F4-F7 fixes and the reviewed ink-black reskin/mobile sheet onto `factory/today-integration`, confirmed the
+  Firestore database location is `us-west1`, and deployed Hosting only. `npm run check` passed with 678 tests
+  and 11 todo; production builds passed; the emulator suites passed 18 rules + 86 Functions + 3 web tests.
+  The post-deploy `two-device-smoke.mjs --reload` run passed every step, and `ui-audit.mjs` audited 150 states
+  and 1,344 controls with zero control issues, overflow states, hard axe violations, or failures. Evidence is in
+  `/private/tmp/digitable-staging-smoke-7` and `/private/tmp/digitable-ui-audit-staging` on the operator machine.
+  Physical-device rehearsal remains open; no backend rules or Functions were redeployed.
 
 ## 4. Local dev loop (setup for iteration, not staging)
 

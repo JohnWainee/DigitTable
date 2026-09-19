@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
-- **Status:** Staging is deployed and the automated three-surface live smoke passes end to end at <https://powerglove-1cd23.web.app>. The run covered GM, phone-sized player, and shared table browser contexts against the deployed Firebase backend, including reload recovery. Physical-device evidence remains open.
-- **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; DeepSeek commits `afd0ced`/`4406e47` plus Qwen commit `80462a1`). Verified staging release commit `d1294cc` is pushed to `origin/factory/today-integration`; the worktree was clean immediately afterward.
+- **Status:** The reviewed F1 and F4-F7 fixes plus the independently reviewed ink-black reskin/mobile sheet are consolidated on `factory/today-integration` and deployed to <https://powerglove-1cd23.web.app>. The post-deploy three-surface smoke and full real-browser UI audit pass. Physical-device evidence remains open; F2 (lost-identity recovery UI) and F3 (plaintext recovery-code persistence in `localStorage`) remain unresolved.
+- **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-18 by Claude (Sonnet F lane) on `sonnet-f/copy-resume-a11y`: F4-F7 fixed in source (see the end of this file and [`docs/reviews/2026-09-18-staging-independent-playtest-review.md`](docs/reviews/2026-09-18-staging-independent-playtest-review.md))
+- **Last updated:** 2026-09-18 by Codex after consolidation, full verification, and staging Hosting redeploy
 
 ## Mission
 
@@ -14,9 +14,8 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
 ## Current state
 
 - **Playable staging candidate is online:** Firebase Hosting, Firestore/RTDB rules, and the five `us-west1` callable Functions (`createRoom`, `admitMember`, `claimSeat`, `submitRoomCommand`, `recoverSeat`) are deployed to project `powerglove-1cd23`. Cloud Run invoker bindings were explicitly verified/repaired to permit unauthenticated transport to the callable boundary; every operation still requires and validates Firebase Auth inside the callable pipeline.
-- **Live release verification passes:** `node scripts/playtest/two-device-smoke.mjs --base https://powerglove-1cd23.web.app --out /private/tmp/digitable-staging-smoke-6 --reload --port 9335` passed all 13 steps on 2026-09-18 HST / 2026-09-19 UTC, with no horizontal overflow at 375, 768, 1024, 1280, or 1920 px. This is isolated-browser-context evidence, not yet two physical devices.
-- **Independent staging playtest (2026-09-18, Claude): pass.** The deployed build completed the full GM/player/table flow with no console errors, failed requests, missing art, or overflow in the smoke sweep, and recovered from reloads of all three surfaces, including mid-declaration and mid-allocation. It found one responsive defect, F1: the GM console overflows by 40px at 375px once the opening scene is loaded (an over-wide `#edit-target` select in a `<fieldset>`). The fix (`fieldset { min-width: 0 }`, `select { max-width: 100% }` in `apps/web/src/styles.css`, plus a smoke step that catches it) is committed on this branch and verified against the staging backend from a local build, but **staging Hosting has not been redeployed and still serves the unfixed build.** F4-F7 are since fixed in source on `sonnet-f/copy-resume-a11y` (see the end of this file; not deployed). Open, non-blocking findings F2-F3 (no recovery-code entry UI though the UI tells users to enter one; recovery codes persisted in `localStorage`; and the recovery codes persisted in `localStorage`) are in the review.
-- **Next action:** (1) John decides whether to redeploy Hosting (`docs/RUNBOOK.md` section 3, step 4) to pick up F1, and which of F2-F3 to schedule (F3 is the one with security relevance), and the merge order for `sonnet-f/copy-resume-a11y`. (2) Conduct the same flow on two physical devices (one GM, one player; the GM device may open the table view in a second tab if a third display is unavailable), record any usability defects, then promote through the normal PR/merge decision. Do not create a production Firebase project until that decision is explicit.
+- **Live release verification passes:** the consolidated staging build passed every step of `two-device-smoke.mjs`, including GM/player/table propagation, one complete opposed action, pause/resume, scene advance, direct resume, reload recovery, and no horizontal overflow at 375/768/1024/1280/1920 px. The deeper `ui-audit.mjs` run audited 150 states and 1,344 controls with zero control issues, overflow states, hard axe violations, or failures. One best-practice heading warning remains on the intentional nonexistent-room route; the documented 320 px + 200% text geometry limit remains non-gating.
+- **Next action:** (1) Conduct the same flow on two physical devices (one GM, one player; the GM device may open the table view in a second tab if a third display is unavailable) and record device/browser evidence. (2) Resolve F2 and F3 in a separately reviewed change, with F3 the security-relevant priority. (3) Decide the merge path for the consolidated branch. Do not promote to production or create a production Firebase project without explicit direction.
 
 ## Claude takeover checkpoint
 
@@ -32,13 +31,14 @@ Auth and platform authorization internally. If a browser reports a generic calla
 logs appear, inspect that IAM binding first. Do not commit Firebase web configuration in an environment file;
 the public staging build values and deploy procedure are recorded in [`docs/RUNBOOK.md`](docs/RUNBOOK.md).
 
-The last verified gates were:
+The last verified gates on the consolidated deployed candidate were:
 
-- `npm run check` — 589 tests passed, 11 todo.
+- `npm run check` — 678 tests passed, 11 todo.
 - `npm run build` — Functions and web production builds passed; Vite reports a non-blocking large-chunk warning.
 - `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — 18 testing-package, 86 Functions, and 3 web emulator tests passed.
-- `node scripts/playtest/two-device-smoke.mjs --base https://powerglove-1cd23.web.app --out /private/tmp/digitable-staging-smoke-6 --reload --port 9335` — all 13 live steps passed.
-- Independent integration/deployment review: approved with no code, runtime, security, or documentation blockers.
+- `node scripts/playtest/two-device-smoke.mjs --base https://powerglove-1cd23.web.app --out /private/tmp/digitable-staging-smoke-7 --reload` — all live steps passed.
+- `node scripts/playtest/ui-audit.mjs --base https://powerglove-1cd23.web.app --label staging-consolidated --out /private/tmp/digitable-ui-audit-staging --no-shots` — 150 states and 1,344 controls audited; zero hard failures.
+- Source changes had independent review on their source branches; the consolidated conflict resolution was verified by the complete gates and both live browser suites.
 
 The only release-evidence gap is a physical two-device rehearsal. After that rehearsal, fix and retest any found
 issues, update this file and the deploy log, then commit and push verified changes. Do not merge the stacked PRs,
