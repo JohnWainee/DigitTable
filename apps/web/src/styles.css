@@ -127,9 +127,16 @@ body {
   gap: 0.75rem;
 }
 
+/* A fieldset defaults to min-width: min-content and a select is as wide as its longest option,
+   so the GM scene-edit target select pushed the console 40px wide at 375px. */
 fieldset {
   border: 1px solid var(--border);
   border-radius: 0.5rem;
+  min-width: 0;
+}
+
+select {
+  max-width: 100%;
 }
 
 .gear-list {

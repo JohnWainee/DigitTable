@@ -107,6 +107,11 @@ history rather than committing an environment file. Hosting serves `apps/web/dis
   https://powerglove-1cd23.web.app --out /private/tmp/digitable-staging-smoke-6 --reload --port 9335` passed all
   13 GM/player/table steps, responsive overflow checks at five widths, and player reload recovery. Evidence used
   isolated browser contexts on one machine; the physical two-device rehearsal is still pending.
+- **2026-09-18 HST — Claude — independent verification, no deploy:** the deployed build passed the full playthrough
+  again (see `docs/reviews/2026-09-18-staging-independent-playtest-review.md`). It found a 40px phone-width overflow
+  on the GM console once the opening scene loads; the CSS fix is committed on `factory/today-integration` but
+  **Hosting has not been redeployed**, so <https://powerglove-1cd23.web.app> still serves the unfixed build until
+  step 4 above is run.
 
 ## 4. Local dev loop (setup for iteration, not staging)
 

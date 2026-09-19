@@ -400,6 +400,17 @@ async function main() {
       await shot(gm, "scene-loaded");
     });
 
+    await step("GM console fits a phone width with the opening scene loaded", async () => {
+      // The edit-target <select> is sized by its longest option, which differs per scene, so the
+      // final all-devices overflow step (run after the scene advances) cannot stand in for this.
+      const original = [gm.width, gm.height];
+      await setViewport(gm, 375, 812);
+      const overflow = await overflowPx(gm);
+      await setViewport(gm, ...original);
+      if (overflow > 1) throw new Error(`GM console overflows by ${overflow}px at 375px`);
+      return { overflow };
+    });
+
     await step("player joins on a phone-sized device with plain-http crypto limits", async () => {
       await goto(player, "#/join");
       await setInput(player, "#room-code", codes["Room code"]);
