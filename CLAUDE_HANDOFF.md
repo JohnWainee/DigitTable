@@ -359,7 +359,7 @@ Sonnet C's `sonnet-c/c06-integration` (PR #33) surfaced two `apps/functions` gap
 
 Merge remains John's decision.
 
-## S06 event-tail presentation (DeepSeek factory run) — branch `factory/today-deepseek`, NOT PUSHED, NOT MERGED
+## S06 event-tail presentation (DeepSeek factory run) — historical source branch, now integrated
 
 Closes the three code findings of [`docs/reviews/2026-09-17-s06-outbox-reconciliation-review.md`](docs/reviews/2026-09-17-s06-outbox-reconciliation-review.md) (acceptance row 8). Full record: [`docs/reviews/2026-09-18-s06-deepseek-factory-review.md`](docs/reviews/2026-09-18-s06-deepseek-factory-review.md). Seat provenance: [`docs/evidence/2026-09-18-deepseek-seats/`](docs/evidence/2026-09-18-deepseek-seats/README.md).
 
@@ -370,10 +370,10 @@ What is on the branch:
 3. **Ordered, projection-gated presentation queue** (this branch's follow-up commit): `useRoomProjection(..., { presentEvents: true })` returns `presentation` + `acknowledgePresentation`; the single `recoveredResult` slot is gone. An item is exposed only once the rendered projection's `roomRevision` has reached the item's. `PlayerDashboardScreen` derives its resolution summary from the queue (`presentationQueue.ts`), including the attack-success explanation (from observed `ActionRolled` context).
 4. **Recovered-command baseline:** with no ledger yet, the baseline is the partition head, except it is lowered to `acceptedSequence - 1` for commands `reconcilePending` just recovered, so a member's own recovered `ActionResolved` is not baselined away. The recovered sequences are kept across a failed head read (regression test d3, verified to fail without the fix).
 5. **Shared-event redaction fixes** (`templates/eat-the-reich/src/engine.ts`): the shared copies of `SceneEdited`, `RoundEnded` and `ActionResolved` no longer name Threats that were unrevealed before the command; the GM copy and the canonical event `reduce` consumes are unchanged. `templates/eat-the-reich/test/sharedEventRedaction.test.ts` (8 tests) fails against the pre-fix engine.
-6. **`docs/TWO_DEVICE_RUNBOOK.md`:** rewritten to match the code. Two physical devices over a LAN are **not** supported today (emulator endpoints are hard-coded to `127.0.0.1`, no LAN emulator config, `crypto.randomUUID()` unavailable on a plain-HTTP LAN origin).
+6. **Pre-integration limitation:** the original DeepSeek source branch lacked LAN-safe emulator routing and UUID generation. The integrated branch resolves those limitations through `emulatorConfig.ts`, `firebase.lan.json`, `newUuid()`, and `docs/PLAYTEST_TWO_DEVICE.md` from the Qwen lane.
 7. **Fixes from the independent review** (same commit): a sync requested while one is in flight now re-runs immediately instead of being dropped (previously the summary could arrive ~30 s after a dispatch); recovered sequences are recorded right after `reconcilePending` so a failed refresh cannot lose them; the summary no longer shows "Unresolved opposition" while an injury choice is pending, and an own `InjuryCategoryChosen` with no queued `ActionResolved` is acknowledged instead of pinning the cursor. Each hook fix has a test that was confirmed to fail with the bug reintroduced.
 
-### Verification (2026-09-18, this worktree, final tree)
+### Source-branch verification (2026-09-18, before Qwen integration)
 
 - `npm run check` — format, lint (zero warnings), typecheck, **565 tests passed | 11 todo** (58 files passed, 1 skipped).
 - `npm run build` — passed from an APFS clone under `/private/tmp` (`apps/web` 129 modules; the existing >500 kB chunk warning is unchanged).
@@ -383,7 +383,7 @@ What is on the branch:
 
 ### Open items (details and dispositions in the review record)
 
-- **Row 22:** no device or staging evidence. `docs/TWO_DEVICE_RUNBOOK.md` has a blank evidence table and says LAN devices are unsupported today.
+- **Row 22:** browser-emulated LAN evidence exists under `docs/evidence/today-qwen/`, but a human physical-device run and staging rehearsal remain open.
 - **Player-private detail in shared event copies** (injury marks, `actorMemberId`, item/advance ids): product decision for John; none names an unrevealed Threat.
 - **`AllocateResults` accepts an unrevealed Threat target** (pre-existing rule; a player can mutate it and probe ids). Redaction does not close it.
 - **Reused engine event ids** (`session-paused`, `mission-ended`, `round-N-ended` after a round reset, `scene-edited-N`) would be dropped by the ledger's `eventId` dedupe for any future timeline/theatre consumer (reported by the reviewer; not re-verified).
@@ -413,11 +413,14 @@ When pausing or finishing a material unit:
 3. Commit and push the handoff with the work.
 4. Do not call a non-trivial change complete until independently reviewed.
 
-## Next action
+## Integrated verification and next action
 
-1. **Do not merge or push on the strength of this handoff alone.** `factory/today-deepseek` is local. Merge and push authority is John's.
-2. Get a second independent pass over the post-review fixes (hook resync, recovered-sequence retention, injury-summary handling) and decide the open items in `docs/reviews/2026-09-18-s06-deepseek-factory-review.md`, in particular whether other players may read a character's injury detail from the shared event partition.
-3. Acceptance row 22: either add the three small prerequisites for LAN devices (emulator endpoint host setting in `roomClient.ts`, a LAN-bound emulator config, a `getRandomValues`-based fallback for command ids) and run `docs/TWO_DEVICE_RUNBOOK.md` on real devices, or run the staging rehearsal (`docs/RUNBOOK.md` section 3, John only). Record evidence in the runbook's table only when a person actually ran it.
-4. Follow-ups that need their own change: unique engine event ids for repeatable events; rejecting unrevealed Threat targets for non-GM `AllocateResults`; returning `acceptedSequence` from the game-command callable.
-5. On this host run emulator suites from an APFS clone under `/private/tmp` (directory enumeration of `/Users/john/Documents` blocks esbuild and Firebase startup). Latest run: 18/18 rules, 86/86 Functions, 3/3 web.
-6. Keep production uncreated and do not pull forward App Check enforcement, campaign tooling, 3D, licensed content, or a second template.
+- `npm run check` — format, lint, typecheck, **589 tests passed | 11 todo** (62 files passed, 1 skipped).
+- `npm run build` — Functions and web builds passed; the existing Vite chunk-size warning remains non-blocking.
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **18/18** rules, **86/86** Functions, **3/3** web.
+- Independent integration review found no code/security blocker and requested only this handoff correction; recorded in `docs/reviews/2026-09-18-deepseek-qwen-integration-review.md`.
+
+1. Push `factory/today-integration`, then use `docs/PLAYTEST_TWO_DEVICE.md` on a trusted LAN with a physical GM device and player device; fill `docs/evidence/today-qwen/CHECKLIST.md` with real-device results.
+2. After physical-device evidence, prepare the reviewable next-phase PR/integration against the current target branch. Do not deploy production implicitly.
+3. Follow-ups that need their own change: unique engine event ids for repeatable events; rejecting unrevealed Threat targets for non-GM `AllocateResults`; returning `acceptedSequence` from the game-command callable; decide whether player injury detail belongs in shared event copies.
+4. Keep production uncreated and do not pull forward App Check enforcement, campaign tooling, 3D, licensed content, or a second template.
