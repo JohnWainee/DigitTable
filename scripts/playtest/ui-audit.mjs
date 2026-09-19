@@ -10,9 +10,19 @@
 //   * runs axe-core (WCAG 2.x A/AA + best-practice, INCLUDING colour contrast, which jsdom cannot).
 //
 // It then audits the one modal pop-out (the GM correction sheet) separately: containment inside the
-// visual viewport at phone/landscape/tablet/desktop sizes, an emulated on-screen keyboard (viewport
-// height shrunk with the reason field focused), visual-viewport zoom, emulated safe-area insets,
-// internal scrolling to the last control, and prefers-reduced-motion on/off.
+// viewport at phone/landscape/tablet/desktop sizes; an emulated on-screen keyboard; real-Chrome
+// pinch-zoom (both Emulation.setPageScaleFactor and a synthesized two-finger gesture, which proves the
+// sheet does not disable page zoom); emulated safe-area insets (notch, home indicator) at a width where
+// they actually constrain the sheet; 200% text on a 320px phone; internal scrolling to the last
+// control; and prefers-reduced-motion on/off (motion must exist when allowed and be absent when not).
+//
+// KNOWN LIMIT (recorded, not hidden): the "keyboard" emulation shrinks the LAYOUT viewport, which is
+// what Chrome Android's `interactive-widget=resizes-content` does; there the visual-viewport hook
+// correctly does nothing. The iOS-Safari case (visual viewport shrinks while the layout viewport does
+// not) cannot be produced by headless Chrome (Emulation.setVisibleSizeOverride no longer exists). Its
+// mechanism is covered in jsdom (apps/web/test/shared/SheetDialog.test.tsx) and, as far as the
+// sheet's *use* of the --vv-* variables goes, in a real engine by the pinch-zoom scenarios. A physical
+// iPhone pass remains open (CLAUDE_HANDOFF.md).
 //
 // No npm dependency beyond axe-core (already a transitive dependency of jest-axe): launches the
 // machine's Google Chrome headless and speaks CDP over Node 22's built-in WebSocket.
@@ -42,12 +52,21 @@ const LABEL = arg("label", "run");
 const PORT = Number(arg("port", "9350"));
 const SHOTS = !args.includes("--no-shots");
 const TOLERATE = args.includes("--tolerate-baseline");
+const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (fast iteration on the pop-out)
 const CHROME =
   process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 mkdirSync(OUT, { recursive: true });
 
 const require = createRequire(import.meta.url);
-const AXE_SOURCE = readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
+let AXE_SOURCE;
+try {
+  AXE_SOURCE = readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
+} catch {
+  console.error(
+    "axe-core not found. It is installed as a dependency of jest-axe: run `npm ci` at the repo root.",
+  );
+  process.exit(2);
+}
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -322,6 +341,7 @@ function isHardAxe(violation) {
  * `axeViewports` limits the (slower) axe pass to a representative subset.
  */
 async function captureState(device, state, { axeViewports = ["phone", "tablet", "desktop"] } = {}) {
+  if (MODAL_ONLY) return;
   const original = device.vp;
   for (const vp of VIEWPORTS) {
     await applyViewport(device, vp);
@@ -383,7 +403,7 @@ const MODAL_GEOMETRY = `(() => {
     pageOverflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     animationName: cs.animationName,
     background: cs.backgroundColor,
-    inertSiblings: [...document.body.children].filter(c => !c.contains(dialog) && c.tagName !== "SCRIPT").every(c => c.hasAttribute("inert")),
+    inertSiblings: (() => { const sibs = [...document.body.children].filter(c => !c.contains(dialog) && c.tagName !== "SCRIPT"); return sibs.length > 0 && sibs.every(c => c.hasAttribute("inert")); })(),
     activeIsInside: dialog.contains(document.activeElement),
   };
 })()`;
@@ -423,6 +443,7 @@ async function auditModal(gm) {
     { name: "phone-small", ...byName["phone-small"] },
     { name: "phone", ...byName["phone"] },
     { name: "phone-landscape", ...byName["phone-landscape"] },
+    { name: "phone-667x375", width: 667, height: 375, mobile: true },
     { name: "tablet", ...byName["tablet"] },
     { name: "desktop", ...byName["desktop"] },
   ];
@@ -504,79 +525,180 @@ async function auditModal(gm) {
     if (afterClose.rootLocked) fail(`modal@${vp.name}`, "root scroll lock left on after close");
   }
 
-  // Visual-viewport paths that layout-viewport emulation cannot reach.
-  await applyViewport(gm, byName["phone"]);
-  await openCorrection(gm);
-  const extra = { viewport: "phone", scenario: "visual-viewport", checks: {}, notes: [] };
-  try {
+  // ---- Scenarios that layout-viewport resizing cannot reach. Each MUST execute at least one check;
+  // an exception, or an emulation this Chrome cannot perform, is a FAILURE and never a silent skip. ----
+  async function scenario(name, viewport, body, { informational = false } = {}) {
+    const record = {
+      viewport: viewport.name,
+      size: `${viewport.width}x${viewport.height}`,
+      scenario: name,
+      checks: {},
+      notes: [],
+    };
+    try {
+      await applyViewport(gm, viewport);
+      await body(record);
+    } catch (error) {
+      fail(`modal-${name}`, `scenario threw: ${error.message}`);
+      record.notes.push(`threw: ${error.message}`);
+    }
+    if (Object.keys(record.checks).length === 0) fail(`modal-${name}`, "no checks were executed");
+    record.informational = informational;
+    for (const [k, v] of Object.entries(record.checks)) {
+      if (v) continue;
+      if (informational) console.log(`INFO modal-${name}: ${k} failed (recorded, not gating)`);
+      else fail(`modal-${name}`, `${k} failed`);
+    }
+    report.modal.push(record);
+    // Best-effort cleanup so one scenario cannot leak state into the next.
+    for (const [method, params] of [
+      ["Emulation.setPageScaleFactor", { pageScaleFactor: 1 }],
+      ["Emulation.setSafeAreaInsetsOverride", { insets: { top: 0, left: 0, right: 0, bottom: 0 } }],
+    ]) {
+      try {
+        await gm.cdp.send(method, params, gm.sessionId);
+      } catch {
+        /* not applied in this scenario */
+      }
+    }
+    await ev(gm, `document.documentElement.style.fontSize = ""`);
+    if (await ev(gm, `Boolean(document.querySelector('[role="dialog"]'))`))
+      await closeCorrection(gm);
+  }
+
+  const frameOf = (vp) => ({ left: 0, top: 0, right: vp.width, bottom: vp.height });
+
+  await scenario("zoom-emulated", byName["phone"], async (record) => {
+    await openCorrection(gm);
     await gm.cdp.send("Emulation.setPageScaleFactor", { pageScaleFactor: 1.6 }, gm.sessionId);
     await sleep(500);
     const zoom = await ev(gm, MODAL_GEOMETRY);
     const v = zoom.visual;
-    extra.geometry = zoom;
-    if (v && v.scale > 1.01) {
-      const frame = {
-        left: v.offsetLeft,
-        top: v.offsetTop,
-        right: v.offsetLeft + v.width,
-        bottom: v.offsetTop + v.height,
-      };
-      extra.checks.dialogInsideVisualViewportWhenZoomed = within(zoom.dialog, frame, 2);
-      extra.checks.actionsInsideVisualViewportWhenZoomed =
-        within(zoom.apply, frame, 2) && within(zoom.cancel, frame, 2);
-    } else {
-      extra.notes.push("page scale factor not applied by this Chrome; zoom path not exercised");
-    }
-    await gm.cdp.send("Emulation.setPageScaleFactor", { pageScaleFactor: 1 }, gm.sessionId);
-  } catch (error) {
-    extra.notes.push(`zoom emulation unavailable: ${error.message}`);
-  }
-  for (const [k, v] of Object.entries(extra.checks)) if (!v) fail("modal-zoom", `${k} failed`);
-  report.modal.push(extra);
+    record.geometry = zoom;
+    record.checks.pageScaleApplied = Boolean(v && v.scale > 1.01);
+    if (!record.checks.pageScaleApplied) return;
+    const frame = {
+      left: v.offsetLeft,
+      top: v.offsetTop,
+      right: v.offsetLeft + v.width,
+      bottom: v.offsetTop + v.height,
+    };
+    record.checks.dialogInsideVisualViewportWhenZoomed = within(zoom.dialog, frame, 2);
+    record.checks.actionsInsideVisualViewportWhenZoomed =
+      within(zoom.apply, frame, 2) && within(zoom.cancel, frame, 2);
+  });
 
-  // Safe-area insets (notch + home indicator), when this Chrome can emulate them.
-  const safe = { viewport: "phone-landscape", scenario: "safe-area", checks: {}, notes: [] };
-  try {
-    await closeCorrection(gm);
-    await applyViewport(gm, byName["phone-landscape"]);
-    await gm.cdp.send(
-      "Emulation.setSafeAreaInsetsOverride",
-      { insets: { top: 0, left: 47, right: 47, bottom: 21 } },
-      gm.sessionId,
-    );
+  await scenario("pinch-gesture", byName["phone"], async (record) => {
     await openCorrection(gm);
-    const geo = await ev(gm, MODAL_GEOMETRY);
-    const foot = await ev(
-      gm,
-      `parseFloat(getComputedStyle(document.querySelector(".sheet-footer") || document.body).paddingBottom)`,
-    );
-    safe.geometry = geo;
-    safe.footerPaddingBottom = foot;
-    safe.checks.sheetClearOfSideInsets = geo.dialog.left >= 46 && geo.dialog.right <= 812 - 46;
-    safe.checks.footerClearsHomeIndicator = foot >= 21 + 4;
-    safe.screenshot = await screenshot(gm, "gm-correction-safe-area-landscape.jpg", {
-      fullPage: false,
-    });
+    const before = await ev(gm, `visualViewport.scale`);
     await gm.cdp.send(
-      "Emulation.setSafeAreaInsetsOverride",
-      { insets: { top: 0, left: 0, right: 0, bottom: 0 } },
+      "Input.synthesizePinchGesture",
+      { x: 187, y: 400, scaleFactor: 2, relativeSpeed: 400, gestureSourceType: "touch" },
       gm.sessionId,
     );
-  } catch (error) {
-    safe.notes.push(`safe-area emulation unavailable: ${error.message}`);
+    await sleep(700);
+    const after = await ev(gm, `visualViewport.scale`);
+    record.scaleBefore = before;
+    record.scaleAfter = after;
+    // With the sheet open, a two-finger pinch must still zoom the page (WCAG 1.4.4).
+    record.checks.pinchZoomStillWorksWithSheetOpen = after > before * 1.2;
+  });
+
+  for (const [name, vp, insets, expect] of [
+    [
+      "safe-area-landscape-constrained",
+      { name: "phone-667x375", width: 667, height: 375, mobile: true },
+      { top: 0, left: 47, right: 47, bottom: 21 },
+      "sides",
+    ],
+    [
+      "safe-area-landscape-812",
+      byName["phone-landscape"],
+      { top: 0, left: 47, right: 47, bottom: 21 },
+      "sides",
+    ],
+    ["safe-area-portrait", byName["phone"], { top: 47, left: 0, right: 0, bottom: 34 }, "vertical"],
+  ]) {
+    await scenario(name, vp, async (record) => {
+      await gm.cdp.send("Emulation.setSafeAreaInsetsOverride", { insets }, gm.sessionId);
+      await openCorrection(gm);
+      const geo = await ev(gm, MODAL_GEOMETRY);
+      const footerPad = await ev(
+        gm,
+        `parseFloat(getComputedStyle(document.querySelector(".sheet-footer")).paddingBottom)`,
+      );
+      record.geometry = geo;
+      record.footerPaddingBottom = footerPad;
+      record.checks.dialogInsideViewport = within(geo.dialog, frameOf(vp));
+      record.checks.footerClearsHomeIndicator = footerPad >= insets.bottom + 4;
+      if (expect === "sides") {
+        record.checks.sheetClearOfLeftInset = geo.dialog.left >= insets.left - 1;
+        record.checks.sheetClearOfRightInset = geo.dialog.right <= vp.width - insets.right + 1;
+        // The width must actually constrain the sheet, otherwise this check proves nothing.
+        record.sheetWidth = geo.dialog.width;
+      } else {
+        record.checks.sheetClearOfTopInset = geo.dialog.top >= insets.top - 1;
+      }
+      record.screenshot = await screenshot(gm, `gm-correction-${name}.jpg`, { fullPage: false });
+    });
   }
-  for (const [k, v] of Object.entries(safe.checks)) if (!v) fail("modal-safe-area", `${k} failed`);
-  report.modal.push(safe);
-  try {
-    await closeCorrection(gm);
-  } catch {
-    /* already closed */
+
+  // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150% and
+  // 375px at 200% are gating. 320px at 200% is recorded but NOT gating: at that size the (unchanged,
+  // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
+  // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
+  // the handoff.
+  for (const [vp, px, informational] of [
+    [byName["phone-small"], 24, false],
+    [byName["phone"], 32, false],
+    [byName["phone-small"], 32, true],
+  ]) {
+    await scenario(
+      `text-${px === 24 ? "150" : "200"}-${vp.name}`,
+      vp,
+      async (record) => {
+        await ev(gm, `document.documentElement.style.fontSize = "${px}px"`);
+        await openCorrection(gm);
+        const frame = frameOf(vp);
+        const geo = await ev(gm, MODAL_GEOMETRY);
+        record.geometry = geo;
+        record.checks.dialogInsideViewport = within(geo.dialog, frame);
+        record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+        if (geo.pageOverflowPx > 1) {
+          record.offenders = await ev(
+            gm,
+            `(() => { const w = document.documentElement.clientWidth; return [...document.querySelectorAll("body *")].filter(e => (e.getBoundingClientRect().right > w + 1 || e.scrollWidth > e.clientWidth + 1) && getComputedStyle(e).display !== "none").slice(0, 10).map(e => e.tagName.toLowerCase() + (e.className && typeof e.className === "string" ? "." + e.className.split(" ").join(".") : "") + " right=" + Math.round(e.getBoundingClientRect().right) + " sw=" + e.scrollWidth + "/" + e.clientWidth + " :: " + (e.textContent || "").trim().slice(0, 30)); })()`,
+          );
+        }
+        record.checks.bodyKeepsRoom = geo.body.clientHeight >= 96;
+        // The action row may scroll on its own at this size, but its buttons must be reachable.
+        await ev(
+          gm,
+          `(() => { const f = document.querySelector(".sheet-footer"); f.scrollTop = f.scrollHeight; })()`,
+        );
+        const end = await ev(gm, MODAL_GEOMETRY);
+        record.checks.actionsReachable = within(end.apply, frame) && within(end.cancel, frame);
+        await ev(
+          gm,
+          `(() => { const b = document.querySelector(".sheet-body"); b.scrollTop = b.scrollHeight; })()`,
+        );
+        const bottom = await ev(gm, MODAL_GEOMETRY);
+        record.checks.reasonReachable = within(bottom.reason, frame);
+        record.textPx = px;
+        record.screenshot = await screenshot(
+          gm,
+          `gm-correction-text-${px === 24 ? "150" : "200"}-${vp.name}.jpg`,
+          { fullPage: false },
+        );
+      },
+      { informational },
+    );
   }
   await applyViewport(gm, byName["desktop"]);
 }
 
 async function auditReducedMotion(gm) {
-  const result = { off: {}, on: {} };
+  const result = { allowed: {}, reduced: {} };
   async function probe() {
     await openCorrection(gm);
     const probeResult = await ev(
@@ -601,19 +723,26 @@ async function auditReducedMotion(gm) {
     { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] },
     gm.sessionId,
   );
-  result.on = await probe();
+  result.allowed = await probe();
   await gm.cdp.send(
     "Emulation.setEmulatedMedia",
     { features: [{ name: "prefers-reduced-motion", value: "reduce" }] },
     gm.sessionId,
   );
-  result.off = await probe();
+  result.reduced = await probe();
   await gm.cdp.send("Emulation.setEmulatedMedia", { features: [] }, gm.sessionId);
   report.reducedMotion = result;
-  if (!result.off.matches) fail("reduced-motion", "reduce preference was not emulated");
-  if (result.off.sheetAnimation !== "none" || result.off.backdropAnimation !== "none")
-    fail("reduced-motion", `sheet still animates under reduce: ${JSON.stringify(result.off)}`);
-  if (result.off.anyLongTransition)
+  if (result.allowed.matches) fail("reduced-motion", "no-preference was not emulated");
+  // Positive control: with motion allowed the entrance animation must exist (else the reduced check proves nothing).
+  if (result.allowed.sheetAnimation === "none" || result.allowed.backdropAnimation === "none")
+    fail(
+      "reduced-motion",
+      `no entrance animation when motion is allowed: ${JSON.stringify(result.allowed)}`,
+    );
+  if (!result.reduced.matches) fail("reduced-motion", "reduce preference was not emulated");
+  if (result.reduced.sheetAnimation !== "none" || result.reduced.backdropAnimation !== "none")
+    fail("reduced-motion", `sheet still animates under reduce: ${JSON.stringify(result.reduced)}`);
+  if (result.reduced.anyLongTransition)
     fail("reduced-motion", "a transition longer than 50ms remains under reduce");
 }
 

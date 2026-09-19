@@ -3,7 +3,26 @@ import { createPortal } from "react-dom";
 import { useVisualViewportBox } from "./useVisualViewportBox.js";
 
 const FOCUSABLE_SELECTOR =
-  'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), summary, [tabindex]:not([tabindex="-1"])';
+  'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), summary, audio[controls], video[controls], [contenteditable]:not([contenteditable="false"]), [tabindex]:not([tabindex="-1"])';
+
+/**
+ * Whether Tab could actually land on `el` right now: not `display: none`/`visibility: hidden`, and not
+ * inside a collapsed `<details>` (only that details' own `<summary>` stays reachable). The trap wraps
+ * to the first/last *reachable* control, so a hidden one at either end can never make it swallow Tab.
+ */
+function isReachable(el: HTMLElement): boolean {
+  const details = el.closest("details");
+  if (details && !details.open && !(el.tagName === "SUMMARY" && el.parentElement === details)) {
+    return false;
+  }
+  // Absent in jsdom and older engines: fall through to "reachable".
+  return typeof el.checkVisibility === "function"
+    ? el.checkVisibility({ visibilityProperty: true })
+    : true;
+}
+
+/** Number of sheets currently mounted, so root scroll is unlocked only when the last one closes. */
+let openSheets = 0;
 
 /** Text-entry controls: the ones that summon an on-screen keyboard and so must be kept in view. */
 const TEXT_ENTRY_SELECTOR = 'input:not([type="checkbox"]):not([type="radio"]), textarea, select';
@@ -64,11 +83,16 @@ export function SheetDialog({
       child.setAttribute("inert", "");
       madeInert.push(child);
     }
+    openSheets += 1;
     document.documentElement.classList.add("sheet-open");
     headingRef.current?.focus();
     return () => {
       for (const child of madeInert) child.removeAttribute("inert");
-      document.documentElement.classList.remove("sheet-open");
+      openSheets -= 1;
+      if (openSheets <= 0) {
+        openSheets = 0;
+        document.documentElement.classList.remove("sheet-open");
+      }
       previouslyFocused?.focus();
     };
   }, []);
@@ -81,7 +105,9 @@ export function SheetDialog({
       }
       const dialog = dialogRef.current;
       if (event.key !== "Tab" || !dialog) return;
-      const focusable = Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
+      const focusable = Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+        isReachable,
+      );
       if (focusable.length === 0) return;
       const first = focusable[0]!;
       const last = focusable[focusable.length - 1]!;

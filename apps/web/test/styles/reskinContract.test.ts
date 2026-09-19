@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -76,6 +76,13 @@ function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
+function sourceFiles(dir: string): string[] {
+  return readdirSync(dir).flatMap((name) => {
+    const path = join(dir, name);
+    return statSync(path).isDirectory() ? sourceFiles(path) : path.endsWith(".tsx") ? [path] : [];
+  });
+}
+
 describe("reskin stylesheet contract", () => {
   describe("touch targets and text-entry size", () => {
     it("defines the tap size as 3rem (48px at the default root, and it scales with user font size)", () => {
@@ -90,6 +97,29 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(buttons, "min-height")).toContain("var(--tap)");
       expect(declaration(buttons, "min-width")).toContain("var(--tap)");
       expect(declaration(inputs, "min-height")).toContain("var(--tap)");
+    });
+
+    it("covers every styled <button> in the app: each className token is one the tap rule names", () => {
+      const covered = new Set(["primary-action", "secondary-action", "link-button"]);
+      const uncovered: string[] = [];
+      for (const file of sourceFiles(join(here, "../../src"))) {
+        const source = readFileSync(file, "utf8");
+        for (const match of source.matchAll(
+          /<button\b[^>]*?className=(?:"([^"]*)"|\{`([^`]*)`\})/gs,
+        )) {
+          for (const token of (match[1] ?? match[2] ?? "").split(/\s+/).filter(Boolean)) {
+            if (!covered.has(token)) uncovered.push(`${file.split("/src/")[1]}: ${token}`);
+          }
+        }
+      }
+      expect(uncovered).toEqual([]);
+      // Class-less buttons are only the +/- steppers inside .stepper-controls (rule names them).
+      const buttonRule = rulesFor(/\.primary-action.*\.stepper-controls button/s);
+      expect(declaration(buttonRule, "min-height")).toContain("var(--tap)");
+    });
+
+    it("keeps the read-only stepper value (role=spinbutton, focusable) at the tap size too", () => {
+      expect(declaration(rulesFor(/^\.stepper-value$/), "min-height")).toContain("var(--tap)");
     });
 
     it("keeps text-entry controls at 1rem so iOS Safari does not zoom the page on focus", () => {
@@ -112,19 +142,29 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(focus, "outline")[0]).toMatch(/^3px solid var\(--acid\)$/);
     });
 
-    it("never disables page zoom", () => {
+    it("never disables page zoom: no viewport lock, and no touch-action: none anywhere", () => {
       expect(html).not.toMatch(/user-scalable\s*=\s*(no|0)/i);
       expect(html).not.toMatch(/maximum-scale/i);
+      // An ancestor's touch-action cannot be re-enabled by a descendant, so a full-screen backdrop with
+      // `none` would disable pinch-zoom for the whole page while a sheet is open.
+      expect(css).not.toMatch(/touch-action:\s*none/);
+      expect(declaration(rulesFor(/^\.sheet-backdrop$/), "touch-action")).toEqual(["pinch-zoom"]);
       expect(html).toContain("viewport-fit=cover"); // required for env(safe-area-inset-*)
       expect(html).toContain("interactive-widget=resizes-content");
     });
   });
 
   describe("pop-out sheet", () => {
-    it("sizes the backdrop from the visual viewport, falling back to dynamic viewport units", () => {
+    it("sizes the backdrop from the visual viewport, with a vh base and dvh only behind @supports", () => {
       const backdrop = rulesFor(/^\.sheet-backdrop$/);
       const heights = declaration(backdrop, "height");
-      expect(heights).toContain("var(--vv-height, 100dvh)");
+      // A var() whose value is invalid at computed-value time becomes `auto`, not the previous
+      // declaration, so the dvh form must be behind @supports and a vh base must exist.
+      // (The @supports rule below is matched too, so both forms appear, base first.)
+      expect(heights).toEqual(["var(--vv-height, 100vh)", "var(--vv-height, 100dvh)"]);
+      expect(css).toMatch(
+        /@supports \(height: 100dvh\)\s*\{\s*\.sheet-backdrop\s*\{\s*height:\s*var\(--vv-height, 100dvh\)/,
+      );
       expect(declaration(backdrop, "top")).toContain("var(--vv-top, 0px)");
       expect(declaration(backdrop, "left")).toContain("var(--vv-left, 0px)");
       expect(declaration(backdrop, "width")).toContain("var(--vv-width, 100%)");
@@ -141,6 +181,30 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(rulesFor(/^\.sheet-footer$/), "padding")[0]).toContain(
         "env(safe-area-inset-bottom)",
       );
+    });
+
+    it("keeps the notch insets on WIDE viewports too (landscape phones are wider than 641px)", () => {
+      const wide = mediaBlock("(min-width: 40.0625rem)");
+      const padding = /\.sheet-backdrop\s*\{[^}]*padding:\s*([^;]+);/.exec(wide)?.[1] ?? "";
+      for (const side of ["top", "right", "bottom", "left"]) {
+        expect(padding).toContain(`max(1.5rem, env(safe-area-inset-${side}))`);
+      }
+      // A plain shorthand here is the regression: it silently drops every inset.
+      expect(wide).not.toMatch(/\.sheet-backdrop\s*\{[^}]*padding:\s*1\.5rem\s*;/);
+    });
+
+    it("lets the action row scroll on its own and stack to one column, so large text cannot squeeze the body away", () => {
+      const footer = rulesFor(/^\.sheet-footer$/);
+      expect(declaration(footer, "max-height")[0]).toContain("var(--vv-height");
+      expect(declaration(footer, "overflow-y")).toContain("auto");
+      expect(declaration(rulesFor(/^\.sheet-actions$/), "grid-template-columns")[0]).toMatch(
+        /^repeat\(auto-fit, minmax\(min\(100%, 9rem\), 1fr\)\)$/,
+      );
+    });
+
+    it("keeps a dark band between a focused button and its focus ring, over the drop shadow", () => {
+      const focused = rulesFor(/^\.primary-action:focus-visible:not\(:disabled\)/s);
+      expect(declaration(focused, "box-shadow")).toContain("0 0 0 3px var(--ink-0)");
     });
 
     it("never exceeds what is visible and scrolls only its body", () => {
@@ -165,8 +229,9 @@ describe("reskin stylesheet contract", () => {
       expect(mediaBlock("(max-height: 34rem)")).toMatch(/\.sheet-grip\s*\{[^}]*display:\s*none/);
     });
 
-    it("locks root scroll only while a sheet is open", () => {
+    it("locks root scroll only while a sheet is open, without the page jumping", () => {
       expect(rulesFor(/^html\.sheet-open$/).join()).toMatch(/overflow:\s*hidden/);
+      expect(declaration(rulesFor(/^html$/), "scrollbar-gutter")).toContain("stable");
     });
   });
 
