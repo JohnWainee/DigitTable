@@ -3,7 +3,7 @@
 - **Status:** All findings F1-F7 from the staging review are fixed on `factory/today-integration` and deployed to <https://powerglove-1cd23.web.app>. Lost-identity seat recovery is now available from `/join`; recovery codes are display-once and scrubbed from local persistence. The post-deploy three-surface smoke passes. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-18 by Codex after closing F2/F3, dependency remediation, verification, and staging Hosting redeploy
+- **Last updated:** 2026-09-19 by Codex after re-verifying the deployed three-surface flow and consolidated source gates
 
 ## Mission
 
@@ -14,7 +14,7 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
 ## Current state
 
 - **Playable staging candidate is online:** Firebase Hosting, Firestore/RTDB rules, and the five `us-west1` callable Functions (`createRoom`, `admitMember`, `claimSeat`, `submitRoomCommand`, `recoverSeat`) are deployed to project `powerglove-1cd23`. Cloud Run invoker bindings were explicitly verified/repaired to permit unauthenticated transport to the callable boundary; every operation still requires and validates Firebase Auth inside the callable pipeline.
-- **Live release verification passes:** the consolidated staging build passed every step of `two-device-smoke.mjs`, including GM/player/table propagation, one complete opposed action, pause/resume, scene advance, direct resume, reload recovery, and no horizontal overflow at 375/768/1024/1280/1920 px. The deeper `ui-audit.mjs` run audited 150 states and 1,344 controls with zero control issues, overflow states, hard axe violations, or failures. One best-practice heading warning remains on the intentional nonexistent-room route; the documented 320 px + 200% text geometry limit remains non-gating.
+- **Live release verification passes:** on 2026-09-19, `two-device-smoke.mjs --reload` again passed all 17 GM/player/table steps against staging: create, isolated player/table admission, claim, opposed action, pause/resume, scene advance, role guidance, direct resume, reload recovery, original-art loading, zero console/request errors, and no horizontal overflow at 375/768/1024/1280/1920 px. Temporary report/screenshots: `/private/tmp/digitable-hourly-staging-20260919/`. The deeper `ui-audit.mjs` run audited 150 states and 1,344 controls with zero control issues, overflow states, hard axe violations, or failures. One best-practice heading warning remains on the intentional nonexistent-room route; the documented 320 px + 200% text geometry limit remains non-gating.
 - **Next action:** John conducts the complete flow on two physical devices, including a lost-identity recovery attempt from a fresh/private browser, and records device/browser evidence. Then decide the merge path for the consolidated branch. Do not promote to production or create a production Firebase project without explicit direction.
 
 ## Claude takeover checkpoint
@@ -33,7 +33,7 @@ the public staging build values and deploy procedure are recorded in [`docs/RUNB
 
 The last verified gates on the consolidated deployed candidate were:
 
-- `npm run check` — 678 tests passed, 11 todo.
+- `npm run check` — on 2026-09-19, format, lint, typecheck, and **681 active tests passed** (11 todo; 71 files passed, 1 skipped).
 - `npm run build` — Functions and web production builds passed; Vite reports a non-blocking large-chunk warning.
 - `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — 18 testing-package, 86 Functions, and 3 web emulator tests passed.
 - `node scripts/playtest/two-device-smoke.mjs --base https://powerglove-1cd23.web.app --out /private/tmp/digitable-staging-smoke-7 --reload` — all live steps passed.
@@ -41,6 +41,7 @@ The last verified gates on the consolidated deployed candidate were:
 - Source changes had independent review on their source branches; the consolidated conflict resolution was verified by the complete gates and both live browser suites.
 - F2/F3 closeout: `npm run check` passed with 681 tests and 11 todo; builds passed; emulator suites passed 18 rules + 86 Functions + 4 web tests, including live callable recovery/rotation/spent-code rejection. `npm audit --omit=dev` reports zero runtime vulnerabilities. Full audit retains only upstream Firebase CLI development-tool advisories; forced remediation would downgrade the CLI to 10.1.1 and break the current emulator/Functions workflow.
 - Post-F2/F3 deploy: `/private/tmp/digitable-staging-smoke-8` passed every live GM/player/table step and all responsive checks.
+- 2026-09-19 emulator rerun note: the 18 rules tests passed, but the Functions workers then emitted Admin-SDK metadata `ETIMEDOUT`/`ENOTFOUND` warnings and Firestore transaction-lock timeouts before producing a final total. A sandboxed retry could not bind the loopback emulator ports; an approved loopback-only retry reproduced the warnings. Treat the prior 18/86/3 result as the last complete emulator evidence, not this partial run; no source change was made.
 
 The only release-evidence gap is a physical two-device rehearsal. After that rehearsal, fix and retest any found
 issues, update this file and the deploy log, then commit and push verified changes. Do not merge the stacked PRs,
