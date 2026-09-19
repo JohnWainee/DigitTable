@@ -143,15 +143,16 @@ export function CreateSessionScreen(): JSX.Element {
             <dt>GM recovery code</dt>
             <dd>{accepted.recoveryCode ?? <em>Already shown once; not re-issued.</em>}</dd>
           </dl>
-          <div className="form-field form-field--checkbox">
+          {/* The whole row is the label, so the tap target is the row (>= 48px), not just the box. */}
+          <label className="gear-option form-field--checkbox" htmlFor="wrote-down">
             <input
               id="wrote-down"
               type="checkbox"
               checked={wroteDownSecrets}
               onChange={(e) => setWroteDownSecrets(e.target.checked)}
             />
-            <label htmlFor="wrote-down">I have written these down</label>
-          </div>
+            I have written these down
+          </label>
           <button
             type="button"
             className="primary-action"
