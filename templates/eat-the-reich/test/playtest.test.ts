@@ -79,7 +79,7 @@ describe("S01 — zero successes (matrix D1, O1, O4, O5, I1)", () => {
       command: {
         type: "BeginAction",
         characterId: ROOK_ID,
-        stat: "SNEAK",
+        stat: "CON",
         itemIds: [],
         abilityIds: [],
         bonusClaimIds: [],
@@ -94,7 +94,7 @@ describe("S01 — zero successes (matrix D1, O1, O4, O5, I1)", () => {
     authority = begin.authority;
     const rollId = Object.keys(authority.state.rolls)[0]!;
 
-    // SNEAK(4) player dice, all discard; 2 active threats in play -> attack dice = 2 + (2-1) = 3, two successes.
+    // CON(4) player dice, all discard; 2 active threats in play -> attack dice = 2 + (2-1) = 3, two successes.
     const review = runCommand(eatTheReichTemplate, {
       member: GM_CTX,
       authority,
@@ -165,7 +165,7 @@ describe("S02 — resource depletion (matrix P2, P3, P5, C4, A5)", () => {
       command: {
         type: "BeginAction",
         characterId: ROOK_ID,
-        stat: "SNEAK",
+        stat: "CON",
         itemIds: ["rook-silenced-pistol"],
         abilityIds: [],
         bonusClaimIds: [],
@@ -180,7 +180,7 @@ describe("S02 — resource depletion (matrix P2, P3, P5, C4, A5)", () => {
     authority = begin.authority;
     const rollId = Object.keys(authority.state.rolls)[0]!;
 
-    // Pool = SNEAK(4) + item(1) + last-use bonus(1) = 6 dice; no engaged threats -> 0 attack dice.
+    // Pool = CON(4) + item(1) + last-use bonus(1) = 6 dice; no engaged threats -> 0 attack dice.
     const review = runCommand(eatTheReichTemplate, {
       member: GM_CTX,
       authority,
@@ -204,7 +204,7 @@ describe("S02 — resource depletion (matrix P2, P3, P5, C4, A5)", () => {
       {
         type: "BeginAction",
         characterId: ROOK_ID,
-        stat: "SNEAK",
+        stat: "CON",
         itemIds: ["rook-silenced-pistol"],
         abilityIds: [],
         bonusClaimIds: [],
@@ -304,7 +304,7 @@ describe("S03 — invalid allocation (matrix A1, A6, A7, A9)", () => {
       command: {
         type: "BeginAction",
         characterId: ROOK_ID,
-        stat: "SNEAK",
+        stat: "CON",
         itemIds: [],
         abilityIds: [],
         bonusClaimIds: [],

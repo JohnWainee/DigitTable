@@ -114,7 +114,7 @@ async function reachDashboardAsRook(
   await user.click(screen.getByRole("button", { name: /i wrote it down/i }));
   await screen.findByRole("heading", { name: /pick your character/i });
 
-  const rookCard = screen.getByRole("heading", { name: "Rook" }).closest("li")!;
+  const rookCard = screen.getByRole("heading", { name: "Iryna" }).closest("li")!;
   await user.click(within(rookCard).getByRole("button", { name: /claim/i }));
   await within(rookCard).findByText(/^yours$/i);
   await user.click(screen.getByRole("button", { name: /continue to your dashboard/i }));
@@ -140,9 +140,8 @@ describe("Player dashboard (C02/C06)", () => {
     ).toBeInTheDocument();
     expect(screen.getByText(/get clear of the wreckage/i)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /^party$/i })).toBeInTheDocument();
-    expect(screen.getByText(/rook \(you\)/i)).toBeInTheDocument();
-    // Rook's items from the real roster render as real checkboxes.
-    expect(screen.getByRole("checkbox", { name: /silenced pistol/i })).toBeInTheDocument();
+    expect(screen.getByText(/iryna \(you\)/i)).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: /exquisite hunting rifle/i })).toBeInTheDocument();
   });
 
   it("declares an action, waits for the roll, and reaches the allocation step", async () => {

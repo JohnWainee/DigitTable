@@ -5,7 +5,9 @@ import { Icon } from "../shared/Icon.js";
 export interface ChooseInjuryPanel2Props {
   readonly character: CharacterFullSheet;
   readonly mode: "single" | "downed";
+  readonly preferredCategoryId?: string | undefined;
   readonly onChoose: (categoryId: string) => void;
+  readonly onUseHat: ((itemId: string) => void) | null;
 }
 
 function hasOpenBox(category: CharacterFullSheet["injuries"][number]): boolean {
@@ -21,10 +23,23 @@ function hasOpenBox(category: CharacterFullSheet["injuries"][number]): boolean {
 export function ChooseInjuryPanel2({
   character,
   mode,
+  preferredCategoryId,
   onChoose,
+  onUseHat,
 }: ChooseInjuryPanel2Props): JSX.Element {
-  const eligible = character.injuries.filter(hasOpenBox);
-  const [categoryId, setCategoryId] = useState<string | null>(eligible[0]?.id ?? null);
+  const eligible = character.injuries.filter(
+    (category) =>
+      hasOpenBox(category) &&
+      (preferredCategoryId === undefined || category.id === preferredCategoryId),
+  );
+  const usableHat = character.items.find(
+    (item) => item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy" && item.usesRemaining > 0,
+  );
+  const [categoryId, setCategoryId] = useState<string | null>(
+    eligible.some((category) => category.id === preferredCategoryId)
+      ? (preferredCategoryId ?? null)
+      : (eligible[0]?.id ?? null),
+  );
 
   return (
     <section className="step" aria-labelledby="injury-choice-heading">
@@ -34,7 +49,9 @@ export function ChooseInjuryPanel2({
       <p>
         {mode === "downed"
           ? "You're going down — pick which injury category takes it."
-          : "That injury category is already full — pick another."}
+          : preferredCategoryId
+            ? "Accept the rolled injury, or destroy the Cowboy hat to ignore it."
+            : "That injury category is already full — pick another."}
       </p>
       {eligible.length === 0 ? (
         <p role="alert">No injury category has an open box. Tell your GM.</p>
@@ -62,6 +79,11 @@ export function ChooseInjuryPanel2({
       >
         Confirm
       </button>
+      {onUseHat && usableHat ? (
+        <button type="button" onClick={() => onUseHat(usableHat.id)}>
+          Destroy Cowboy hat to ignore this result
+        </button>
+      ) : null}
     </section>
   );
 }

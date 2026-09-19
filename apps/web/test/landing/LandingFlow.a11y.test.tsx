@@ -111,14 +111,11 @@ describe("Landing / create / join / claim (C01)", () => {
       await screen.findByRole("heading", { name: /pick your character/i }),
     ).toBeInTheDocument();
     // All six roster fixture characters render (docs/ETR_RULES_MATRIX.md Appendix A).
-    expect(screen.getByRole("heading", { name: "Rook" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Vesper Caul" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Halloran" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Orsolya/ })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Delphine Marchetti" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Tallow/ })).toBeInTheDocument();
+    for (const name of ["Iryna", "Nicole", "Cosgrave", "Chuck", "Astrid", "Flint"]) {
+      expect(screen.getByRole("heading", { name })).toBeInTheDocument();
+    }
 
-    const rookCard = screen.getByRole("heading", { name: "Rook" }).closest("li")!;
+    const rookCard = screen.getByRole("heading", { name: "Iryna" }).closest("li")!;
     await user.click(within(rookCard).getByRole("button", { name: /claim/i }));
 
     expect(await within(rookCard).findByText(/^yours$/i)).toBeInTheDocument();
@@ -139,7 +136,7 @@ describe("Landing / create / join / claim (C01)", () => {
     await screen.findByRole("heading", { name: /your recovery code/i });
     await user.click(screen.getByRole("button", { name: /i wrote it down/i }));
     await screen.findByRole("heading", { name: /pick your character/i });
-    const rookCardA = screen.getByRole("heading", { name: "Rook" }).closest("li")!;
+    const rookCardA = screen.getByRole("heading", { name: "Iryna" }).closest("li")!;
     await user.click(within(rookCardA).getByRole("button", { name: /claim/i }));
     await within(rookCardA).findByText(/^yours$/i);
 
@@ -156,7 +153,7 @@ describe("Landing / create / join / claim (C01)", () => {
 
     // The real projection carries no member display name (matrix's
     // `claimedByMemberId` is a bare id) — "claimed" only.
-    const rookCardB = screen.getByRole("heading", { name: "Rook" }).closest("li")!;
+    const rookCardB = screen.getByRole("heading", { name: "Iryna" }).closest("li")!;
     expect(await within(rookCardB).findByText(/^claimed$/i)).toBeInTheDocument();
   });
 

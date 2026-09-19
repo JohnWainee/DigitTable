@@ -174,7 +174,7 @@ describe("resolution loop lifecycle (B03)", () => {
       command: {
         type: "BeginAction",
         characterId: ROOK_ID,
-        stat: "SNEAK",
+        stat: "CON",
         itemIds: [],
         abilityIds: [],
         bonusClaimIds: [],
@@ -201,9 +201,9 @@ describe("resolution loop lifecycle (B03)", () => {
       { rollId, characterId: ROOK_ID, status: "declared" },
     ]);
     const ownerView = projectViewer(eatTheReichTemplate, authority, PLAYER_VIEWER);
-    expect(ownerView.view.rolls[0]).toMatchObject({ status: "declared", declaredStat: "SNEAK" });
+    expect(ownerView.view.rolls[0]).toMatchObject({ status: "declared", declaredStat: "CON" });
 
-    // Pool = SNEAK(4) only; threat attack(3), 1 threat in play -> 3 attack dice.
+    // Pool = CON(4) only; threat attack(3), 1 threat in play -> 3 attack dice.
     const review = runCommand(eatTheReichTemplate, {
       member: GM_CTX,
       authority,

@@ -138,11 +138,11 @@ describe("reduce", () => {
     });
     expect(
       after.characters[ROOK_ID]?.items.find((i) => i.id === "rook-silenced-pistol")?.usesRemaining,
-    ).toBe(2);
+    ).toBe(4);
     // Every other item is untouched.
     expect(
       after.characters[ROOK_ID]?.items.find((i) => i.id === "rook-forged-papers")?.usesRemaining,
-    ).toBe(3);
+    ).toBe(5);
     expect(after.characters[ROOK_ID]?.blood).toBe(4); // 5 - 2 + 1
     expect(after.rolls["roll-1"]?.status).toBe("awaiting_allocation");
     expect(after.rolls["roll-1"]?.keptDice).toHaveLength(1);

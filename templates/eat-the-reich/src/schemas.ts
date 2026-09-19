@@ -125,11 +125,30 @@ function expectStatRecord(value: unknown, where: string): Readonly<Record<Stat, 
 
 function parseItem(value: unknown, where: string): ItemState {
   if (!isRecord(value)) fail(where, "expected an object");
+  let useEffect: ItemState["useEffect"];
+  if (value.useEffect !== undefined) {
+    if (!isRecord(value.useEffect)) fail(`${where}.useEffect`, "expected an object");
+    const kind = expectString(value.useEffect.kind, `${where}.useEffect.kind`);
+    if (kind === "gainBlood") {
+      useEffect = {
+        kind,
+        amount: expectNumber(value.useEffect.amount, `${where}.useEffect.amount`),
+      };
+    } else if (kind === "ignoreInjuryOrDownedAndDestroy") {
+      useEffect = { kind };
+    } else {
+      fail(`${where}.useEffect.kind`, "expected a supported item-use effect");
+    }
+  }
   return {
     id: expectString(value.id, `${where}.id`),
     name: expectString(value.name, `${where}.name`),
     bonusRequirement: expectString(value.bonusRequirement, `${where}.bonusRequirement`),
     bonusPlus: expectNumber(value.bonusPlus, `${where}.bonusPlus`),
+    ...(value.poolEligible === undefined
+      ? {}
+      : { poolEligible: expectBoolean(value.poolEligible, `${where}.poolEligible`) }),
+    ...(useEffect === undefined ? {} : { useEffect }),
     maxUses: expectNumber(value.maxUses, `${where}.maxUses`),
     usesRemaining: expectNumber(value.usesRemaining, `${where}.usesRemaining`),
   };
@@ -566,7 +585,17 @@ function parseInjuryChoicePending(value: unknown, where: string): InjuryChoicePe
   if (!isRecord(value)) fail(where, "expected an object");
   const mode = value.mode;
   if (mode !== "single" && mode !== "downed") fail(`${where}.mode`, "expected single|downed");
-  return { mode };
+  return {
+    mode,
+    ...(value.preferredCategoryId === undefined
+      ? {}
+      : {
+          preferredCategoryId: expectString(
+            value.preferredCategoryId,
+            `${where}.preferredCategoryId`,
+          ),
+        }),
+  };
 }
 
 const ROLL_STATUSES: readonly RollStatus[] = [
@@ -755,6 +784,13 @@ export function parseCommand(value: unknown): EatTheReichCommand {
         characterId: expectString(value.characterId, "command.characterId"),
         categoryId: expectString(value.categoryId, "command.categoryId"),
         boxIndex: expectBoxIndex(value.boxIndex, "command.boxIndex"),
+      };
+    case "UseUtilityItem":
+      return {
+        type: "UseUtilityItem",
+        characterId: expectString(value.characterId, "command.characterId"),
+        itemId: expectString(value.itemId, "command.itemId"),
+        rollId: expectNullableString(value.rollId, "command.rollId"),
       };
     case "BeginAction":
       return {
@@ -1227,6 +1263,17 @@ export function parseEvent(value: unknown): EatTheReichEvent {
         injuryMark:
           injuryMark === null ? null : parseInjuryMarkResult(injuryMark, "event.injuryMark"),
         injuryChoicePendingMode,
+        ...(value.injuryChoicePendingCategoryId === undefined
+          ? {}
+          : {
+              injuryChoicePendingCategoryId:
+                value.injuryChoicePendingCategoryId === null
+                  ? null
+                  : expectString(
+                      value.injuryChoicePendingCategoryId,
+                      "event.injuryChoicePendingCategoryId",
+                    ),
+            }),
       };
     }
     case "InjuryCategoryChosen":

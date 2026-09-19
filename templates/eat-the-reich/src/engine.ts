@@ -12,6 +12,7 @@ import {
   type AuthorizedMemberContext,
   type Decision,
   type DecisionContext,
+  type DecidedEvent,
   type GameTemplate,
   type InitialCampaignInput,
   type MigrationResult,
@@ -26,7 +27,12 @@ import {
   type VisibleRoll,
 } from "@digitable/contracts";
 import type { AllocationTarget } from "./allocations.js";
-import type { EatTheReichCommand, SceneObjectiveInput, SceneThreatInput } from "./commands.js";
+import type {
+  CharacterCorrectionPatch,
+  EatTheReichCommand,
+  SceneObjectiveInput,
+  SceneThreatInput,
+} from "./commands.js";
 import type {
   EatTheReichEvent,
   InjuryMarkResult,
@@ -217,6 +223,11 @@ function poolRejectionToStableError(rejection: PoolBuildRejection): StableError 
       return stableError("INSUFFICIENT_BLOOD", "An injury forbids spending Blood right now.");
     case "unknownItem":
       return stableError("UNKNOWN_ACTION", `No such item "${rejection.itemId}".`);
+    case "itemNotPoolEligible":
+      return stableError(
+        "UNKNOWN_ACTION",
+        `"${rejection.itemId}" is utility equipment and cannot add a pool die.`,
+      );
     case "unknownAbility":
       return stableError("UNKNOWN_ACTION", `No such ability "${rejection.abilityId}".`);
     case "abilityNotUsable":
@@ -544,7 +555,7 @@ function decideReviewAction(
     for (const ability of character.abilities) {
       if (ability.trigger !== "passive") continue;
       if (ability.effect.kind === "onOnesGainBlood") {
-        passiveBloodGained += ability.effect.amount * onesRolled;
+        passiveBloodGained += ability.effect.amount;
       } else if (ability.effect.kind === "onOnesRemoveAttack") {
         passiveRemoveAttack += ability.effect.amount * onesRolled;
       }
@@ -856,6 +867,7 @@ function decideAllocateResults(
 
   let injuryMark: InjuryMarkResult | null = null;
   let injuryChoicePendingMode: "single" | "downed" | null = null;
+  let injuryChoicePendingCategoryId: string | null = null;
   if (remainingAttackSuccessesAfterAllocation > 0) {
     const categoryFace = ctx.random.rollDie(6);
     const categoryIndex = rollCategoryIndex(categoryFace);
@@ -871,8 +883,12 @@ function decideAllocateResults(
     category.boxes.forEach((box, index) => {
       if (!box.marked) openBoxIndexes.push(index as 0 | 1);
     });
-    if (openBoxIndexes.length === 0) {
+    const canUseInjuryShield = character.items.some(
+      (item) => item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy" && item.usesRemaining > 0,
+    );
+    if (openBoxIndexes.length === 0 || canUseInjuryShield) {
       injuryChoicePendingMode = downed ? "downed" : "single";
+      if (openBoxIndexes.length > 0) injuryChoicePendingCategoryId = category.id;
     } else {
       const boxIndexes = wholeCategory ? openBoxIndexes : [openBoxIndexes[0]!];
       injuryMark = {
@@ -898,6 +914,7 @@ function decideAllocateResults(
     attackBumpThreatId,
     injuryMark,
     injuryChoicePendingMode,
+    injuryChoicePendingCategoryId,
   };
   // GM-only visibility guard (same boundary as `project()`): `allocations` and
   // `threatDeltas` can name an unrevealed Threat if a non-GM client submits an
@@ -941,6 +958,12 @@ function decideChooseInjuryCategory(
   }
   const character = ctx.state.characters[roll.characterId];
   if (!character) return rejected(stableError("UNKNOWN_ACTION", "No such character."));
+  if (
+    roll.injuryChoicePending.preferredCategoryId &&
+    command.categoryId !== roll.injuryChoicePending.preferredCategoryId
+  ) {
+    return rejected(stableError("INVALID_ALLOCATION", "Accept the rolled injury or use the hat."));
+  }
   const category = character.injuries.find((candidate) => candidate.id === command.categoryId);
   if (!category) return rejected(stableError("UNKNOWN_ACTION", "No such injury category."));
   const openBoxIndexes: (0 | 1)[] = [];
@@ -965,6 +988,72 @@ function decideChooseInjuryCategory(
     mark,
   };
   return decided([broadcastEvent(`${roll.id}-injury-choice`, event, [{ kind: "shared" }])]);
+}
+
+function decideUseUtilityItem(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "UseUtilityItem" }>,
+): Decision<EatTheReichEvent> {
+  const character = ctx.state.characters[command.characterId];
+  if (!character) return rejected(stableError("UNKNOWN_ACTION", "No such character."));
+  if (character.claimedByMemberId !== ctx.actor.memberId) {
+    return rejected(stableError("ROLE_FORBIDDEN", "You may only use your own equipment."));
+  }
+  const item = character.items.find((candidate) => candidate.id === command.itemId);
+  if (!item?.useEffect)
+    return rejected(stableError("UNKNOWN_ACTION", "That item has no utility use."));
+  if (item.usesRemaining <= 0) {
+    return rejected(stableError("ITEM_DEPLETED", `"${item.id}" has no uses left.`));
+  }
+
+  const patch: CharacterCorrectionPatch = {
+    itemUses: [{ itemId: item.id, usesRemaining: item.usesRemaining - 1 }],
+    ...(item.useEffect.kind === "gainBlood"
+      ? { blood: Math.min(MAX_BLOOD, character.blood + item.useEffect.amount) }
+      : {}),
+  };
+  const corrected: EatTheReichEvent = {
+    type: "CharacterCorrected",
+    characterId: character.id,
+    reason: `Used ${item.name}`,
+    patch,
+  };
+  const effects: DecidedEvent<EatTheReichEvent>[] = [
+    broadcastEvent(`${character.id}-${item.id}-used-${item.usesRemaining}`, corrected, [
+      { kind: "shared" },
+    ]),
+  ];
+
+  if (item.useEffect.kind === "ignoreInjuryOrDownedAndDestroy") {
+    if (!command.rollId) {
+      return rejected(stableError("UNKNOWN_ACTION", "The hat can only cancel a pending injury."));
+    }
+    const roll = ctx.state.rolls[command.rollId];
+    if (
+      !roll ||
+      roll.actorMemberId !== ctx.actor.memberId ||
+      roll.characterId !== character.id ||
+      roll.status !== "awaiting_injury_choice" ||
+      !roll.injuryChoicePending
+    ) {
+      return rejected(stableError("ROLL_ALREADY_RESOLVED", "No injury choice is pending."));
+    }
+    const avoided: EatTheReichEvent = {
+      type: "InjuryCategoryChosen",
+      rollId: roll.id,
+      characterId: character.id,
+      mark: {
+        categoryId: character.injuries[0]!.id,
+        boxIndexes: [],
+        downed: false,
+        rescueObjective: null,
+      },
+    };
+    effects.push(broadcastEvent(`${roll.id}-injury-avoided`, avoided, [{ kind: "shared" }]));
+  } else if (command.rollId !== null) {
+    return rejected(stableError("UNKNOWN_ACTION", "This item does not apply to an injury roll."));
+  }
+  return decided(effects);
 }
 
 // ---------------------------------------------------------------------------
@@ -1452,6 +1541,10 @@ function authorizeGameAction(
       return ctx.capability === "player"
         ? allow()
         : deny(stableError("ROLE_FORBIDDEN", "Only a player may heal an injury."));
+    case "UseUtilityItem":
+      return ctx.capability === "player"
+        ? allow()
+        : deny(stableError("ROLE_FORBIDDEN", "Only a player may use utility equipment."));
     case "BeginAction":
       return ctx.capability === "player"
         ? allow()
@@ -1506,6 +1599,8 @@ function decide(
       return decideReleaseCharacter(ctx, command);
     case "HealInjury":
       return decideHealInjury(ctx, command);
+    case "UseUtilityItem":
+      return decideUseUtilityItem(ctx, command);
     case "BeginAction":
       return decideBeginAction(ctx, command);
     case "ReviewAction":
@@ -1749,7 +1844,14 @@ function reduce(state: EatTheReichState, event: EatTheReichEvent): EatTheReichSt
           status: event.injuryChoicePendingMode ? "awaiting_injury_choice" : "resolved",
           remainingAttackSuccessesAfterAllocation: event.remainingAttackSuccessesAfterAllocation,
           ...(event.injuryChoicePendingMode
-            ? { injuryChoicePending: { mode: event.injuryChoicePendingMode } }
+            ? {
+                injuryChoicePending: {
+                  mode: event.injuryChoicePendingMode,
+                  ...(event.injuryChoicePendingCategoryId
+                    ? { preferredCategoryId: event.injuryChoicePendingCategoryId }
+                    : {}),
+                },
+              }
             : {}),
         };
         next = { ...next, rolls: { ...next.rolls, [updatedRoll.id]: updatedRoll } };

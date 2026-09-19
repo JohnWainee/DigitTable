@@ -225,7 +225,7 @@ describe("decide: ReviewAction (matrix P4-P6, D1-D3, O1-O4)", () => {
         characterId: ROOK_ID,
         actorMemberId: PLAYER_MEMBER_ID,
         status: "declared",
-        declaredStat: "SNEAK",
+        declaredStat: "CON",
         declaredItemIds: ["rook-silenced-pistol"],
         declaredBonusClaimIds: ["rook-silenced-pistol"],
         declaredEngagedThreatIds: [THREAT_ID],
@@ -235,7 +235,7 @@ describe("decide: ReviewAction (matrix P4-P6, D1-D3, O1-O4)", () => {
   }
 
   it("computes the full pool (stat + item + approved bonus), rolls dice, and charges resources", () => {
-    // Pool = SNEAK(4) + item(1) + bonus(+1 approved) = 6 player dice; threat attack(3) = 3 attack dice.
+    // Pool = CON(4) + item(1) + bonus(+1 approved) = 6 player dice; threat attack(3) = 3 attack dice.
     const playerFaces = [6, 5, 4, 3, 2, 1];
     const attackFaces = [4, 1, 2];
     const random = new FixedSequenceRandom([...playerFaces, ...attackFaces]);
@@ -269,7 +269,7 @@ describe("decide: ReviewAction (matrix P4-P6, D1-D3, O1-O4)", () => {
   });
 
   it("a struck bonus claim contributes no dice (matrix P4)", () => {
-    // Pool = SNEAK(4) + item(1), no bonus = 5 player dice.
+    // Pool = CON(4) + item(1), no bonus = 5 player dice.
     const random = new FixedSequenceRandom([1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
     const decision = eatTheReichTemplate.decide(
       { state: declaredState(), actor: GM_CTX, random },
@@ -304,12 +304,12 @@ describe("decide: ReviewAction (matrix P4-P6, D1-D3, O1-O4)", () => {
         characterId: ROOK_ID,
         actorMemberId: PLAYER_MEMBER_ID,
         status: "declared",
-        declaredStat: "SNEAK",
+        declaredStat: "CON",
         declaredAbilityIds: ["rook-blood-second-wind"],
       },
       withBlood,
     );
-    const random = new FixedSequenceRandom([2, 2, 2, 2, 2]); // SNEAK(4) + ability(1) = 5 dice, no attack
+    const random = new FixedSequenceRandom([2, 2, 2, 2, 2]); // CON(4) + ability(1) = 5 dice, no attack
     const decision = eatTheReichTemplate.decide(
       { state, actor: GM_CTX, random },
       { type: "ReviewAction", rollId: "roll-1", approvedClaimIds: [], engagedThreatIds: [] },
@@ -319,6 +319,122 @@ describe("decide: ReviewAction (matrix P4-P6, D1-D3, O1-O4)", () => {
     const event = decision.events[0]?.event;
     if (event?.type !== "ActionRolled") throw new Error("expected ActionRolled");
     expect(event.bloodSpent).toBe(1);
+  });
+
+  it("Corpse Eater gains exactly 1 Blood when any number of 1s are rolled", () => {
+    const characterId = "orsolya";
+    const state = stateWithRoll(
+      {
+        id: "roll-1",
+        characterId,
+        actorMemberId: PLAYER_MEMBER_ID,
+        status: "declared",
+        declaredStat: "CON",
+      },
+      stateWithScene({ threat: { rating: 0 } }, stateWithClaim(characterId, PLAYER_MEMBER_ID)),
+    );
+    const decision = eatTheReichTemplate.decide(
+      { state, actor: GM_CTX, random: new FixedSequenceRandom([1]) },
+      { type: "ReviewAction", rollId: "roll-1", approvedClaimIds: [], engagedThreatIds: [] },
+    );
+    expect(decision.ok).toBe(true);
+    if (!decision.ok) return;
+    expect(decision.events[0]?.event).toMatchObject({
+      type: "ActionRolled",
+      playerFaces: [1],
+      passiveBloodGained: 1,
+    });
+  });
+
+  it("lets a player mark Cigarettes to regain 2 Blood", () => {
+    const before = stateWithClaim(ROOK_ID, PLAYER_MEMBER_ID);
+    const rook = before.characters[ROOK_ID]!;
+    const state = {
+      ...before,
+      characters: { ...before.characters, [ROOK_ID]: { ...rook, blood: 1 } },
+    };
+    const decision = eatTheReichTemplate.decide(
+      { state, actor: PLAYER_CTX, random: new FixedSequenceRandom([]) },
+      {
+        type: "UseUtilityItem",
+        characterId: ROOK_ID,
+        itemId: "rook-pocket-mirror",
+        rollId: null,
+      },
+    );
+    expect(decision.ok).toBe(true);
+    if (!decision.ok) return;
+    expect(decision.events[0]?.event).toMatchObject({
+      type: "CharacterCorrected",
+      patch: {
+        blood: 3,
+        itemUses: [{ itemId: "rook-pocket-mirror", usesRemaining: 2 }],
+      },
+    });
+  });
+
+  it("lets Chuck destroy the Cowboy hat to cancel a pending Downed result", () => {
+    const characterId = "orsolya";
+    const state = stateWithRoll(
+      {
+        id: "roll-1",
+        characterId,
+        actorMemberId: PLAYER_MEMBER_ID,
+        status: "awaiting_injury_choice",
+        injuryChoicePending: { mode: "downed" },
+      },
+      stateWithClaim(characterId, PLAYER_MEMBER_ID),
+    );
+    const decision = eatTheReichTemplate.decide(
+      { state, actor: PLAYER_CTX, random: new FixedSequenceRandom([]) },
+      {
+        type: "UseUtilityItem",
+        characterId,
+        itemId: "orsolya-draft-horse",
+        rollId: "roll-1",
+      },
+    );
+    expect(decision.ok).toBe(true);
+    if (!decision.ok) return;
+    expect(decision.events.map((entry) => entry.event)).toMatchObject([
+      {
+        type: "CharacterCorrected",
+        patch: { itemUses: [{ itemId: "orsolya-draft-horse", usesRemaining: 0 }] },
+      },
+      {
+        type: "InjuryCategoryChosen",
+        rollId: "roll-1",
+        mark: { boxIndexes: [], downed: false, rescueObjective: null },
+      },
+    ]);
+  });
+
+  it("does not let Chuck redirect a deferred hat injury to another category", () => {
+    const characterId = "orsolya";
+    const state = stateWithRoll(
+      {
+        id: "roll-1",
+        characterId,
+        actorMemberId: PLAYER_MEMBER_ID,
+        status: "awaiting_injury_choice",
+        injuryChoicePending: {
+          mode: "single",
+          preferredCategoryId: "orsolya-saddle-lost",
+        },
+      },
+      stateWithClaim(characterId, PLAYER_MEMBER_ID),
+    );
+    const decision = eatTheReichTemplate.decide(
+      { state, actor: PLAYER_CTX, random: new FixedSequenceRandom([]) },
+      {
+        type: "ChooseInjuryCategory",
+        rollId: "roll-1",
+        categoryId: "orsolya-sabre-arm-numb",
+      },
+    );
+    expect(decision.ok).toBe(false);
+    if (decision.ok) return;
+    expect(decision.code).toBe("INVALID_ALLOCATION");
   });
 
   it("noBonusDice forbids bonus dice even when the GM approves the claim (matrix P7)", () => {
@@ -345,7 +461,7 @@ describe("decide: ReviewAction (matrix P4-P6, D1-D3, O1-O4)", () => {
         },
       },
     };
-    // Pool = SNEAK(4) + item(1), no bonus even though approved = 5 player dice; threat attack(3) = 3 attack dice.
+    // Pool = CON(4) + item(1), no bonus even though approved = 5 player dice; threat attack(3) = 3 attack dice.
     const random = new FixedSequenceRandom([1, 1, 1, 1, 1, 1, 1, 1]);
     const decision = eatTheReichTemplate.decide(
       { state, actor: GM_CTX, random },
@@ -652,9 +768,9 @@ describe("decide: AllocateResults (matrix A1-A9, O4, I1-I2)", () => {
     if (!decision.ok) return;
     const event = decision.events[0]?.event;
     if (event?.type !== "ActionResolved") throw new Error("expected ActionResolved");
-    // Blackout Drop: reduceThreatAttack(2) on the primary engaged Threat (attack 3 -> 1).
+    // Deadeye Shot: reduceThreatAttack(1) on the primary engaged Threat (attack 3 -> 2).
     expect(event.threatDeltas).toEqual([
-      { threatId: THREAT_ID, ratingAfter: 6, attackAfter: 1, status: "active" },
+      { threatId: THREAT_ID, ratingAfter: 6, attackAfter: 2, status: "active" },
     ]);
   });
 
@@ -716,6 +832,34 @@ describe("decide: AllocateResults (matrix A1-A9, O4, I1-I2)", () => {
       boxIndexes: [0],
       downed: false,
       rescueObjective: null,
+    });
+  });
+
+  it("defers Chuck's normal injury so the Cowboy hat can cancel it", () => {
+    const characterId = "orsolya";
+    const state = rolledState(
+      { characterId },
+      stateWithScene({}, stateWithClaim(characterId, PLAYER_MEMBER_ID)),
+    );
+    const decision = eatTheReichTemplate.decide(
+      { state, actor: PLAYER_CTX, random: new FixedSequenceRandom([3]) },
+      {
+        type: "AllocateResults",
+        rollId: "roll-1",
+        allocations: [
+          { dieFaceIndex: 0, target: { kind: "feed" } },
+          { dieFaceIndex: 1, target: { kind: "feed" } },
+          { dieFaceIndex: 2, target: { kind: "feed" } },
+        ],
+      },
+    );
+    expect(decision.ok).toBe(true);
+    if (!decision.ok) return;
+    expect(decision.events[0]?.event).toMatchObject({
+      type: "ActionResolved",
+      injuryMark: null,
+      injuryChoicePendingMode: "single",
+      injuryChoicePendingCategoryId: "orsolya-saddle-lost",
     });
   });
 

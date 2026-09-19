@@ -15,6 +15,7 @@ export interface ComposeStep2Props {
   readonly character: CharacterFullSheet;
   readonly threats: EatTheReichView["threats"];
   readonly onDeclare: (choice: Extract<EatTheReichCommand, { type: "BeginAction" }>) => void;
+  readonly onUseUtilityItem: (itemId: string) => void;
 }
 
 function highestStatIndex(character: CharacterFullSheet): number {
@@ -31,6 +32,7 @@ export function ComposeStep2({
   character,
   threats,
   onDeclare,
+  onUseUtilityItem,
 }: ComposeStep2Props): JSX.Element {
   // F05 P1: defaults to the character's highest stat, not always the first.
   const [statIndex, setStatIndex] = useState<number | null>(() => highestStatIndex(character));
@@ -142,11 +144,22 @@ export function ComposeStep2({
               <input
                 type="checkbox"
                 checked={itemIds.includes(item.id)}
-                disabled={item.usesRemaining <= 0}
+                disabled={item.usesRemaining <= 0 || item.poolEligible === false}
                 onChange={() => toggleClaimable(itemIds, item.id, setItemIds)}
               />
               {item.name} ({item.usesRemaining}/{item.maxUses} uses)
               {item.usesRemaining <= 0 ? " — no uses left" : ""}
+              {item.useEffect?.kind === "gainBlood"
+                ? ` — mark to regain ${item.useEffect.amount} Blood`
+                : ""}
+              {item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
+                ? " — mark to ignore an Injury or being Downed; then destroy the hat"
+                : ""}
+              {item.useEffect?.kind === "gainBlood" && item.usesRemaining > 0 ? (
+                <button type="button" onClick={() => onUseUtilityItem(item.id)}>
+                  Mark and regain Blood
+                </button>
+              ) : null}
             </label>
           ))}
         </div>

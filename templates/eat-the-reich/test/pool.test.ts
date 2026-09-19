@@ -111,6 +111,18 @@ describe("buildPool (matrix P1-P3, P7)", () => {
     });
   });
 
+  it("utility equipment cannot be submitted as a pool die", () => {
+    const character = makeCharacter({
+      items: [makeItem({ id: "cigarettes", poolEligible: false, bonusPlus: 0 })],
+    });
+    expect(
+      buildPool(character, { stat: "SNEAK", itemIds: ["cigarettes"], abilityIds: [] }),
+    ).toEqual({
+      ok: false,
+      rejection: { kind: "itemNotPoolEligible", itemId: "cigarettes" },
+    });
+  });
+
   it("an unknown item is rejected", () => {
     const outcome = buildPool(makeCharacter(), {
       stat: "SNEAK",

@@ -162,6 +162,11 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
     await handleDispatch({ type: "ChooseInjuryCategory", rollId, categoryId });
   }
 
+  async function handleUseUtilityItem(itemId: string, rollId: string | null): Promise<void> {
+    if (!selfId) return;
+    await handleDispatch({ type: "UseUtilityItem", characterId: selfId, itemId, rollId });
+  }
+
   async function handlePause(): Promise<void> {
     await handleDispatch({ type: "Pause" });
   }
@@ -195,8 +200,12 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
       <ChooseInjuryPanel2
         character={self}
         mode={resolution.event.injuryChoicePendingMode}
+        preferredCategoryId={resolution.event.injuryChoicePendingCategoryId ?? undefined}
         onChoose={(categoryId) => {
           void handleChooseInjury(categoryId, resolution.event.rollId);
+        }}
+        onUseHat={(itemId) => {
+          void handleUseUtilityItem(itemId, resolution.event.rollId);
         }}
       />
     );
@@ -220,8 +229,12 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
       <ChooseInjuryPanel2
         character={self}
         mode={ownRoll.injuryChoicePending.mode}
+        preferredCategoryId={ownRoll.injuryChoicePending.preferredCategoryId}
         onChoose={(categoryId) => {
           void handleChooseInjury(categoryId, ownRoll.rollId);
+        }}
+        onUseHat={(itemId) => {
+          void handleUseUtilityItem(itemId, ownRoll.rollId);
         }}
       />
     );
@@ -249,6 +262,9 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
         threats={view.threats}
         onDeclare={(command) => {
           void handleDispatch(command);
+        }}
+        onUseUtilityItem={(itemId) => {
+          void handleUseUtilityItem(itemId, null);
         }}
       />
     );

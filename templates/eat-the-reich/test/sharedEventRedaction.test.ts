@@ -480,7 +480,7 @@ describe("shared event redaction: full lifecycle guard", () => {
         command: {
           type: "BeginAction",
           characterId: ROOK_ID,
-          stat: "SNEAK",
+          stat: "CON",
           itemIds: [],
           abilityIds: [],
           bonusClaimIds: [],

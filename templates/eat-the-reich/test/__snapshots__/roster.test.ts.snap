@@ -1,0 +1,965 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ORIGINAL_ROSTER (matrix C2/C3) > matches the complete approved source-sheet fixture 1`] = `
+[
+  {
+    "abilities": [
+      {
+        "effect": {
+          "amount": 1,
+          "kind": "reduceThreatAttack",
+        },
+        "id": "rook-special-blackout-drop",
+        "name": "Deadeye Shot",
+        "trigger": "special",
+      },
+      {
+        "bloodCost": 1,
+        "bonusPlus": 1,
+        "bonusRequirement": "beautiful surroundings",
+        "effect": {
+          "kind": "none",
+        },
+        "id": "rook-blood-second-wind",
+        "name": "Dark Glamour",
+        "trigger": "blood",
+      },
+      {
+        "bloodCost": 1,
+        "bonusPlus": 1,
+        "bonusRequirement": "old buildings",
+        "effect": {
+          "kind": "none",
+        },
+        "id": "rook-other-practiced-hands",
+        "name": "Night's Willing Servants",
+        "trigger": "blood",
+      },
+    ],
+    "activeLootId": null,
+    "advances": [
+      {
+        "id": "rook-advance-1",
+        "label": "Hell's Ravenous Fire",
+        "unlocked": false,
+      },
+      {
+        "id": "rook-advance-2",
+        "label": "Enervation of the Soul",
+        "unlocked": false,
+      },
+      {
+        "id": "rook-advance-3",
+        "label": "Mantle of the Fell Beast",
+        "unlocked": false,
+      },
+    ],
+    "blood": 0,
+    "claimedByMemberId": null,
+    "concept": "Old Money undead occultist and bonne vivante",
+    "downed": false,
+    "id": "rook",
+    "injuries": [
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "kind": "noBonusDice",
+            },
+          },
+        ],
+        "id": "rook-papers-burned",
+        "label": "Suit Torn / Abdominal Puncture",
+      },
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "deltas": {
+                "BRAWL": 2,
+                "CON": -2,
+              },
+              "kind": "statDelta",
+            },
+          },
+        ],
+        "id": "rook-hands-broken",
+        "label": "Hair Ruined / Headshot",
+      },
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "kind": "oneItemPerTurn",
+            },
+          },
+        ],
+        "id": "rook-line-cut",
+        "label": "Shoulder Injury / Arm Removed",
+      },
+    ],
+    "items": [
+      {
+        "bonusPlus": 1,
+        "bonusRequirement": "elevated position",
+        "id": "rook-forged-papers",
+        "maxUses": 5,
+        "name": "Exquisite hunting rifle",
+        "usesRemaining": 5,
+      },
+      {
+        "bonusPlus": 1,
+        "bonusRequirement": "charge",
+        "id": "rook-silenced-pistol",
+        "maxUses": 5,
+        "name": "Magic cavalry sabre",
+        "usesRemaining": 5,
+      },
+      {
+        "bonusPlus": 2,
+        "bonusRequirement": "concealed",
+        "id": "rook-rooftop-line",
+        "maxUses": 3,
+        "name": "Explosive runes",
+        "usesRemaining": 3,
+      },
+      {
+        "bonusPlus": 0,
+        "bonusRequirement": "",
+        "id": "rook-pocket-mirror",
+        "maxUses": 3,
+        "name": "Cigarettes taken from the pockets of hanged men",
+        "poolEligible": false,
+        "useEffect": {
+          "amount": 2,
+          "kind": "gainBlood",
+        },
+        "usesRemaining": 3,
+      },
+    ],
+    "lastStand": {
+      "diceCount": 8,
+      "label": "Forbidden Sorceries",
+    },
+    "name": "Iryna",
+    "portraitId": "rook-portrait",
+    "retired": false,
+    "stats": {
+      "BRAWL": 2,
+      "CON": 4,
+      "FIX": 2,
+      "SEARCH": 2,
+      "SHOOT": 3,
+      "SNEAK": 1,
+      "TERRIFY": 3,
+    },
+  },
+  {
+    "abilities": [
+      {
+        "effect": {
+          "description": "Roll a D6 and restore one use of the matching numbered weapon.",
+          "kind": "text",
+        },
+        "id": "vesper-special-final-curtain",
+        "name": "Scavenger",
+        "trigger": "special",
+      },
+      {
+        "effect": {
+          "description": "When using explosives, reduce an Objective or Threat's Challenge by 1.",
+          "kind": "text",
+        },
+        "id": "vesper-blood-hungerglow",
+        "name": "Sapper",
+        "trigger": "special",
+      },
+      {
+        "bloodCost": 1,
+        "bonusPlus": 1,
+        "bonusRequirement": "infiltration",
+        "effect": {
+          "kind": "none",
+        },
+        "id": "vesper-other-stage-presence",
+        "name": "Blink",
+        "trigger": "blood",
+      },
+    ],
+    "activeLootId": null,
+    "advances": [
+      {
+        "id": "vesper-advance-1",
+        "label": "Rat Swarm",
+        "unlocked": false,
+      },
+      {
+        "id": "vesper-advance-2",
+        "label": "Feed on Fear",
+        "unlocked": false,
+      },
+      {
+        "id": "vesper-advance-3",
+        "label": "Pitch Black",
+        "unlocked": false,
+      },
+    ],
+    "blood": 0,
+    "claimedByMemberId": null,
+    "concept": "Resistance guerrilla fighter and demolitions expert",
+    "downed": false,
+    "id": "vesper",
+    "injuries": [
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "kind": "noSpecials",
+            },
+          },
+        ],
+        "id": "vesper-voice-cracked",
+        "label": "Dazed / Headshot",
+      },
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "amount": 1,
+              "kind": "bloodUpkeep",
+            },
+          },
+        ],
+        "id": "vesper-cape-torn",
+        "label": "Just a Graze / Bleeding Out",
+      },
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "kind": "oneItemPerTurn",
+            },
+          },
+        ],
+        "id": "vesper-mask-shattered",
+        "label": "Hand Injury / Lost an Arm",
+      },
+    ],
+    "items": [
+      {
+        "bonusPlus": 1,
+        "bonusRequirement": "flanking",
+        "id": "vesper-sabre-cane",
+        "maxUses": 4,
+        "name": "[1] M3 submachine gun",
+        "usesRemaining": 4,
+      },
+      {
+        "bonusPlus": 1,
+        "bonusRequirement": "close quarters",
+        "id": "vesper-phosphor-flash",
+        "maxUses": 4,
+        "name": "[2] Cut-down Lee Enfield rifle",
+        "usesRemaining": 4,
+      },
+      {
+        "bonusPlus": 1,
+        "bonusRequirement": "cover advance",
+        "id": "vesper-officers-greatcoat",
+        "maxUses": 3,
+        "name": "[3] Smoke grenades",
+        "usesRemaining": 3,
+      },
+      {
+        "bonusPlus": 2,
+        "bonusRequirement": "firetrap",
+        "id": "nicole-firebombs",
+        "maxUses": 2,
+        "name": "[4] Firebombs",
+        "usesRemaining": 2,
+      },
+      {
+        "bonusPlus": 3,
+        "bonusRequirement": "armoured target",
+        "id": "nicole-panzerfaust",
+        "maxUses": 1,
+        "name": "[5] Panzerfaust",
+        "usesRemaining": 1,
+      },
+      {
+        "bonusPlus": 4,
+        "bonusRequirement": "demolitions",
+        "id": "nicole-dynamite",
+        "maxUses": 1,
+        "name": "[6] Dynamite",
+        "usesRemaining": 1,
+      },
+    ],
+    "lastStand": {
+      "diceCount": 8,
+      "label": "Rigged to Blow",
+    },
+    "name": "Nicole",
+    "portraitId": "vesper-portrait",
+    "retired": false,
+    "stats": {
+      "BRAWL": 2,
+      "CON": 2,
+      "FIX": 1,
+      "SEARCH": 2,
+      "SHOOT": 4,
+      "SNEAK": 3,
+      "TERRIFY": 3,
+    },
+  },
+  {
+    "abilities": [
+      {
+        "bloodCost": 1,
+        "bonusPlus": 1,
+        "bonusRequirement": "Hans, are you okay?",
+        "effect": {
+          "kind": "none",
+        },
+        "id": "halloran-special-last-rites",
+        "name": "Danse Macabre",
+        "trigger": "blood",
+      },
+      {
+        "effect": {
+          "amount": 1,
+          "kind": "reduceThreatAttack",
+        },
+        "id": "halloran-blood-penance",
+        "name": "Back-Pocket Hex",
+        "trigger": "special",
+      },
+      {
+        "bloodCost": 1,
+        "bonusPlus": 1,
+        "bonusRequirement": "incorporates background cleverly",
+        "effect": {
+          "kind": "none",
+        },
+        "id": "halloran-other-demolitions-drill",
+        "name": "Phantasmagoria",
+        "trigger": "blood",
+      },
+    ],
+    "activeLootId": null,
+    "advances": [
+      {
+        "id": "halloran-advance-1",
+        "label": "Memory Rot",
+        "unlocked": false,
+      },
+      {
+        "id": "halloran-advance-2",
+        "label": "Death Burst",
+        "unlocked": false,
+      },
+      {
+        "id": "halloran-advance-3",
+        "label": "Dead Man's Luck",
+        "unlocked": false,
+      },
+    ],
+    "blood": 0,
+    "claimedByMemberId": null,
+    "concept": "Hackney necromancer taught by his aunt; charming and crooked",
+    "downed": false,
+    "id": "halloran",
+    "injuries": [
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "amount": -1,
+              "kind": "allStatsDelta",
+            },
+          },
+        ],
+        "id": "halloran-collar-scorched",
+        "label": "Lost Some Fingers / Arm Ripped Off",
+      },
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "deltas": {
+                "CON": -2,
+                "TERRIFY": 2,
+              },
+              "kind": "statDelta",
+            },
+          },
+        ],
+        "id": "halloran-ribs-cracked",
+        "label": "Sucking Chest Wound / Shot in the Face",
+      },
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "kind": "noBloodSpend",
+            },
+          },
+        ],
+        "id": "halloran-fuse-hand-burned",
+        "label": "Grimoire Damaged / Wards Compromised",
+      },
+    ],
+    "items": [
+      {
+        "bonusPlus": 1,
+        "bonusRequirement": "never saw you coming",
+        "id": "halloran-shaped-charges",
+        "maxUses": 4,
+        "name": "Enormous knife",
+        "usesRemaining": 4,
+      },
+      {
+        "bonusPlus": 2,
+        "bonusRequirement": "point-blank",
+        "id": "halloran-trench-shotgun",
+        "maxUses": 3,
+        "name": "Sawn-off shotgun",
+        "usesRemaining": 3,
+      },
+      {
+        "bonusPlus": 2,
+        "bonusRequirement": "pass through walls",
+        "id": "halloran-blessing-lantern",
+        "maxUses": 3,
+        "name": "Bottled ghosts",
+        "usesRemaining": 3,
+      },
+      {
+        "bonusPlus": 3,
+        "bonusRequirement": "any",
+        "id": "cosgrave-soul-jar",
+        "maxUses": 1,
+        "name": "Mother Millicent's stolen soul jar",
+        "usesRemaining": 1,
+      },
+    ],
+    "lastStand": {
+      "diceCount": 8,
+      "label": "Undead Horde",
+    },
+    "name": "Cosgrave",
+    "portraitId": "halloran-portrait",
+    "retired": false,
+    "stats": {
+      "BRAWL": 2,
+      "CON": 3,
+      "FIX": 3,
+      "SEARCH": 2,
+      "SHOOT": 2,
+      "SNEAK": 3,
+      "TERRIFY": 2,
+    },
+  },
+  {
+    "abilities": [
+      {
+        "bloodCost": 1,
+        "bonusPlus": 2,
+        "bonusRequirement": "against metal",
+        "effect": {
+          "kind": "none",
+        },
+        "id": "orsolya-special-broken-lance",
+        "name": "Acid Spit",
+        "trigger": "blood",
+      },
+      {
+        "bloodCost": 1,
+        "bonusPlus": 1,
+        "bonusRequirement": "low ceilings",
+        "effect": {
+          "kind": "none",
+        },
+        "id": "orsolya-blood-old-cavalry-oath",
+        "name": "Spider Scurry",
+        "trigger": "blood",
+      },
+      {
+        "effect": {
+          "amount": 1,
+          "kind": "onOnesGainBlood",
+        },
+        "id": "orsolya-other-horse-sense",
+        "name": "Corpse Eater",
+        "trigger": "passive",
+      },
+    ],
+    "activeLootId": null,
+    "advances": [
+      {
+        "id": "orsolya-advance-1",
+        "label": "Elbow Grease",
+        "unlocked": false,
+      },
+      {
+        "id": "orsolya-advance-2",
+        "label": "Corrosive Fluids",
+        "unlocked": false,
+      },
+      {
+        "id": "orsolya-advance-3",
+        "label": "Lashing Tongue",
+        "unlocked": false,
+      },
+    ],
+    "blood": 0,
+    "claimedByMemberId": null,
+    "concept": "Decent cowboy cannibal who loves honest work and the open plains",
+    "downed": false,
+    "id": "orsolya",
+    "injuries": [
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "amount": 1,
+              "kind": "bloodUpkeep",
+            },
+          },
+        ],
+        "id": "orsolya-sabre-arm-numb",
+        "label": "Flesh Wound / Shot Fulla Holes",
+      },
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "amount": -1,
+              "kind": "allStatsDelta",
+            },
+          },
+        ],
+        "id": "orsolya-saddle-lost",
+        "label": "Limping / Crawling",
+      },
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "kind": "noBonusDice",
+            },
+          },
+        ],
+        "id": "orsolya-colours-torn",
+        "label": "Mauled / Eviscerated",
+      },
+    ],
+    "items": [
+      {
+        "bonusPlus": 1,
+        "bonusRequirement": "duel",
+        "id": "orsolya-cavalry-sabre",
+        "maxUses": 5,
+        "name": "Paired revolvers, Betsy and Maria",
+        "usesRemaining": 5,
+      },
+      {
+        "bonusPlus": 1,
+        "bonusRequirement": "Jerry-rigging",
+        "id": "orsolya-carbine",
+        "maxUses": 4,
+        "name": "Tool belt",
+        "usesRemaining": 4,
+      },
+      {
+        "bonusPlus": 0,
+        "bonusRequirement": "",
+        "id": "orsolya-draft-horse",
+        "maxUses": 1,
+        "name": "Cowboy hat",
+        "poolEligible": false,
+        "useEffect": {
+          "kind": "ignoreInjuryOrDownedAndDestroy",
+        },
+        "usesRemaining": 1,
+      },
+    ],
+    "lastStand": {
+      "diceCount": 8,
+      "label": "Go Down Shooting",
+    },
+    "name": "Chuck",
+    "portraitId": "orsolya-portrait",
+    "retired": false,
+    "stats": {
+      "BRAWL": 3,
+      "CON": 1,
+      "FIX": 4,
+      "SEARCH": 2,
+      "SHOOT": 3,
+      "SNEAK": 2,
+      "TERRIFY": 2,
+    },
+  },
+  {
+    "abilities": [
+      {
+        "effect": {
+          "amount": 3,
+          "kind": "reduceRating",
+        },
+        "id": "delphine-special-marked-page",
+        "name": "Apex Predator",
+        "trigger": "special",
+      },
+      {
+        "effect": {
+          "amount": 3,
+          "kind": "removeAttackSuccesses",
+        },
+        "id": "delphine-blood-old-debts",
+        "name": "Unnatural Endurance",
+        "trigger": "special",
+      },
+      {
+        "bloodCost": 1,
+        "bonusPlus": 1,
+        "bonusRequirement": "target fleeing",
+        "effect": {
+          "kind": "none",
+        },
+        "id": "delphine-other-catacomb-memory",
+        "name": "Bloodhunt",
+        "trigger": "blood",
+      },
+    ],
+    "activeLootId": null,
+    "advances": [
+      {
+        "id": "delphine-advance-1",
+        "label": "Nightmare Regeneration",
+        "unlocked": false,
+      },
+      {
+        "id": "delphine-advance-2",
+        "label": "Spirit Storm",
+        "unlocked": false,
+      },
+      {
+        "id": "delphine-advance-3",
+        "label": "Tethered Phantom",
+        "unlocked": false,
+      },
+    ],
+    "blood": 0,
+    "claimedByMemberId": null,
+    "concept": "Ex-fighter pilot carrying the parasite soul of a wild predator",
+    "downed": false,
+    "id": "delphine",
+    "injuries": [
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "kind": "noSpecials",
+            },
+          },
+        ],
+        "id": "delphine-ink-stained-eyes",
+        "label": "Spirits Cowed / Spirits Cast Out",
+      },
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "deltas": {
+                "SNEAK": 2,
+                "TERRIFY": -2,
+              },
+              "kind": "statDelta",
+            },
+          },
+        ],
+        "id": "delphine-fingers-broken",
+        "label": "Sigils Marred / Bleeding Shadows",
+      },
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "amount": -1,
+              "kind": "allStatsDelta",
+            },
+          },
+        ],
+        "id": "delphine-ledger-lost",
+        "label": "Limping / Ruined Leg",
+      },
+    ],
+    "items": [
+      {
+        "bonusPlus": 1,
+        "bonusRequirement": "enemies in cover",
+        "id": "delphine-bone-knife",
+        "maxUses": 4,
+        "name": "Machine gun",
+        "usesRemaining": 4,
+      },
+      {
+        "bonusPlus": 1,
+        "bonusRequirement": "receive a charge",
+        "id": "delphine-ledger-of-names",
+        "maxUses": 4,
+        "name": "Greatspear",
+        "usesRemaining": 4,
+      },
+      {
+        "bonusPlus": 2,
+        "bonusRequirement": "enclosed spaces",
+        "id": "delphine-lockpicks",
+        "maxUses": 2,
+        "name": "Fragmentation grenades",
+        "usesRemaining": 2,
+      },
+      {
+        "bonusPlus": 3,
+        "bonusRequirement": "animals",
+        "id": "astrid-spirit-fetters",
+        "maxUses": 2,
+        "name": "Spirit fetters",
+        "usesRemaining": 2,
+      },
+    ],
+    "lastStand": {
+      "diceCount": 8,
+      "label": "Unleash the Spirits",
+    },
+    "name": "Astrid",
+    "portraitId": "delphine-portrait",
+    "retired": false,
+    "stats": {
+      "BRAWL": 3,
+      "CON": 1,
+      "FIX": 2,
+      "SEARCH": 3,
+      "SHOOT": 2,
+      "SNEAK": 2,
+      "TERRIFY": 4,
+    },
+  },
+  {
+    "abilities": [
+      {
+        "effect": {
+          "amount": 3,
+          "kind": "gainBlood",
+        },
+        "id": "tallow-special-suppressing-fire",
+        "name": "Ravenous",
+        "trigger": "special",
+      },
+      {
+        "bloodCost": 1,
+        "bonusPlus": 1,
+        "bonusRequirement": "dense cover",
+        "effect": {
+          "kind": "none",
+        },
+        "id": "tallow-blood-trench-hunger",
+        "name": "Sense Heartbeat",
+        "trigger": "blood",
+      },
+      {
+        "bloodCost": 1,
+        "bonusPlus": 1,
+        "bonusRequirement": "aerodynamic",
+        "effect": {
+          "kind": "none",
+        },
+        "id": "tallow-other-never-stops-firing",
+        "name": "Improvised Projectile",
+        "trigger": "blood",
+      },
+      {
+        "bloodCost": 1,
+        "bonusPlus": 1,
+        "bonusRequirement": "aerial combat",
+        "effect": {
+          "kind": "none",
+        },
+        "id": "flint-wings",
+        "name": "Wings",
+        "trigger": "blood",
+      },
+    ],
+    "activeLootId": null,
+    "advances": [
+      {
+        "id": "tallow-advance-1",
+        "label": "Hellish Screech",
+        "unlocked": false,
+      },
+      {
+        "id": "tallow-advance-2",
+        "label": "Bone Armour",
+        "unlocked": false,
+      },
+      {
+        "id": "tallow-advance-3",
+        "label": "Ooze Form",
+        "unlocked": false,
+      },
+    ],
+    "blood": 0,
+    "claimedByMemberId": null,
+    "concept": "Half-bat, half-human cave-born nightmare and monstrous hunter",
+    "downed": false,
+    "id": "tallow",
+    "injuries": [
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "kind": "noBloodGain",
+            },
+          },
+        ],
+        "id": "tallow-hands-scarred",
+        "label": "Teeth Smashed / Jaw Broken",
+      },
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "deltas": {
+                "BRAWL": -2,
+                "SEARCH": 2,
+              },
+              "kind": "statDelta",
+            },
+          },
+        ],
+        "id": "tallow-ears-ringing",
+        "label": "Spooked / Broken",
+      },
+      {
+        "boxes": [
+          {
+            "marked": false,
+          },
+          {
+            "marked": false,
+            "penalty": {
+              "kind": "noBonusDice",
+            },
+          },
+        ],
+        "id": "tallow-coat-shredded",
+        "label": "Hamstrung / Eviscerated",
+      },
+    ],
+    "items": [
+      {
+        "bonusPlus": 1,
+        "bonusRequirement": "ambush",
+        "id": "tallow-belt-fed-gun",
+        "maxUses": 4,
+        "name": "Steel gouging claws",
+        "usesRemaining": 4,
+      },
+      {
+        "bonusPlus": 2,
+        "bonusRequirement": "three or more storeys",
+        "id": "tallow-grenade-bag",
+        "maxUses": 3,
+        "name": "Grappling hook",
+        "usesRemaining": 3,
+      },
+    ],
+    "lastStand": {
+      "diceCount": 8,
+      "label": "Final Form",
+    },
+    "name": "Flint",
+    "portraitId": "tallow-portrait",
+    "retired": false,
+    "stats": {
+      "BRAWL": 4,
+      "CON": 2,
+      "FIX": 2,
+      "SEARCH": 2,
+      "SHOOT": 1,
+      "SNEAK": 3,
+      "TERRIFY": 3,
+    },
+  },
+]
+`;

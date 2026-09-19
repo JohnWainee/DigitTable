@@ -75,9 +75,9 @@ export async function joinAsPlayer(
   return readOwnershipRecord()!;
 }
 
-/** Claims Rook from the claim screen (does not continue to the dashboard). */
+/** Claims Iryna (the stable `rook` record) from the claim screen. */
 export async function claimRook(user: User): Promise<void> {
-  const rookCard = screen.getByRole("heading", { name: "Rook" }).closest("li")!;
+  const rookCard = screen.getByRole("heading", { name: "Iryna" }).closest("li")!;
   await user.click(within(rookCard).getByRole("button", { name: /claim/i }));
   await within(rookCard).findByText(/^yours$/i);
 }

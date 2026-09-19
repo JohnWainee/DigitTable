@@ -1,13 +1,9 @@
 import type { MemberId } from "@digitable/contracts";
 
 /**
- * All content here (the roster in `roster.ts`, item/ability/injury names and
- * flavour text) is an original DigiTable creation. It follows the
- * structural *shape* Eat the Reich's rulebook specifies for a custom
- * character (docs/ETR_RULES_MATRIX.md Appendix A, matrix rule C3) but
- * reuses no licensed name, sentence, or entry. See AGENTS.md "Non-negotiable
- * boundaries" and docs/EAT_THE_REICH_BUILD_GUIDE.md "Licensing and content
- * policy" for the governing clarification.
+ * The roster in `roster.ts` uses the six core sourcebook character sheets
+ * supplied by the project owner. Stable legacy IDs remain unchanged so
+ * existing rooms and ownership records continue to resolve correctly.
  */
 
 /** The seven stats every character has (docs/ETR_RULES_MATRIX.md C1, p. 30). */
@@ -23,8 +19,14 @@ export interface ItemState {
   readonly name: string;
   /** Short in-fiction condition that must be satisfied to claim the bonus dice below (matrix P4). */
   readonly bonusRequirement: string;
-  /** The "+" count (1-4): how many bonus dice a satisfied claim adds (matrix P4). */
+  /** The "+" count (0-4): how many bonus dice a satisfied claim adds (matrix P4). */
   readonly bonusPlus: number;
+  /** False for utility equipment whose marked use resolves an effect instead of adding a pool die. */
+  readonly poolEligible?: boolean;
+  /** A typed utility-equipment effect displayed for adjudication outside pool building. */
+  readonly useEffect?:
+    | { readonly kind: "gainBlood"; readonly amount: number }
+    | { readonly kind: "ignoreInjuryOrDownedAndDestroy" };
   readonly maxUses: number;
   readonly usesRemaining: number;
 }
@@ -223,6 +225,8 @@ export interface KeptDie {
  */
 export interface InjuryChoicePending {
   readonly mode: "single" | "downed";
+  /** The originally rolled category when resolution was deferred for a utility-item choice. */
+  readonly preferredCategoryId?: string;
 }
 
 export type RollStatus = "declared" | "awaiting_allocation" | "awaiting_injury_choice" | "resolved";

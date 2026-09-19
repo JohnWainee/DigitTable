@@ -94,7 +94,7 @@ async function joinAndClaimRook(
   await screen.findByRole("heading", { name: /your recovery code/i });
   await user.click(screen.getByRole("button", { name: /i wrote it down/i }));
   await screen.findByRole("heading", { name: /pick your character/i });
-  const rookCard = screen.getByRole("heading", { name: "Rook" }).closest("li")!;
+  const rookCard = screen.getByRole("heading", { name: "Iryna" }).closest("li")!;
   await user.click(within(rookCard).getByRole("button", { name: /claim/i }));
   await within(rookCard).findByText(/^yours$/i);
   await user.click(screen.getByRole("button", { name: /continue to your dashboard/i }));
@@ -118,7 +118,7 @@ describe("GM director console and table display (C03)", () => {
     expect(screen.getByRole("heading", { name: /invite/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /scene director/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /^roster$/i })).toBeInTheDocument();
-    const rookRow = within(rosterList()).getByText("Rook").closest("li")!;
+    const rookRow = within(rosterList()).getByText("Iryna").closest("li")!;
     expect(rookRow.textContent).toMatch(/unclaimed/i);
     expect(await axe(container)).toHaveNoViolations();
   });
@@ -128,11 +128,11 @@ describe("GM director console and table display (C03)", () => {
     const { roomCode, roomId, gmOwnership } = await createSessionAsGm(user);
     const playerOwnership = await joinAndClaimRook(user, roomCode);
 
-    // Player declares Sneak (4) with the silenced pistol and claims its +1 bonus:
+    // Player declares Con (4) with the hunting rifle and claims its +1 bonus:
     // the full pool (bonus approved) would be 4 + 1 item + 1 bonus = 6.
-    await user.click(screen.getByRole("radio", { name: /^sneak/i }));
-    await user.click(screen.getByRole("checkbox", { name: /silenced pistol/i }));
-    await user.click(screen.getByRole("checkbox", { name: /meeting.*silenced pistol.*bonus/i }));
+    await user.click(screen.getByRole("radio", { name: /^con/i }));
+    await user.click(screen.getByRole("checkbox", { name: /exquisite hunting rifle/i }));
+    await user.click(screen.getByRole("checkbox", { name: /meeting.*hunting rifle.*bonus/i }));
     await user.click(screen.getByRole("button", { name: /declare action/i }));
     await screen.findByRole("heading", { name: /^declared$/i });
 
@@ -140,11 +140,11 @@ describe("GM director console and table display (C03)", () => {
     writeOwnershipRecord(gmOwnership);
     goTo(`#/room/${roomId}/gm`);
     await screen.findByRole("heading", { name: /pending actions/i });
-    const pendingCard = screen.getByRole("heading", { name: "Rook" }).closest("li")!;
+    const pendingCard = screen.getByRole("heading", { name: "Iryna" }).closest("li")!;
     expect(pendingCard.textContent).toMatch(/pool:\s*6\s*dice/i);
 
     // GM strikes the bonus claim: the displayed pool drops to 5.
-    const bonusCheckbox = within(pendingCard).getByRole("checkbox", { name: /close quarters/i });
+    const bonusCheckbox = within(pendingCard).getByRole("checkbox", { name: /elevated position/i });
     expect(bonusCheckbox).toBeChecked();
     await user.click(bonusCheckbox);
     expect(pendingCard.textContent).toMatch(/pool:\s*5\s*dice/i);
@@ -174,13 +174,15 @@ describe("GM director console and table display (C03)", () => {
     goTo(`#/room/${roomId}/gm`);
     await screen.findByRole("heading", { name: /^roster$/i });
 
-    const rookRow = within(rosterList()).getByText(/^rook/i).closest("li")!;
+    const rookRow = within(rosterList())
+      .getByText(/^iryna/i)
+      .closest("li")!;
     const correctButton = within(rookRow).getByRole("button", { name: /correct/i });
     await user.click(correctButton);
 
-    const dialog = screen.getByRole("dialog", { name: /correct rook/i });
+    const dialog = screen.getByRole("dialog", { name: /correct iryna/i });
     // C05: focus moves into the dialog on open, not left behind on the trigger.
-    expect(within(dialog).getByRole("heading", { name: /correct rook/i })).toHaveFocus();
+    expect(within(dialog).getByRole("heading", { name: /correct iryna/i })).toHaveFocus();
 
     const applyButton = within(dialog).getByRole("button", { name: /apply correction/i });
     expect(applyButton).toBeDisabled(); // no reason yet, delta is 0
@@ -206,7 +208,9 @@ describe("GM director console and table display (C03)", () => {
     goTo(`#/room/${roomId}/gm`);
     await screen.findByRole("heading", { name: /^roster$/i });
 
-    const rookRow = within(rosterList()).getByText(/^rook/i).closest("li")!;
+    const rookRow = within(rosterList())
+      .getByText(/^iryna/i)
+      .closest("li")!;
     const correctButton = within(rookRow).getByRole("button", { name: /correct/i });
     await user.click(correctButton);
     expect(screen.getByRole("dialog")).toBeInTheDocument();
@@ -226,7 +230,9 @@ describe("GM director console and table display (C03)", () => {
     goTo(`#/room/${roomId}/gm`);
     await screen.findByRole("heading", { name: /^roster$/i });
 
-    const rookRow = within(rosterList()).getByText(/^rook/i).closest("li")!;
+    const rookRow = within(rosterList())
+      .getByText(/^iryna/i)
+      .closest("li")!;
     await user.click(within(rookRow).getByRole("button", { name: /correct/i }));
     const dialog = screen.getByRole("dialog");
 
@@ -257,7 +263,7 @@ describe("GM director console and table display (C03)", () => {
 
     expect(await screen.findByRole("img", { name: /route map/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /^party$/i })).toBeInTheDocument();
-    expect(screen.getByText(/rook/i)).toBeInTheDocument();
+    expect(screen.getByText(/iryna/i)).toBeInTheDocument();
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     // Never a code/passphrase on the table.

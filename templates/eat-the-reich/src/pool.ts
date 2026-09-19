@@ -60,6 +60,7 @@ export interface PoolBuildResult {
 
 export type PoolBuildRejection =
   | { readonly kind: "unknownItem"; readonly itemId: string }
+  | { readonly kind: "itemNotPoolEligible"; readonly itemId: string }
   | { readonly kind: "itemDepleted"; readonly itemId: string }
   | { readonly kind: "unknownAbility"; readonly abilityId: string }
   | { readonly kind: "abilityNotUsable"; readonly abilityId: string }
@@ -125,6 +126,9 @@ export function buildPool(
   for (const itemId of itemIds) {
     const item = character.items.find((candidate) => candidate.id === itemId);
     if (!item) return { ok: false, rejection: { kind: "unknownItem", itemId } };
+    if (item.poolEligible === false) {
+      return { ok: false, rejection: { kind: "itemNotPoolEligible", itemId } };
+    }
     if (item.usesRemaining <= 0) return { ok: false, rejection: { kind: "itemDepleted", itemId } };
   }
 

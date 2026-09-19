@@ -65,6 +65,13 @@ export type EatTheReichCommand =
       readonly boxIndex: 0 | 1;
     }
   | {
+      readonly type: "UseUtilityItem";
+      readonly characterId: string;
+      readonly itemId: string;
+      /** Required only when the item cancels a pending Injury/Downed result. */
+      readonly rollId: string | null;
+    }
+  | {
       readonly type: "BeginAction";
       readonly characterId: string;
       readonly stat: Stat | "none";

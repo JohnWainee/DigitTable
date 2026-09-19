@@ -124,6 +124,7 @@ export type EatTheReichEvent =
       readonly attackBumpThreatId: string | null;
       readonly injuryMark: InjuryMarkResult | null;
       readonly injuryChoicePendingMode: "single" | "downed" | null;
+      readonly injuryChoicePendingCategoryId?: string | null;
     }
   | {
       readonly type: "InjuryCategoryChosen";

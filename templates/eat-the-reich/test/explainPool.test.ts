@@ -25,12 +25,12 @@ describe("explainPool", () => {
     const authority = freshAuthority(stateWithClaim(ROOK_ID, PLAYER_MEMBER_ID));
     const projection = projectViewer(eatTheReichTemplate, authority, PLAYER_VIEWER);
     const explanation = eatTheReichTemplate.explainPool(projection, {
-      actionId: "SNEAK",
+      actionId: "CON",
       gearIds: ["rook-silenced-pistol"],
     });
-    expect(explanation.total).toBe(5); // SNEAK(4) + item(1)
+    expect(explanation.total).toBe(5); // CON(4) + item(1)
     expect(explanation.components).toEqual([
-      { label: "SNEAK", value: 4 },
+      { label: "CON", value: 4 },
       { label: "Items", value: 1 },
     ]);
   });
