@@ -1,4 +1,4 @@
-import { act, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
 import { useState } from "react";
@@ -177,6 +177,99 @@ describe("SheetDialog", () => {
     ).toBe(true);
   });
 
+  it("removes inert from the app BEFORE returning focus to the trigger (an inert node cannot take focus)", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<Harness />);
+    const trigger = screen.getByRole("button", { name: /open sheet/i });
+    await user.click(trigger);
+
+    let appWasInertWhenFocusReturned: boolean | null = null;
+    const focusSpy = vi.spyOn(trigger, "focus").mockImplementation(() => {
+      appWasInertWhenFocusReturned = container.hasAttribute("inert");
+    });
+    await user.keyboard("{Escape}");
+
+    expect(focusSpy).toHaveBeenCalled();
+    expect(appWasInertWhenFocusReturned).toBe(false);
+  });
+
+  it("keeps root scroll locked until the LAST of several open sheets closes", async () => {
+    function Two(): JSX.Element {
+      const [a, setA] = useState(true);
+      const [b, setB] = useState(true);
+      return (
+        <div>
+          {a && (
+            <SheetDialog titleId="a-title" title="First" onClose={() => setA(false)} footer={null}>
+              <p>a</p>
+            </SheetDialog>
+          )}
+          {b && (
+            <SheetDialog titleId="b-title" title="Second" onClose={() => setB(false)} footer={null}>
+              <p>b</p>
+            </SheetDialog>
+          )}
+          <button type="button" onClick={() => setA(false)}>
+            close first
+          </button>
+          <button type="button" onClick={() => setB(false)}>
+            close second
+          </button>
+        </div>
+      );
+    }
+    render(<Two />);
+    expect(document.documentElement).toHaveClass("sheet-open");
+
+    act(() => screen.getByRole("button", { name: /close first/i }).click());
+    expect(document.documentElement).toHaveClass("sheet-open"); // the second is still open
+
+    act(() => screen.getByRole("button", { name: /close second/i }).click());
+    expect(document.documentElement).not.toHaveClass("sheet-open");
+  });
+
+  it("wraps Tab around REACHABLE controls only: a collapsed control at the end never swallows Tab, and a trailing link is part of the cycle", async () => {
+    const user = userEvent.setup();
+    render(
+      <SheetDialog
+        titleId="c-title"
+        title="Details"
+        onClose={() => {}}
+        footer={
+          <details>
+            <summary>More</summary>
+            <button type="button">Inside collapsed</button>
+          </details>
+        }
+      >
+        <button type="button">First</button>
+        <a href="#somewhere">A link</a>
+      </SheetDialog>,
+    );
+    const dialog = screen.getByRole("dialog");
+    const first = within(dialog).getByRole("button", { name: "First" });
+    const link = within(dialog).getByRole("link", { name: /a link/i });
+    const summary = within(dialog).getByText("More");
+
+    // The trailing link used to be outside the cycle (it was not in the focusable selector).
+    link.focus();
+    await user.tab();
+    expect(summary).toHaveFocus();
+
+    // The last REACHABLE control is the summary. The trap itself (not the browser's natural order,
+    // which jsdom does not model) must take Tab from it: cancel the default and wrap to the first
+    // control instead of stepping into the collapsed, unrendered button.
+    summary.focus();
+    const notCancelled = fireEvent.keyDown(summary, { key: "Tab" });
+    expect(notCancelled).toBe(false);
+    expect(first).toHaveFocus();
+
+    // And Shift+Tab from the first control wraps to that same last reachable control.
+    const shiftNotCancelled = fireEvent.keyDown(first, { key: "Tab", shiftKey: true });
+    expect(shiftNotCancelled).toBe(false);
+    expect(summary).toHaveFocus();
+  });
+
   it("has no axe violations open", async () => {
     const user = userEvent.setup();
     render(<Harness />);
@@ -245,6 +338,30 @@ describe("SheetDialog", () => {
       const removed = removeSpy.mock.calls.map(([type]) => type);
       expect(removed).toContain("resize");
       expect(removed).toContain("scroll");
+    });
+
+    it("follows an offset-only change (iOS scrolling the layout viewport under the keyboard)", async () => {
+      const viewport = installViewport();
+      const backdrop = await openSheet();
+      // Same size and scale; only the offset moves.
+      act(() => viewport.set({ offsetTop: 96 }));
+      expect(backdrop.style.getPropertyValue("--vv-top")).toBe("96px");
+      act(() => viewport.set({ offsetTop: 0, offsetLeft: 32 }));
+      expect(backdrop.style.getPropertyValue("--vv-left")).toBe("32px");
+      act(() => viewport.set({ offsetLeft: 0 }));
+      expect(backdrop.style.getPropertyValue("--vv-left")).toBe("");
+    });
+
+    it("re-reveals the focused text field when the keyboard finishes opening (viewport resize after focus)", async () => {
+      const viewport = installViewport();
+      const user = userEvent.setup();
+      render(<Harness />);
+      await user.click(screen.getByRole("button", { name: /open sheet/i }));
+      await user.click(within(screen.getByRole("dialog")).getByLabelText(/reason/i));
+      scrollIntoView.mockClear();
+
+      act(() => viewport.set({ height: 470 }));
+      expect(scrollIntoView).toHaveBeenCalledWith({ block: "nearest", inline: "nearest" });
     });
 
     it("renders normally where the Visual Viewport API does not exist", async () => {

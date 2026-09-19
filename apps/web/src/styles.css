@@ -80,6 +80,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   background: var(--ink-0);
+  /* Locking root scroll for a sheet removes the classic scrollbar; keep its gutter so the page does not jump. */
+  scrollbar-gutter: stable;
 }
 
 /* A pop-out is open: the page behind it must not scroll. */
@@ -307,6 +309,9 @@ fieldset {
 }
 
 legend {
+  /* At large text sizes a long legend must wrap inside its fieldset, not push the page wider. */
+  max-width: 100%;
+  overflow-wrap: anywhere;
   padding: 0.15rem 0.65rem;
   font-family: var(--font-mono);
   font-size: 0.8rem;
@@ -414,6 +419,13 @@ button {
     background: var(--ink-3);
     box-shadow: 6px 6px 0 rgba(34, 230, 255, 0.5);
   }
+}
+
+/* The 3px focus ring sits 3px off the button, across its hard drop shadow: swap the shadow for an
+   ink band while focused so the ring always contrasts (>= 3:1) on every side. */
+.primary-action:focus-visible:not(:disabled),
+.secondary-action:focus-visible:not(:disabled) {
+  box-shadow: 0 0 0 3px var(--ink-0);
 }
 
 .primary-action:active:not(:disabled),
@@ -1219,6 +1231,7 @@ details ul {
 
 .stepper-controls {
   display: flex;
+  flex-wrap: wrap; /* 200% text on a 320px phone: the row wraps instead of scrolling sideways */
   align-items: center;
   gap: 0.6rem;
 }
@@ -1249,7 +1262,11 @@ details ul {
 }
 
 .stepper-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-width: 3.5rem;
+  min-height: var(--tap);
   padding: 0.5rem;
   text-align: center;
   font-family: var(--font-mono);
@@ -1349,7 +1366,6 @@ details ul {
   left: var(--vv-left, 0px);
   width: var(--vv-width, 100%);
   height: var(--vv-height, 100vh);
-  height: var(--vv-height, 100dvh);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -1358,7 +1374,17 @@ details ul {
     env(safe-area-inset-left);
   background: rgba(3, 3, 4, 0.82);
   overscroll-behavior: contain;
-  touch-action: none;
+  /* Never `none`: an ancestor's touch-action cannot be re-enabled by a descendant, so `none` here
+     would disable pinch-zoom for the whole page while a sheet is open (WCAG 1.4.4). */
+  touch-action: pinch-zoom;
+}
+
+/* `var(--vv-height, 100dvh)` must live behind @supports: a var() whose value is invalid on an
+   engine without dvh becomes `height: auto` at computed-value time instead of falling back. */
+@supports (height: 100dvh) {
+  .sheet-backdrop {
+    height: var(--vv-height, 100dvh);
+  }
 }
 
 .sheet {
@@ -1415,11 +1441,16 @@ details ul {
   padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
   background: var(--ink-2);
   border-top: 2px solid var(--rule);
+  /* Backstop for large text on a small screen: the action row may scroll, but can never take the
+     whole sheet and squeeze the body away (WCAG 1.4.4 at 200% text on a 320px-wide phone). */
+  max-height: calc(var(--vv-height, 100dvh) * 0.4);
+  overflow-y: auto;
 }
 
+/* Two columns while each button has room, one full-width column otherwise (narrow or large text). */
 .sheet-actions {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
   gap: 0.75rem;
 }
 
@@ -1427,7 +1458,10 @@ details ul {
 @media (min-width: 40.0625rem) {
   .sheet-backdrop {
     align-items: center;
-    padding: 1.5rem;
+    /* Per-side max(): a plain `padding: 1.5rem` shorthand here would silently drop the notch insets
+       on landscape phones, which are wider than 641px. */
+    padding: max(1.5rem, env(safe-area-inset-top)) max(1.5rem, env(safe-area-inset-right))
+      max(1.5rem, env(safe-area-inset-bottom)) max(1.5rem, env(safe-area-inset-left));
   }
 
   .sheet {
@@ -1445,7 +1479,7 @@ details ul {
    reclaim vertical room for the scrolling body. */
 @media (max-height: 34rem) {
   .sheet-backdrop {
-    padding-top: env(safe-area-inset-top);
+    padding-top: max(env(safe-area-inset-top), 0.5rem);
   }
 
   .sheet-grip {
@@ -1517,6 +1551,8 @@ details ul {
     column-count: 2;
     column-gap: 3rem;
     font-size: 1.15rem;
+    /* Room for the tilted title's raised right end. */
+    padding-top: max(2rem, env(safe-area-inset-top));
   }
 
   .table-screen > * {
