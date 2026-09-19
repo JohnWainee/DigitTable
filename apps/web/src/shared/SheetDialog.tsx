@@ -19,14 +19,22 @@ function isReachable(el: HTMLElement): boolean {
   if (details && !details.open && !(el.tagName === "SUMMARY" && el.parentElement === details)) {
     return false;
   }
-  if (el.closest("fieldset[disabled], [inert]")) return false;
-  // Browsers put only the checked radio of a group in the tab order.
-  if (el instanceof HTMLInputElement && el.type === "radio" && el.name && !el.checked) {
+  if (el.closest("[inert]")) return false;
+  // A control is disabled by an ancestor fieldset unless it sits in that fieldset's first <legend>.
+  const disabledFieldset = el.closest("fieldset[disabled]");
+  if (disabledFieldset) {
+    const legend = Array.from(disabledFieldset.children).find((c) => c.tagName === "LEGEND");
+    if (!legend?.contains(el)) return false;
+  }
+  // Browsers put exactly one radio of a group in the tab order: the checked one, or (when none is
+  // checked) the first.
+  if (el instanceof HTMLInputElement && el.type === "radio" && el.name) {
     const scope: ParentNode = el.form ?? el.ownerDocument;
-    const groupHasChecked = Array.from(
+    const group = Array.from(
       scope.querySelectorAll<HTMLInputElement>('input[type="radio"]'),
-    ).some((other) => other.name === el.name && other.checked);
-    if (groupHasChecked) return false;
+    ).filter((other) => other.name === el.name);
+    const tabStop = group.find((other) => other.checked) ?? group[0];
+    if (tabStop !== el) return false;
   }
   // Absent in jsdom and older engines: fall through to "reachable".
   return typeof el.checkVisibility === "function"

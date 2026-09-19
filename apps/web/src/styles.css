@@ -1372,7 +1372,8 @@ details ul {
   z-index: 100;
   top: var(--vv-top, 0px);
   left: var(--vv-left, 0px);
-  /* 100vw, not 100%: with scrollbar-gutter: stable a fixed box's 100% excludes the gutter. */
+  /* With scrollbar-gutter: stable on desktop a ~15px strip beside the sheet is not dimmed; it shows
+     the page's own near-black background, so it is invisible on this theme. */
   width: var(--vv-width, 100vw);
   height: var(--vv-height, 100vh);
   display: flex;
