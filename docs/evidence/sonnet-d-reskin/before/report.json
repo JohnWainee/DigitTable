@@ -1,0 +1,5320 @@
+{
+  "label": "before",
+  "base": "http://127.0.0.1:4173",
+  "startedAt": "2026-09-19T06:11:28.538Z",
+  "states": [
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-landing-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-landing-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-landing-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-landing-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-landing-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-landing-table.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-create-form-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-create-form-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-create-form-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-create-form-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-create-form-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-create-form-table.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-form-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-form-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-form-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-form-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-form-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-form-table.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-table-join-form-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-table-join-form-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-table-join-form-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-table-join-form-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-table-join-form-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-table-join-form-table.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-claim-no-such-room-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-claim-no-such-room-phone.jpg",
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-claim-no-such-room-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-claim-no-such-room-tablet.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-claim-no-such-room-desktop.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-claim-no-such-room-table.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-gm-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-gm-phone.jpg",
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-gm-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-gm-tablet.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-gm-desktop.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-gm-table.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-player-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-player-phone.jpg",
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-player-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-player-tablet.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-player-desktop.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-player-table.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "input#wrote-down \"on\"",
+          "problems": [
+            "target 24x24"
+          ]
+        }
+      ],
+      "screenshot": "gm-secrets-reveal-phone-small.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "input#wrote-down \"on\"",
+          "problems": [
+            "target 24x24"
+          ]
+        }
+      ],
+      "screenshot": "gm-secrets-reveal-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "input#wrote-down \"on\"",
+          "problems": [
+            "target 24x24"
+          ]
+        }
+      ],
+      "screenshot": "gm-secrets-reveal-phone-landscape.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "input#wrote-down \"on\"",
+          "problems": [
+            "target 24x24"
+          ]
+        }
+      ],
+      "screenshot": "gm-secrets-reveal-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "input#wrote-down \"on\"",
+          "problems": [
+            "target 24x24"
+          ]
+        }
+      ],
+      "screenshot": "gm-secrets-reveal-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "input#wrote-down \"on\"",
+          "problems": [
+            "target 24x24"
+          ]
+        }
+      ],
+      "screenshot": "gm-secrets-reveal-table.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 224x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 224x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 224x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-empty-phone-small.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 279x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 279x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-empty-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 716x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 716x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-empty-phone-landscape.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 672x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 672x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-empty-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-empty-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-empty-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-filled-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-filled-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-filled-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-filled-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-filled-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-filled-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-reveal-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-reveal-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-reveal-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-reveal-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-reveal-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-reveal-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-claim-roster-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-claim-roster-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-claim-roster-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-claim-roster-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-claim-roster-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-claim-roster-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 254x18"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 309x18"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-phone.jpg",
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 574x18"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 574x18"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-tablet.jpg",
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 574x18"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-desktop.jpg",
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 574x18"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 254x18"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-why-open-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 309x18"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-why-open-phone.jpg",
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 574x18"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-why-open-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 574x18"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-why-open-tablet.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 574x18"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-why-open-desktop.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 574x18"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-why-open-table.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-idle-phone-small.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-idle-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-idle-phone-landscape.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-idle-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-idle-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-idle-table.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 224x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Get clear \"",
+          "problems": [
+            "target 224x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 224x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 224x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-scene-loaded-phone-small.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Get clear \"",
+          "problems": [
+            "target 279x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 279x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 279x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-scene-loaded-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Get clear \"",
+          "problems": [
+            "target 354x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 716x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 716x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-scene-loaded-phone-landscape.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Get clear \"",
+          "problems": [
+            "target 354x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 672x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 672x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-scene-loaded-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Get clear \"",
+          "problems": [
+            "target 354x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-scene-loaded-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Get clear \"",
+          "problems": [
+            "target 354x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-scene-loaded-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-declared-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-declared-phone.jpg",
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-declared-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-declared-tablet.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-declared-desktop.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-declared-table.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 224x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Get clear \"",
+          "problems": [
+            "target 224x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 224x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 224x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-pending-phone-small.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Get clear \"",
+          "problems": [
+            "target 279x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 279x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 279x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-pending-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Get clear \"",
+          "problems": [
+            "target 354x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 716x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 716x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-pending-phone-landscape.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Get clear \"",
+          "problems": [
+            "target 354x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 672x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 672x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-pending-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Get clear \"",
+          "problems": [
+            "target 354x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-pending-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Get clear \"",
+          "problems": [
+            "target 354x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-pending-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 12,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 12,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-phone.jpg",
+      "axe": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "tags": [
+            "wcag2aa",
+            "wcag143"
+          ],
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": [
+            ".die-chip--discard.die-chip:nth-child(1) ::   Element has insufficient color contrast of 2.71 (foreground color: #97928c, background color: #f5f0e6, font size: 10.2pt (13.6px), font weight: bold). Expecte",
+            ".die-chip--discard.die-chip:nth-child(2) ::   Element has insufficient color contrast of 2.71 (foreground color: #97928c, background color: #f5f0e6, font size: 10.2pt (13.6px), font weight: bold). Expecte"
+          ],
+          "count": 2
+        },
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 12,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 12,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-tablet.jpg",
+      "axe": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "tags": [
+            "wcag2aa",
+            "wcag143"
+          ],
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": [
+            ".die-chip--discard.die-chip:nth-child(1) ::   Element has insufficient color contrast of 2.71 (foreground color: #97928c, background color: #f5f0e6, font size: 10.2pt (13.6px), font weight: bold). Expecte",
+            ".die-chip--discard.die-chip:nth-child(2) ::   Element has insufficient color contrast of 2.71 (foreground color: #97928c, background color: #f5f0e6, font size: 10.2pt (13.6px), font weight: bold). Expecte"
+          ],
+          "count": 2
+        },
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 12,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-desktop.jpg",
+      "axe": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "tags": [
+            "wcag2aa",
+            "wcag143"
+          ],
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": [
+            ".die-chip--discard.die-chip:nth-child(1) ::   Element has insufficient color contrast of 2.71 (foreground color: #97928c, background color: #f5f0e6, font size: 10.2pt (13.6px), font weight: bold). Expecte",
+            ".die-chip--discard.die-chip:nth-child(2) ::   Element has insufficient color contrast of 2.71 (foreground color: #97928c, background color: #f5f0e6, font size: 10.2pt (13.6px), font weight: bold). Expecte"
+          ],
+          "count": 2
+        },
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 12,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 12,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-assigned-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 12,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-assigned-phone.jpg",
+      "axe": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "tags": [
+            "wcag2aa",
+            "wcag143"
+          ],
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": [
+            ".die-chip--discard.die-chip:nth-child(1) ::   Element has insufficient color contrast of 2.71 (foreground color: #97928c, background color: #f5f0e6, font size: 10.2pt (13.6px), font weight: bold). Expecte",
+            ".die-chip--discard.die-chip:nth-child(2) ::   Element has insufficient color contrast of 2.71 (foreground color: #97928c, background color: #f5f0e6, font size: 10.2pt (13.6px), font weight: bold). Expecte"
+          ],
+          "count": 2
+        },
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 12,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-assigned-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 12,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-assigned-tablet.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 12,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-assigned-desktop.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 12,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-assigned-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-resolved-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-resolved-phone.jpg",
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-resolved-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-resolved-tablet.jpg",
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-resolved-desktop.jpg",
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-resolved-table.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-after-roll-phone-small.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-after-roll-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-after-roll-phone-landscape.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-after-roll-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-after-roll-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-after-roll-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 254x18"
+          ]
+        }
+      ],
+      "screenshot": "player-paused-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 309x18"
+          ]
+        }
+      ],
+      "screenshot": "player-paused-phone.jpg",
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 574x18"
+          ]
+        }
+      ],
+      "screenshot": "player-paused-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 574x18"
+          ]
+        }
+      ],
+      "screenshot": "player-paused-tablet.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 574x18"
+          ]
+        }
+      ],
+      "screenshot": "player-paused-desktop.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 19,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "summary \"Why?\"",
+          "problems": [
+            "target 574x18"
+          ]
+        }
+      ],
+      "screenshot": "player-paused-table.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-next-scene-phone-small.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-next-scene-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-next-scene-phone-landscape.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-next-scene-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-next-scene-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-next-scene-table.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 224x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Cut throug\"",
+          "problems": [
+            "target 224x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 224x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 224x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-next-scene-phone-small.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Cut throug\"",
+          "problems": [
+            "target 279x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 279x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 279x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-next-scene-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Cut throug\"",
+          "problems": [
+            "target 305x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 716x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 716x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-next-scene-phone-landscape.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Cut throug\"",
+          "problems": [
+            "target 305x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 672x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 672x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-next-scene-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Cut throug\"",
+          "problems": [
+            "target 305x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-next-scene-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "select#scene-select \"The Forecourt of the Gare des Om\"",
+          "problems": [
+            "target 253x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#edit-target \"Choose one…Objective: Cut throug\"",
+          "problems": [
+            "target 305x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#grant-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-bonus-plus \"1\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "input#grant-max-uses \"3\"",
+          "problems": [
+            "target 928x21",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#advance-select \"Faster FeetForger's EyeSteady Ne\"",
+          "problems": [
+            "target 103x19",
+            "font-size 13.3333px"
+          ]
+        },
+        {
+          "control": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\"",
+          "problems": [
+            "target 168x19",
+            "font-size 13.3333px"
+          ]
+        }
+      ],
+      "screenshot": "gm-console-next-scene-table.jpg"
+    }
+  ],
+  "modal": [
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "checks": {
+        "dialogInsideViewport": false,
+        "actionsVisibleWithoutScrolling": false,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": false,
+        "backgroundInert": false,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": -365.796875,
+          "bottom": 933.796875,
+          "left": 16,
+          "right": 304,
+          "width": 288,
+          "height": 1299.59375
+        },
+        "apply": {
+          "top": 809.796875,
+          "bottom": 853.796875,
+          "left": 40,
+          "right": 280,
+          "width": 240,
+          "height": 44
+        },
+        "cancel": {
+          "top": 865.796875,
+          "bottom": 909.796875,
+          "left": 40,
+          "right": 280,
+          "width": 240,
+          "height": 44
+        },
+        "reason": {
+          "top": 749.796875,
+          "bottom": 793.796875,
+          "left": 40,
+          "right": 280,
+          "width": 240,
+          "height": 44
+        },
+        "body": {
+          "scrollHeight": 1300,
+          "clientHeight": 1300,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "rootLocked": false,
+        "pageOverflowPx": 0,
+        "animationName": "none",
+        "background": "rgb(245, 240, 230)",
+        "inertSiblings": false,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone-small.jpg",
+      "keyboard": {
+        "size": "320x312",
+        "checks": {
+          "dialogInsideViewport": false,
+          "focusedFieldVisible": false,
+          "actionsVisible": false,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone-small.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "checks": {
+        "dialogInsideViewport": false,
+        "actionsVisibleWithoutScrolling": false,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": false,
+        "backgroundInert": false,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": -234.796875,
+          "bottom": 1046.796875,
+          "left": 16,
+          "right": 359,
+          "width": 343,
+          "height": 1281.59375
+        },
+        "apply": {
+          "top": 922.796875,
+          "bottom": 966.796875,
+          "left": 40,
+          "right": 335,
+          "width": 295,
+          "height": 44
+        },
+        "cancel": {
+          "top": 978.796875,
+          "bottom": 1022.796875,
+          "left": 40,
+          "right": 335,
+          "width": 295,
+          "height": 44
+        },
+        "reason": {
+          "top": 862.796875,
+          "bottom": 906.796875,
+          "left": 40,
+          "right": 335,
+          "width": 295,
+          "height": 44
+        },
+        "body": {
+          "scrollHeight": 1282,
+          "clientHeight": 1282,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "rootLocked": false,
+        "pageOverflowPx": 0,
+        "animationName": "none",
+        "background": "rgb(245, 240, 230)",
+        "inertSiblings": false,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone.jpg",
+      "keyboard": {
+        "size": "375x447",
+        "checks": {
+          "dialogInsideViewport": false,
+          "focusedFieldVisible": false,
+          "actionsVisible": false,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "checks": {
+        "dialogInsideViewport": false,
+        "actionsVisibleWithoutScrolling": false,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": false,
+        "backgroundInert": false,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": -453.296875,
+          "bottom": 828.296875,
+          "left": 214,
+          "right": 598,
+          "width": 384,
+          "height": 1281.59375
+        },
+        "apply": {
+          "top": 704.296875,
+          "bottom": 748.296875,
+          "left": 238,
+          "right": 574,
+          "width": 336,
+          "height": 44
+        },
+        "cancel": {
+          "top": 760.296875,
+          "bottom": 804.296875,
+          "left": 238,
+          "right": 574,
+          "width": 336,
+          "height": 44
+        },
+        "reason": {
+          "top": 644.296875,
+          "bottom": 688.296875,
+          "left": 238,
+          "right": 574,
+          "width": 336,
+          "height": 44
+        },
+        "body": {
+          "scrollHeight": 1282,
+          "clientHeight": 1282,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "rootLocked": false,
+        "pageOverflowPx": 0,
+        "animationName": "none",
+        "background": "rgb(245, 240, 230)",
+        "inertSiblings": false,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone-landscape.jpg",
+      "keyboard": {
+        "size": "812x206",
+        "checks": {
+          "dialogInsideViewport": false,
+          "focusedFieldVisible": false,
+          "actionsVisible": false,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone-landscape.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "checks": {
+        "dialogInsideViewport": false,
+        "actionsVisibleWithoutScrolling": false,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": false,
+        "backgroundInert": false,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 375,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": -453.296875,
+          "bottom": 828.296875,
+          "left": 141.5,
+          "right": 525.5,
+          "width": 384,
+          "height": 1281.59375
+        },
+        "apply": {
+          "top": 704.296875,
+          "bottom": 748.296875,
+          "left": 165.5,
+          "right": 501.5,
+          "width": 336,
+          "height": 44
+        },
+        "cancel": {
+          "top": 760.296875,
+          "bottom": 804.296875,
+          "left": 165.5,
+          "right": 501.5,
+          "width": 336,
+          "height": 44
+        },
+        "reason": {
+          "top": 644.296875,
+          "bottom": 688.296875,
+          "left": 165.5,
+          "right": 501.5,
+          "width": 336,
+          "height": 44
+        },
+        "body": {
+          "scrollHeight": 1282,
+          "clientHeight": 1282,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "rootLocked": false,
+        "pageOverflowPx": 0,
+        "animationName": "none",
+        "background": "rgb(245, 240, 230)",
+        "inertSiblings": false,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone-667x375.jpg",
+      "keyboard": {
+        "size": "667x206",
+        "checks": {
+          "dialogInsideViewport": false,
+          "focusedFieldVisible": false,
+          "actionsVisible": false,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone-667x375.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "tablet",
+      "size": "768x1024",
+      "checks": {
+        "dialogInsideViewport": false,
+        "actionsVisibleWithoutScrolling": false,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": false,
+        "backgroundInert": false,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 768,
+          "innerHeight": 1024,
+          "clientWidth": 768
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 768,
+          "height": 1024,
+          "scale": 1
+        },
+        "dialog": {
+          "top": -128.796875,
+          "bottom": 1152.796875,
+          "left": 192,
+          "right": 576,
+          "width": 384,
+          "height": 1281.59375
+        },
+        "apply": {
+          "top": 1028.796875,
+          "bottom": 1072.796875,
+          "left": 216,
+          "right": 552,
+          "width": 336,
+          "height": 44
+        },
+        "cancel": {
+          "top": 1084.796875,
+          "bottom": 1128.796875,
+          "left": 216,
+          "right": 552,
+          "width": 336,
+          "height": 44
+        },
+        "reason": {
+          "top": 968.796875,
+          "bottom": 1012.796875,
+          "left": 216,
+          "right": 552,
+          "width": 336,
+          "height": 44
+        },
+        "body": {
+          "scrollHeight": 1282,
+          "clientHeight": 1282,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "rootLocked": false,
+        "pageOverflowPx": 0,
+        "animationName": "none",
+        "background": "rgb(245, 240, 230)",
+        "inertSiblings": false,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-tablet.jpg",
+      "keyboard": {
+        "size": "768x563",
+        "checks": {
+          "dialogInsideViewport": false,
+          "focusedFieldVisible": false,
+          "actionsVisible": false,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-tablet.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "desktop",
+      "size": "1280x800",
+      "checks": {
+        "dialogInsideViewport": false,
+        "actionsVisibleWithoutScrolling": false,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": false,
+        "backgroundInert": false,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 1280,
+          "innerHeight": 800,
+          "clientWidth": 1265
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 1265,
+          "height": 800,
+          "scale": 1
+        },
+        "dialog": {
+          "top": -240.796875,
+          "bottom": 1040.796875,
+          "left": 440.5,
+          "right": 824.5,
+          "width": 384,
+          "height": 1281.59375
+        },
+        "apply": {
+          "top": 916.796875,
+          "bottom": 960.796875,
+          "left": 464.5,
+          "right": 800.5,
+          "width": 336,
+          "height": 44
+        },
+        "cancel": {
+          "top": 972.796875,
+          "bottom": 1016.796875,
+          "left": 464.5,
+          "right": 800.5,
+          "width": 336,
+          "height": 44
+        },
+        "reason": {
+          "top": 856.796875,
+          "bottom": 900.796875,
+          "left": 464.5,
+          "right": 800.5,
+          "width": 336,
+          "height": 44
+        },
+        "body": {
+          "scrollHeight": 1282,
+          "clientHeight": 1282,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "rootLocked": false,
+        "pageOverflowPx": 0,
+        "animationName": "none",
+        "background": "rgb(245, 240, 230)",
+        "inertSiblings": false,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-desktop.jpg",
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "zoom-emulated",
+      "checks": {
+        "pageScaleApplied": true,
+        "dialogInsideVisualViewportWhenZoomed": false,
+        "actionsInsideVisualViewportWhenZoomed": false
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 234.375,
+          "height": 507.5,
+          "scale": 1.600000023841858
+        },
+        "dialog": {
+          "top": -234.796875,
+          "bottom": 1046.796875,
+          "left": 16,
+          "right": 359,
+          "width": 343,
+          "height": 1281.59375
+        },
+        "apply": {
+          "top": 922.796875,
+          "bottom": 966.796875,
+          "left": 40,
+          "right": 335,
+          "width": 295,
+          "height": 44
+        },
+        "cancel": {
+          "top": 978.796875,
+          "bottom": 1022.796875,
+          "left": 40,
+          "right": 335,
+          "width": 295,
+          "height": 44
+        },
+        "reason": {
+          "top": 862.796875,
+          "bottom": 906.796875,
+          "left": 40,
+          "right": 335,
+          "width": 295,
+          "height": 44
+        },
+        "body": {
+          "scrollHeight": 1282,
+          "clientHeight": 1282,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "rootLocked": false,
+        "pageOverflowPx": 0,
+        "animationName": "none",
+        "background": "rgb(245, 240, 230)",
+        "inertSiblings": false,
+        "activeIsInside": true
+      },
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "pinch-gesture",
+      "checks": {
+        "pinchZoomStillWorksWithSheetOpen": true
+      },
+      "notes": [],
+      "scaleBefore": 1,
+      "scaleAfter": 2.0000009536743164,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "scenario": "safe-area-landscape-constrained",
+      "checks": {},
+      "notes": [
+        "threw: TypeError: Failed to execute 'getComputedStyle' on 'Window': parameter 1 is not of type 'Element'.\n    at <anonymous>:1:12"
+      ],
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "scenario": "safe-area-landscape-812",
+      "checks": {},
+      "notes": [
+        "threw: TypeError: Failed to execute 'getComputedStyle' on 'Window': parameter 1 is not of type 'Element'.\n    at <anonymous>:1:12"
+      ],
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "safe-area-portrait",
+      "checks": {},
+      "notes": [
+        "threw: TypeError: Failed to execute 'getComputedStyle' on 'Window': parameter 1 is not of type 'Element'.\n    at <anonymous>:1:12"
+      ],
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "text-150-phone-small",
+      "checks": {
+        "dialogInsideViewport": false,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true
+      },
+      "notes": [
+        "threw: TypeError: Cannot read properties of null (reading 'scrollHeight')\n    at <anonymous>:1:77\n    at <anonymous>:1:93"
+      ],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": -619.453125,
+          "bottom": 1187.46875,
+          "left": 24,
+          "right": 296,
+          "width": 272,
+          "height": 1806.921875
+        },
+        "apply": {
+          "top": 1007.46875,
+          "bottom": 1089.46875,
+          "left": 60,
+          "right": 260,
+          "width": 200,
+          "height": 82
+        },
+        "cancel": {
+          "top": 1107.46875,
+          "bottom": 1151.46875,
+          "left": 60,
+          "right": 260,
+          "width": 200,
+          "height": 44
+        },
+        "reason": {
+          "top": 929.46875,
+          "bottom": 983.46875,
+          "left": 60,
+          "right": 260,
+          "width": 200,
+          "height": 54
+        },
+        "body": {
+          "scrollHeight": 1807,
+          "clientHeight": 1807,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "rootLocked": false,
+        "pageOverflowPx": 0,
+        "animationName": "none",
+        "background": "rgb(245, 240, 230)",
+        "inertSiblings": false,
+        "activeIsInside": true
+      },
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "text-200-phone",
+      "checks": {
+        "dialogInsideViewport": false,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true
+      },
+      "notes": [
+        "threw: TypeError: Cannot read properties of null (reading 'scrollHeight')\n    at <anonymous>:1:77\n    at <anonymous>:1:93"
+      ],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": -889.109375,
+          "bottom": 1701.109375,
+          "left": 32,
+          "right": 343,
+          "width": 311,
+          "height": 2590.21875
+        },
+        "apply": {
+          "top": 1472.109375,
+          "bottom": 1580.109375,
+          "left": 80,
+          "right": 295,
+          "width": 215,
+          "height": 108
+        },
+        "cancel": {
+          "top": 1604.109375,
+          "bottom": 1653.109375,
+          "left": 80,
+          "right": 295,
+          "width": 215,
+          "height": 49
+        },
+        "reason": {
+          "top": 1369.109375,
+          "bottom": 1440.109375,
+          "left": 80,
+          "right": 295,
+          "width": 215,
+          "height": 71
+        },
+        "body": {
+          "scrollHeight": 2590,
+          "clientHeight": 2590,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "rootLocked": false,
+        "pageOverflowPx": 0,
+        "animationName": "none",
+        "background": "rgb(245, 240, 230)",
+        "inertSiblings": false,
+        "activeIsInside": true
+      },
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "text-200-phone-small",
+      "checks": {
+        "dialogInsideViewport": false,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true
+      },
+      "notes": [
+        "threw: TypeError: Cannot read properties of null (reading 'scrollHeight')\n    at <anonymous>:1:77\n    at <anonymous>:1:93"
+      ],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": -1202.109375,
+          "bottom": 1770.109375,
+          "left": 32,
+          "right": 288,
+          "width": 256,
+          "height": 2972.21875
+        },
+        "apply": {
+          "top": 1541.109375,
+          "bottom": 1649.109375,
+          "left": 80,
+          "right": 240,
+          "width": 160,
+          "height": 108
+        },
+        "cancel": {
+          "top": 1673.109375,
+          "bottom": 1722.109375,
+          "left": 80,
+          "right": 240,
+          "width": 160,
+          "height": 49
+        },
+        "reason": {
+          "top": 1438.109375,
+          "bottom": 1509.109375,
+          "left": 80,
+          "right": 240,
+          "width": 160,
+          "height": 71
+        },
+        "body": {
+          "scrollHeight": 2972,
+          "clientHeight": 2972,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "rootLocked": false,
+        "pageOverflowPx": 0,
+        "animationName": "none",
+        "background": "rgb(245, 240, 230)",
+        "inertSiblings": false,
+        "activeIsInside": true
+      },
+      "informationalChecks": [
+        "dialogInsideViewport",
+        "noPageOverflow"
+      ]
+    }
+  ],
+  "reducedMotion": {
+    "allowed": {
+      "sheetAnimation": "none",
+      "sheetDuration": "0s",
+      "backdropAnimation": "none",
+      "anyLongTransition": true,
+      "matches": false
+    },
+    "reduced": {
+      "sheetAnimation": "none",
+      "sheetDuration": "1e-06s",
+      "backdropAnimation": "none",
+      "anyLongTransition": false,
+      "matches": true
+    }
+  },
+  "routes": [],
+  "failures": [
+    {
+      "scope": "gm/secrets-reveal@phone-small",
+      "message": "input#wrote-down \"on\": target 24x24"
+    },
+    {
+      "scope": "gm/secrets-reveal@phone",
+      "message": "input#wrote-down \"on\": target 24x24"
+    },
+    {
+      "scope": "gm/secrets-reveal@phone-landscape",
+      "message": "input#wrote-down \"on\": target 24x24"
+    },
+    {
+      "scope": "gm/secrets-reveal@tablet",
+      "message": "input#wrote-down \"on\": target 24x24"
+    },
+    {
+      "scope": "gm/secrets-reveal@desktop",
+      "message": "input#wrote-down \"on\": target 24x24"
+    },
+    {
+      "scope": "gm/secrets-reveal@table",
+      "message": "input#wrote-down \"on\": target 24x24"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 224x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "input#grant-bonus-plus \"1\": target 224x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "input#grant-max-uses \"3\": target 224x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "input#grant-bonus-plus \"1\": target 279x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "input#grant-max-uses \"3\": target 279x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone-landscape",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone-landscape",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone-landscape",
+      "message": "input#grant-bonus-plus \"1\": target 716x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone-landscape",
+      "message": "input#grant-max-uses \"3\": target 716x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone-landscape",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone-landscape",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@phone-landscape",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@tablet",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@tablet",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@tablet",
+      "message": "input#grant-bonus-plus \"1\": target 672x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@tablet",
+      "message": "input#grant-max-uses \"3\": target 672x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@tablet",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@tablet",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@tablet",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@desktop",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@desktop",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@desktop",
+      "message": "input#grant-bonus-plus \"1\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@desktop",
+      "message": "input#grant-max-uses \"3\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@desktop",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@desktop",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@desktop",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@table",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@table",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@table",
+      "message": "input#grant-bonus-plus \"1\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@table",
+      "message": "input#grant-max-uses \"3\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@table",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@table",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-empty@table",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "player/compose@phone-small",
+      "message": "summary \"Why?\": target 254x18"
+    },
+    {
+      "scope": "player/compose@phone",
+      "message": "summary \"Why?\": target 309x18"
+    },
+    {
+      "scope": "player/compose@phone-landscape",
+      "message": "summary \"Why?\": target 574x18"
+    },
+    {
+      "scope": "player/compose@tablet",
+      "message": "summary \"Why?\": target 574x18"
+    },
+    {
+      "scope": "player/compose@desktop",
+      "message": "summary \"Why?\": target 574x18"
+    },
+    {
+      "scope": "player/compose@table",
+      "message": "summary \"Why?\": target 574x18"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small",
+      "message": "summary \"Why?\": target 254x18"
+    },
+    {
+      "scope": "player/compose-why-open@phone",
+      "message": "summary \"Why?\": target 309x18"
+    },
+    {
+      "scope": "player/compose-why-open@phone-landscape",
+      "message": "summary \"Why?\": target 574x18"
+    },
+    {
+      "scope": "player/compose-why-open@tablet",
+      "message": "summary \"Why?\": target 574x18"
+    },
+    {
+      "scope": "player/compose-why-open@desktop",
+      "message": "summary \"Why?\": target 574x18"
+    },
+    {
+      "scope": "player/compose-why-open@table",
+      "message": "summary \"Why?\": target 574x18"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 224x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "select#edit-target \"Choose one…Objective: Get clear \": target 224x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "input#grant-bonus-plus \"1\": target 224x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "input#grant-max-uses \"3\": target 224x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "select#edit-target \"Choose one…Objective: Get clear \": target 279x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "input#grant-bonus-plus \"1\": target 279x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "input#grant-max-uses \"3\": target 279x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-landscape",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-landscape",
+      "message": "select#edit-target \"Choose one…Objective: Get clear \": target 354x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-landscape",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-landscape",
+      "message": "input#grant-bonus-plus \"1\": target 716x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-landscape",
+      "message": "input#grant-max-uses \"3\": target 716x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-landscape",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-landscape",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-landscape",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@tablet",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@tablet",
+      "message": "select#edit-target \"Choose one…Objective: Get clear \": target 354x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@tablet",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@tablet",
+      "message": "input#grant-bonus-plus \"1\": target 672x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@tablet",
+      "message": "input#grant-max-uses \"3\": target 672x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@tablet",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@tablet",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@tablet",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@desktop",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@desktop",
+      "message": "select#edit-target \"Choose one…Objective: Get clear \": target 354x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@desktop",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@desktop",
+      "message": "input#grant-bonus-plus \"1\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@desktop",
+      "message": "input#grant-max-uses \"3\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@desktop",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@desktop",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@desktop",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@table",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@table",
+      "message": "select#edit-target \"Choose one…Objective: Get clear \": target 354x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@table",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@table",
+      "message": "input#grant-bonus-plus \"1\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@table",
+      "message": "input#grant-max-uses \"3\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@table",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@table",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-scene-loaded@table",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 224x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "select#edit-target \"Choose one…Objective: Get clear \": target 224x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "input#grant-bonus-plus \"1\": target 224x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "input#grant-max-uses \"3\": target 224x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "select#edit-target \"Choose one…Objective: Get clear \": target 279x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "input#grant-bonus-plus \"1\": target 279x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "input#grant-max-uses \"3\": target 279x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-landscape",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-landscape",
+      "message": "select#edit-target \"Choose one…Objective: Get clear \": target 354x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-landscape",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-landscape",
+      "message": "input#grant-bonus-plus \"1\": target 716x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-landscape",
+      "message": "input#grant-max-uses \"3\": target 716x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-landscape",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-landscape",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@phone-landscape",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@tablet",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@tablet",
+      "message": "select#edit-target \"Choose one…Objective: Get clear \": target 354x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@tablet",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@tablet",
+      "message": "input#grant-bonus-plus \"1\": target 672x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@tablet",
+      "message": "input#grant-max-uses \"3\": target 672x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@tablet",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@tablet",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@tablet",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@desktop",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@desktop",
+      "message": "select#edit-target \"Choose one…Objective: Get clear \": target 354x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@desktop",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@desktop",
+      "message": "input#grant-bonus-plus \"1\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@desktop",
+      "message": "input#grant-max-uses \"3\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@desktop",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@desktop",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@desktop",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@table",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@table",
+      "message": "select#edit-target \"Choose one…Objective: Get clear \": target 354x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@table",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@table",
+      "message": "input#grant-bonus-plus \"1\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@table",
+      "message": "input#grant-max-uses \"3\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@table",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@table",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-pending@table",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "modal@phone-small",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal@phone-small",
+      "message": "actionsVisibleWithoutScrolling failed"
+    },
+    {
+      "scope": "modal@phone-small",
+      "message": "rootScrollLocked failed"
+    },
+    {
+      "scope": "modal@phone-small",
+      "message": "backgroundInert failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-small",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-small",
+      "message": "focusedFieldVisible failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-small",
+      "message": "actionsVisible failed"
+    },
+    {
+      "scope": "modal@phone",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal@phone",
+      "message": "actionsVisibleWithoutScrolling failed"
+    },
+    {
+      "scope": "modal@phone",
+      "message": "rootScrollLocked failed"
+    },
+    {
+      "scope": "modal@phone",
+      "message": "backgroundInert failed"
+    },
+    {
+      "scope": "modal-keyboard@phone",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal-keyboard@phone",
+      "message": "focusedFieldVisible failed"
+    },
+    {
+      "scope": "modal-keyboard@phone",
+      "message": "actionsVisible failed"
+    },
+    {
+      "scope": "modal@phone-landscape",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal@phone-landscape",
+      "message": "actionsVisibleWithoutScrolling failed"
+    },
+    {
+      "scope": "modal@phone-landscape",
+      "message": "rootScrollLocked failed"
+    },
+    {
+      "scope": "modal@phone-landscape",
+      "message": "backgroundInert failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-landscape",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-landscape",
+      "message": "focusedFieldVisible failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-landscape",
+      "message": "actionsVisible failed"
+    },
+    {
+      "scope": "modal@phone-667x375",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal@phone-667x375",
+      "message": "actionsVisibleWithoutScrolling failed"
+    },
+    {
+      "scope": "modal@phone-667x375",
+      "message": "rootScrollLocked failed"
+    },
+    {
+      "scope": "modal@phone-667x375",
+      "message": "backgroundInert failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-667x375",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-667x375",
+      "message": "focusedFieldVisible failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-667x375",
+      "message": "actionsVisible failed"
+    },
+    {
+      "scope": "modal@tablet",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal@tablet",
+      "message": "actionsVisibleWithoutScrolling failed"
+    },
+    {
+      "scope": "modal@tablet",
+      "message": "rootScrollLocked failed"
+    },
+    {
+      "scope": "modal@tablet",
+      "message": "backgroundInert failed"
+    },
+    {
+      "scope": "modal-keyboard@tablet",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal-keyboard@tablet",
+      "message": "focusedFieldVisible failed"
+    },
+    {
+      "scope": "modal-keyboard@tablet",
+      "message": "actionsVisible failed"
+    },
+    {
+      "scope": "modal@desktop",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal@desktop",
+      "message": "actionsVisibleWithoutScrolling failed"
+    },
+    {
+      "scope": "modal@desktop",
+      "message": "rootScrollLocked failed"
+    },
+    {
+      "scope": "modal@desktop",
+      "message": "backgroundInert failed"
+    },
+    {
+      "scope": "modal-zoom-emulated",
+      "message": "dialogInsideVisualViewportWhenZoomed failed"
+    },
+    {
+      "scope": "modal-zoom-emulated",
+      "message": "actionsInsideVisualViewportWhenZoomed failed"
+    },
+    {
+      "scope": "modal-safe-area-landscape-constrained",
+      "message": "scenario threw: TypeError: Failed to execute 'getComputedStyle' on 'Window': parameter 1 is not of type 'Element'.\n    at <anonymous>:1:12"
+    },
+    {
+      "scope": "modal-safe-area-landscape-constrained",
+      "message": "no checks were executed"
+    },
+    {
+      "scope": "modal-safe-area-landscape-812",
+      "message": "scenario threw: TypeError: Failed to execute 'getComputedStyle' on 'Window': parameter 1 is not of type 'Element'.\n    at <anonymous>:1:12"
+    },
+    {
+      "scope": "modal-safe-area-landscape-812",
+      "message": "no checks were executed"
+    },
+    {
+      "scope": "modal-safe-area-portrait",
+      "message": "scenario threw: TypeError: Failed to execute 'getComputedStyle' on 'Window': parameter 1 is not of type 'Element'.\n    at <anonymous>:1:12"
+    },
+    {
+      "scope": "modal-safe-area-portrait",
+      "message": "no checks were executed"
+    },
+    {
+      "scope": "modal-text-150-phone-small",
+      "message": "scenario threw: TypeError: Cannot read properties of null (reading 'scrollHeight')\n    at <anonymous>:1:77\n    at <anonymous>:1:93"
+    },
+    {
+      "scope": "modal-text-150-phone-small",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal-text-200-phone",
+      "message": "scenario threw: TypeError: Cannot read properties of null (reading 'scrollHeight')\n    at <anonymous>:1:77\n    at <anonymous>:1:93"
+    },
+    {
+      "scope": "modal-text-200-phone",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal-text-200-phone-small",
+      "message": "scenario threw: TypeError: Cannot read properties of null (reading 'scrollHeight')\n    at <anonymous>:1:77\n    at <anonymous>:1:93"
+    },
+    {
+      "scope": "reduced-motion",
+      "message": "no entrance animation when motion is allowed: {\"sheetAnimation\":\"none\",\"sheetDuration\":\"0s\",\"backdropAnimation\":\"none\",\"anyLongTransition\":true,\"matches\":false}"
+    },
+    {
+      "scope": "player/allocation@phone",
+      "message": "axe color-contrast (serious) x2: .die-chip--discard.die-chip:nth-child(1) ::   Element has insufficient color contrast of 2.71 (foreground color: #97928c, background color: #f5f0e6, font size: 10.2pt (13.6px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/allocation@tablet",
+      "message": "axe color-contrast (serious) x2: .die-chip--discard.die-chip:nth-child(1) ::   Element has insufficient color contrast of 2.71 (foreground color: #97928c, background color: #f5f0e6, font size: 10.2pt (13.6px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/allocation@desktop",
+      "message": "axe color-contrast (serious) x2: .die-chip--discard.die-chip:nth-child(1) ::   Element has insufficient color contrast of 2.71 (foreground color: #97928c, background color: #f5f0e6, font size: 10.2pt (13.6px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/allocation-assigned@phone",
+      "message": "axe color-contrast (serious) x2: .die-chip--discard.die-chip:nth-child(1) ::   Element has insufficient color contrast of 2.71 (foreground color: #97928c, background color: #f5f0e6, font size: 10.2pt (13.6px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/paused@phone-small",
+      "message": "summary \"Why?\": target 254x18"
+    },
+    {
+      "scope": "player/paused@phone",
+      "message": "summary \"Why?\": target 309x18"
+    },
+    {
+      "scope": "player/paused@phone-landscape",
+      "message": "summary \"Why?\": target 574x18"
+    },
+    {
+      "scope": "player/paused@tablet",
+      "message": "summary \"Why?\": target 574x18"
+    },
+    {
+      "scope": "player/paused@desktop",
+      "message": "summary \"Why?\": target 574x18"
+    },
+    {
+      "scope": "player/paused@table",
+      "message": "summary \"Why?\": target 574x18"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 224x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "select#edit-target \"Choose one…Objective: Cut throug\": target 224x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "input#grant-bonus-plus \"1\": target 224x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "input#grant-max-uses \"3\": target 224x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "select#edit-target \"Choose one…Objective: Cut throug\": target 279x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "input#grant-bonus-plus \"1\": target 279x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "input#grant-max-uses \"3\": target 279x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-landscape",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-landscape",
+      "message": "select#edit-target \"Choose one…Objective: Cut throug\": target 305x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-landscape",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-landscape",
+      "message": "input#grant-bonus-plus \"1\": target 716x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-landscape",
+      "message": "input#grant-max-uses \"3\": target 716x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-landscape",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-landscape",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-landscape",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@tablet",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@tablet",
+      "message": "select#edit-target \"Choose one…Objective: Cut throug\": target 305x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@tablet",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@tablet",
+      "message": "input#grant-bonus-plus \"1\": target 672x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@tablet",
+      "message": "input#grant-max-uses \"3\": target 672x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@tablet",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@tablet",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@tablet",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@desktop",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@desktop",
+      "message": "select#edit-target \"Choose one…Objective: Cut throug\": target 305x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@desktop",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@desktop",
+      "message": "input#grant-bonus-plus \"1\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@desktop",
+      "message": "input#grant-max-uses \"3\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@desktop",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@desktop",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@desktop",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@table",
+      "message": "select#scene-select \"The Forecourt of the Gare des Om\": target 253x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@table",
+      "message": "select#edit-target \"Choose one…Objective: Cut throug\": target 305x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@table",
+      "message": "select#grant-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@table",
+      "message": "input#grant-bonus-plus \"1\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@table",
+      "message": "input#grant-max-uses \"3\": target 928x21; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@table",
+      "message": "select#advance-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@table",
+      "message": "select#advance-select \"Faster FeetForger's EyeSteady Ne\": target 103x19; font-size 13.3333px"
+    },
+    {
+      "scope": "gm/console-next-scene@table",
+      "message": "select#reassign-character \"RookVesper CaulHalloranOrsolya V\": target 168x19; font-size 13.3333px"
+    }
+  ],
+  "console": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  },
+  "finishedAt": "2026-09-19T06:15:10.729Z",
+  "ok": false,
+  "summary": {
+    "states": 150,
+    "controlsAudited": 1458,
+    "controlIssues": 210,
+    "overflowStates": 0,
+    "axeHardViolations": 4,
+    "axeBestPractice": [
+      "anon/route-claim-no-such-room@phone: page-has-heading-one",
+      "anon/route-room-no-such-room-gm@phone: page-has-heading-one",
+      "anon/route-room-no-such-room-player@phone: page-has-heading-one",
+      "player/compose@phone: page-has-heading-one",
+      "player/compose@tablet: page-has-heading-one",
+      "player/compose@desktop: page-has-heading-one",
+      "player/compose-why-open@phone: page-has-heading-one",
+      "player/declared@phone: page-has-heading-one",
+      "player/allocation@phone: page-has-heading-one",
+      "player/allocation@tablet: page-has-heading-one",
+      "player/allocation@desktop: page-has-heading-one",
+      "player/allocation-assigned@phone: page-has-heading-one",
+      "player/resolved@phone: page-has-heading-one",
+      "player/resolved@tablet: page-has-heading-one",
+      "player/resolved@desktop: page-has-heading-one",
+      "player/paused@phone: page-has-heading-one"
+    ],
+    "failures": 267
+  }
+}
