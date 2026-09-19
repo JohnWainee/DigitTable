@@ -19,8 +19,8 @@ export function InvitePanel({ roomCode, claimedCount, rosterSize }: InvitePanelP
         Room code: <strong>{roomCode}</strong>
       </p>
       <p className="form-hint">
-        Share the room code and your passphrase with your players. Neither is shown again after
-        creation.
+        Share the room code and your passphrase with your players. The room code stays on this
+        screen; the passphrase is shown only when you create the session, so keep your own copy.
       </p>
       {claimedCount !== undefined && rosterSize !== undefined && (
         <p>
