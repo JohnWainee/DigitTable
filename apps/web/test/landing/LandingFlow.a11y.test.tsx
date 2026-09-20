@@ -302,6 +302,21 @@ describe("Landing / create / join / claim (C01)", () => {
     expect(await screen.findByRole("heading", { name: /your new recovery code/i })).toHaveFocus();
   });
 
+  it("connects the table display with a code typed in lower case with a stray space, and focuses the one action left", async () => {
+    const user = userEvent.setup();
+    renderApp("#/");
+    const { roomCode, tableCode } = await createSession(user);
+
+    goTo("#/table");
+    await user.type(screen.getByLabelText(/^room code$/i), `${roomCode.toLowerCase()} `);
+    await user.type(
+      screen.getByLabelText(/^table code$/i),
+      `${tableCode.slice(0, 5)} ${tableCode.slice(5)}`.toLowerCase(),
+    );
+    await user.click(screen.getByRole("button", { name: /connect display/i }));
+    expect(await screen.findByRole("button", { name: /open the table display/i })).toHaveFocus();
+  });
+
   it("recovers a lost seat, rotates the code, and rejects the spent code", async () => {
     const user = userEvent.setup();
     renderApp("#/");

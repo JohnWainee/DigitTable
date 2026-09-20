@@ -650,6 +650,11 @@ input[type="radio"]:disabled {
   cursor: default;
 }
 
+/* A spent utility item is dimmed like a disabled pool item (which gets this from its disabled box). */
+.gear-option--spent {
+  color: var(--mute);
+}
+
 .gear-option--utility > span {
   flex: 1 1 12rem;
   min-width: 0;

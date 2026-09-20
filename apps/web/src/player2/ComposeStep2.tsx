@@ -168,7 +168,12 @@ export function ComposeStep2({
               // A utility item can never be a pool die, so it gets no (permanently disabled)
               // checkbox: a description, then its own action.
               return (
-                <div key={item.id} className="gear-option gear-option--utility">
+                <div
+                  key={item.id}
+                  className={`gear-option gear-option--utility${
+                    item.usesRemaining <= 0 ? " gear-option--spent" : ""
+                  }`}
+                >
                   <span id={descriptionId}>
                     {usage}
                     {effectHint ? ` — ${effectHint}` : ""}

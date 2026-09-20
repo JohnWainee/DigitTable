@@ -131,6 +131,10 @@ describe("compose item rows, rendered directly", () => {
     };
     renderCompose(spent);
     expect(screen.getByText(/cigarettes.*\(0\/3 uses\) — no uses left/i)).toBeVisible();
+    // Dimmed like a disabled pool item: the row no longer has a disabled checkbox to do that.
+    expect(screen.getByText(/cigarettes.*\(0\/3 uses\)/i).closest(".gear-option")).toHaveClass(
+      "gear-option--spent",
+    );
     expect(screen.queryByRole("button", { name: /mark and regain blood/i })).toBeNull();
   });
 

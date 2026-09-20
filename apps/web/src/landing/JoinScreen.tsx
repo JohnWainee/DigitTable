@@ -43,6 +43,7 @@ export function JoinScreen(): JSX.Element {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const joinRevealRef = useRef<HTMLHeadingElement>(null);
   const recoverRevealRef = useRef<HTMLHeadingElement>(null);
+  const welcomeBackRef = useRef<HTMLButtonElement>(null);
   const focusHeadingAfterSwitch = useRef(false);
 
   async function handleSubmit(event: React.FormEvent): Promise<void> {
@@ -102,6 +103,8 @@ export function JoinScreen(): JSX.Element {
 
   useFocusWhen(joinRevealRef, Boolean(accepted?.recoveryCode));
   useFocusWhen(recoverRevealRef, recovered !== null);
+  // A replayed join (this browser's identity already holds the seat) has no secret to show.
+  useFocusWhen(welcomeBackRef, accepted !== null && !accepted.recoveryCode);
   useEffect(() => {
     if (!focusHeadingAfterSwitch.current) return;
     focusHeadingAfterSwitch.current = false;
@@ -323,6 +326,7 @@ export function JoinScreen(): JSX.Element {
           <button
             type="button"
             className="primary-action"
+            ref={welcomeBackRef}
             onClick={() => navigate(`/claim/${accepted.roomId}`)}
           >
             Continue
