@@ -2,7 +2,7 @@ INFO modal-text-200-phone-small: dialogInsideViewport failed (recorded, not gati
 INFO modal-text-200-phone-small: noPageOverflow failed (recorded, not gating)
 {
   "states": 189,
-  "controlsAudited": 1708,
+  "controlsAudited": 1722,
   "controlIssues": 0,
   "overflowStates": 0,
   "axeHardViolations": 0,
@@ -12,4 +12,4 @@ INFO modal-text-200-phone-small: noPageOverflow failed (recorded, not gating)
   "failures": 0
 }
 UI AUDIT PASSED
-EXIT=0
+AUDIT_EXIT=0

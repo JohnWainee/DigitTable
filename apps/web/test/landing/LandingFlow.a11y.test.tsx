@@ -228,7 +228,8 @@ describe("Landing / create / join / claim (C01)", () => {
     expect(field).toHaveAttribute("spellcheck", "false");
 
     const typed = `${originalCode.slice(0, 5)} ${originalCode.slice(5)}`.toLowerCase();
-    await user.type(screen.getByLabelText(/^room code$/i), roomCode);
+    // A trailing space after a keyboard suggestion must not fail the room code's pattern either.
+    await user.type(screen.getByLabelText(/^room code$/i), `${roomCode.toLowerCase()} `);
     await user.type(field, typed);
     await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
     await user.click(screen.getByRole("button", { name: /^recover my seat$/i }));

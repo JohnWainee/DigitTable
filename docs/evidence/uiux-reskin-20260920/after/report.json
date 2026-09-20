@@ -1,7 +1,7 @@
 {
   "label": "after",
   "base": "http://127.0.0.1:4174",
-  "startedAt": "2026-09-20T16:02:20.388Z",
+  "startedAt": "2026-09-20T16:28:28.091Z",
   "states": [
     {
       "surface": "anon",
@@ -1469,7 +1469,7 @@
       "state": "allocation",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 6,
+      "controls": 7,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-small.jpg"
@@ -1479,7 +1479,7 @@
       "state": "allocation",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 6,
+      "controls": 7,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone.jpg",
@@ -1490,7 +1490,7 @@
       "state": "allocation",
       "viewport": "phone-390",
       "size": "390x844",
-      "controls": 6,
+      "controls": 7,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-390.jpg"
@@ -1500,7 +1500,7 @@
       "state": "allocation",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 6,
+      "controls": 7,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-landscape.jpg"
@@ -1510,7 +1510,7 @@
       "state": "allocation",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 6,
+      "controls": 7,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-tablet.jpg",
@@ -1521,7 +1521,7 @@
       "state": "allocation",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 6,
+      "controls": 7,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-desktop.jpg",
@@ -1532,7 +1532,7 @@
       "state": "allocation",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 6,
+      "controls": 7,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-table.jpg"
@@ -1542,7 +1542,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 6,
+      "controls": 7,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-small.jpg"
@@ -1552,7 +1552,7 @@
       "state": "allocation-assigned",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 6,
+      "controls": 7,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone.jpg",
@@ -1563,7 +1563,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-390",
       "size": "390x844",
-      "controls": 6,
+      "controls": 7,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-390.jpg"
@@ -1573,7 +1573,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 6,
+      "controls": 7,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-landscape.jpg"
@@ -1583,7 +1583,7 @@
       "state": "allocation-assigned",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 6,
+      "controls": 7,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-tablet.jpg"
@@ -1593,7 +1593,7 @@
       "state": "allocation-assigned",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 6,
+      "controls": 7,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-desktop.jpg"
@@ -1603,7 +1603,7 @@
       "state": "allocation-assigned",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 6,
+      "controls": 7,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-table.jpg"
@@ -2666,7 +2666,7 @@
       },
       "notes": [],
       "scaleBefore": 1,
-      "scaleAfter": 2,
+      "scaleAfter": 2.000000238418579,
       "informationalChecks": []
     },
     {
@@ -3359,11 +3359,11 @@
       }
     ]
   },
-  "finishedAt": "2026-09-20T16:07:21.379Z",
+  "finishedAt": "2026-09-20T16:33:27.939Z",
   "ok": true,
   "summary": {
     "states": 189,
-    "controlsAudited": 1708,
+    "controlsAudited": 1722,
     "controlIssues": 0,
     "overflowStates": 0,
     "axeHardViolations": 0,

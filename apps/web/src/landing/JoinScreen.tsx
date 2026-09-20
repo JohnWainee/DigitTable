@@ -147,7 +147,7 @@ export function JoinScreen(): JSX.Element {
                 spellCheck={false}
                 pattern="[A-Za-z0-9-]+"
                 value={recoveryRoomCode}
-                onChange={(event) => setRecoveryRoomCode(event.target.value)}
+                onChange={(event) => setRecoveryRoomCode(event.target.value.replace(/\s+/g, ""))}
               />
             </div>
             <div className="form-field">
@@ -256,7 +256,7 @@ export function JoinScreen(): JSX.Element {
               spellCheck={false}
               pattern="[A-Za-z0-9-]+"
               value={roomCode}
-              onChange={(e) => setRoomCode(e.target.value)}
+              onChange={(e) => setRoomCode(e.target.value.replace(/\s+/g, ""))}
             />
           </div>
           <div className="form-field">

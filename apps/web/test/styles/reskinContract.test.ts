@@ -134,6 +134,10 @@ describe("reskin stylesheet contract", () => {
       expect(stray).toEqual([]);
     });
 
+    it("dims a spent utility item like a disabled pool item (its row has no disabled checkbox to do it)", () => {
+      expect(declaration(rulesFor(/^\.gear-option--spent$/), "color")).toContain("var(--mute)");
+    });
+
     it("keeps the read-only stepper value (role=spinbutton, focusable) at the tap size too", () => {
       expect(declaration(rulesFor(/^\.stepper-value$/), "min-height")).toContain("var(--tap)");
     });

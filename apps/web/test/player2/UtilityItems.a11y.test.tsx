@@ -116,6 +116,10 @@ describe("compose item rows, rendered directly", () => {
       screen.getByText(/cowboy hat \(1\/1 uses\).*ignore an injury or being downed/i),
     ).toBeVisible();
     expect(screen.queryByRole("checkbox", { name: /cowboy hat/i })).toBeNull();
+    // Unspent: not dimmed like a spent one.
+    expect(screen.getByText(/cowboy hat \(1\/1 uses\)/i).closest(".gear-option")).not.toHaveClass(
+      "gear-option--spent",
+    );
     expect(screen.queryByRole("button", { name: /mark and regain blood/i })).toBeNull();
     // Real pool items are unaffected.
     expect(screen.getByRole("checkbox", { name: /paired revolvers/i })).toBeEnabled();
