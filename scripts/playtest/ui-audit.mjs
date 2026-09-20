@@ -74,6 +74,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const VIEWPORTS = [
   { name: "phone-small", width: 320, height: 568, mobile: true },
   { name: "phone", width: 375, height: 812, mobile: true },
+  { name: "phone-390", width: 390, height: 844, mobile: true },
   { name: "phone-landscape", width: 812, height: 375, mobile: true },
   { name: "tablet", width: 768, height: 1024, mobile: true },
   { name: "desktop", width: 1280, height: 800, mobile: false },
@@ -306,6 +307,10 @@ const CONTROL_AUDIT = `(() => {
     const cs = getComputedStyle(el);
     const found = [];
     if (Math.min(r.width, r.height) < 43.5) found.push("target " + Math.round(r.width) + "x" + Math.round(r.height));
+    // A class-less <button> falls through every reskin rule and renders as the browser's own grey
+    // "outset" button, which can still pass the size check above (it did: 61x89, four wrapped lines).
+    // Limit: this recognises only Chrome's default <button> border, not every unstyled control.
+    if (el.matches("button") && cs.borderTopStyle === "outset") found.push("unstyled browser-default button");
     if (r.right > vw + 0.5 || r.left < -0.5) found.push("outside viewport (" + Math.round(r.left) + ".." + Math.round(r.right) + " of " + vw + ")");
     if (el.matches('input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), select, textarea') && parseFloat(cs.fontSize) < 16) found.push("font-size " + cs.fontSize);
     if (found.length) issues.push({ control: describe(el), problems: found });
@@ -419,8 +424,10 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  // Whichever character is first on the roster: the shipped roster is the owner's sourcebook sheets
+  // (the placeholder "Rook" no longer exists), and the sheet's geometry must not depend on a name.
+  const finder = `document.querySelector(".roster-panel-list li button")`;
+  await waitFor(gm, finder, 20000, "a roster row's Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
@@ -442,6 +449,7 @@ async function auditModal(gm) {
   const cases = [
     { name: "phone-small", ...byName["phone-small"] },
     { name: "phone", ...byName["phone"] },
+    { name: "phone-390", ...byName["phone-390"] },
     { name: "phone-landscape", ...byName["phone-landscape"] },
     { name: "phone-667x375", width: 667, height: 375, mobile: true },
     { name: "tablet", ...byName["tablet"] },
@@ -785,6 +793,33 @@ async function main() {
       await goto(anon, path);
       await captureState(anon, name);
     }
+    // Recovery form: a mode of the join screen, reached through its own button. It is the only place
+    // a recovery code is typed, and the server compares that code case-exactly against an
+    // uppercase-only alphabet, so the on-screen keyboard's capitalisation/autocorrect hints matter.
+    await goto(anon, "#/join");
+    await clickText(anon, "button", /Recover your seat/);
+    await waitFor(anon, `document.querySelector("#recovery-code")`, 15000, "recovery form");
+    await captureState(anon, "join-recover");
+    const hints = await ev(
+      anon,
+      `(() => { const i = document.querySelector("#recovery-code"); return { autocapitalize: i.getAttribute("autocapitalize"), autocorrect: i.getAttribute("autocorrect"), spellcheck: i.getAttribute("spellcheck"), autocomplete: i.getAttribute("autocomplete") }; })()`,
+    );
+    report.recoveryInputHints = hints;
+    if (
+      hints.autocapitalize !== "characters" ||
+      hints.autocorrect !== "off" ||
+      hints.spellcheck !== "false"
+    ) {
+      fail("recovery-form", `recovery code input keyboard hints missing: ${JSON.stringify(hints)}`);
+    }
+    // A wrong, lower-case attempt: the rejection message must be shown as an alert on screen.
+    await setInput(anon, "#recover-room-code", "NOSUCH");
+    await setInput(anon, "#recovery-code", "abcdefghjkmnp");
+    await setInput(anon, "#recover-display-name", "Audit");
+    await clickText(anon, "button", /^Recover my seat$/);
+    await waitFor(anon, `document.querySelector('[role="alert"]')`, 30000, "recovery rejection");
+    await captureState(anon, "join-recover-rejected", { axeViewports: ["phone"] });
+
     for (const path of [
       "#/claim/no-such-room",
       "#/room/no-such-room/gm",
