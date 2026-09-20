@@ -237,6 +237,71 @@ describe("Landing / create / join / claim (C01)", () => {
     ).toBeInTheDocument();
   });
 
+  it("leaves passphrases and codes exactly as typed: no auto-capitalisation or autocorrect on a phone keyboard", () => {
+    // Passphrases are user-chosen and compared exactly, so an iPhone's default first-letter
+    // capital or an autocorrected word would fail a correct entry; codes are upper-case by design.
+    const exact = (field: HTMLElement, capitalize: "none" | "characters"): void => {
+      expect(field).toHaveAttribute("autocapitalize", capitalize);
+      expect(field).toHaveAttribute("autocorrect", "off");
+      expect(field).toHaveAttribute("spellcheck", "false");
+    };
+    renderApp("#/create");
+    exact(screen.getByLabelText(/^passphrase$/i), "none");
+    goTo("#/join");
+    exact(screen.getByLabelText(/^room code$/i), "characters");
+    exact(screen.getByLabelText(/^passphrase$/i), "none");
+    goTo("#/table");
+    exact(screen.getByLabelText(/^room code$/i), "characters");
+    exact(screen.getByLabelText(/^table code$/i), "characters");
+    // The recovery form's room code (its recovery-code field is asserted below).
+    goTo("#/join");
+    act(() => screen.getByRole("button", { name: /lost your browser/i }).click());
+    exact(screen.getByLabelText(/^room code$/i), "characters");
+  });
+
+  it("hands focus to the shown-once secrets and then to the next action when the create form is replaced", async () => {
+    const user = userEvent.setup();
+    renderApp("#/");
+    await createSession(user);
+    // The submit button that had focus is gone with its form; focus must not fall to <body>.
+    expect(screen.getByRole("heading", { name: /write these down/i })).toHaveFocus();
+
+    await user.click(screen.getByLabelText(/i have written these down/i));
+    await user.click(screen.getByRole("button", { name: /i'm ready — continue/i }));
+    expect(await screen.findByRole("button", { name: /open the director console/i })).toHaveFocus();
+  });
+
+  it("moves focus to the new view's heading on the join/recover switch, the join reveal and the recovery reveal, and never steals it on load", async () => {
+    const user = userEvent.setup();
+    renderApp("#/");
+    const { roomCode } = await createSession(user);
+
+    window.localStorage.clear();
+    goTo("#/join");
+    expect(screen.getByRole("heading", { level: 1, name: /join a session/i })).not.toHaveFocus();
+    await user.type(screen.getByLabelText(/room code/i), roomCode);
+    await user.type(screen.getByLabelText(/^passphrase$/i), "wolfbane");
+    await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
+    await user.click(screen.getByRole("button", { name: /^join session$/i }));
+    expect(await screen.findByRole("heading", { name: /your recovery code/i })).toHaveFocus();
+    const originalCode = screen.getByText(/^[A-Z0-9]{6,}$/).textContent;
+
+    window.localStorage.clear();
+    goTo("#/");
+    goTo("#/join");
+    await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+    expect(screen.getByRole("heading", { level: 1, name: /recover your seat/i })).toHaveFocus();
+    await user.click(screen.getByRole("button", { name: /back to join by code/i }));
+    expect(screen.getByRole("heading", { level: 1, name: /join a session/i })).toHaveFocus();
+
+    await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+    await user.type(screen.getByLabelText(/^room code$/i), roomCode);
+    await user.type(screen.getByLabelText(/recovery code/i), originalCode);
+    await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
+    await user.click(screen.getByRole("button", { name: /^recover my seat$/i }));
+    expect(await screen.findByRole("heading", { name: /your new recovery code/i })).toHaveFocus();
+  });
+
   it("recovers a lost seat, rotates the code, and rejects the spent code", async () => {
     const user = userEvent.setup();
     renderApp("#/");

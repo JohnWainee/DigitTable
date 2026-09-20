@@ -68,6 +68,9 @@ export function JoinTableScreen(): JSX.Element {
               id="table-room-code"
               type="text"
               required
+              autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck={false}
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value)}
             />
@@ -78,6 +81,10 @@ export function JoinTableScreen(): JSX.Element {
               id="table-code"
               type="text"
               required
+              autoComplete="off"
+              autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck={false}
               value={tableCode}
               onChange={(e) => setTableCode(e.target.value)}
             />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { navigate } from "../router.js";
 import {
   ConnectionStatusStrip,
@@ -15,6 +15,7 @@ import { joinRoom, recoverSeat } from "../session/roomClient.js";
 import type { RecoverSeatResult } from "../session/FirebaseSessionClient.js";
 import type { RoomAdmissionAccepted, SessionRequestState } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
+import { useFocusWhen } from "../accessibility/useFocusWhen.js";
 import { newUuid } from "../shared/uuid.js";
 import { resumeRoute } from "./resumeRoute.js";
 
@@ -37,6 +38,12 @@ export function JoinScreen(): JSX.Element {
     SessionRequestState<Extract<RecoverSeatResult, { readonly ok: true }>>
   >({ status: "idle" });
   const [recoveredOwnership, setRecoveredOwnership] = useState<LocalOwnershipRecord | null>(null);
+  // Focus follows the person's own actions: a submit unmounts its form (and the focused button with
+  // it), and the mode switch renames the focused button in place. Neither may strand focus.
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const joinRevealRef = useRef<HTMLHeadingElement>(null);
+  const recoverRevealRef = useRef<HTMLHeadingElement>(null);
+  const focusHeadingAfterSwitch = useRef(false);
 
   async function handleSubmit(event: React.FormEvent): Promise<void> {
     event.preventDefault();
@@ -93,12 +100,27 @@ export function JoinScreen(): JSX.Element {
   const accepted = request.status === "accepted" ? request.result : null;
   const recovered = recoveryRequest.status === "accepted" ? recoveryRequest.result : null;
 
+  useFocusWhen(joinRevealRef, Boolean(accepted?.recoveryCode));
+  useFocusWhen(recoverRevealRef, recovered !== null);
+  useEffect(() => {
+    if (!focusHeadingAfterSwitch.current) return;
+    focusHeadingAfterSwitch.current = false;
+    headingRef.current?.focus();
+  }, [mode]);
+
+  function switchMode(next: JoinMode): void {
+    focusHeadingAfterSwitch.current = true;
+    setMode(next);
+  }
+
   if (mode === "recover") {
     return (
       <main className="landing-screen">
         <ConnectionStatusStrip state={connection} />
         <FixtureModeBanner />
-        <h1>Recover your seat</h1>
+        <h1 tabIndex={-1} ref={headingRef}>
+          Recover your seat
+        </h1>
         <p>
           Lost this browser or cleared its storage? Redeem the recovery code you were shown when you
           first joined to get your seat back.
@@ -118,6 +140,8 @@ export function JoinScreen(): JSX.Element {
                 type="text"
                 required
                 autoCapitalize="characters"
+                autoCorrect="off"
+                spellCheck={false}
                 pattern="[A-Za-z0-9-]+"
                 value={recoveryRoomCode}
                 onChange={(event) => setRecoveryRoomCode(event.target.value)}
@@ -176,7 +200,9 @@ export function JoinScreen(): JSX.Element {
 
         {recovered && (
           <section className="reveal-card" aria-labelledby="recover-reveal-heading">
-            <h2 id="recover-reveal-heading">Your new recovery code — shown once</h2>
+            <h2 id="recover-reveal-heading" tabIndex={-1} ref={recoverRevealRef}>
+              Your new recovery code — shown once
+            </h2>
             <p>
               Redeeming a code invalidates it. Save this replacement somewhere private; it is not
               stored in this browser.
@@ -193,7 +219,7 @@ export function JoinScreen(): JSX.Element {
         )}
 
         {!recovered && (
-          <button type="button" className="secondary-action" onClick={() => setMode("join")}>
+          <button type="button" className="secondary-action" onClick={() => switchMode("join")}>
             Back to join by code
           </button>
         )}
@@ -205,7 +231,9 @@ export function JoinScreen(): JSX.Element {
     <main className="landing-screen">
       <ConnectionStatusStrip state={connection} />
       <FixtureModeBanner />
-      <h1>Join a session</h1>
+      <h1 tabIndex={-1} ref={headingRef}>
+        Join a session
+      </h1>
 
       {!accepted && (
         <form
@@ -221,6 +249,8 @@ export function JoinScreen(): JSX.Element {
               type="text"
               required
               autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck={false}
               pattern="[A-Za-z0-9-]+"
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value)}
@@ -233,6 +263,9 @@ export function JoinScreen(): JSX.Element {
               type="text"
               required
               autoComplete="off"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               value={passphrase}
               onChange={(e) => setPassphrase(e.target.value)}
             />
@@ -266,7 +299,9 @@ export function JoinScreen(): JSX.Element {
 
       {accepted && accepted.recoveryCode && (
         <section className="reveal-card" aria-labelledby="join-reveal-heading">
-          <h2 id="join-reveal-heading">Your recovery code — shown once</h2>
+          <h2 id="join-reveal-heading" tabIndex={-1} ref={joinRevealRef}>
+            Your recovery code — shown once
+          </h2>
           <p>
             If you lose access to this browser, use this code to get your seat back. Nobody else can
             see it.
@@ -296,7 +331,7 @@ export function JoinScreen(): JSX.Element {
       )}
 
       {!accepted && (
-        <button type="button" className="secondary-action" onClick={() => setMode("recover")}>
+        <button type="button" className="secondary-action" onClick={() => switchMode("recover")}>
           Lost your browser? Recover your seat
         </button>
       )}

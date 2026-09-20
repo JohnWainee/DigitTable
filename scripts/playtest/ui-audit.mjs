@@ -423,11 +423,12 @@ function within(box, frame, tolerance = 1) {
   );
 }
 
-async function openCorrection(gm) {
-  // Whichever character is first on the roster: the shipped roster is the owner's sourcebook sheets
-  // (the placeholder "Rook" no longer exists), and the sheet's geometry must not depend on a name.
-  const finder = `document.querySelector(".roster-panel-list li button")`;
-  await waitFor(gm, finder, 20000, "a roster row's Correct button");
+async function openCorrection(gm, rowIndex = 0) {
+  // Whichever character is at `rowIndex` on the roster (default: the first): the shipped roster is the
+  // owner's sourcebook sheets (the placeholder "Rook" no longer exists), and the sheet's geometry must
+  // not depend on a name. The roster sweep below opens every row, so the tallest sheet is covered.
+  const finder = `document.querySelectorAll(".roster-panel-list li button")[${rowIndex}]`;
+  await waitFor(gm, finder, 20000, `roster row ${rowIndex}'s Correct button`);
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
@@ -532,6 +533,52 @@ async function auditModal(gm) {
     if (afterClose.anyInert) fail(`modal@${vp.name}`, "background still inert after close");
     if (afterClose.rootLocked) fail(`modal@${vp.name}`, "root scroll lock left on after close");
   }
+
+  // Every roster row's sheet, at the two narrowest phone sizes: the sheet's height follows the
+  // character (items, abilities, injuries), so opening only the first row could miss the tallest one.
+  const rosterRows = await ev(
+    gm,
+    `document.querySelectorAll(".roster-panel-list li button").length`,
+  );
+  report.rosterSheets = { rows: rosterRows, records: [] };
+  if (rosterRows < 1) fail("modal-roster-sweep", "no roster rows found");
+  for (const vp of [byName["phone-small"], byName["phone-390"]]) {
+    await applyViewport(gm, vp);
+    for (let row = 0; row < rosterRows; row += 1) {
+      await openCorrection(gm, row);
+      const geo = await ev(gm, MODAL_GEOMETRY);
+      const frame = { left: 0, top: 0, right: vp.width, bottom: vp.height };
+      await ev(
+        gm,
+        `(() => { const b = document.querySelector('[role="dialog"] .sheet-body'); b.scrollTop = b.scrollHeight; })()`,
+      );
+      await sleep(120);
+      const end = await ev(gm, MODAL_GEOMETRY);
+      const record = {
+        viewport: vp.name,
+        row,
+        bodyScrollHeight: geo.body.scrollHeight,
+        checks: {
+          dialogInsideViewport: within(geo.dialog, frame),
+          actionsVisibleWithoutScrolling: within(geo.apply, frame) && within(geo.cancel, frame),
+          actionTargets44: geo.apply?.height >= 43.5 && geo.cancel?.height >= 43.5,
+          reasonReachableAfterScroll: within(end.reason, {
+            left: 0,
+            top: 0,
+            right: vp.width,
+            bottom: end.apply ? end.apply.top + 1 : vp.height,
+          }),
+          noPageOverflow: geo.pageOverflowPx <= 1,
+        },
+      };
+      for (const [k, v] of Object.entries(record.checks)) {
+        if (!v) fail(`modal-roster-sweep@${vp.name}#${row}`, `${k} failed`);
+      }
+      report.rosterSheets.records.push(record);
+      await closeCorrection(gm);
+    }
+  }
+  await applyViewport(gm, byName["desktop"]);
 
   // ---- Scenarios that layout-viewport resizing cannot reach. Each MUST execute at least one check;
   // an exception, or an emulation this Chrome cannot perform, is a FAILURE and never a silent skip. ----
@@ -760,6 +807,28 @@ async function auditReducedMotion(gm) {
 
 // ---------- flow ----------
 
+/** id -> expected `autocapitalize` for the signed-out forms' typed secrets (see the loop that uses it). */
+const KEYBOARD_HINTS = {
+  "#/create": { "#passphrase": "none" },
+  "#/join": { "#room-code": "characters", "#join-passphrase": "none" },
+  "#/table": { "#table-room-code": "characters", "#table-code": "characters" },
+};
+/** Runs in the page (serialised with toString), so it must not close over anything. */
+function collectHints(selectors) {
+  const out = {};
+  for (const selector of selectors) {
+    const el = document.querySelector(selector);
+    out[selector] = el
+      ? {
+          autocapitalize: el.getAttribute("autocapitalize"),
+          autocorrect: el.getAttribute("autocorrect"),
+          spellcheck: el.getAttribute("spellcheck"),
+        }
+      : null;
+  }
+  return out;
+}
+
 async function main() {
   const profile = mkdtempSync(join(tmpdir(), "digitable-ui-audit-"));
   const chrome = spawn(
@@ -792,6 +861,28 @@ async function main() {
     ]) {
       await goto(anon, path);
       await captureState(anon, name);
+      // Passphrases are user-chosen and compared exactly (no auto-capital, no autocorrect); codes are
+      // upper-case by design. A default text field on iOS capitalises and autocorrects both.
+      const expectedCapitalize = KEYBOARD_HINTS[path];
+      if (expectedCapitalize) {
+        const found = await ev(
+          anon,
+          `(${collectHints.toString()})(${JSON.stringify(Object.keys(expectedCapitalize))})`,
+        );
+        report.keyboardHints ??= {};
+        report.keyboardHints[path] = found;
+        for (const [selector, capitalize] of Object.entries(expectedCapitalize)) {
+          const hint = found[selector];
+          if (
+            !hint ||
+            hint.autocapitalize !== capitalize ||
+            hint.autocorrect !== "off" ||
+            hint.spellcheck !== "false"
+          ) {
+            fail(`keyboard-hints ${path}`, `${selector}: ${JSON.stringify(hint)}`);
+          }
+        }
+      }
     }
     // Recovery form: a mode of the join screen, reached through its own button. It is the only place
     // a recovery code is typed, and the server compares that code case-exactly against an
@@ -844,6 +935,10 @@ async function main() {
       `[...document.querySelectorAll(".reveal-card dt")].map(dt => [dt.textContent.trim(), dt.nextElementSibling.textContent.trim()])`,
     );
     for (const [key, value] of pairs) codes[key] = value;
+    // The submitted form (and its focused button) is gone: focus must be on the secrets' heading.
+    report.secretsRevealFocusId = await ev(gm, `document.activeElement?.id ?? null`);
+    if (report.secretsRevealFocusId !== "reveal-heading")
+      fail("focus", `secrets card did not take focus (active: ${report.secretsRevealFocusId})`);
     await captureState(gm, "secrets-reveal");
     await ev(gm, `document.querySelector("#wrote-down").click()`);
     await clickText(gm, "button", /ready.*continue/i);
@@ -862,6 +957,9 @@ async function main() {
     await captureState(player, "join-filled");
     await clickText(player, "button", /^Join session$/);
     await waitFor(player, `document.querySelector(".reveal-card")`, 30000, "player reveal");
+    report.joinRevealFocusId = await ev(player, `document.activeElement?.id ?? null`);
+    if (report.joinRevealFocusId !== "join-reveal-heading")
+      fail("focus", `join reveal did not take focus (active: ${report.joinRevealFocusId})`);
     await captureState(player, "join-reveal");
     await clickText(player, "button", /wrote it down/);
     await waitFor(player, `document.querySelector(".roster-grid")`, 30000, "roster");

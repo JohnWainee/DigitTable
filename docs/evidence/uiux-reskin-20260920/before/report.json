@@ -1,0 +1,3639 @@
+{
+  "label": "before",
+  "base": "http://127.0.0.1:4175",
+  "startedAt": "2026-09-20T16:07:34.117Z",
+  "states": [
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-landing-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-landing-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-landing-phone-390.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-landing-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-landing-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 3,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-landing-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 3,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-landing-table.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-create-form-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-create-form-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-create-form-phone-390.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-create-form-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-create-form-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 4,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-create-form-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 4,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-create-form-table.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-form-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-form-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-form-phone-390.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-form-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-form-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 5,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-join-form-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 5,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-join-form-table.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-table-join-form-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-table-join-form-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-table-join-form-phone-390.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-table-join-form-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-table-join-form-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 3,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-table-join-form-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 3,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-table-join-form-table.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-recover",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-recover-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-recover",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-recover-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-recover",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-recover-phone-390.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-recover",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-recover-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-recover",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-recover-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-recover",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 5,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-join-recover-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-recover",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 5,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-join-recover-table.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-recover-rejected",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-recover-rejected-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-recover-rejected",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-recover-rejected-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-recover-rejected",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-recover-rejected-phone-390.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-recover-rejected",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-recover-rejected-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-recover-rejected",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-join-recover-rejected-tablet.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-recover-rejected",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 5,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-join-recover-rejected-desktop.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-recover-rejected",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 5,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-join-recover-rejected-table.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-claim-no-such-room-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-claim-no-such-room-phone.jpg",
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-claim-no-such-room-phone-390.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-claim-no-such-room-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-claim-no-such-room-tablet.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-route-claim-no-such-room-desktop.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-route-claim-no-such-room-table.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-gm-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-gm-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-gm-phone-390.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-gm-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-gm-tablet.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 2,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-gm-desktop.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 2,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-gm-table.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-player-phone-small.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-player-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-player-phone-390.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-player-phone-landscape.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-player-tablet.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-player-desktop.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "anon-route-room-no-such-room-player-table.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-secrets-reveal-phone-small.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-secrets-reveal-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-secrets-reveal-phone-390.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-secrets-reveal-phone-landscape.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-secrets-reveal-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 2,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "gm-secrets-reveal-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 2,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "gm-secrets-reveal-table.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-empty-phone-small.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-empty-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-empty-phone-390.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-empty-phone-landscape.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-empty-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-empty-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-empty-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-filled-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-filled-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-filled-phone-390.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-filled-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-filled-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 5,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "player-join-filled-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 5,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "player-join-filled-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-reveal-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-reveal-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-reveal-phone-390.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-reveal-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-join-reveal-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "player-join-reveal-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "player-join-reveal-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-claim-roster-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-claim-roster-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-claim-roster-phone-390.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-claim-roster-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-claim-roster-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-claim-roster-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-claim-roster-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-phone-390.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-why-open-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-why-open-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-why-open-phone-390.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-why-open-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-why-open-tablet.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-why-open-desktop.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-compose-why-open-table.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-idle-phone-small.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-idle-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-idle-phone-390.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-idle-phone-landscape.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-idle-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-idle-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 0,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "table-idle-table.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-scene-loaded-phone-small.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-scene-loaded-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-scene-loaded-phone-390.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-scene-loaded-phone-landscape.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-scene-loaded-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-scene-loaded-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-scene-loaded-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-declared-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-declared-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-declared-phone-390.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-declared-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-declared-tablet.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-declared-desktop.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "player-declared-table.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-pending-phone-small.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-pending-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-pending-phone-390.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-pending-phone-landscape.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-pending-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-pending-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-pending-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-phone-390.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-assigned-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-assigned-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-assigned-phone-390.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-assigned-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-assigned-tablet.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-assigned-desktop.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-allocation-assigned-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-resolved-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-resolved-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-resolved-phone-390.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-resolved-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-resolved-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-resolved-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "player-resolved-table.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-after-roll-phone-small.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-after-roll-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-after-roll-phone-390.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-after-roll-phone-landscape.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-after-roll-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-after-roll-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 0,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "table-after-roll-table.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-paused-phone-small.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-paused-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-paused-phone-390.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-paused-phone-landscape.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-paused-tablet.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-paused-desktop.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [
+        {
+          "control": "button \"Mark and regain Blood\"",
+          "problems": [
+            "unstyled browser-default button"
+          ]
+        }
+      ],
+      "screenshot": "player-paused-table.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-next-scene-phone-small.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-next-scene-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-next-scene-phone-390.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-next-scene-phone-landscape.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-next-scene-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "table-next-scene-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 0,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": "table-next-scene-table.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-next-scene-phone-small.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-next-scene-phone.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-390",
+      "size": "390x844",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-next-scene-phone-390.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-next-scene-phone-landscape.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-next-scene-tablet.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-next-scene-desktop.jpg",
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": "gm-console-next-scene-table.jpg"
+    }
+  ],
+  "modal": [
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 568,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 544
+        },
+        "apply": {
+          "top": 448,
+          "bottom": 496,
+          "left": 18,
+          "right": 302,
+          "width": 284,
+          "height": 48
+        },
+        "cancel": {
+          "top": 508,
+          "bottom": 556,
+          "left": 18,
+          "right": 302,
+          "width": 284,
+          "height": 48
+        },
+        "reason": {
+          "top": 1370.171875,
+          "bottom": 1418.171875,
+          "left": 18,
+          "right": 302,
+          "width": 284,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1346,
+          "clientHeight": 346,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone-small.jpg",
+      "keyboard": {
+        "size": "320x312",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone-small.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 788
+        },
+        "apply": {
+          "top": 733.15625,
+          "bottom": 800,
+          "left": 18,
+          "right": 181.5,
+          "width": 163.5,
+          "height": 66.84375
+        },
+        "cancel": {
+          "top": 733.15625,
+          "bottom": 800,
+          "left": 193.5,
+          "right": 357,
+          "width": 163.5,
+          "height": 66.84375
+        },
+        "reason": {
+          "top": 1370.171875,
+          "bottom": 1418.171875,
+          "left": 18,
+          "right": 357,
+          "width": 339,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1346,
+          "clientHeight": 631,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone.jpg",
+      "keyboard": {
+        "size": "375x447",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-390",
+      "size": "390x844",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "clientWidth": 390
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 390,
+          "height": 844,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 844,
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "height": 820
+        },
+        "apply": {
+          "top": 765.15625,
+          "bottom": 832,
+          "left": 18,
+          "right": 189,
+          "width": 171,
+          "height": 66.84375
+        },
+        "cancel": {
+          "top": 765.15625,
+          "bottom": 832,
+          "left": 201,
+          "right": 372,
+          "width": 171,
+          "height": 66.84375
+        },
+        "reason": {
+          "top": 1370.171875,
+          "bottom": 1418.171875,
+          "left": 18,
+          "right": 372,
+          "width": 354,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1346,
+          "clientHeight": 663,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone-390.jpg",
+      "keyboard": {
+        "size": "390x464",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone-390.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 86,
+          "right": 726,
+          "width": 640,
+          "height": 343
+        },
+        "apply": {
+          "top": 293,
+          "bottom": 341,
+          "left": 104,
+          "right": 400,
+          "width": 296,
+          "height": 48
+        },
+        "cancel": {
+          "top": 293,
+          "bottom": 341,
+          "left": 412,
+          "right": 708,
+          "width": 296,
+          "height": 48
+        },
+        "reason": {
+          "top": 1296.59375,
+          "bottom": 1344.59375,
+          "left": 104,
+          "right": 708,
+          "width": 604,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1298,
+          "clientHeight": 225,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone-landscape.jpg",
+      "keyboard": {
+        "size": "812x206",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone-landscape.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 375,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 24,
+          "right": 643,
+          "width": 619,
+          "height": 343
+        },
+        "apply": {
+          "top": 293,
+          "bottom": 341,
+          "left": 42,
+          "right": 327.5,
+          "width": 285.5,
+          "height": 48
+        },
+        "cancel": {
+          "top": 293,
+          "bottom": 341,
+          "left": 339.5,
+          "right": 625,
+          "width": 285.5,
+          "height": 48
+        },
+        "reason": {
+          "top": 1296.59375,
+          "bottom": 1344.59375,
+          "left": 42,
+          "right": 625,
+          "width": 583,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1298,
+          "clientHeight": 225,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone-667x375.jpg",
+      "keyboard": {
+        "size": "667x206",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone-667x375.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "tablet",
+      "size": "768x1024",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 768,
+          "innerHeight": 1024,
+          "clientWidth": 768
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 768,
+          "height": 1024,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 160,
+          "bottom": 864,
+          "left": 64,
+          "right": 704,
+          "width": 640,
+          "height": 704
+        },
+        "apply": {
+          "top": 802,
+          "bottom": 850,
+          "left": 82,
+          "right": 378,
+          "width": 296,
+          "height": 48
+        },
+        "cancel": {
+          "top": 802,
+          "bottom": 850,
+          "left": 390,
+          "right": 686,
+          "width": 296,
+          "height": 48
+        },
+        "reason": {
+          "top": 1474.1875,
+          "bottom": 1522.1875,
+          "left": 82,
+          "right": 686,
+          "width": 604,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1322,
+          "clientHeight": 572,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-tablet.jpg",
+      "keyboard": {
+        "size": "768x563",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-tablet.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "desktop",
+      "size": "1280x800",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 1280,
+          "innerHeight": 800,
+          "clientWidth": 1280
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 1280,
+          "height": 800,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 752,
+          "left": 312.5,
+          "right": 952.5,
+          "width": 640,
+          "height": 704
+        },
+        "apply": {
+          "top": 690,
+          "bottom": 738,
+          "left": 330.5,
+          "right": 626.5,
+          "width": 296,
+          "height": 48
+        },
+        "cancel": {
+          "top": 690,
+          "bottom": 738,
+          "left": 638.5,
+          "right": 934.5,
+          "width": 296,
+          "height": 48
+        },
+        "reason": {
+          "top": 1362.1875,
+          "bottom": 1410.1875,
+          "left": 330.5,
+          "right": 919.5,
+          "width": 589,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1322,
+          "clientHeight": 572,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": -15,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-desktop.jpg",
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "zoom-emulated",
+      "checks": {
+        "pageScaleApplied": true,
+        "dialogInsideVisualViewportWhenZoomed": true,
+        "actionsInsideVisualViewportWhenZoomed": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 234.375,
+          "height": 507.5,
+          "scale": 1.600000023841858
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 507.5,
+          "left": 0,
+          "right": 234.375,
+          "width": 234.375,
+          "height": 483.5
+        },
+        "apply": {
+          "top": 368.65625,
+          "bottom": 435.5,
+          "left": 18,
+          "right": 216.375,
+          "width": 198.375,
+          "height": 66.84375
+        },
+        "cancel": {
+          "top": 447.5,
+          "bottom": 495.5,
+          "left": 18,
+          "right": 216.375,
+          "width": 198.375,
+          "height": 48
+        },
+        "reason": {
+          "top": 1672.546875,
+          "bottom": 1720.546875,
+          "left": 18,
+          "right": 216.375,
+          "width": 198.375,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1649,
+          "clientHeight": 267,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "pinch-gesture",
+      "checks": {
+        "pinchZoomStillWorksWithSheetOpen": true
+      },
+      "notes": [],
+      "scaleBefore": 1,
+      "scaleAfter": 2.000000238418579,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "scenario": "safe-area-landscape-constrained",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfLeftInset": true,
+        "sheetClearOfRightInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 375,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 47,
+          "right": 620,
+          "width": 573,
+          "height": 343
+        },
+        "apply": {
+          "top": 272,
+          "bottom": 320,
+          "left": 65,
+          "right": 327.5,
+          "width": 262.5,
+          "height": 48
+        },
+        "cancel": {
+          "top": 272,
+          "bottom": 320,
+          "left": 339.5,
+          "right": 602,
+          "width": 262.5,
+          "height": 48
+        },
+        "reason": {
+          "top": 1296.59375,
+          "bottom": 1344.59375,
+          "left": 65,
+          "right": 602,
+          "width": 537,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1298,
+          "clientHeight": 204,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 29,
+      "sheetWidth": 573,
+      "screenshot": "gm-correction-safe-area-landscape-constrained.jpg",
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "scenario": "safe-area-landscape-812",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfLeftInset": true,
+        "sheetClearOfRightInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 86,
+          "right": 726,
+          "width": 640,
+          "height": 343
+        },
+        "apply": {
+          "top": 272,
+          "bottom": 320,
+          "left": 104,
+          "right": 400,
+          "width": 296,
+          "height": 48
+        },
+        "cancel": {
+          "top": 272,
+          "bottom": 320,
+          "left": 412,
+          "right": 708,
+          "width": 296,
+          "height": 48
+        },
+        "reason": {
+          "top": 1296.59375,
+          "bottom": 1344.59375,
+          "left": 104,
+          "right": 708,
+          "width": 604,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1298,
+          "clientHeight": 204,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 29,
+      "sheetWidth": 640,
+      "screenshot": "gm-correction-safe-area-landscape-812.jpg",
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "safe-area-portrait",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfTopInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 47,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 765
+        },
+        "apply": {
+          "top": 699.15625,
+          "bottom": 766,
+          "left": 18,
+          "right": 181.5,
+          "width": 163.5,
+          "height": 66.84375
+        },
+        "cancel": {
+          "top": 699.15625,
+          "bottom": 766,
+          "left": 193.5,
+          "right": 357,
+          "width": 163.5,
+          "height": 66.84375
+        },
+        "reason": {
+          "top": 1393.171875,
+          "bottom": 1441.171875,
+          "left": 18,
+          "right": 357,
+          "width": 339,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1346,
+          "clientHeight": 574,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 46,
+      "screenshot": "gm-correction-safe-area-portrait.jpg",
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "text-150-phone-small",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 36,
+          "bottom": 568,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 532
+        },
+        "apply": {
+          "top": 361.71875,
+          "bottom": 460,
+          "left": 26,
+          "right": 294,
+          "width": 268,
+          "height": 98.28125
+        },
+        "cancel": {
+          "top": 478,
+          "bottom": 550,
+          "left": 26,
+          "right": 294,
+          "width": 268,
+          "height": 72
+        },
+        "reason": {
+          "top": 2539.921875,
+          "bottom": 2611.921875,
+          "left": 26,
+          "right": 294,
+          "width": 268,
+          "height": 72
+        },
+        "body": {
+          "scrollHeight": 2506,
+          "clientHeight": 212,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 24,
+      "screenshot": "gm-correction-text-150-phone-small.jpg",
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "text-200-phone",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 764
+        },
+        "apply": {
+          "top": 538.28125,
+          "bottom": 668,
+          "left": 34,
+          "right": 341,
+          "width": 307,
+          "height": 129.71875
+        },
+        "cancel": {
+          "top": 692,
+          "bottom": 788,
+          "left": 34,
+          "right": 341,
+          "width": 307,
+          "height": 96
+        },
+        "reason": {
+          "top": 3725.625,
+          "bottom": 3821.625,
+          "left": 34,
+          "right": 341,
+          "width": 307,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 3637,
+          "clientHeight": 296,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": "gm-correction-text-200-phone.jpg",
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "text-200-phone-small",
+      "checks": {
+        "dialogInsideViewport": false,
+        "noPageOverflow": false,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 324,
+          "innerHeight": 576,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 8,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 56,
+          "bottom": 576,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 520
+        },
+        "apply": {
+          "top": 374.8125,
+          "bottom": 545,
+          "left": 34,
+          "right": 286,
+          "width": 252,
+          "height": 170.1875
+        },
+        "cancel": {
+          "top": 569,
+          "bottom": 665,
+          "left": 34,
+          "right": 286,
+          "width": 252,
+          "height": 96
+        },
+        "reason": {
+          "top": 4609.4375,
+          "bottom": 4705.4375,
+          "left": 34,
+          "right": 286,
+          "width": 252,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 4513,
+          "clientHeight": 124,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 4,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "offenders": [
+        "div right=320 sw=324/320 :: ConnectedDirector console1 act",
+        "main.gm-screen right=320 sw=324/320 :: ConnectedDirector console1 act",
+        "section.step right=288 sw=290/252 :: Pending actionsIrynaStat: CONE",
+        "ul.pending-actions-list right=254 sw=258/188 :: IrynaStat: CONEngaged threatsS",
+        "li.pending-action-card right=254 sw=256/184 :: IrynaStat: CONEngaged threatsS",
+        "fieldset right=225 sw=227/126 :: Engaged threatsStation Patrol ",
+        "div.gear-list right=196 sw=200/71 :: Station Patrol AStation Patrol",
+        "label.gear-option right=196 sw=198/67 :: Station Patrol A",
+        "label.gear-option right=196 sw=198/67 :: Station Patrol B",
+        "label.gear-option right=257 sw=216/190 :: Downed"
+      ],
+      "textPx": 32,
+      "screenshot": "gm-correction-text-200-phone-small.jpg",
+      "informationalChecks": [
+        "dialogInsideViewport",
+        "noPageOverflow"
+      ]
+    }
+  ],
+  "reducedMotion": {
+    "allowed": {
+      "sheetAnimation": "sheet-rise",
+      "sheetDuration": "0.18s",
+      "backdropAnimation": "sheet-fade",
+      "anyLongTransition": true,
+      "matches": false
+    },
+    "reduced": {
+      "sheetAnimation": "none",
+      "sheetDuration": "1e-06s",
+      "backdropAnimation": "none",
+      "anyLongTransition": false,
+      "matches": true
+    }
+  },
+  "routes": [],
+  "failures": [
+    {
+      "scope": "keyboard-hints #/create",
+      "message": "#passphrase: {\"autocapitalize\":null,\"autocorrect\":null,\"spellcheck\":null}"
+    },
+    {
+      "scope": "keyboard-hints #/join",
+      "message": "#room-code: {\"autocapitalize\":\"characters\",\"autocorrect\":null,\"spellcheck\":null}"
+    },
+    {
+      "scope": "keyboard-hints #/join",
+      "message": "#join-passphrase: {\"autocapitalize\":null,\"autocorrect\":null,\"spellcheck\":null}"
+    },
+    {
+      "scope": "keyboard-hints #/table",
+      "message": "#table-room-code: {\"autocapitalize\":null,\"autocorrect\":null,\"spellcheck\":null}"
+    },
+    {
+      "scope": "keyboard-hints #/table",
+      "message": "#table-code: {\"autocapitalize\":null,\"autocorrect\":null,\"spellcheck\":null}"
+    },
+    {
+      "scope": "recovery-form",
+      "message": "recovery code input keyboard hints missing: {\"autocapitalize\":null,\"autocorrect\":null,\"spellcheck\":null,\"autocomplete\":\"off\"}"
+    },
+    {
+      "scope": "focus",
+      "message": "secrets card did not take focus (active: )"
+    },
+    {
+      "scope": "focus",
+      "message": "join reveal did not take focus (active: )"
+    },
+    {
+      "scope": "player/compose@phone-small",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/compose@phone",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/compose@phone-390",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/compose@phone-landscape",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/compose@tablet",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/compose@desktop",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/compose@table",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/compose-why-open@phone",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/compose-why-open@phone-390",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/compose-why-open@phone-landscape",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/compose-why-open@tablet",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/compose-why-open@desktop",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/compose-why-open@table",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/paused@phone-small",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/paused@phone",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/paused@phone-390",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/paused@phone-landscape",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/paused@tablet",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/paused@desktop",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    },
+    {
+      "scope": "player/paused@table",
+      "message": "button \"Mark and regain Blood\": unstyled browser-default button"
+    }
+  ],
+  "console": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  },
+  "keyboardHints": {
+    "#/create": {
+      "#passphrase": {
+        "autocapitalize": null,
+        "autocorrect": null,
+        "spellcheck": null
+      }
+    },
+    "#/join": {
+      "#room-code": {
+        "autocapitalize": "characters",
+        "autocorrect": null,
+        "spellcheck": null
+      },
+      "#join-passphrase": {
+        "autocapitalize": null,
+        "autocorrect": null,
+        "spellcheck": null
+      }
+    },
+    "#/table": {
+      "#table-room-code": {
+        "autocapitalize": null,
+        "autocorrect": null,
+        "spellcheck": null
+      },
+      "#table-code": {
+        "autocapitalize": null,
+        "autocorrect": null,
+        "spellcheck": null
+      }
+    }
+  },
+  "recoveryInputHints": {
+    "autocapitalize": null,
+    "autocorrect": null,
+    "spellcheck": null,
+    "autocomplete": "off"
+  },
+  "secretsRevealFocusId": "",
+  "joinRevealFocusId": "",
+  "rosterSheets": {
+    "rows": 6,
+    "records": [
+      {
+        "viewport": "phone-small",
+        "row": 0,
+        "bodyScrollHeight": 1346,
+        "checks": {
+          "dialogInsideViewport": true,
+          "actionsVisibleWithoutScrolling": true,
+          "actionTargets44": true,
+          "reasonReachableAfterScroll": true,
+          "noPageOverflow": true
+        }
+      },
+      {
+        "viewport": "phone-small",
+        "row": 1,
+        "bodyScrollHeight": 1493,
+        "checks": {
+          "dialogInsideViewport": true,
+          "actionsVisibleWithoutScrolling": true,
+          "actionTargets44": true,
+          "reasonReachableAfterScroll": true,
+          "noPageOverflow": true
+        }
+      },
+      {
+        "viewport": "phone-small",
+        "row": 2,
+        "bodyScrollHeight": 1394,
+        "checks": {
+          "dialogInsideViewport": true,
+          "actionsVisibleWithoutScrolling": true,
+          "actionTargets44": true,
+          "reasonReachableAfterScroll": true,
+          "noPageOverflow": true
+        }
+      },
+      {
+        "viewport": "phone-small",
+        "row": 3,
+        "bodyScrollHeight": 1237,
+        "checks": {
+          "dialogInsideViewport": true,
+          "actionsVisibleWithoutScrolling": true,
+          "actionTargets44": true,
+          "reasonReachableAfterScroll": true,
+          "noPageOverflow": true
+        }
+      },
+      {
+        "viewport": "phone-small",
+        "row": 4,
+        "bodyScrollHeight": 1322,
+        "checks": {
+          "dialogInsideViewport": true,
+          "actionsVisibleWithoutScrolling": true,
+          "actionTargets44": true,
+          "reasonReachableAfterScroll": true,
+          "noPageOverflow": true
+        }
+      },
+      {
+        "viewport": "phone-small",
+        "row": 5,
+        "bodyScrollHeight": 1151,
+        "checks": {
+          "dialogInsideViewport": true,
+          "actionsVisibleWithoutScrolling": true,
+          "actionTargets44": true,
+          "reasonReachableAfterScroll": true,
+          "noPageOverflow": true
+        }
+      },
+      {
+        "viewport": "phone-390",
+        "row": 0,
+        "bodyScrollHeight": 1346,
+        "checks": {
+          "dialogInsideViewport": true,
+          "actionsVisibleWithoutScrolling": true,
+          "actionTargets44": true,
+          "reasonReachableAfterScroll": true,
+          "noPageOverflow": true
+        }
+      },
+      {
+        "viewport": "phone-390",
+        "row": 1,
+        "bodyScrollHeight": 1493,
+        "checks": {
+          "dialogInsideViewport": true,
+          "actionsVisibleWithoutScrolling": true,
+          "actionTargets44": true,
+          "reasonReachableAfterScroll": true,
+          "noPageOverflow": true
+        }
+      },
+      {
+        "viewport": "phone-390",
+        "row": 2,
+        "bodyScrollHeight": 1322,
+        "checks": {
+          "dialogInsideViewport": true,
+          "actionsVisibleWithoutScrolling": true,
+          "actionTargets44": true,
+          "reasonReachableAfterScroll": true,
+          "noPageOverflow": true
+        }
+      },
+      {
+        "viewport": "phone-390",
+        "row": 3,
+        "bodyScrollHeight": 1237,
+        "checks": {
+          "dialogInsideViewport": true,
+          "actionsVisibleWithoutScrolling": true,
+          "actionTargets44": true,
+          "reasonReachableAfterScroll": true,
+          "noPageOverflow": true
+        }
+      },
+      {
+        "viewport": "phone-390",
+        "row": 4,
+        "bodyScrollHeight": 1322,
+        "checks": {
+          "dialogInsideViewport": true,
+          "actionsVisibleWithoutScrolling": true,
+          "actionTargets44": true,
+          "reasonReachableAfterScroll": true,
+          "noPageOverflow": true
+        }
+      },
+      {
+        "viewport": "phone-390",
+        "row": 5,
+        "bodyScrollHeight": 1151,
+        "checks": {
+          "dialogInsideViewport": true,
+          "actionsVisibleWithoutScrolling": true,
+          "actionTargets44": true,
+          "reasonReachableAfterScroll": true,
+          "noPageOverflow": true
+        }
+      }
+    ]
+  },
+  "finishedAt": "2026-09-20T16:12:31.340Z",
+  "ok": false,
+  "summary": {
+    "states": 189,
+    "controlsAudited": 1743,
+    "controlIssues": 21,
+    "overflowStates": 0,
+    "axeHardViolations": 0,
+    "axeBestPractice": [
+      "anon/route-claim-no-such-room@phone: page-has-heading-one"
+    ],
+    "failures": 29
+  }
+}

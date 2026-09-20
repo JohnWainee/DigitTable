@@ -1,0 +1,44 @@
+FAIL keyboard-hints #/create: #passphrase: {"autocapitalize":null,"autocorrect":null,"spellcheck":null}
+FAIL keyboard-hints #/join: #room-code: {"autocapitalize":"characters","autocorrect":null,"spellcheck":null}
+FAIL keyboard-hints #/join: #join-passphrase: {"autocapitalize":null,"autocorrect":null,"spellcheck":null}
+FAIL keyboard-hints #/table: #table-room-code: {"autocapitalize":null,"autocorrect":null,"spellcheck":null}
+FAIL keyboard-hints #/table: #table-code: {"autocapitalize":null,"autocorrect":null,"spellcheck":null}
+FAIL recovery-form: recovery code input keyboard hints missing: {"autocapitalize":null,"autocorrect":null,"spellcheck":null,"autocomplete":"off"}
+FAIL focus: secrets card did not take focus (active: )
+FAIL focus: join reveal did not take focus (active: )
+FAIL player/compose@phone-small: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/compose@phone: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/compose@phone-390: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/compose@phone-landscape: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/compose@tablet: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/compose@desktop: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/compose@table: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/compose-why-open@phone-small: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/compose-why-open@phone: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/compose-why-open@phone-390: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/compose-why-open@phone-landscape: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/compose-why-open@tablet: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/compose-why-open@desktop: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/compose-why-open@table: button "Mark and regain Blood": unstyled browser-default button
+INFO modal-text-200-phone-small: dialogInsideViewport failed (recorded, not gating)
+INFO modal-text-200-phone-small: noPageOverflow failed (recorded, not gating)
+FAIL player/paused@phone-small: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/paused@phone: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/paused@phone-390: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/paused@phone-landscape: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/paused@tablet: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/paused@desktop: button "Mark and regain Blood": unstyled browser-default button
+FAIL player/paused@table: button "Mark and regain Blood": unstyled browser-default button
+{
+  "states": 189,
+  "controlsAudited": 1743,
+  "controlIssues": 21,
+  "overflowStates": 0,
+  "axeHardViolations": 0,
+  "axeBestPractice": [
+    "anon/route-claim-no-such-room@phone: page-has-heading-one"
+  ],
+  "failures": 29
+}
+UI AUDIT FOUND PROBLEMS
+EXIT=0
