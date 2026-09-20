@@ -201,6 +201,42 @@ describe("Landing / create / join / claim (C01)", () => {
     expect(screen.queryByRole("heading", { name: /^resume$/i })).not.toBeInTheDocument();
   });
 
+  it("asks the phone keyboard for capitals with no autocorrect, and accepts a code typed in lower case with a space", async () => {
+    const user = userEvent.setup();
+    renderApp("#/");
+    const { roomCode } = await createSession(user);
+
+    window.localStorage.clear();
+    goTo("#/join");
+    await user.type(screen.getByLabelText(/room code/i), roomCode);
+    await user.type(screen.getByLabelText(/^passphrase$/i), "wolfbane");
+    await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
+    await user.click(screen.getByRole("button", { name: /^join session$/i }));
+    await screen.findByRole("heading", { name: /your recovery code/i });
+    const originalCode = screen.getByText(/^[A-Z0-9]{6,}$/).textContent;
+
+    window.localStorage.clear();
+    goTo("#/");
+    goTo("#/join");
+    await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+
+    // The server compares the code case-exactly against an upper-case alphabet, so an iPhone's
+    // default first-letter-only capitalisation (or autocorrect) would turn a right code wrong.
+    const field = screen.getByLabelText(/recovery code/i);
+    expect(field).toHaveAttribute("autocapitalize", "characters");
+    expect(field).toHaveAttribute("autocorrect", "off");
+    expect(field).toHaveAttribute("spellcheck", "false");
+
+    const typed = `${originalCode.slice(0, 5)} ${originalCode.slice(5)}`.toLowerCase();
+    await user.type(screen.getByLabelText(/^room code$/i), roomCode);
+    await user.type(field, typed);
+    await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
+    await user.click(screen.getByRole("button", { name: /^recover my seat$/i }));
+    expect(
+      await screen.findByRole("heading", { name: /your new recovery code/i }),
+    ).toBeInTheDocument();
+  });
+
   it("recovers a lost seat, rotates the code, and rejects the spent code", async () => {
     const user = userEvent.setup();
     renderApp("#/");

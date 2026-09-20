@@ -64,7 +64,12 @@ export function JoinScreen(): JSX.Element {
     const requestId = newUuid();
     setRecoveryRequest({ status: "pending", requestId });
     const normalizedRoomCode = recoveryRoomCode.toUpperCase();
-    const result = await recoverSeat({ roomCode: normalizedRoomCode, recoveryCode });
+    // Recovery codes are minted from an upper-case alphabet and compared exactly, but a phone
+    // keyboard may capitalise only the first letter or add spaces: normalise like the room code.
+    const result = await recoverSeat({
+      roomCode: normalizedRoomCode,
+      recoveryCode: recoveryCode.replace(/\s+/g, "").toUpperCase(),
+    });
     if (result.ok) {
       setRecoveryRequest({ status: "accepted", requestId, result });
       const ownership = ownershipFromRecoverySeat(
@@ -125,6 +130,9 @@ export function JoinScreen(): JSX.Element {
                 type="text"
                 required
                 autoComplete="off"
+                autoCapitalize="characters"
+                autoCorrect="off"
+                spellCheck={false}
                 value={recoveryCode}
                 onChange={(event) => setRecoveryCode(event.target.value)}
               />
