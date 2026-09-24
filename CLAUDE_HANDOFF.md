@@ -540,3 +540,54 @@ defect. Full write-up, independent review, and live evidence:
   rehearsal and F7 heading item already tracked above remain the only open items. Whoever considers
   scheduling another hourly mobile-pop-out audit should weigh the accumulated evidence (multiple
   independent clean passes against the actual deployed build within 24 hours) against its cost.
+
+## Mobile pop-out re-audit, 2026-09-24 (this worktree, `sonnet-r/reskin-mobile-viewport-20260924`)
+
+**Scope:** same brief as the prior two sessions above (independently audit setup/join, GM, player,
+and table flows at phone/tablet/desktop/table widths for a real, remaining mobile pop-out or
+responsive/accessibility/reskin defect — selects, menus, disclosures, dialogs, drawers,
+option/action/allocation pickers). This branch also diverged at `e1ccc8b`, i.e. **after** the
+`ui-audit.mjs` selector fix, so no tooling port was needed this time.
+
+1. **Independent source read, not a re-trust of the prior review's text.** Read
+   `SheetDialog.tsx`/`useVisualViewportBox.ts` end to end (portal + inert background, visual-
+   viewport sizing with the `100dvh`-fallback ordering caveat, focus trap incl. collapsed-`<details>`
+   /disabled-`fieldset`/radio-group edge cases, Escape, scroll lock, keyboard-reveal via
+   `scrollIntoView`), `CorrectionDialog.tsx` (the sheet's only real consumer), the six `<select>`
+   call sites in `SceneDirector.tsx`/`GmToolsPanel.tsx`, and the one `<details>`/`<summary>` "Why?"
+   disclosure in `ComposeStep2.tsx`. Independently confirmed by `grep` that no other pop-out pattern
+   exists anywhere in `apps/web/src` (`role="menu"/"listbox"/"combobox"/"tooltip"/"tab"`,
+   `aria-expanded`, `popover`, `<dialog>`) — same inventory the last two sessions reached, verified
+   fresh rather than cited.
+2. **Read the CSS behind those components directly**, not just the components: `.sheet`/
+   `.sheet-backdrop`/`.sheet-header`/`.sheet-body`/`.sheet-footer` (visual-viewport sizing,
+   `@supports (height: 100dvh)` ordering so the fallback wins on engines without `dvh`, safe-area
+   insets on all four sides at both the narrow and the `min-width: 40.0625rem` centred-card
+   breakpoint, the footer's 40%-max-height backstop against a large-text sheet squeezing out the
+   body, landscape/short-viewport reclaiming, `touch-action: auto` deliberately left unrestricted
+   so pinch-zoom stays available per WCAG 1.4.4), the tap-target rule (`.primary-action,
+   .secondary-action, .link-button, .stepper-controls button { min-height/min-width: var(--tap)
+   }`, `--tap: 3rem` — confirms the correction sheet's stepper buttons meet the 44px target even
+   though `.stepper-controls button`'s own rule block doesn't restate it), the `forced-colors:
+   active` block, and the `prefers-reduced-motion: reduce` block. No gap found in any of it.
+3. **Conclusion: no new user-visible defect.** No `apps/web`, `packages/*`, `templates/*`, or
+   `apps/functions` file was touched.
+
+### Required checks — this session
+
+- `npm ci` (worktree had no `node_modules`).
+- `npm run check` — format, lint, typecheck clean; **690 passed | 11 todo** (71 files, 1 skipped) —
+  unchanged from the `e1ccc8b` baseline.
+- `npm audit` / `npm audit --omit=dev` — 0 vulnerabilities either way.
+- Deliberately did **not** repeat another live pass against `https://digitable.signal-bleed.com` or
+  the Firebase emulator suite: three independent live audits already ran against that same deployed
+  build within the last 24 hours (`docs/reviews/2026-09-18-sonnet-d-reskin-independent-review.md`
+  and the two sessions immediately above), each reporting the identical zero-defect result
+  (150 states, 1,400+ controls, 0 failures; 17/17 smoke steps). Since this session made no source
+  change and found no new surface to test, a fourth identical live run would add load to shared
+  staging without new evidence. If a future session changes `apps/web` source, it still owes a
+  fresh live `ui-audit.mjs`/`two-device-smoke.mjs`/emulator pass per `AGENTS.md`, unconditionally.
+- **Next action for John:** unchanged — the physical-device rehearsal and the F7 heading-one item
+  are the only open items. No further hourly mobile-pop-out audit is warranted on the current
+  deployed build absent a source change to `apps/web`, `packages/contracts`, `packages/engine`, or
+  `templates/eat-the-reich`.
