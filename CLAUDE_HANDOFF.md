@@ -593,3 +593,52 @@ option/action/allocation pickers). This branch also diverged at `e1ccc8b`, i.e. 
   are the only open items. No further hourly mobile-pop-out audit is warranted on the current
   deployed build absent a source change to `apps/web`, `packages/contracts`, `packages/engine`, or
   `templates/eat-the-reich`.
+
+## Mobile pop-out audit, 2026-09-24 (this worktree, `sonnet-t/reskin-fresh-20260924`)
+
+**Scope:** the same brief as the `sonnet-q`/`sonnet-r` sessions immediately above. This branch's
+own commit history already *is* that lineage — `git log` shows `e1ccc8b`, `a69e1a9`, `249df25`
+verbatim, not a merge of them — so this is the third consecutive independent audit pass on the
+same branch lineage today, not a fresh divergent one. Full write-up and independent review:
+[`docs/reviews/2026-09-24-sonnet-t-mobile-popout-audit.md`](docs/reviews/2026-09-24-sonnet-t-mobile-popout-audit.md).
+
+1. Confirmed via `git log -3 -- apps/web` that no `apps/web`/`packages/*`/`templates/*`/
+   `apps/functions` commit has landed since `5e8907b` (2026-09-19) — nothing new exists for this
+   session to find that the prior three sessions did not already see.
+2. Independently re-derived, not cited, the pop-out inventory from source: one modal
+   (`SheetDialog.tsx`/`CorrectionDialog.tsx`), one `<details>` disclosure (`ComposeStep2.tsx`), six
+   `<select>`s (`SceneDirector.tsx`, `GmToolsPanel.tsx`). Read `SheetDialog.tsx` and
+   `useVisualViewportBox.ts` in full plus the `.sheet`/safe-area CSS rules directly.
+3. Obtained a second, genuinely independent review: a fresh general-purpose agent, with no access
+   to this session's write-up and no instruction to confirm a stated conclusion, was asked to
+   derive its own verdict from its own greps and reads. It reached **PASS** independently, catching
+   nothing this session had missed and correctly declining to re-flag the two pre-existing accepted
+   items (320px+200%-text geometry limit; missing `<h1>` on the nonexistent-room route).
+4. **Conclusion: no new user-visible defect.** No `apps/web`, `packages/*`, `templates/*`, or
+   `apps/functions` file was touched.
+
+### Required checks — this session, all pass
+
+- `npm ci` (worktree had no `node_modules`).
+- `npm run check` — format, lint, typecheck clean; **690 passed | 11 todo** (71 files, 1 skipped) —
+  identical to the baseline already recorded on this branch.
+- `npm run build` — clean (Functions esbuild 216.6kb; web build 138 modules; existing non-blocking
+  chunk-size warning only).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **108/108** passed
+  (18 `packages/testing`, 86 `apps/functions`, 4 `apps/web`); ports were free this run.
+- Live audit: `node scripts/playtest/ui-audit.mjs --base https://digitable.signal-bleed.com` —
+  **150 states, 1,482 controls, 0 control issues, 0 overflow, 0 hard axe violations, 0 failures.**
+  Same two pre-existing, non-gating notes as every prior run.
+- Live smoke: `node scripts/playtest/two-device-smoke.mjs --base https://digitable.signal-bleed.com --reload` —
+  **17/17 steps passed**, `ok: true`, zero console errors, zero request failures, no horizontal
+  overflow at 375/768/1024/1280/1920px on GM/player/table (the one `-15px` table/1920px reading is
+  negative — no actual overflow — matching the already-documented `scrollbar-gutter: stable`
+  cosmetic non-issue).
+- `git diff --check` — clean. Evidence: `/private/tmp/digitable-sonnet-t-mobile-audit-20260924/`.
+- **Residual, physical-device-only limits (unchanged, open for John):** no physical iOS/Android
+  pass; `page-has-heading-one` on the nonexistent-room route (F7) remains open.
+- **Resource note:** this is the third consecutive independent "no defect" pass on this exact
+  branch lineage within roughly 24 hours, each rerunning the full live evidence suite against the
+  same deployed build with converging results. Whoever next schedules this audit class should
+  weigh that accumulated evidence against the marginal value and shared-staging load of another
+  identical run, absent an actual source change to re-verify against.
