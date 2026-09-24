@@ -474,3 +474,69 @@ When pausing or finishing a material unit:
 - **Commands and results:** `npm run check` passed with **614 tests passed, 11 todo** (68 files passed, 1 skipped; baseline 589). `npm run build` passed (existing chunk-size warning). `node scripts/playtest/two-device-smoke.mjs --base http://localhost:4181 --reload` against a scratch build of this branch and the local Auth/Firestore/Functions emulators: **17/17 passed**, no console errors or failed requests. `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` (run once the other job released the fixed ports) passed: **18/18** rules, **86/86** Functions, **3/3** web; no Functions, rules, contracts, or engine file changed.
 - **Integration order:** this branch touches `apps/web` (`App.tsx`, `router.tsx`, `styles.css`, `index.html`, the landing/gm2/player2/shell screens), `scripts/playtest/two-device-smoke.mjs`, and docs. It is independent of F2/F3 (recovery UI and `ownership.ts` recovery-code persistence): if F3 edits `apps/web/src/session/ownership.ts`, no conflict is expected (this branch does not touch it). Expect textual conflicts only with lanes that also edit `PlayerDashboardScreen.tsx`, `GmDirectorScreen.tsx`, `LandingScreen.tsx`, `styles.css`, `CLAUDE_HANDOFF.md`, or the smoke script. Suggested order: F1's branch (`factory/today-integration`), then F3, then this branch, then any F2 change, then one Hosting redeploy (`docs/RUNBOOK.md` section 3, step 4) followed by a smoke run against staging.
 - **Next action:** John decides the merge/redeploy order above. After a redeploy, re-run the smoke script against staging to confirm F1 and F4-F7 on the deployed build.
+
+## Mobile pop-out audit and audit-tool port, 2026-09-24 (this worktree, `sonnet-q/reskin-integration-20260924`)
+
+**Scope:** independently audit the current candidate for a real, remaining, user-visible mobile
+pop-out or responsive/accessibility/reskin gap across GM, player, table and setup/join flows
+(selects, menus, disclosures, dialogs, sheets, option/action/allocation controls,
+keyboard/visual-viewport/safe-area behaviour), per `AGENTS.md`'s review-before-changing and
+scope-discipline rules, without duplicating work already done on sibling branches or inventing a
+defect. Full write-up, independent review, and live evidence:
+[`docs/reviews/2026-09-24-sonnet-q-mobile-popout-audit.md`](docs/reviews/2026-09-24-sonnet-q-mobile-popout-audit.md).
+
+1. **Checked sibling branches first, as directed.** `sonnet-p/reskin-hourly-20260924` (`9750973`)
+   ran a fresh follow-up audit and found no defect. `worktree-sonnet-n-reskin-hourly-20260924`
+   (`832f37a`) fixed a real blind spot: `scripts/playtest/ui-audit.mjs`'s `openCorrection()`
+   located the roster row to open the app's one modal by matching the character name "Rook",
+   removed from the roster on 2026-09-19 (`5e8907b`) — the lookup had been silently timing out
+   since, skipping the script's entire modal/pop-out audit while the rest of the sweep kept
+   reporting an overall pass. **This branch's own history diverged from both before that fix
+   landed** (common ancestor `b599abd`; this branch's `a350b2d`/`841099a` predate `832f37a`), so it
+   still had the stale selector — confirmed by `grep -n "Rook" scripts/playtest/ui-audit.mjs`
+   before touching anything.
+2. **Ported the identical one-line fix** (not a re-derivation) to this branch's
+   `scripts/playtest/ui-audit.mjs`, then had a fresh subagent independently review it: confirmed
+   `waitFor()` still fails loudly (no silent-success path) if a roster row is ever missing, that
+   every roster row renders exactly one Correct button (so the selector is never ambiguous), and
+   that the correction sheet's audited geometry/focus/safe-area properties don't depend on which
+   character opened it. **Verdict: PASS**, no blocking finding (one accepted nit on comment
+   phrasing, already accepted on the sibling branches with the same wording).
+3. **Independently re-inventoried every pop-out surface** by reading current source: one modal
+   (`SheetDialog.tsx`/`CorrectionDialog.tsx`), one `<details>` disclosure (the "Why?" pool
+   explanation in `ComposeStep2.tsx`), six native `<select>`s (`SceneDirector.tsx`,
+   `GmToolsPanel.tsx`). Confirmed the sourcebook roster commit's two new inline buttons ("Mark and
+   regain Blood", "Destroy Cowboy hat to ignore this result") are plain buttons in normal document
+   flow, covered by the universal `button { min-height: var(--tap) }` rule — not a new pop-out
+   pattern. No gap found beyond the audit-tool port above.
+4. **Conclusion: no new user-visible defect.** The one source change made (the audit-tool port) was
+   necessary for this session's own audit to be trustworthy on this branch; it is not cosmetic
+   churn to `apps/web` and is independently reviewed above. No `apps/web`, `packages/*`,
+   `templates/*`, or `apps/functions` file was touched.
+
+### Required checks — this session, all pass
+
+- `npm ci` (worktree had no `node_modules`).
+- `npm run check` — format, lint, typecheck clean; **690 passed | 11 todo** (71 files, 1 skipped).
+- `npm run build` — clean (Functions esbuild 216.6kb; web build 138 modules; existing non-blocking
+  chunk-size warning only).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **108/108** passed
+  (18 `packages/testing`, 86 `apps/functions`, 4 `apps/web`); ports were free this run.
+- Live audit: `node scripts/playtest/ui-audit.mjs --base https://digitable.signal-bleed.com` —
+  **150 states, 1,422 controls, 0 control issues, 0 overflow, 0 hard axe violations, 0 failures**,
+  including all 14 modal scenarios (geometry at every viewport, on-screen-keyboard emulation, real
+  pinch-zoom gesture, safe-area insets, 150%/200% text zoom). Same two pre-existing, non-gating
+  notes as every prior run (320px+200%-text geometry limit on the correction sheet; the open F7
+  heading-one item on the nonexistent-room route).
+- Live smoke: `node scripts/playtest/two-device-smoke.mjs --base https://digitable.signal-bleed.com --reload` —
+  **17/17 steps passed**, zero console errors and zero failed requests on every device, no
+  horizontal overflow at 375/768/1024/1280/1920px on GM/player/table.
+- `git diff --check` — clean.
+- **Residual, physical-device-only limits (unchanged, open for John):** no physical iOS/Android
+  pass (real visual-viewport-only on-screen keyboard, VoiceOver/TalkBack, Windows High Contrast) —
+  headless Chrome cannot produce the iOS case; documented since the original reskin review.
+  `page-has-heading-one` on the nonexistent-room route (F7) remains open for John.
+- **Next action for John:** none required from this session specifically; the physical-device
+  rehearsal and F7 heading item already tracked above remain the only open items. Whoever considers
+  scheduling another hourly mobile-pop-out audit should weigh the accumulated evidence (multiple
+  independent clean passes against the actual deployed build within 24 hours) against its cost.
