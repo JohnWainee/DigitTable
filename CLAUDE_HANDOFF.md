@@ -565,11 +565,11 @@ option/action/allocation pickers). This branch also diverged at `e1ccc8b`, i.e. 
    insets on all four sides at both the narrow and the `min-width: 40.0625rem` centred-card
    breakpoint, the footer's 40%-max-height backstop against a large-text sheet squeezing out the
    body, landscape/short-viewport reclaiming, `touch-action: auto` deliberately left unrestricted
-   so pinch-zoom stays available per WCAG 1.4.4), the tap-target rule (`.primary-action,
-   .secondary-action, .link-button, .stepper-controls button { min-height/min-width: var(--tap)
-   }`, `--tap: 3rem` — confirms the correction sheet's stepper buttons meet the 44px target even
-   though `.stepper-controls button`'s own rule block doesn't restate it), the `forced-colors:
-   active` block, and the `prefers-reduced-motion: reduce` block. No gap found in any of it.
+   so pinch-zoom stays available per WCAG 1.4.4), the shared tap-target rule (`.primary-action,
+   .secondary-action, .link-button, .stepper-controls button { min-height/min-width: var(--tap) }`,
+   `--tap: 3rem` — confirms the correction sheet's stepper buttons meet the 44px target directly,
+   not by inheritance), the `forced-colors: active` block, and the `prefers-reduced-motion: reduce`
+   block. No gap found in any of it.
 3. **Conclusion: no new user-visible defect.** No `apps/web`, `packages/*`, `templates/*`, or
    `apps/functions` file was touched.
 
@@ -578,7 +578,9 @@ option/action/allocation pickers). This branch also diverged at `e1ccc8b`, i.e. 
 - `npm ci` (worktree had no `node_modules`).
 - `npm run check` — format, lint, typecheck clean; **690 passed | 11 todo** (71 files, 1 skipped) —
   unchanged from the `e1ccc8b` baseline.
-- `npm audit` / `npm audit --omit=dev` — 0 vulnerabilities either way.
+- `npm audit` — 5 moderate advisories, all transitive dev-only dependencies of `firebase-tools`
+  (`@opentelemetry/core`, `csv-parse`, `stream-json`), none reachable from this project's own code;
+  `npm audit --omit=dev` — 0 vulnerabilities.
 - Deliberately did **not** repeat another live pass against `https://digitable.signal-bleed.com` or
   the Firebase emulator suite: three independent live audits already ran against that same deployed
   build within the last 24 hours (`docs/reviews/2026-09-18-sonnet-d-reskin-independent-review.md`
