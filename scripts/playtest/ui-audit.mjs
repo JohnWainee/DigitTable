@@ -419,8 +419,11 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  // Any roster entry works for this audit (the correction sheet's geometry doesn't depend on which
+  // character it's for); the first row avoids hardcoding a character name that changes with the
+  // shipped roster (previously "Rook", the Phase 1A placeholder; now the sourcebook roster).
+  const finder = `document.querySelector(".roster-panel-list li")?.querySelector("button")`;
+  await waitFor(gm, finder, 20000, "roster panel's first Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
