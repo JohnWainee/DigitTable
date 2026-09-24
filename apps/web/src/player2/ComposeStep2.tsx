@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useId, useState } from "react";
 import {
   eatTheReichTemplate,
   STATS,
@@ -34,6 +34,7 @@ export function ComposeStep2({
   onDeclare,
   onUseUtilityItem,
 }: ComposeStep2Props): JSX.Element {
+  const idPrefix = useId();
   // F05 P1: defaults to the character's highest stat, not always the first.
   const [statIndex, setStatIndex] = useState<number | null>(() => highestStatIndex(character));
   const [itemIds, setItemIds] = useState<readonly string[]>([]);
@@ -139,29 +140,72 @@ export function ComposeStep2({
       <fieldset>
         <legend>Items</legend>
         <div className="gear-list">
-          {character.items.map((item) => (
-            <label key={item.id} className="gear-option">
-              <input
-                type="checkbox"
-                checked={itemIds.includes(item.id)}
-                disabled={item.usesRemaining <= 0 || item.poolEligible === false}
-                onChange={() => toggleClaimable(itemIds, item.id, setItemIds)}
-              />
-              {item.name} ({item.usesRemaining}/{item.maxUses} uses)
-              {item.usesRemaining <= 0 ? " — no uses left" : ""}
-              {item.useEffect?.kind === "gainBlood"
-                ? ` — mark to regain ${item.useEffect.amount} Blood`
-                : ""}
-              {item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
-                ? " — mark to ignore an Injury or being Downed; then destroy the hat"
-                : ""}
-              {item.useEffect?.kind === "gainBlood" && item.usesRemaining > 0 ? (
-                <button type="button" onClick={() => onUseUtilityItem(item.id)}>
+          {character.items.map((item) => {
+            const usage = `${item.name} (${item.usesRemaining}/${item.maxUses} uses)${
+              item.usesRemaining <= 0 ? " — no uses left" : ""
+            }`;
+            // What marking the item does, and the button that does it. Neither belongs inside a
+            // <label>: a button there is squeezed beside the text and named into the checkbox.
+            const effectHint =
+              item.useEffect?.kind === "gainBlood"
+                ? `mark to regain ${item.useEffect.amount} Blood`
+                : item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
+                  ? "mark to ignore an Injury or being Downed; then destroy the hat"
+                  : "";
+            const descriptionId = `${idPrefix}-effect-${item.id}`;
+            const action =
+              item.useEffect?.kind === "gainBlood" && item.usesRemaining > 0 ? (
+                <button
+                  type="button"
+                  className="secondary-action"
+                  aria-describedby={descriptionId}
+                  onClick={() => onUseUtilityItem(item.id)}
+                >
                   Mark and regain Blood
                 </button>
-              ) : null}
-            </label>
-          ))}
+              ) : null;
+            if (item.poolEligible === false) {
+              // A utility item can never be a pool die, so it gets no (permanently disabled)
+              // checkbox: a description, then its own action.
+              return (
+                <div
+                  key={item.id}
+                  className={`gear-option gear-option--utility${
+                    item.usesRemaining <= 0 ? " gear-option--spent" : ""
+                  }`}
+                >
+                  <span id={descriptionId}>
+                    {usage}
+                    {effectHint ? ` — ${effectHint}` : ""}
+                  </span>
+                  {action}
+                </div>
+              );
+            }
+            return (
+              <Fragment key={item.id}>
+                <label className="gear-option">
+                  <input
+                    type="checkbox"
+                    checked={itemIds.includes(item.id)}
+                    disabled={item.usesRemaining <= 0}
+                    onChange={() => toggleClaimable(itemIds, item.id, setItemIds)}
+                  />
+                  {usage}
+                </label>
+                {effectHint ? (
+                  // A pool die that can also be marked for an effect keeps its checkbox; the
+                  // effect gets its own row beneath it.
+                  <div className="gear-option gear-option--utility">
+                    <span id={descriptionId}>
+                      {item.name}: {effectHint}
+                    </span>
+                    {action}
+                  </div>
+                ) : null}
+              </Fragment>
+            );
+          })}
         </div>
       </fieldset>
 

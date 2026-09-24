@@ -1,0 +1,15 @@
+INFO modal-text-200-phone-small: dialogInsideViewport failed (recorded, not gating)
+INFO modal-text-200-phone-small: noPageOverflow failed (recorded, not gating)
+{
+  "states": 189,
+  "controlsAudited": 1722,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "axeHardViolations": 0,
+  "axeBestPractice": [
+    "anon/route-claim-no-such-room@phone: page-has-heading-one"
+  ],
+  "failures": 0
+}
+UI AUDIT PASSED
+AUDIT_EXIT=0

@@ -15,6 +15,7 @@ import { createRoom } from "../session/roomClient.js";
 import type { SessionRequestState } from "@digitable/contracts";
 import type { CreateRoomAccepted } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
+import { useFocusWhen } from "../accessibility/useFocusWhen.js";
 import { InvitePanel } from "../gm2/InvitePanel.js";
 
 /** docs/ETR_SESSION_FLOW.md section 3: `/create` — Create session (GM). */
@@ -29,8 +30,14 @@ export function CreateSessionScreen(): JSX.Element {
   const [wroteDownSecrets, setWroteDownSecrets] = useState(false);
   const [readyAcknowledged, setReadyAcknowledged] = useState(false);
   const requestIdRef = useRef(getOrMintCreateRequestId());
+  // The submitted form and then the secrets card each unmount the control that had focus; hand it
+  // to the heading of the shown-once secrets, then to the next action.
+  const revealHeadingRef = useRef<HTMLHeadingElement>(null);
+  const openConsoleRef = useRef<HTMLButtonElement>(null);
 
   const accepted = request.status === "accepted" ? request.result : null;
+  useFocusWhen(revealHeadingRef, accepted !== null);
+  useFocusWhen(openConsoleRef, readyAcknowledged);
 
   async function handleSubmit(event: React.FormEvent): Promise<void> {
     event.preventDefault();
@@ -87,6 +94,9 @@ export function CreateSessionScreen(): JSX.Element {
               minLength={4}
               maxLength={128}
               autoComplete="off"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               value={passphrase}
               onChange={(e) => setPassphrase(e.target.value)}
             />
@@ -132,7 +142,9 @@ export function CreateSessionScreen(): JSX.Element {
 
       {accepted && !readyAcknowledged && (
         <section className="reveal-card" aria-labelledby="reveal-heading">
-          <h2 id="reveal-heading">Write these down — all but the room code are shown only once</h2>
+          <h2 id="reveal-heading" tabIndex={-1} ref={revealHeadingRef}>
+            Write these down — all but the room code are shown only once
+          </h2>
           <dl>
             <dt>Room code</dt>
             <dd>{accepted.roomCode}</dd>
@@ -170,6 +182,7 @@ export function CreateSessionScreen(): JSX.Element {
           <button
             type="button"
             className="primary-action"
+            ref={openConsoleRef}
             onClick={() => navigate(`/room/${accepted.roomId}/gm`)}
           >
             Open the director console

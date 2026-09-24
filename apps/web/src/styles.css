@@ -642,6 +642,24 @@ input[type="radio"]:disabled {
   flex-direction: row;
 }
 
+/* Utility equipment (not a pool die): a description plus its own action button, not a label. The
+   button wraps below the text on a narrow row instead of being squeezed beside it. */
+.gear-option--utility {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  cursor: default;
+}
+
+/* A spent utility item is dimmed like a disabled pool item (which gets this from its disabled box). */
+.gear-option--spent {
+  color: var(--mute);
+}
+
+.gear-option--utility > span {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
 .gear-option:has(:checked) {
   border-color: var(--acid);
   background: rgba(255, 230, 0, 0.1);

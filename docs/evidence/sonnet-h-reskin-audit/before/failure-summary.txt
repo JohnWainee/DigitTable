@@ -1,0 +1,4 @@
+   7 FAIL player/compose
+   7 FAIL player/compose-why-open
+   7 FAIL player/paused
+   1 FAIL recovery-form: recovery code input keyboard hints missing: {"autocapitalize":null,"autocorrect":null,"spellcheck":null,"autocomplete":"off"}

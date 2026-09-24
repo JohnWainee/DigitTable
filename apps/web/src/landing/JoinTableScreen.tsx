@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { navigate } from "../router.js";
 import {
   ConnectionStatusStrip,
@@ -9,6 +9,7 @@ import { writeOwnershipRecord, ownershipFromAcceptedWithNames } from "../session
 import { joinRoom } from "../session/roomClient.js";
 import type { RoomAdmissionAccepted, SessionRequestState } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
+import { useFocusWhen } from "../accessibility/useFocusWhen.js";
 import { newUuid } from "../shared/uuid.js";
 
 /**
@@ -33,8 +34,10 @@ export function JoinTableScreen(): JSX.Element {
     setRequest({ status: "pending", requestId });
     const result = await joinRoom({
       requestId,
-      roomCode: roomCode.toUpperCase(),
-      passphrase: tableCode.toUpperCase(),
+      // Both are minted upper-case from the recovery alphabet (no whitespace); a phone keyboard may
+      // add a trailing space after a suggestion. The server still compares exactly.
+      roomCode: roomCode.replace(/\s+/g, "").toUpperCase(),
+      passphrase: tableCode.replace(/\s+/g, "").toUpperCase(),
       requestedCapability: "table",
       displayName: "Table",
     });
@@ -47,6 +50,9 @@ export function JoinTableScreen(): JSX.Element {
   }
 
   const accepted = request.status === "accepted" ? request.result : null;
+  // The submitted form (and its focused button) is replaced by this one action.
+  const openTableRef = useRef<HTMLButtonElement>(null);
+  useFocusWhen(openTableRef, accepted !== null);
 
   return (
     <main className="landing-screen">
@@ -68,6 +74,9 @@ export function JoinTableScreen(): JSX.Element {
               id="table-room-code"
               type="text"
               required
+              autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck={false}
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value)}
             />
@@ -78,6 +87,10 @@ export function JoinTableScreen(): JSX.Element {
               id="table-code"
               type="text"
               required
+              autoComplete="off"
+              autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck={false}
               value={tableCode}
               onChange={(e) => setTableCode(e.target.value)}
             />
@@ -104,6 +117,7 @@ export function JoinTableScreen(): JSX.Element {
           <button
             type="button"
             className="primary-action"
+            ref={openTableRef}
             onClick={() => navigate(`/room/${accepted.roomId}/table`)}
           >
             Open the table display

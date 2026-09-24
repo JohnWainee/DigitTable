@@ -118,6 +118,26 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(buttonRule, "min-height")).toContain("var(--tap)");
     });
 
+    it("has no other class-less <button>: only the +/- steppers may rely on the stepper rule", () => {
+      // The scan above only sees buttons that have a className, so a new class-less button
+      // (which renders as the browser's grey default button, with no tap size) slipped past it.
+      const stray: string[] = [];
+      for (const file of sourceFiles(join(here, "../../src"))) {
+        const source = readFileSync(file, "utf8");
+        // `=>` inside an onClick handler must not end the tag early.
+        for (const match of source.matchAll(/<button\b(?:=>|[^>])*>/gs)) {
+          if (/\bclassName=/.test(match[0])) continue;
+          if (/aria-label=\{?[`"](?:Decrease|Increase) /.test(match[0])) continue;
+          stray.push(`${file.split("/src/")[1]}: ${match[0].replace(/\s+/g, " ").slice(0, 80)}`);
+        }
+      }
+      expect(stray).toEqual([]);
+    });
+
+    it("dims a spent utility item like a disabled pool item (its row has no disabled checkbox to do it)", () => {
+      expect(declaration(rulesFor(/^\.gear-option--spent$/), "color")).toContain("var(--mute)");
+    });
+
     it("keeps the read-only stepper value (role=spinbutton, focusable) at the tap size too", () => {
       expect(declaration(rulesFor(/^\.stepper-value$/), "min-height")).toContain("var(--tap)");
     });
