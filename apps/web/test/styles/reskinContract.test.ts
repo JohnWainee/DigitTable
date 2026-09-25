@@ -18,6 +18,7 @@ const css = readFileSync(join(here, "../../src/styles.css"), "utf8").replace(
   "",
 );
 const html = readFileSync(join(here, "../../index.html"), "utf8");
+const uiAudit = readFileSync(join(here, "../../../../scripts/playtest/ui-audit.mjs"), "utf8");
 
 /** All `selector { body }` rules at the top level or inside the named at-rule (or anywhere when omitted). */
 function rulesFor(selectorPattern: RegExp): string[] {
@@ -76,6 +77,34 @@ function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
+/**
+ * Character ranges of every balanced `<div className="...stepper-controls...">...</div>` block in
+ * `source` — the one place a class-less `<button>` is legitimate, because `.stepper-controls button`
+ * names it. Depth-counts nested `<div>`s so the range covers the whole block, not just its first
+ * child (the AllocationStepper's inner `role="spinbutton"` div would otherwise truncate it early).
+ */
+function stepperControlsRanges(source: string): [number, number][] {
+  const ranges: [number, number][] = [];
+  const openRe = /<div\b[^>]*className="[^"]*\bstepper-controls\b[^"]*"[^>]*>/g;
+  for (let open = openRe.exec(source); open; open = openRe.exec(source)) {
+    const start = open.index;
+    const tagRe = /<div\b[^>]*>|<\/div>/g;
+    tagRe.lastIndex = openRe.lastIndex;
+    let depth = 1;
+    let end = source.length;
+    for (let tag = tagRe.exec(source); tag; tag = tagRe.exec(source)) {
+      depth += tag[0].startsWith("</") ? -1 : 1;
+      if (depth === 0) {
+        end = tagRe.lastIndex;
+        break;
+      }
+    }
+    ranges.push([start, end]);
+    openRe.lastIndex = end;
+  }
+  return ranges;
+}
+
 function sourceFiles(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
     const path = join(dir, name);
@@ -84,6 +113,14 @@ function sourceFiles(dir: string): string[] {
 }
 
 describe("reskin stylesheet contract", () => {
+  it("keeps the real-browser correction-sheet audit roster-agnostic", () => {
+    // The audit must exercise the sheet for the current content roster, not a retired fixture
+    // character. Otherwise a roster update can silently skip every mobile sheet scenario.
+    expect(uiAudit).toContain('querySelectorAll(".roster-panel-list button")');
+    expect(uiAudit).toContain("/^correct$/i.test(button.textContent.trim())");
+    expect(uiAudit).not.toMatch(/\^rook/i);
+  });
+
   describe("touch targets and text-entry size", () => {
     it("defines the tap size as 3rem (48px at the default root, and it scales with user font size)", () => {
       expect(css).toMatch(/--tap:\s*3rem/);
@@ -116,6 +153,25 @@ describe("reskin stylesheet contract", () => {
       // Class-less buttons are only the +/- steppers inside .stepper-controls (rule names them).
       const buttonRule = rulesFor(/\.primary-action.*\.stepper-controls button/s);
       expect(declaration(buttonRule, "min-height")).toContain("var(--tap)");
+    });
+
+    it("never adds a <button> with no className at all outside .stepper-controls (it would get no tap-size rule)", () => {
+      const uncovered: string[] = [];
+      for (const file of sourceFiles(join(here, "../../src"))) {
+        const source = readFileSync(file, "utf8");
+        const stepperRanges = stepperControlsRanges(source);
+        for (const match of source.matchAll(/<button\b[^>]*?>/gs)) {
+          if (/className=/.test(match[0])) continue;
+          const insideStepper = stepperRanges.some(
+            ([start, end]) => match.index >= start && match.index < end,
+          );
+          if (!insideStepper) {
+            const line = source.slice(0, match.index).split("\n").length;
+            uncovered.push(`${file.split("/src/")[1]}:${line}`);
+          }
+        }
+      }
+      expect(uncovered).toEqual([]);
     });
 
     it("keeps the read-only stepper value (role=spinbutton, focusable) at the tap size too", () => {

@@ -156,7 +156,11 @@ export function ComposeStep2({
                 ? " — mark to ignore an Injury or being Downed; then destroy the hat"
                 : ""}
               {item.useEffect?.kind === "gainBlood" && item.usesRemaining > 0 ? (
-                <button type="button" onClick={() => onUseUtilityItem(item.id)}>
+                <button
+                  type="button"
+                  className="link-button"
+                  onClick={() => onUseUtilityItem(item.id)}
+                >
                   Mark and regain Blood
                 </button>
               ) : null}
