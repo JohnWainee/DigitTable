@@ -29,7 +29,13 @@ scroll lock, focus-in-on-open/return-on-close, Tab/Shift+Tab cycling restricted 
 focusable descendants, keyboard-reveal `scrollIntoView`) and `AllocationStepper.tsx` (tap +/-
 buttons, full Arrow/Home/End keyboard support, `role="spinbutton"` with correct
 `aria-valuemin`/`aria-valuemax`/`aria-valuenow`/`aria-valuetext`) rather than trusting prior
-summaries. Re-grepped every `apps/web/src/**/*.tsx` for `<select`, `<details`, `<summary` —
+summaries. Also read `apps/web/src/gm2/CorrectionDialog.tsx` in full — the actual "GM correction
+sheet" the live browser audit's 14 modal scenarios exercise (per `scripts/playtest/ui-audit.mjs`'s
+own header comment): a `SheetDialog` consumer with four bare-`<button>` stepper pairs (Blood
+change, per-item uses), all nested inside `.stepper-controls`, matching the one documented
+class-less-button exclusion `reskinContract.test.ts` encodes — a different shape from the two
+class-less buttons the `sonnet-w` pass found and fixed outside that exclusion. Re-grepped every
+`apps/web/src/**/*.tsx` for `<select`, `<details`, `<summary` —
 confirmed the same six `<select>`s (`SceneDirector.tsx` ×2, `GmToolsPanel.tsx` ×4) and the one
 `<details>`/`<summary>` (`ComposeStep2.tsx`, the "Why?" pool-explanation disclosure) as every
 prior pass, and that `GmToolsPanel`/`SceneDirector` are reachable only from `GmDirectorScreen`,
