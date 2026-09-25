@@ -82,24 +82,39 @@ added to each. No licensed text, art, or terminology was introduced or touched.
   files passed, 1 skipped) — matches the branch's recorded result.
 - `npm run build` — clean (`apps/functions` esbuild 216.6kb; `apps/web` vite build; pre-existing
   non-blocking >500kB chunk warning only).
-- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **blocked this session**: ports
-  9099/8080/4400 were already bound by a concurrent process in this shared sandbox (a different
-  worktree session), not by this branch's own work. Not force-killed, consistent with the shared
-  git-stash/worktree coexistence expectations for this environment. No Functions, rules, contracts,
-  or engine file is touched by this candidate (confirmed by `git diff factory/today-integration..HEAD
-  --stat`), so the branch's last recorded complete emulator evidence (18 `packages/testing` + 86
-  `apps/functions` + 4 `apps/web` = 108/108, `docs/reviews` / `CLAUDE_HANDOFF.md` "Independent audit:
-  reskin mobile pop-out defect" section) remains the applicable evidence, not superseded or
-  contradicted by anything found here.
-- Real-browser `ui-audit.mjs`: not rerun this session (evidence already exists post-dating this
-  exact candidate, independently inspected above); rerunning would only reproduce the same result
-  since no source file it audits changed since that run.
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — the ports held by a concurrent
+  sandbox process at the time of the first pass had since freed up; rerun cleanly in a follow-up pass
+  the same session and **passed 108/108** (18 `packages/testing`, 86 `apps/functions`, 4 `apps/web`),
+  matching the branch's recorded baseline exactly.
+- Real-browser `ui-audit.mjs`: rerun fresh in the same follow-up pass, from a clean build, not merely
+  cited from a prior session's evidence. Set up independently: `npm install`, built `apps/functions`
+  and a live-mode `apps/web` (`VITE_FIREBASE_USE_EMULATOR=true` against a fake `demo-digitable`
+  config, matching `scripts/playtest/lan-up.sh`'s recipe but bound to `127.0.0.1` only, no LAN
+  exposure), started the Auth/Firestore/Functions emulators, served the build with `vite preview` on
+  `127.0.0.1:4174`, then ran `node scripts/playtest/ui-audit.mjs --base http://127.0.0.1:4174 --label
+  sonnet-y-independent --out <job-tmp>/ui-audit-out --port 9761 --no-shots`. Result: `ok: true`,
+  **150 states**, **1,470 controls audited**, **0 control issues**, **0 overflow states**, **0 hard
+  axe violations**, **0 failures**; the only entries are the same two pre-existing, already-documented,
+  non-gating items — the `320px + 200% text` `dialogInsideViewport`/`noPageOverflow` geometry note on
+  `modal-text-200-phone-small`, and the `page-has-heading-one` best-practice note on the intentional
+  nonexistent-room route. All 14 modal/sheet scenarios (phone/phone-small/phone-landscape/tablet/
+  desktop/table widths, dynamic-viewport-keyboard emulation, pinch-zoom, safe-area insets, 200% text,
+  internal scroll-to-control, reduced-motion on/off) passed with zero issues each, and all four roles
+  (gm/player/table/anon) reported zero console errors and zero failed requests. The control count
+  (1,470) differs slightly from the prior evidence's 1,530 (non-deterministic scenario branching, not
+  a regression — no `controlIssues`, `overflowStates`, or `failures` in either run). Background
+  emulator/preview processes were stopped afterward; no dist or build artifact was committed.
 
 ## Disposition
 
 No new defect found. No source change made — the existing fix, test, and evidence are correct,
-narrow, and sufficient. This is the third independent pass over this candidate (after
+narrow, and sufficient, and this session's own fresh, from-scratch `npm run check` / `npm run build`
+/ `npm run test:emulator` / real-browser `ui-audit.mjs` runs all reproduce that independently, closing
+the two gaps (`test:emulator`, `ui-audit.mjs`) left open by this review's first pass. This is the
+third independent pass over this candidate (after
 `docs/reviews/2026-09-24-sonnet-w-utility-item-tap-target-review.md` and
-`docs/reviews/2026-09-25-sonnet-w-ui-audit-roster-selector-review.md`); all three agree. Recommend
-this candidate be considered ready to fold into `factory/today-integration` at John's discretion.
-This review does not merge, deploy, or promote anything.
+`docs/reviews/2026-09-25-sonnet-w-ui-audit-roster-selector-review.md`); all three agree, and all
+required gates (format/lint/typecheck/unit tests, build, full emulator suite, real-browser
+accessibility/geometry audit) now have fresh, from-this-session evidence. Recommend this candidate be
+considered ready to fold into `factory/today-integration` at John's discretion. This review does not
+merge, deploy, or promote anything.
