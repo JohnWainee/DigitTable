@@ -419,8 +419,11 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  // The roster is content-owned and has changed since this audit was first written. Audit the
+  // correction affordance itself rather than one fixture character, so the mobile sheet gate
+  // remains valid for any shipped roster.
+  const finder = `[...document.querySelectorAll(".roster-panel-list button")].find(button => /^correct$/i.test(button.textContent.trim()) && !button.disabled)`;
+  await waitFor(gm, finder, 20000, "a roster Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,

@@ -18,6 +18,7 @@ const css = readFileSync(join(here, "../../src/styles.css"), "utf8").replace(
   "",
 );
 const html = readFileSync(join(here, "../../index.html"), "utf8");
+const uiAudit = readFileSync(join(here, "../../../../scripts/playtest/ui-audit.mjs"), "utf8");
 
 /** All `selector { body }` rules at the top level or inside the named at-rule (or anywhere when omitted). */
 function rulesFor(selectorPattern: RegExp): string[] {
@@ -112,6 +113,14 @@ function sourceFiles(dir: string): string[] {
 }
 
 describe("reskin stylesheet contract", () => {
+  it("keeps the real-browser correction-sheet audit roster-agnostic", () => {
+    // The audit must exercise the sheet for the current content roster, not a retired fixture
+    // character. Otherwise a roster update can silently skip every mobile sheet scenario.
+    expect(uiAudit).toContain('querySelectorAll(".roster-panel-list button")');
+    expect(uiAudit).toContain("/^correct$/i.test(button.textContent.trim())");
+    expect(uiAudit).not.toMatch(/\^rook/i);
+  });
+
   describe("touch targets and text-entry size", () => {
     it("defines the tap size as 3rem (48px at the default root, and it scales with user font size)", () => {
       expect(css).toMatch(/--tap:\s*3rem/);
