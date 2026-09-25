@@ -76,6 +76,34 @@ function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
+/**
+ * Character ranges of every balanced `<div className="...stepper-controls...">...</div>` block in
+ * `source` — the one place a class-less `<button>` is legitimate, because `.stepper-controls button`
+ * names it. Depth-counts nested `<div>`s so the range covers the whole block, not just its first
+ * child (the AllocationStepper's inner `role="spinbutton"` div would otherwise truncate it early).
+ */
+function stepperControlsRanges(source: string): [number, number][] {
+  const ranges: [number, number][] = [];
+  const openRe = /<div\b[^>]*className="[^"]*\bstepper-controls\b[^"]*"[^>]*>/g;
+  for (let open = openRe.exec(source); open; open = openRe.exec(source)) {
+    const start = open.index;
+    const tagRe = /<div\b[^>]*>|<\/div>/g;
+    tagRe.lastIndex = openRe.lastIndex;
+    let depth = 1;
+    let end = source.length;
+    for (let tag = tagRe.exec(source); tag; tag = tagRe.exec(source)) {
+      depth += tag[0].startsWith("</") ? -1 : 1;
+      if (depth === 0) {
+        end = tagRe.lastIndex;
+        break;
+      }
+    }
+    ranges.push([start, end]);
+    openRe.lastIndex = end;
+  }
+  return ranges;
+}
+
 function sourceFiles(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
     const path = join(dir, name);
@@ -116,6 +144,25 @@ describe("reskin stylesheet contract", () => {
       // Class-less buttons are only the +/- steppers inside .stepper-controls (rule names them).
       const buttonRule = rulesFor(/\.primary-action.*\.stepper-controls button/s);
       expect(declaration(buttonRule, "min-height")).toContain("var(--tap)");
+    });
+
+    it("never adds a <button> with no className at all outside .stepper-controls (it would get no tap-size rule)", () => {
+      const uncovered: string[] = [];
+      for (const file of sourceFiles(join(here, "../../src"))) {
+        const source = readFileSync(file, "utf8");
+        const stepperRanges = stepperControlsRanges(source);
+        for (const match of source.matchAll(/<button\b[^>]*?>/gs)) {
+          if (/className=/.test(match[0])) continue;
+          const insideStepper = stepperRanges.some(
+            ([start, end]) => match.index >= start && match.index < end,
+          );
+          if (!insideStepper) {
+            const line = source.slice(0, match.index).split("\n").length;
+            uncovered.push(`${file.split("/src/")[1]}:${line}`);
+          }
+        }
+      }
+      expect(uncovered).toEqual([]);
     });
 
     it("keeps the read-only stepper value (role=spinbutton, focusable) at the tap size too", () => {
