@@ -8,6 +8,7 @@ export default defineConfig({
       "templates/eat-the-reich/vitest.config.ts",
       "apps/web/vitest.config.ts",
       "apps/functions/vitest.config.ts",
+      "scripts/playtest/vitest.config.ts",
     ],
   },
 });
