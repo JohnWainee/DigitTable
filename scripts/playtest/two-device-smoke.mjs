@@ -19,6 +19,8 @@ import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
+import { collectDeviceFailures, isGenuineNetworkFailure } from "./deviceHealth.mjs";
+
 const args = process.argv.slice(2);
 function arg(name, fallback) {
   const i = args.indexOf(`--${name}`);
@@ -112,7 +114,10 @@ async function openDevice(cdp, name, { width, height, mobile }) {
       device.consoleErrors.push(
         message.params.args.map((a) => a.value ?? a.description ?? "").join(" "),
       );
-    } else if (message.method === "Network.loadingFailed" && !message.params.canceled) {
+    } else if (
+      message.method === "Network.loadingFailed" &&
+      isGenuineNetworkFailure(message.params)
+    ) {
       device.failedRequests.push(message.params.errorText);
     }
   });
@@ -665,7 +670,8 @@ async function main() {
     failed = true;
   } finally {
     report.finishedAt = new Date().toISOString();
-    report.ok = !failed && report.steps.every((s) => s.ok);
+    report.deviceFailures = collectDeviceFailures(allDevices);
+    report.ok = !failed && report.steps.every((s) => s.ok) && report.deviceFailures.length === 0;
     report.consoleByDevice = Object.fromEntries(
       allDevices.map((d) => [
         d.name,
@@ -679,6 +685,7 @@ async function main() {
       /* ignore */
     }
     chrome.kill();
+    for (const reason of report.deviceFailures) console.log(`FAIL device: ${reason}`);
     console.log(report.ok ? "ALL STEPS PASSED" : "SMOKE FAILED");
     process.exit(report.ok ? 0 : 1);
   }

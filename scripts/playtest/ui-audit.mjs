@@ -41,6 +41,8 @@ import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
+import { deviceFailureReasons, isGenuineNetworkFailure } from "./deviceHealth.mjs";
+
 const args = process.argv.slice(2);
 function arg(name, fallback) {
   const i = args.indexOf(`--${name}`);
@@ -163,7 +165,10 @@ async function openDevice(cdp, name, vp) {
       device.consoleErrors.push(
         message.params.args.map((a) => a.value ?? a.description ?? "").join(" "),
       );
-    } else if (message.method === "Network.loadingFailed" && !message.params.canceled) {
+    } else if (
+      message.method === "Network.loadingFailed" &&
+      isGenuineNetworkFailure(message.params)
+    ) {
       device.failedRequests.push(message.params.errorText);
     }
   });
@@ -931,8 +936,7 @@ async function main() {
         consoleErrors: device.consoleErrors,
         failedRequests: device.failedRequests,
       };
-      if (device.consoleErrors.length > 0)
-        fail(`console/${device.name}`, `${device.consoleErrors.length} console error(s)`);
+      for (const reason of deviceFailureReasons(device)) fail(`device/${device.name}`, reason);
     }
     report.finishedAt = new Date().toISOString();
     report.ok = report.failures.length === 0;
