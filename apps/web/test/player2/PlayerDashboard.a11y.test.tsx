@@ -144,6 +144,28 @@ describe("Player dashboard (C02/C06)", () => {
     expect(screen.getByRole("checkbox", { name: /exquisite hunting rifle/i })).toBeInTheDocument();
   });
 
+  it("using a utility item's nested button does not also select it for the action pool", async () => {
+    // The reskin nests a `<button>` ("Mark and regain Blood") inside the item's own
+    // `<label>`/checkbox for pool selection (ComposeStep2.tsx). No prior mobile pop-out
+    // review exercised this click, only its CSS tap-target size. The checkbox itself is
+    // natively `disabled` here (poolEligible: false), so this isn't guarding against label
+    // click-forwarding — it guards the code-level wiring: a future refactor must not make
+    // `onUseUtilityItem` also call `toggleClaimable`/`setItemIds` for this item.
+    const user = userEvent.setup();
+    await reachDashboardAsRook(user);
+    await screen.findByRole("heading", { name: /choose an action/i });
+
+    expect(screen.getByText(/blood 0\/10/i)).toBeInTheDocument();
+    const cigaretteCheckbox = screen.getByRole("checkbox", { name: /cigarettes/i });
+    expect(cigaretteCheckbox).not.toBeChecked();
+
+    await user.click(screen.getByRole("button", { name: /mark and regain blood/i }));
+
+    expect(cigaretteCheckbox).not.toBeChecked();
+    expect(await screen.findByText(/blood 2\/10/i)).toBeInTheDocument();
+    expect(screen.getByText(/cigarettes.*\(2\/3 uses\)/i)).toBeInTheDocument();
+  });
+
   it("declares an action, waits for the roll, and reaches the allocation step", async () => {
     const user = userEvent.setup();
     const { gmMemberId } = await reachDashboardAsRook(user);
