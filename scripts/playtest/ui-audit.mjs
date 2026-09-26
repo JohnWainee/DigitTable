@@ -230,6 +230,21 @@ async function goto(device, path) {
   await sleep(350);
 }
 
+// Recovering a seat must be tested from a replacement browser identity, not
+// merely from a fresh route in the browser that already owns that seat. Clear
+// the current origin's persisted Firebase/local ownership state and reload so
+// the app provisions a new anonymous identity before submitting the code.
+async function loseBrowserIdentity(device) {
+  await device.cdp.send(
+    "Storage.clearDataForOrigin",
+    { origin: BASE, storageTypes: "all" },
+    device.sessionId,
+  );
+  await device.cdp.send("Page.reload", { ignoreCache: true }, device.sessionId);
+  await waitFor(device, `document.readyState === "complete"`, 20000, "identity reset reload");
+  await sleep(350);
+}
+
 const textMatch = (selector, pattern) =>
   `[...document.querySelectorAll(${JSON.stringify(selector)})].find(e => ${pattern}.test(e.textContent.trim()) && !e.disabled)`;
 
@@ -928,6 +943,70 @@ async function main() {
     );
     await captureState(table, "next-scene");
     await captureState(gm, "console-next-scene");
+
+    // Seat recovery (JoinScreen's "recover" mode) is reachable only after losing
+    // the original identity, so — unlike every other form above — it was never
+    // driven through this audit. Exercised here on the otherwise-idle `anon`
+    // context with a disposable second player, so the real player/gm/table
+    // sessions above are never touched: covers the recover-form, its rejection
+    // state, and its one-time reveal at every viewport.
+    await loseBrowserIdentity(anon);
+    await goto(anon, "#/join");
+    await setInput(anon, "#room-code", codes["Room code"]);
+    await setInput(anon, "#join-passphrase", "audit-pass-1");
+    await setInput(anon, "#join-display-name", "Echo");
+    await clickText(anon, "button", /^Join session$/);
+    await waitFor(anon, `document.querySelector(".reveal-code")`, 30000, "throwaway reveal");
+    const echoRecoveryCode = await ev(
+      anon,
+      `document.querySelector(".reveal-code").textContent.trim()`,
+    );
+
+    await loseBrowserIdentity(anon);
+    await goto(anon, "#/join");
+    await clickText(anon, "button", /Lost your browser\? Recover your seat/);
+    await waitFor(anon, `document.querySelector("#recovery-code")`, 15000, "recover form");
+    await captureState(anon, "recover-form");
+
+    // A real room paired with a forged code proves the recovery credential
+    // itself is rejected, rather than only covering the room-not-found path.
+    await setInput(anon, "#recover-room-code", codes["Room code"]);
+    await setInput(anon, "#recovery-code", "not-a-real-code");
+    await setInput(anon, "#recover-display-name", "Echo");
+    await clickText(anon, "button", /^Recover my seat$/);
+    await waitFor(anon, `document.querySelector('[role="alert"]')`, 15000, "recovery rejection");
+    await captureState(anon, "recover-rejected", { axeViewports: ["phone"] });
+
+    await setInput(anon, "#recover-room-code", codes["Room code"]);
+    await setInput(anon, "#recovery-code", echoRecoveryCode);
+    await clickText(anon, "button", /^Recover my seat$/);
+    await waitFor(anon, `document.querySelector(".reveal-code")`, 15000, "recovery reveal");
+    await captureState(anon, "recover-reveal");
+    const replacementRecoveryCode = await ev(
+      anon,
+      `document.querySelector(".reveal-code").textContent.trim()`,
+    );
+    if (replacementRecoveryCode === echoRecoveryCode) {
+      throw new Error("seat recovery returned the spent recovery code instead of rotating it");
+    }
+
+    // A second fresh identity cannot redeem Echo's spent code. This also
+    // ensures the visible rejection branch is specifically the code-rotation
+    // protection rather than a missing-room error.
+    await loseBrowserIdentity(anon);
+    await goto(anon, "#/join");
+    await clickText(anon, "button", /Lost your browser\? Recover your seat/);
+    await setInput(anon, "#recover-room-code", codes["Room code"]);
+    await setInput(anon, "#recovery-code", echoRecoveryCode);
+    await setInput(anon, "#recover-display-name", "Echo");
+    await clickText(anon, "button", /^Recover my seat$/);
+    await waitFor(
+      anon,
+      `document.querySelector('[role="alert"]')`,
+      15000,
+      "spent recovery rejection",
+    );
+    await captureState(anon, "recover-spent-code", { axeViewports: ["phone"] });
   } catch (error) {
     fail("flow", String(error.message));
   } finally {
