@@ -419,8 +419,12 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  // Roster content is owned by the game template and has changed since this audit was first
+  // written (the placeholder "Rook" character no longer exists). Find any roster row's Correct
+  // button instead of one fixture character's name, so this audit keeps covering the correction
+  // sheet regardless of which characters actually ship.
+  const finder = `[...document.querySelectorAll(".roster-panel-list button")].find(button => button.textContent.trim() === "Correct")`;
+  await waitFor(gm, finder, 20000, "a roster row's Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
