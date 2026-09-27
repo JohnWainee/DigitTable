@@ -70,13 +70,26 @@ diff.**
 
 ## What was not run, and why
 
-- **Live browser audit (`scripts/playtest/ui-audit.mjs`) and `npm run test:emulator`**: the fixed
-  emulator ports this repo's `firebase.json` requires (8080 Firestore, 9099 Auth, 9000 RTDB, 5001
-  Functions) were held by a concurrent session (`lsof` confirmed `node`/`java` listeners already
-  bound) at the time of this review. Per instruction, no competing job was killed and no alternate
-  port configuration was substituted. This mirrors PR #40's own recorded gap
-  ("blocked before test execution by unrelated fixed-port owners; do not terminate them").
-  Physical-device evidence remains the outstanding item for John, unchanged by this pass.
+- **Live browser audit (`scripts/playtest/ui-audit.mjs`)**: `apps/web`'s Firebase client wiring
+  (`apps/web/src/session/emulatorConfig.ts`) hardcodes the emulator ports (`9099`/`5001`/`8080`),
+  so the served app cannot be pointed at an alternate port set without a source change. The
+  standard ports were held by a concurrent session throughout this pass; nothing was killed and no
+  source change was made to work around it. Physical-device evidence and this live audit remain the
+  outstanding items for John.
+
+## Follow-up (same session, ports still unavailable in-app but the emulator suite itself does not need them free)
+
+`npm run test:emulator`'s own fixed ports were re-checked and were still held by a concurrent
+session. Rather than leave the emulator suite entirely unexercised, this pass wrote a scratch
+`firebase.json` (`firebase.scratch.json`, deleted before commit, never part of this diff) with the
+identical rules/functions config but ports offset by 10000 (`19099`/`18080`/`19000`/`15001`,
+confirmed free via `lsof` first), and ran:
+`PATH=/opt/homebrew/opt/openjdk/bin:$PATH npx firebase emulators:exec --config firebase.scratch.json --only auth,firestore,database,functions --project demo-digitable "npm run test:emulator --workspaces --if-present"`.
+Result: **108/108** (18 `packages/testing`, 86 `apps/functions`, 4 `apps/web`), matching the
+long-standing baseline, without ever touching the concurrent session's bound ports. This does not
+substitute for the live-browser `ui-audit.mjs` pass (blocked for the source-level reason above, not
+a port-contention reason), which remains open for John once the app's hardcoded emulator ports are
+free.
 
 ## Gates run this session (fresh, this worktree)
 
@@ -84,7 +97,11 @@ diff.**
   warnings)/typecheck clean.
 - `npm run build` — clean (`apps/functions` esbuild 216.6kb; `apps/web` vite build, 138 modules,
   existing non-blocking >500kB chunk warning unchanged).
-- `git diff --check` — clean.
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` (via the scratch alternate-port
+  config described above) — **108/108** (18 `packages/testing`, 86 `apps/functions`, 4 `apps/web`).
+- `git diff --check` — clean; the scratch `firebase.scratch.json` and stray emulator debug logs
+  were deleted, and the `package-lock.json` `"peer": true` churn from a fresh `npm install` (the
+  same immaterial diff every prior pass has recorded) was reverted, not committed.
 
 ## Disposition
 
@@ -96,5 +113,7 @@ area (`docs/reviews/2026-09-24-sonnet-w-utility-item-tap-target-review.md`,
 `docs/reviews/2026-09-25-sonnet-af-mobile-popout-independent-review.md`, and this one), the first
 to focus specifically on colour/text legibility rather than pop-out geometry, and it agrees with
 all five prior passes: no blocking finding, nothing to merge or deploy. PR #40's utility-target fix
-is confirmed already present on this branch and not duplicated here. Physical-device evidence and
-the live-emulator/ui-audit re-run (once ports are free) remain the open items for John.
+is confirmed already present on this branch and not duplicated here. The full emulator suite is now
+freshly verified clean (108/108) without disturbing the concurrent session; physical-device evidence
+and the live-browser `ui-audit.mjs` re-run (blocked by the app's hardcoded emulator ports, not by
+this review) remain the open items for John.
