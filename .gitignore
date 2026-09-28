@@ -21,3 +21,7 @@ content/private/
 
 # Vitest JSON reporter output (never committed; trips prettier --check otherwise).
 .vitest/
+
+# scripts/playtest/ui-audit.mjs's default --out directory when none is passed explicitly
+# (never committed; trips prettier --check otherwise, same class of leftover as .vitest/ above).
+ui-audit-run/

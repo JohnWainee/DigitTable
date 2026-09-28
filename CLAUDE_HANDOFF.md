@@ -597,3 +597,58 @@ This session found the fix already re-applied, uncommitted, in this shared workt
 **Independent review:** two passes before this branch's own commit — the original 2026-09-24 pair for `5663d7f` (`docs/reviews/2026-09-24-sonnet-w-utility-item-tap-target-review.md`), and a fresh reviewer in this session's background job who independently verified the diff, the merge-base non-ancestry, the dispatch wiring, the regex against real examples in `AllocationStepper.tsx`/`CorrectionDialog.tsx`, a live mutation test (reverted and restored byte-for-byte), and matching `npm run check`/`npm run build` results, with one non-blocking note (the proximity exemption is textual, not a true containment check — no current file triggers it). Full record: [`docs/reviews/2026-09-28-sonnet-bk-utility-item-tap-target-refix.md`](docs/reviews/2026-09-28-sonnet-bk-utility-item-tap-target-refix.md).
 
 **Disposition:** real, narrowly-scoped, twice-independently-reviewed fix, re-applied after verified parallel-worktree fix loss. Only the two component files, the test contract, and two new test files changed — no engine, contracts, template, Functions, or rules file touched; no merge, deploy, resource creation, or promotion occurred. Physical-device evidence remains the one open item for John.
+
+## Ninth independent mobile pop-out re-audit: no new defect, all gates and live evidence reconfirmed fresh at this branch's own HEAD (branch `sonnet-bl/reskin-hourly-20260928`, 2026-09-28)
+
+**Scope:** independently verify the deployed staging playthrough evidence above is not being
+mistaken for evidence that this branch's source is deployed, and re-audit the ink-black punk
+reskin and every GM/player/table mobile pop-out control (select/menu/details/modal/drawer/
+option-list/allocation/action control) at phone/landscape/tablet/desktop/table widths, from this
+branch's own `f879e0d` (already carrying `sonnet-bk`'s two re-fixes). Implement a change only if a
+real gap remains.
+
+**Staging-vs-source check:** read every staging-evidence entry in this file end to end; each one
+explicitly labels itself deployed-build-only evidence and states the source candidate has not been
+deployed (see "Automation staging re-verification" above, and the earlier live-verification
+entries under "Current state"). No conflation exists to correct.
+
+**Reskin/pop-out re-confirmation, first-hand at this exact commit:** a fresh grep for the full
+pop-out-markup inventory returns the same six `<select>`s, one `<details>`, one `role="dialog"`
+every prior pass found. Directly confirmed in the source (not cited) that both previously-lost
+fixes are genuinely present and wired at this branch's own `HEAD`: `ChooseInjuryPanel2.tsx`/
+`ComposeStep2.tsx`'s utility-item buttons carry `className="link-button"`, resolving through the
+48px `--tap` rule; `ui-audit.mjs`'s `openCorrection()` targets `.roster-panel-list button` by exact
+text `"Correct"`, matching `RosterPanel.tsx`'s real markup. `--tap: 3rem`, safe-area insets,
+`prefers-reduced-motion` gating, and the `dvh`/`vh` fallback pattern are all still in place.
+
+**Gates and live evidence, this session, fresh:** `npm run check` — **708 passed | 11 todo**
+(75 files, 1 skipped), matching the eighth re-audit's post-fix count exactly. `npm run build` —
+clean, matching output byte-for-byte aside from content-hash filenames. `git diff --check` —
+clean. Built fresh in emulator mode, served via a separate local `vite preview` (port 4199)
+against the pre-existing shared local `demo-digitable` emulator stack (confirmed via `ps`/`lsof`
+as an unrelated, ~2-day-old process from a different worktree; not disturbed):
+`ui-audit.mjs --no-shots` — **150 states, 1578 controls, 0 control issues, 0 overflow, 0 hard axe
+violations, 0 failures — PASSED** (only the same two already-documented non-gating notes);
+`two-device-smoke.mjs --reload --no-images` — **17/17 steps passed**, `ok: true`, zero console
+errors and zero failed requests on all three devices, zero positive overflow at every breakpoint
+(inspected the JSON report directly, not just the console summary). `npm run test:emulator` not
+rerun standalone (default ports held by an unrelated concurrent session, confirmed via `ps`, for
+this session's entire duration; this session made no source change, so the last recorded 108/108
+result stands).
+
+**Independent review found one real (non-reskin) issue, fixed:** a fresh reviewer agent
+independently re-verified every claim above from the repo state directly and found this session's
+own `ui-audit.mjs` run (invoked without `--out`) had left an untracked `ui-audit-run/report.json`
+artifact in the worktree that broke `npm run check`'s `prettier --check` step — the same class of
+leftover `.vitest/` already has a `.gitignore` entry for, but `ui-audit-run/` (the script's own
+default `--out` directory) did not. Fixed by deleting the leftover directory and adding
+`ui-audit-run/` to `.gitignore` alongside `.vitest/`; `npm run check` reran clean afterward
+(708 passed | 11 todo, matching). Harmless `package-lock.json` lockfile-metadata churn from this
+session's `npm install` was also found and discarded, per this project's own established
+precedent for such churn.
+
+**Disposition:** no reskin or pop-out defect found; no `apps/web` production source, test, engine,
+contracts, template, Functions, or rules file changed. Full record, including the independent
+reviewer's verification, is [`docs/reviews/2026-09-28-sonnet-bl-ninth-reskin-reaudit.md`](docs/reviews/2026-09-28-sonnet-bl-ninth-reskin-reaudit.md).
+Only this handoff entry, its review record, and a one-line `.gitignore` addition changed this
+session. Physical-device evidence remains the one open item for John, unchanged by this pass.
