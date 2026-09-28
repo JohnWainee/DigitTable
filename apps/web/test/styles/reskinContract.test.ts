@@ -99,20 +99,42 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(inputs, "min-height")).toContain("var(--tap)");
     });
 
-    it("covers every styled <button> in the app: each className token is one the tap rule names", () => {
+    it("covers every <button> in the app: every className token is one the tap rule names, and any button with NO className at all is one of the documented +/- steppers inside .stepper-controls", () => {
       const covered = new Set(["primary-action", "secondary-action", "link-button"]);
       const uncovered: string[] = [];
+      const unexemptedClassless: string[] = [];
+      // Matches a full `<button ...>` opening tag. `(?:[^>{]|\{[^}]*\})*` treats each
+      // `{...}` JSX expression as one unit so a `>` inside it (`disabled={value >= max}`,
+      // `onClick={() => ...}`) can never be mistaken for the tag's own closing `>`; a
+      // plain (non-`className`-bearing) tag would otherwise be invisible to a regex that
+      // only looks for `className=`, which is exactly how the two class-less buttons this
+      // test now pins (CLAUDE_HANDOFF.md, "class-less utility-item buttons") escaped it.
+      const buttonTag = /<button\b(?:[^>{]|\{[^}]*\})*>/g;
       for (const file of sourceFiles(join(here, "../../src"))) {
         const source = readFileSync(file, "utf8");
-        for (const match of source.matchAll(
-          /<button\b[^>]*?className=(?:"([^"]*)"|\{`([^`]*)`\})/gs,
-        )) {
-          for (const token of (match[1] ?? match[2] ?? "").split(/\s+/).filter(Boolean)) {
-            if (!covered.has(token)) uncovered.push(`${file.split("/src/")[1]}: ${token}`);
+        for (const match of source.matchAll(buttonTag)) {
+          const tag = match[0];
+          const classMatch = /className=(?:"([^"]*)"|\{`([^`]*)`\})/.exec(tag);
+          if (classMatch) {
+            for (const token of (classMatch[1] ?? classMatch[2] ?? "")
+              .split(/\s+/)
+              .filter(Boolean)) {
+              if (!covered.has(token)) uncovered.push(`${file.split("/src/")[1]}: ${token}`);
+            }
+            continue;
+          }
+          // No className attribute at all: sized only by the `.stepper-controls button`
+          // descendant selector, so it must actually sit inside that wrapper.
+          const precedingContext = source.slice(Math.max(0, match.index - 1000), match.index);
+          if (!precedingContext.includes("stepper-controls")) {
+            unexemptedClassless.push(
+              `${file.split("/src/")[1]}: <button> with no className outside .stepper-controls`,
+            );
           }
         }
       }
       expect(uncovered).toEqual([]);
+      expect(unexemptedClassless).toEqual([]);
       // Class-less buttons are only the +/- steppers inside .stepper-controls (rule names them).
       const buttonRule = rulesFor(/\.primary-action.*\.stepper-controls button/s);
       expect(declaration(buttonRule, "min-height")).toContain("var(--tap)");
