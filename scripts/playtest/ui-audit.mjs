@@ -424,8 +424,11 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  // Roster-agnostic: matches the first enabled exact-text "Correct" button in the roster list,
+  // not a specific character's name/id (the roster's names and ids can both change independently
+  // of this script — see CLAUDE_HANDOFF.md's "Post-roster mobile audit" note).
+  const finder = `[...document.querySelectorAll(".roster-panel-list button")].find(b => b.textContent.trim() === "Correct" && !b.disabled)`;
+  await waitFor(gm, finder, 20000, "a roster row's Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
