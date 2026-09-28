@@ -3,7 +3,11 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
 - **Branch:** `factory/staging-harness-integration-20260928` (isolated, origin/main-based integration of the independently reviewed smoke/audit evidence hardening; no deployment or merge).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-28 after integrating the independently reviewed evidence hardening and rerunning its live staging smoke. No product behavior or deployment changed; the physical-device rehearsal remains open (see "Ninth independent review" below).
+- **Last updated:** 2026-09-28 after an independent reskin/mobile visual-viewport audit
+  (`sonnet-bj/reskin-staging-audit-20260928`, based on this same `4ee3e69`) found and fixed a real,
+  currently-deployed tap-target regression on the two utility-item buttons — see "Tenth independent
+  audit: reskin/mobile visual-viewport re-audit" below. The physical-device rehearsal remains open
+  (see "Ninth independent review" below).
 
 ## Mission
 
@@ -559,3 +563,79 @@ No product behavior, deployment, merge to `main`, or cloud resource changed. The
 **Gates:** `npm run check` — **703 passed | 11 todo** (73 files, 1 skipped; baseline 693 + 10 new tests in the new `scripts/playtest` Vitest project, registered in the root `vitest.config.ts`). `npm run build` — clean (existing non-blocking chunk warning only). `git diff --check` — clean (fresh-install `package-lock.json` churn discarded, not committed). `npm run test:emulator` not rerun standalone: the default ports were held the whole session by a separate, long-running local `firebase emulators:start` process (confirmed via `ps`, alive 5+ hours) — this change touches only `scripts/playtest/**` and the root Vitest project list, no file in `packages/testing`/`apps/functions`/`apps/web`/the Firestore/RTDB rules, so the last recorded 108/108 result stands unaffected.
 
 **Scope:** only `scripts/playtest/two-device-smoke.mjs`, `scripts/playtest/ui-audit.mjs`, `vitest.config.ts` (root), and three new files under `scripts/playtest/` changed. No engine, contracts, template, Functions, rules, or `apps/web` production source touched; no merge, deploy, resource creation, or promotion occurred.
+
+## Tenth independent audit: reskin/mobile visual-viewport re-audit (branch `sonnet-bj/reskin-staging-audit-20260928`, 2026-09-28)
+
+**Finding: a real, live defect — the same tap-target regression five prior reviews already fixed and
+reviewed, but on a divergent branch lineage that never received the fix.** This branch's base,
+`4ee3e69` (identical to `factory/staging-harness-integration-20260928`), diverged from
+`factory/today-integration` at `b599abd` — before fix commit `5663d7f` (and its later refinement
+`0cb9ef1` on a third lineage, `sonnet-ax/reskin-final-audit-20260927`) ever landed there. So on this
+lineage, `ChooseInjuryPanel2.tsx`'s "Destroy Cowboy hat to ignore this result" and
+`ComposeStep2.tsx`'s "Mark and regain Blood" were still bare `<button>`s with no `className`, getting
+none of the reskin's 48px `--tap` sizing or `touch-action: manipulation` — under WCAG 2.5.8's 44px
+floor on a real phone. Because the staging build actually deployed per this file's own "Status" line
+is commit `5e8907b`, on this same unfixed side of the split, **this was a live, currently-deployed
+defect**, not a hypothetical one, despite the defect class having already been found and fixed
+multiple times elsewhere in the review history below.
+
+**Fix (identical to the already-reviewed fix on two other lineages):** both buttons now carry
+`className="link-button"` (an existing, already-styled, previously-dead-in-markup class). Ported the
+matching regression test to `apps/web/test/styles/reskinContract.test.ts` (`stepperControlsRanges()`
+plus a class-less-`<button>` scan), mutation-verified to fail at exactly the two affected lines and
+pass once fixed.
+
+**Gates:** `npm run check` — **701 passed | 11 todo** (72 files, 1 skipped; this branch's own
+pre-fix baseline, confirmed by temporarily stashing the change, is 700 passed | 11 todo — exactly +1,
+no other regression). `npm run build` — clean. `git diff --check` — clean (`package-lock.json` churn
+from a fresh install discarded, not committed). `npm run test:emulator` not rerun standalone: default
+ports were held for this session's entire duration by a separate, long-running `firebase
+emulators:start` process rooted in a different worktree (confirmed via `ps`/`lsof`) — this change
+touches only two `apps/web/src/player2/**` files and one `apps/web/test/**` file, so the last recorded
+108/108 result for this exact lineage (the Ninth independent review, above, same `4ee3e69` base)
+stands unaffected.
+
+**Independent review: approved, no blocking finding.** A fresh Sonnet reviewer independently
+re-derived the defect from `git show HEAD:...`, independently re-scanned every `<button>` in
+`apps/web/src` with its own script (no blind spot found), independently re-verified the branch
+divergence with its own git commands, found a *third* lineage carrying a byte-identical patch this
+session had not cited, ran its own mutation test, and reproduced the full gate clean. One
+non-blocking note (a future non-`<div>` `.stepper-controls` wrapper would break the new test's depth
+counter; not a real risk today).
+
+**Live-browser evidence: partial, environment-limited.** Pointed a locally built, emulator-mode
+`apps/web` at the already-running shared local Firebase emulator (a non-destructive sharing pattern
+this repo's history already used) and ran `ui-audit.mjs` twice: both runs reached 60/150 states, 318
+controls, **0 control issues, 0 overflow, 0 hard axe violations**, before timing out waiting for
+"player reveal" — reproducibly, both times, judged to be the shared emulator serving a different
+worktree's differently-versioned roster/Functions code rather than an application defect. A full
+from-scratch local emulator instance was not started, since that would require commandeering ports
+already owned by another live session. Recommend a follow-up full live pass once the shared ports are
+next free as belt-and-suspenders confirmation; no material residual risk is assessed.
+
+**Other categories independently re-audited, no defect found:** the pop-out primitives
+(`SheetDialog`, `AllocationStepper`, the six native `<select>`s, the one `<details>` disclosure) were
+re-read in full this session and confirmed byte-identical in source to `930e3f1`; the setup/join/
+recovery screen (`JoinScreen.tsx`, the largest diff on this lineage since `930e3f1`) was read in full
+and found sound (tap-sized buttons, proper labels/`autoComplete`/`pattern`, `role="alert"`, a live
+region). 390px/412px (explicitly requested phone widths) fall inside the same unconditional
+mobile-first CSS bucket as 320px/375px (no `@media` boundary before 641px), so no breakpoint-specific
+divergence is expected there, though this was not independently re-verified live this session (see
+the live-evidence limitation above) — offered as reasoned context, not as new permanent test coverage.
+
+**Noted but out of scope for this audit (functional, not viewport/accessibility):** neither utility-
+item button has a dedicated behavioral regression test on this lineage — the "Eighth independent
+review: promoted utility-item regression coverage" test recorded above also never landed on this
+branch's history. Recorded for awareness, not fixed here.
+
+**Branch-lineage caution for John:** this defect's root cause is structural, not a one-off slip —
+with dozens of parallel `sonnet-*` review/fix branches outstanding, a fix approved and merged on one
+lineage does not automatically reach a sibling lineage that branched off earlier, or whatever ends up
+actually deployed. Recommend checking every other unmerged branch that also diverged from
+`factory/today-integration` before `b599abd`'s successors landed there for this same regression before
+choosing what to deploy or merge. Full record:
+[`docs/reviews/2026-09-28-sonnet-bj-reskin-staging-audit.md`](docs/reviews/2026-09-28-sonnet-bj-reskin-staging-audit.md).
+
+No deployment, merge, or Firebase resource change occurred. Only
+`apps/web/src/player2/ChooseInjuryPanel2.tsx`, `apps/web/src/player2/ComposeStep2.tsx`,
+`apps/web/test/styles/reskinContract.test.ts`, this file, and the new review record changed.
