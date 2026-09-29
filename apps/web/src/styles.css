@@ -71,6 +71,15 @@
   --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffe600' d='M3 8h18l-9 10z'/%3E%3C/svg%3E");
 
   --tap: 3rem;
+
+  /* Inline gutters of nested panels. Each is its rem value at normal text size, but capped by the
+     viewport width (the caps equal the rem values at 320px, so no phone >= 320px changes at 100%
+     text). At 150-200% text, plain rem gutters would nest (page > panel > fieldset > option row) into
+     more than the whole 320px screen and push controls off it. Text and tap targets keep scaling. */
+  --gutter-page: min(1rem, 5vw);
+  --gutter-panel: min(1rem, 5vw);
+  --gutter-inner: min(0.85rem, 4.25vw);
+  --gutter-tight: min(0.65rem, 3.25vw);
 }
 
 * {
@@ -209,8 +218,8 @@ li + li {
 .gm-screen,
 .table-screen {
   margin: 0 auto;
-  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
-    max(2.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  padding: max(1rem, env(safe-area-inset-top)) max(var(--gutter-page), env(safe-area-inset-right))
+    max(2.5rem, env(safe-area-inset-bottom)) max(var(--gutter-page), env(safe-area-inset-left));
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -248,7 +257,7 @@ li + li {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1.25rem 1rem 1.25rem;
+  padding: 1.25rem var(--gutter-panel) 1.25rem;
   background:
     var(--grain),
     linear-gradient(180deg, var(--ink-2), var(--ink-1)) padding-box;
@@ -308,7 +317,7 @@ li + li {
 fieldset {
   min-width: 0;
   margin: 0;
-  padding: 1.1rem 0.85rem 0.85rem;
+  padding: 1.1rem var(--gutter-inner) 0.85rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -337,7 +346,7 @@ legend {
 .roster-card {
   border: 2px solid var(--rule);
   background: rgba(5, 5, 6, 0.55);
-  padding: 0.85rem;
+  padding: 0.85rem var(--gutter-inner);
 }
 
 .pending-actions-list,
@@ -626,10 +635,12 @@ input[type="radio"]:disabled {
 .form-field--checkbox {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: var(--gutter-inner);
   min-height: var(--tap);
-  padding: 0.4rem 0.65rem;
+  padding: 0.4rem var(--gutter-tight);
   border: 2px solid transparent;
+  /* A long word at large text sizes wraps inside the row instead of widening the page. */
+  overflow-wrap: anywhere;
   font-family: var(--font-body);
   font-size: 1rem;
   letter-spacing: 0;
@@ -640,6 +651,32 @@ input[type="radio"]:disabled {
 
 .form-field--checkbox {
   flex-direction: row;
+}
+
+/* An option plus its own action button (a utility item's "Mark ..."; a hidden threat's "Reveal"). The
+   button sits beside the option when there is room and wraps below it when there is not (narrow
+   phones, large text) instead of being pushed off the right edge. */
+.gear-option-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.75rem;
+  row-gap: 0.25rem;
+}
+
+.gear-option-row > .gear-option {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.gear-option--action {
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.gear-option-text {
+  flex: 1 1 8rem;
+  min-width: 0;
 }
 
 .gear-option:has(:checked) {

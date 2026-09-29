@@ -83,6 +83,13 @@ const VIEWPORTS = [
 ];
 const byName = Object.fromEntries(VIEWPORTS.map((v) => [v.name, v]));
 
+/** Root font sizes for the text-scaling pass of every state (16px = 100%): 320px at 150% and 200%, 375px at 200%. */
+const TEXT_SCALE_PASSES = [
+  { viewport: "phone-small", rootPx: 24 },
+  { viewport: "phone-small", rootPx: 32 },
+  { viewport: "phone", rootPx: 32 },
+];
+
 const report = {
   label: LABEL,
   base: BASE,
@@ -380,6 +387,55 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
     }
     report.states.push(entry);
   }
+  // Text scaling on every state, not only behind the correction sheet: what a browser "font size:
+  // large / very large" does to every rem. Nested rem gutters used to stack past the width of a 320px
+  // screen here (utility-item and Reveal buttons pushed off-screen, option rows overflowing), which the
+  // 100%-text sweep above cannot see. Same gates as the sweep: no horizontal overflow, every control
+  // inside the viewport at the tap size. axe is skipped (colours do not change with text size).
+  for (const { viewport, rootPx } of TEXT_SCALE_PASSES) {
+    const vp = byName[viewport];
+    const label = `${vp.name}@text${Math.round((rootPx / 16) * 100)}`;
+    await applyViewport(device, vp);
+    await ev(device, `document.documentElement.style.fontSize = "${rootPx}px"`);
+    await sleep(250);
+    const audit = await ev(device, CONTROL_AUDIT);
+    const file = await screenshot(device, `${device.name}-${state}-${label.replace("@", "-")}.jpg`);
+    report.states.push({
+      surface: device.name,
+      state,
+      viewport: label,
+      size: `${vp.width}x${vp.height}`,
+      textPx: rootPx,
+      controls: audit.controls,
+      overflowPx: audit.overflowPx,
+      controlIssues: audit.issues,
+      screenshot: file,
+    });
+    // Overflow that widens the mobile layout viewport is measured against the widened width by
+    // `overflowPx`, so also compare the layout width with the emulated device width.
+    const layoutWidth = await ev(device, `window.innerWidth`);
+    if (layoutWidth > vp.width + 1) {
+      fail(
+        `${device.name}/${state}@${label}`,
+        `layout viewport widened to ${layoutWidth}px on a ${vp.width}px screen`,
+      );
+    }
+    if (audit.overflowPx > 1) {
+      // Name the outermost element whose removal restores the page width, so a failure is actionable.
+      const culprit = await ev(
+        device,
+        `(() => { const de = document.documentElement; const base = de.scrollWidth; for (const e of document.querySelectorAll("body *")) { const d = e.style.display; e.style.display = "none"; const now = de.scrollWidth; e.style.display = d; if (now < base) return e.tagName.toLowerCase() + (typeof e.className === "string" && e.className ? "." + e.className.split(" ").join(".") : "") + " :: " + (e.textContent || "").trim().slice(0, 40); } return "unknown"; })()`,
+      );
+      fail(
+        `${device.name}/${state}@${label}`,
+        `horizontal overflow ${audit.overflowPx}px (first offender: ${culprit})`,
+      );
+    }
+    for (const issue of audit.issues) {
+      fail(`${device.name}/${state}@${label}`, `${issue.control}: ${issue.problems.join("; ")}`);
+    }
+    await ev(device, `document.documentElement.style.fontSize = ""`);
+  }
   await applyViewport(device, original);
 }
 
@@ -654,16 +710,13 @@ async function auditModal(gm) {
   }
 
   // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150% and
-  // 375px at 200% are gating. 320px at 200% is recorded but NOT gating: at that size the (unchanged,
-  // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
-  // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
-  // the handoff.
+  // 200%, and 375px at 200%, all gate. (320px at 200% used to be recorded but not gating because the
+  // rem-padded panels behind the sheet overflowed the page and widened the layout viewport; the
+  // gutters are now viewport-capped, so the whole console and the sheet fit.)
   for (const [vp, px, informationalChecks] of [
     [byName["phone-small"], 24, []],
     [byName["phone"], 32, []],
-    // Only the two geometry checks the console's overflow can break are non-gating here; the sheet's own
-    // bodyKeepsRoom / actionsReachable / reasonReachable still gate.
-    [byName["phone-small"], 32, ["dialogInsideViewport", "noPageOverflow"]],
+    [byName["phone-small"], 32, []],
   ]) {
     await scenario(
       `text-${px === 24 ? "150" : "200"}-${vp.name}`,

@@ -40,6 +40,19 @@ describe("ComposeStep2 utility-item control (Cigarettes / Mark and regain Blood)
     expect(button).toHaveClass("link-button");
   });
 
+  it("keeps the button outside the item's <label> so it can wrap below it and never names the checkbox", async () => {
+    const user = userEvent.setup();
+    await reachComposeStepAsRook(user);
+
+    const button = screen.getByRole("button", { name: /mark and regain blood/i });
+    expect(button.closest("label")).toBeNull();
+    expect(button.parentElement).toHaveClass("gear-option-row");
+    // The checkbox's accessible name is the item text alone (no nested button text).
+    expect(screen.getByRole("checkbox", { name: /cigarettes/i })).toHaveAccessibleName(
+      expect.not.stringMatching(/mark and regain blood/i),
+    );
+  });
+
   it("marking a use decrements the item's remaining uses without checking its pool-selection box", async () => {
     const user = userEvent.setup();
     await reachComposeStepAsRook(user);

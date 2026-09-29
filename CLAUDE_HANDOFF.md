@@ -3,7 +3,7 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
 - **Branch:** `factory/staging-harness-integration-20260928` (isolated, origin/main-based integration of the independently reviewed smoke/audit evidence hardening; no deployment or merge). A sibling worktree, `sonnet-bk/reskin-uiux-orchestrated-20260928` (based on `d0dac74`), independently re-audited the ink-black reskin and mobile pop-out system and fixed a real, independently-confirmed test-harness regression — see "Seventh independent mobile pop-out re-audit" below — and, in a further pass, found and re-fixed a real parallel-worktree fix loss: the class-less utility-item tap-target buttons (originally fixed 2026-09-24 as `5663d7f`) were never actually merged into this branch's lineage despite this file's own narrative saying otherwise four times over — see "Eighth independent mobile pop-out re-audit" below. Neither is yet folded into this branch.
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-28, this entry, after the `sonnet-bk` branch's own further audit pass found this file's "utility-item tap-target" narrative (four prior "independently re-confirmed integrated" entries) was true of other branches but not this one, and re-applied + re-tested + re-reviewed the fix directly (see "Eighth independent mobile pop-out re-audit" below). This is a real, narrowly-scoped `apps/web` UI change (two `className="link-button"` additions plus a hardened test contract and two new test files) — no engine/contracts/Functions/rules change, no deployment, no merge. The physical-device rehearsal remains open (see "Ninth independent review" below).
+- **Last updated:** 2026-09-29 (`sonnet-bn/reskin-followup-20260929`: text-scale reflow fix, see the final section; prior entry 2026-09-28), this entry, after the `sonnet-bk` branch's own further audit pass found this file's "utility-item tap-target" narrative (four prior "independently re-confirmed integrated" entries) was true of other branches but not this one, and re-applied + re-tested + re-reviewed the fix directly (see "Eighth independent mobile pop-out re-audit" below). This is a real, narrowly-scoped `apps/web` UI change (two `className="link-button"` additions plus a hardened test contract and two new test files) — no engine/contracts/Functions/rules change, no deployment, no merge. The physical-device rehearsal remains open (see "Ninth independent review" below).
 
 ## Mission
 
@@ -652,3 +652,27 @@ contracts, template, Functions, or rules file changed. Full record, including th
 reviewer's verification, is [`docs/reviews/2026-09-28-sonnet-bl-ninth-reskin-reaudit.md`](docs/reviews/2026-09-28-sonnet-bl-ninth-reskin-reaudit.md).
 Only this handoff entry, its review record, and a one-line `.gitignore` addition changed this
 session. Physical-device evidence remains the one open item for John, unchanged by this pass.
+
+## Tenth independent re-audit: text-scale reflow gap found and fixed (branch `sonnet-bn/reskin-followup-20260929`, 2026-09-29)
+
+Verified the base (`a1751de`) carries the prior fixes before relying on them. Nine prior passes audited text scaling only behind the
+GM correction sheet; a new gating text-scale pass over **every** state (320@150%, 320@200%, 375@200%) failed six states before the
+fix: the utility-item "Mark and regain Blood" button was pushed up to 143px off-screen, the GM "Reveal" button off-screen, and
+option rows overflowed 4-11px (which widened the layout viewport behind the correction sheet, the old "not gating" exception). At
+100% text on a 320px phone "Reveal" was also squeezed into "REV/EAL".
+
+**Fix (presentation only):** viewport-capped nested gutters (`--gutter-*`, equal to the old rem values at 320px so 100% text on
+phones >= 320px is unchanged), `overflow-wrap: anywhere` on option rows, the utility-item button moved out of its `<label>` into a
+wrapping `.gear-option-row` (also removes an interactive control from a label and from the checkbox's name), the Reveal row
+wraps, `ui-audit.mjs` gained the gating text-scale pass (and the 320@200% sheet checks now gate), plus contract/component tests.
+
+**Verification:** `npm run check` **712 passed | 11 todo**; local `ui-audit.mjs` after the fix **225 states, 2,223 controls,
+0 failures** (before: 6 text-scale failures); local smoke 17/17; deployed-staging smoke 17/17 (serves `5e8907b`, not this
+source). `npm run test:emulator` not run (ports held by another worktree's emulators; no Functions/rules/engine change).
+Independent review found no defect and one hardening (applied); its accepted trade-offs and the before/after evidence are in
+[`docs/reviews/2026-09-29-sonnet-bn-text-scale-reflow.md`](docs/reviews/2026-09-29-sonnet-bn-text-scale-reflow.md) and
+`docs/evidence/bn-text-scale/`.
+
+**Current state / next action:** the fix is committed and pushed on this branch, not merged or deployed. John: review/merge, and
+run the physical two-device rehearsal (including iOS Safari keyboard/visual-viewport and a large-text-size pass). Do not deploy
+without explicit direction.

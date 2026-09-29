@@ -179,6 +179,51 @@ describe("reskin stylesheet contract", () => {
     });
   });
 
+  describe("text scaling (150-200% text on a 320px screen)", () => {
+    const rootToken = (name: string): string => {
+      const match = new RegExp(`--${name}:\\s*([^;]+);`).exec(css);
+      if (!match) throw new Error(`token --${name} missing from :root`);
+      return match[1]!.trim();
+    };
+
+    it("caps every nested inline gutter by viewport width, at exactly the rem value on a 320px screen", () => {
+      // 5vw / 4.25vw / 3.25vw are 16 / 13.6 / 10.4px at 320px: the old 1rem / 0.85rem / 0.65rem, so no
+      // phone changes at 100% text, while 200% text can no longer stack gutters past the screen.
+      expect(rootToken("gutter-page")).toBe("min(1rem, 5vw)");
+      expect(rootToken("gutter-panel")).toBe("min(1rem, 5vw)");
+      expect(rootToken("gutter-inner")).toBe("min(0.85rem, 4.25vw)");
+      expect(rootToken("gutter-tight")).toBe("min(0.65rem, 3.25vw)");
+    });
+
+    it("uses those gutters on the shells, panels, fieldsets, cards and option rows", () => {
+      expect(
+        declaration(rulesFor(/^\.landing-screen,\s*\.player-screen,\s*\.gm-screen/), "padding")[0],
+      ).toContain("var(--gutter-page)");
+      expect(declaration(rulesFor(/^\.step,\s*\.scene-card/), "padding")[0]).toContain(
+        "var(--gutter-panel)",
+      );
+      expect(declaration(rulesFor(/^fieldset$/), "padding")[0]).toContain("var(--gutter-inner)");
+      expect(declaration(rulesFor(/^\.pending-action-card,/), "padding")[0]).toContain(
+        "var(--gutter-inner)",
+      );
+      const option = rulesFor(/^\.gear-option,\s*\.form-field--checkbox$/);
+      expect(declaration(option, "padding")[0]).toContain("var(--gutter-tight)");
+      expect(declaration(option, "gap")[0]).toBe("var(--gutter-inner)");
+      // A long word wraps inside the row instead of widening the page.
+      expect(declaration(option, "overflow-wrap")).toEqual(["anywhere"]);
+    });
+
+    it("lets an option's own action button wrap below it instead of off the right edge", () => {
+      const row = rulesFor(/^\.gear-option-row$/);
+      expect(declaration(row, "display")).toEqual(["flex"]);
+      expect(declaration(row, "flex-wrap")).toEqual(["wrap"]);
+      const label = rulesFor(/^\.gear-option-row > \.gear-option$/);
+      expect(declaration(label, "min-width")).toEqual(["0"]);
+      expect(declaration(rulesFor(/^\.gear-option--action$/), "flex-wrap")).toEqual(["wrap"]);
+      expect(declaration(rulesFor(/^\.gear-option-text$/), "min-width")).toEqual(["0"]);
+    });
+  });
+
   describe("pop-out sheet", () => {
     it("sizes the backdrop from the visual viewport, with a vh base and dvh only behind @supports", () => {
       const backdrop = rulesFor(/^\.sheet-backdrop$/);
