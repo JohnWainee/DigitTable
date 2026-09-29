@@ -803,3 +803,22 @@ This is deployed-build evidence only and did not merge or deploy any source. No 
 or source fix was identified. The remaining material release-evidence gap is John's physical
 two-device rehearsal: iOS Safari visual viewport/keyboard, Android browser-chrome collapse, and
 OS large-text/high-contrast paths.
+
+## Automation staging reload confirmation (2026-09-29)
+
+The requested `digitable-staging-playthrough` Sonnet session remains absent from the active
+session inventory. Its absence was not considered a pass; the separately listed older Sonnet
+reskin lane is working, but its control socket refused log reads, so no unverified outcome is
+attributed to it. This automation independently reran the hardened live harness twice against
+`https://digitable.signal-bleed.com`, including reload coverage. The reports at
+`/private/tmp/digitable-hourly-staging-20260929-2200-rerun/report.json`
+(`2026-09-29T21:58:18Z`–`21:59:01Z`) and
+`/private/tmp/digitable-hourly-staging-20260929-2205-rerun/report.json`
+(`2026-09-29T21:58:54Z`–`21:59:30Z`) both record **17/17** GM/player/table workflow steps
+passing with `ok: true`, zero device console errors, zero failed requests, and no positive
+horizontal overflow at 375/768/1024/1280/1920 px.
+
+This confirms the deployed build only; it neither merges nor deploys the unmerged reskin-source
+branches. No defect or source change was found. The remaining material evidence gap is still
+John's physical rehearsal: iOS Safari visual viewport/keyboard, Android browser-chrome collapse,
+and OS large-text/high-contrast behavior.
