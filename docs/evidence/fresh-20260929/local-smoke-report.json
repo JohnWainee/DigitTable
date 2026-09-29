@@ -1,0 +1,225 @@
+{
+  "base": "http://127.0.0.1:4211",
+  "startedAt": "2026-09-29T23:05:19.279Z",
+  "noImages": true,
+  "blocked": [],
+  "devices": {
+    "gm": {
+      "origin": "http://127.0.0.1:4211",
+      "isSecureContext": true,
+      "hasRandomUUID": true,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like ",
+      "heroImage": null
+    },
+    "player": {
+      "origin": "http://127.0.0.1:4211",
+      "isSecureContext": true,
+      "hasRandomUUID": true,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like ",
+      "heroImage": null
+    },
+    "table": {
+      "origin": "http://127.0.0.1:4211",
+      "isSecureContext": true,
+      "hasRandomUUID": true,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like ",
+      "heroImage": null
+    }
+  },
+  "steps": [
+    {
+      "name": "landing renders on every device",
+      "ok": true,
+      "ms": 2101,
+      "detail": {
+        "gm": {
+          "origin": "http://127.0.0.1:4211",
+          "isSecureContext": true,
+          "hasRandomUUID": true,
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like ",
+          "heroImage": null
+        },
+        "player": {
+          "origin": "http://127.0.0.1:4211",
+          "isSecureContext": true,
+          "hasRandomUUID": true,
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like ",
+          "heroImage": null
+        },
+        "table": {
+          "origin": "http://127.0.0.1:4211",
+          "isSecureContext": true,
+          "hasRandomUUID": true,
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like ",
+          "heroImage": null
+        }
+      }
+    },
+    {
+      "name": "GM creates a session and receives the one-time codes",
+      "ok": true,
+      "ms": 3301,
+      "detail": {
+        "roomCode": "5W3JY-FKEP9"
+      }
+    },
+    {
+      "name": "GM loads the opening scene",
+      "ok": true,
+      "ms": 1670,
+      "detail": null
+    },
+    {
+      "name": "GM console fits a phone width with the opening scene loaded",
+      "ok": true,
+      "ms": 526,
+      "detail": {
+        "overflow": 0
+      }
+    },
+    {
+      "name": "player joins on a phone-sized device with plain-http crypto limits",
+      "ok": true,
+      "ms": 2665,
+      "detail": null
+    },
+    {
+      "name": "player claims the first available character",
+      "ok": true,
+      "ms": 1246,
+      "detail": null
+    },
+    {
+      "name": "table display connects with the separate table code",
+      "ok": true,
+      "ms": 1131,
+      "detail": {
+        "tableSceneImage": null,
+        "landingHeroImage": null
+      }
+    },
+    {
+      "name": "GM sees the claimed character (cross-device propagation)",
+      "ok": true,
+      "ms": 1059,
+      "detail": null
+    },
+    {
+      "name": "player declares an action and the GM sees it pending",
+      "ok": true,
+      "ms": 2181,
+      "detail": null
+    },
+    {
+      "name": "GM rolls; player allocates every die and confirms",
+      "ok": true,
+      "ms": 1928,
+      "detail": null
+    },
+    {
+      "name": "player continues; table shows the roll outcome state",
+      "ok": true,
+      "ms": 814,
+      "detail": null
+    },
+    {
+      "name": "GM pauses; player and table both reflect it; GM resumes",
+      "ok": true,
+      "ms": 1392,
+      "detail": null
+    },
+    {
+      "name": "GM ends the round, advances the scene with a reason; devices follow",
+      "ok": true,
+      "ms": 2208,
+      "detail": null
+    },
+    {
+      "name": "every device layout has no horizontal overflow at 375/768/1024/1280/1920",
+      "ok": true,
+      "ms": 4671,
+      "detail": {
+        "gm": {
+          "375": 0,
+          "768": 0,
+          "1024": 0,
+          "1280": 0,
+          "1920": 0
+        },
+        "player": {
+          "375": 0,
+          "768": 0,
+          "1024": 0,
+          "1280": 0,
+          "1920": 0
+        },
+        "table": {
+          "375": 0,
+          "768": 0,
+          "1024": 0,
+          "1280": 0,
+          "1920": -15
+        }
+      }
+    },
+    {
+      "name": "page title, GM invite copy, and unauthorized-seat guidance",
+      "ok": true,
+      "ms": 822,
+      "detail": null
+    },
+    {
+      "name": "landing Resume goes straight to the claimed dashboard with one h1",
+      "ok": true,
+      "ms": 1068,
+      "detail": null
+    },
+    {
+      "name": "player reload restores the seat and dashboard without re-joining",
+      "ok": true,
+      "ms": 1218,
+      "detail": null
+    }
+  ],
+  "overflows": [],
+  "responsiveOverflow": {
+    "gm": {
+      "375": 0,
+      "768": 0,
+      "1024": 0,
+      "1280": 0,
+      "1920": 0
+    },
+    "player": {
+      "375": 0,
+      "768": 0,
+      "1024": 0,
+      "1280": 0,
+      "1920": 0
+    },
+    "table": {
+      "375": 0,
+      "768": 0,
+      "1024": 0,
+      "1280": 0,
+      "1920": -15
+    }
+  },
+  "finishedAt": "2026-09-29T23:05:49.915Z",
+  "deviceFailures": [],
+  "ok": true,
+  "consoleByDevice": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  }
+}

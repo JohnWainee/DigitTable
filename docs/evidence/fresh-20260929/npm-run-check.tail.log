@@ -1,0 +1,12 @@
+(Use `node --trace-warnings ...` to show where the warning was created)
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  76 passed | 1 skipped (77)
+      Tests  724 passed | 11 todo (735)
+   Start at  13:00:33
+   Duration  4.66s (tests 47%, environment 20%, transform 13%, setup 12%, import 9%, worker 1%)
+
+    Isolate  77 workers spawned · ~151ms startup each (spawn + environment, per file)
+             at least ~903ms faster with isolate: false — reuses workers across files instead of one per file
+
+EXIT 0
