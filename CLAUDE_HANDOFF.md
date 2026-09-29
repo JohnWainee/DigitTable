@@ -787,3 +787,19 @@ No product defect or source change was found. This remains deployed-build eviden
 not merge or deploy the unmerged reskin-source work. The remaining release-evidence gap is still
 John's physical two-device rehearsal, especially iOS Safari visual-viewport/keyboard behavior,
 Android browser-chrome collapse, and OS large-text/high-contrast paths.
+
+## Automation staging reload rerun (2026-09-29)
+
+The named `digitable-staging-playthrough` Sonnet session is still absent from the active-session
+inventory, so its absence is not treated as a pass. This automation ran the hardened live harness
+again, including reload coverage, against `https://digitable.signal-bleed.com`:
+`node scripts/playtest/two-device-smoke.mjs --base https://digitable.signal-bleed.com --out
+/private/tmp/digitable-hourly-staging-20260929-2100-rerun --reload --port 9688`. The completed
+report (`2026-09-29T20:57:16Z`–`20:58:00Z`) records **17/17** workflow steps passing, `ok: true`,
+zero device console errors, zero failed requests, and no positive horizontal overflow at
+375/768/1024/1280/1920 px for GM, player, and table views.
+
+This is deployed-build evidence only and did not merge or deploy any source. No new product defect
+or source fix was identified. The remaining material release-evidence gap is John's physical
+two-device rehearsal: iOS Safari visual viewport/keyboard, Android browser-chrome collapse, and
+OS large-text/high-contrast paths.
