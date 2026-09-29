@@ -1,0 +1,377 @@
+{
+  "label": "bt-probe5",
+  "base": "http://127.0.0.1:4210",
+  "startedAt": "2026-09-29T16:26:35.245Z",
+  "states": [],
+  "modal": [],
+  "reducedMotion": null,
+  "routes": [],
+  "failures": [],
+  "console": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  },
+  "probe": [
+    {
+      "probe": "wide-table-tv-1280x720",
+      "viewport": "tv-1280x720",
+      "size": "1280x720",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "tableSurfaceHasNoInteractiveControls": true,
+        "smallestRenderedTextAtLeast12px": true
+      },
+      "notes": [],
+      "info": {
+        "columns": "2",
+        "screenFont": "18.4px",
+        "minRenderedPx": 12,
+        "minHtmlPx": 12,
+        "smallest": [
+          {
+            "px": 12,
+            "svg": false,
+            "el": "span.portrait-image-fallback",
+            "t": "I"
+          },
+          {
+            "px": 14.4,
+            "svg": false,
+            "el": "p.form-hint",
+            "t": "Round 1"
+          },
+          {
+            "px": 18.4,
+            "svg": false,
+            "el": "p.scene-card-description",
+            "t": "The forecourt of the Gar"
+          },
+          {
+            "px": 18.4,
+            "svg": false,
+            "el": "li.",
+            "t": "Get clear of the wreckag"
+          },
+          {
+            "px": 18.4,
+            "svg": false,
+            "el": "span.party-member-name",
+            "t": "Iryna"
+          },
+          {
+            "px": 18.4,
+            "svg": false,
+            "el": "li.",
+            "t": "Iryna is acting…"
+          }
+        ],
+        "smallestHtml": [
+          {
+            "px": 12,
+            "svg": false,
+            "el": "span.portrait-image-fallback",
+            "t": "I"
+          },
+          {
+            "px": 14.4,
+            "svg": false,
+            "el": "p.form-hint",
+            "t": "Round 1"
+          },
+          {
+            "px": 18.4,
+            "svg": false,
+            "el": "p.scene-card-description",
+            "t": "The forecourt of the Gar"
+          },
+          {
+            "px": 18.4,
+            "svg": false,
+            "el": "li.",
+            "t": "Get clear of the wreckag"
+          }
+        ],
+        "scrollH": 1173,
+        "clientH": 720
+      },
+      "screenshot": "bt-table-tv-1280x720.jpg"
+    },
+    {
+      "probe": "wide-table-laptop-1366x768",
+      "viewport": "laptop-1366x768",
+      "size": "1366x768",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "tableSurfaceHasNoInteractiveControls": true,
+        "smallestRenderedTextAtLeast12px": true
+      },
+      "notes": [],
+      "info": {
+        "columns": "2",
+        "screenFont": "18.4px",
+        "minRenderedPx": 12,
+        "minHtmlPx": 12,
+        "smallest": [
+          {
+            "px": 12,
+            "svg": false,
+            "el": "span.portrait-image-fallback",
+            "t": "I"
+          },
+          {
+            "px": 14.4,
+            "svg": false,
+            "el": "p.form-hint",
+            "t": "Round 1"
+          },
+          {
+            "px": 18.4,
+            "svg": false,
+            "el": "p.scene-card-description",
+            "t": "The forecourt of the Gar"
+          },
+          {
+            "px": 18.4,
+            "svg": false,
+            "el": "li.",
+            "t": "Get clear of the wreckag"
+          },
+          {
+            "px": 18.4,
+            "svg": false,
+            "el": "span.party-member-name",
+            "t": "Iryna"
+          },
+          {
+            "px": 18.4,
+            "svg": false,
+            "el": "li.",
+            "t": "Iryna is acting…"
+          }
+        ],
+        "smallestHtml": [
+          {
+            "px": 12,
+            "svg": false,
+            "el": "span.portrait-image-fallback",
+            "t": "I"
+          },
+          {
+            "px": 14.4,
+            "svg": false,
+            "el": "p.form-hint",
+            "t": "Round 1"
+          },
+          {
+            "px": 18.4,
+            "svg": false,
+            "el": "p.scene-card-description",
+            "t": "The forecourt of the Gar"
+          },
+          {
+            "px": 18.4,
+            "svg": false,
+            "el": "li.",
+            "t": "Get clear of the wreckag"
+          }
+        ],
+        "scrollH": 1113,
+        "clientH": 768
+      },
+      "screenshot": "bt-table-laptop-1366x768.jpg"
+    },
+    {
+      "probe": "wide-table-qhd-2560x1440",
+      "viewport": "qhd-2560x1440",
+      "size": "2560x1440",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "tableSurfaceHasNoInteractiveControls": true,
+        "smallestRenderedTextAtLeast12px": true
+      },
+      "notes": [],
+      "info": {
+        "columns": "2",
+        "screenFont": "22.4px",
+        "minRenderedPx": 12,
+        "minHtmlPx": 12,
+        "smallest": [
+          {
+            "px": 12,
+            "svg": false,
+            "el": "span.portrait-image-fallback",
+            "t": "I"
+          },
+          {
+            "px": 14.4,
+            "svg": false,
+            "el": "p.form-hint",
+            "t": "Round 1"
+          },
+          {
+            "px": 22.4,
+            "svg": false,
+            "el": "p.scene-card-description",
+            "t": "The forecourt of the Gar"
+          },
+          {
+            "px": 22.4,
+            "svg": false,
+            "el": "li.",
+            "t": "Get clear of the wreckag"
+          },
+          {
+            "px": 22.4,
+            "svg": false,
+            "el": "span.party-member-name",
+            "t": "Iryna"
+          },
+          {
+            "px": 22.4,
+            "svg": false,
+            "el": "li.",
+            "t": "Iryna is acting…"
+          }
+        ],
+        "smallestHtml": [
+          {
+            "px": 12,
+            "svg": false,
+            "el": "span.portrait-image-fallback",
+            "t": "I"
+          },
+          {
+            "px": 14.4,
+            "svg": false,
+            "el": "p.form-hint",
+            "t": "Round 1"
+          },
+          {
+            "px": 22.4,
+            "svg": false,
+            "el": "p.scene-card-description",
+            "t": "The forecourt of the Gar"
+          },
+          {
+            "px": 22.4,
+            "svg": false,
+            "el": "li.",
+            "t": "Get clear of the wreckag"
+          }
+        ],
+        "scrollH": 1440,
+        "clientH": 1440
+      },
+      "screenshot": "bt-table-qhd-2560x1440.jpg"
+    },
+    {
+      "probe": "wide-table-uhd-3840x2160",
+      "viewport": "uhd-3840x2160",
+      "size": "3840x2160",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "tableSurfaceHasNoInteractiveControls": true,
+        "smallestRenderedTextAtLeast12px": true
+      },
+      "notes": [],
+      "info": {
+        "columns": "2",
+        "screenFont": "22.4px",
+        "minRenderedPx": 12,
+        "minHtmlPx": 12,
+        "smallest": [
+          {
+            "px": 12,
+            "svg": false,
+            "el": "span.portrait-image-fallback",
+            "t": "I"
+          },
+          {
+            "px": 14.4,
+            "svg": false,
+            "el": "p.form-hint",
+            "t": "Round 1"
+          },
+          {
+            "px": 22.4,
+            "svg": false,
+            "el": "p.scene-card-description",
+            "t": "The forecourt of the Gar"
+          },
+          {
+            "px": 22.4,
+            "svg": false,
+            "el": "li.",
+            "t": "Get clear of the wreckag"
+          },
+          {
+            "px": 22.4,
+            "svg": false,
+            "el": "span.party-member-name",
+            "t": "Iryna"
+          },
+          {
+            "px": 22.4,
+            "svg": false,
+            "el": "li.",
+            "t": "Iryna is acting…"
+          }
+        ],
+        "smallestHtml": [
+          {
+            "px": 12,
+            "svg": false,
+            "el": "span.portrait-image-fallback",
+            "t": "I"
+          },
+          {
+            "px": 14.4,
+            "svg": false,
+            "el": "p.form-hint",
+            "t": "Round 1"
+          },
+          {
+            "px": 22.4,
+            "svg": false,
+            "el": "p.scene-card-description",
+            "t": "The forecourt of the Gar"
+          },
+          {
+            "px": 22.4,
+            "svg": false,
+            "el": "li.",
+            "t": "Get clear of the wreckag"
+          }
+        ],
+        "scrollH": 2160,
+        "clientH": 2160
+      },
+      "screenshot": "bt-table-uhd-3840x2160.jpg"
+    }
+  ],
+  "finishedAt": "2026-09-29T16:26:51.926Z",
+  "ok": true,
+  "summary": {
+    "states": 0,
+    "controlsAudited": 0,
+    "controlIssues": 0,
+    "overflowStates": 0,
+    "axeHardViolations": 0,
+    "axeBestPractice": [],
+    "failures": 0
+  }
+}

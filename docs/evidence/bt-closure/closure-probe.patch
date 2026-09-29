@@ -1,0 +1,494 @@
+--- ui-audit.mjs	2026-09-29 05:50:38
++++ _bt_probe.mjs	2026-09-29 06:29:19
+@@ -54,6 +54,7 @@
+ const PORT = Number(arg("port", "9350"));
+ const SHOTS = !args.includes("--no-shots");
+ const TOLERATE = args.includes("--tolerate-baseline");
++const PROBES = arg("probes", "") ? arg("probes", "").split(",") : null;
+ const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (fast iteration on the pop-out)
+ const CHROME =
+   process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+@@ -909,8 +910,473 @@
+     fail("reduced-motion", `sheet still animates under reduce: ${JSON.stringify(result.reduced)}`);
+   if (result.reduced.anyLongTransition)
+     fail("reduced-motion", "a transition longer than 50ms remains under reduce");
++}
++
++// ---------- closure probes (sonnet-bt): angles the 225-state sweep and the 12 earlier passes did not run ----------
++// 1. rotate / dynamic-browser-chrome resize WHILE the sheet is open, and back (no stale tight state);
++// 2. forced-colors (Windows High Contrast) on the sheet and the GM selects;
++// 3. a real Tab / Shift+Tab / Escape walk (CDP Input.dispatchKeyEvent) incl. focus-ring clipping and the
++//    pinned action row covering the focused control;
++// 4. WCAG 1.4.12 text-spacing overrides on the sheet and on the GM / player / table pages;
++// 5. wide table displays (1280x720, 1366x768, 2560x1440, 3840x2160).
++
++report.probe = [];
++
++async function probe(name, viewport, body) {
++  console.log("probe start", name);
++  const record = { probe: name, viewport: viewport?.name, size: viewport ? `${viewport.width}x${viewport.height}` : null, checks: {}, notes: [] };
++  try {
++    if (viewport) await applyViewport(gm_(), viewport);
++    await body(record);
++  } catch (error) {
++    fail(`probe-${name}`, `probe threw: ${error.message}`);
++    record.notes.push(`threw: ${error.message}`);
++  }
++  if (Object.keys(record.checks).length === 0) fail(`probe-${name}`, "no checks were executed");
++  for (const [k, v] of Object.entries(record.checks)) if (!v) fail(`probe-${name}`, `${k} failed`);
++  report.probe.push(record);
++  const gm = gm_();
++  for (const [method, params] of [
++    ["Emulation.setEmulatedMedia", { features: [] }],
++    ["Emulation.setPageScaleFactor", { pageScaleFactor: 1 }],
++  ]) {
++    try {
++      await gm.cdp.send(method, params, gm.sessionId);
++    } catch {
++      /* not applied */
++    }
++  }
++  await ev(gm, `(() => { document.documentElement.style.fontSize = ""; document.getElementById("bt-spacing")?.remove(); })()`);
++  if (await ev(gm, `Boolean(document.querySelector('[role="dialog"]'))`)) await closeCorrection(gm);
++}
++
++let _gm;
++const gm_ = () => _gm;
++
++const BT_REGION = `(() => {
++  const sheet = document.querySelector(".sheet");
++  const footer = document.querySelector(".sheet-footer").getBoundingClientRect();
++  const body = document.querySelector(".sheet-body").getBoundingClientRect();
++  const s = sheet.getBoundingClientRect();
++  const tight = sheet.hasAttribute("data-tight");
++  return tight ? { tight, top: s.top, bottom: footer.top } : { tight, top: body.top, bottom: body.bottom };
++})()`;
++
++async function scrollScrollerToEnd(gm) {
++  await ev(
++    gm,
++    `(() => { const sc = document.querySelector(".sheet[data-tight]") ?? document.querySelector(".sheet-body"); sc.scrollTop = sc.scrollHeight; })()`,
++  );
++  await sleep(120);
++}
++
++async function sheetInvariants(gm, record, prefix, vp) {
++  const frame = { left: 0, top: 0, right: vp.width, bottom: vp.height };
++  const geo = await ev(gm, MODAL_GEOMETRY);
++  record.checks[`${prefix}dialogInsideViewport`] = within(geo.dialog, frame);
++  record.checks[`${prefix}noPageOverflow`] = geo.pageOverflowPx <= 1;
++  record.checks[`${prefix}rootLocked`] = geo.rootLocked;
++  record.checks[`${prefix}backgroundInert`] = geo.inertSiblings;
++  record.checks[`${prefix}focusInsideDialog`] = geo.activeIsInside;
++  await scrollScrollerToEnd(gm);
++  const region = await ev(gm, BT_REGION);
++  const end = await ev(gm, MODAL_GEOMETRY);
++  record.checks[`${prefix}reasonFullyVisibleAtEnd`] =
++    end.reason.top >= region.top - 1 && end.reason.bottom <= region.bottom + 1;
++  record.checks[`${prefix}actionsUsable`] = await actionsUsable(gm, frame);
++  await ev(
++    gm,
++    `(() => { const sc = document.querySelector(".sheet[data-tight]") ?? document.querySelector(".sheet-body"); sc.scrollTop = 0; })()`,
++  );
++  return { geo, region };
++}
++
++async function probeRotate(gm) {
++  const cases = [
++    ["375x812-812x375", byName["phone"], byName["phone-landscape"], 16],
++    ["320x568-568x320", byName["phone-small"], { name: "phone-568x320", width: 568, height: 320, mobile: true }, 16],
++    ["768x1024-1024x768", byName["tablet"], { name: "tablet-landscape", width: 1024, height: 768, mobile: true }, 16],
++    ["375x812-812x375@200", byName["phone"], byName["phone-landscape"], 32],
++    ["320x568-568x320@200", byName["phone-small"], { name: "phone-568x320", width: 568, height: 320, mobile: true }, 32],
++  ];
++  for (const [name, a, b, px] of cases) {
++    await probe(`rotate-${name}`, a, async (record) => {
++      await ev(gm, `document.documentElement.style.fontSize = "${px}px"`);
++      await openCorrection(gm);
++      await setInput(gm, "#correction-reason", "typed before rotating");
++      await ev(gm, `document.querySelector("#correction-reason").focus()`);
++      await sleep(300);
++      const before = await ev(gm, MODAL_GEOMETRY);
++      const beforeTight = await ev(gm, `document.querySelector(".sheet").hasAttribute("data-tight")`);
++      await sheetInvariants(gm, record, "portraitA:", a);
++      await ev(gm, `document.querySelector("#correction-reason").focus()`);
++      await applyViewport(gm, b);
++      await sleep(600);
++      await sheetInvariants(gm, record, "rotated:", b);
++      record.checks["rotated:typedTextKept"] = (await ev(gm, `document.querySelector("#correction-reason").value`)) === "typed before rotating";
++      record.screenshot = await screenshot(gm, `bt-rotate-${name}-rotated.jpg`, { fullPage: false });
++      await applyViewport(gm, a);
++      await sleep(600);
++      await sheetInvariants(gm, record, "restored:", a);
++      const after = await ev(gm, MODAL_GEOMETRY);
++      const afterTight = await ev(gm, `document.querySelector(".sheet").hasAttribute("data-tight")`);
++      record.checks["restored:sameTightStateAsBefore"] = afterTight === beforeTight;
++      record.checks["restored:sameSheetHeightAsBefore"] = Math.abs(after.dialog.height - before.dialog.height) <= 1;
++      record.checks["restored:sameSheetTopAsBefore"] = Math.abs(after.dialog.top - before.dialog.top) <= 1;
++      record.beforeTight = beforeTight;
++      record.afterTight = afterTight;
++    });
++  }
+ }
+ 
++async function probeBrowserChrome(gm) {
++  // Dynamic browser chrome: the visible height changes by the height of the URL bar / toolbars while a
++  // sheet is open. Repeated collapse/expand must land on identical geometry and keep a bottom sheet
++  // flush with the bottom of what is visible.
++  for (const [vp, deltas] of [
++    [byName["phone"], [110, 56]],
++    [byName["phone-small"], [98, 56]],
++    [{ name: "phone-360x740", width: 360, height: 740, mobile: true }, [120, 56]],
++    [byName["tablet"], [90, 50]],
++  ]) {
++    await probe(`chrome-${vp.width}x${vp.height}`, vp, async (record) => {
++      await openCorrection(gm);
++      const base = await ev(gm, MODAL_GEOMETRY);
++      const baseTight = await ev(gm, `document.querySelector(".sheet").hasAttribute("data-tight")`);
++      for (let round = 0; round < 3; round += 1) {
++        for (const d of deltas) {
++          const shrunk = { ...vp, height: vp.height - d };
++          await applyViewport(gm, shrunk);
++          await sleep(220);
++          const geo = await ev(gm, MODAL_GEOMETRY);
++          const frame = { left: 0, top: 0, right: shrunk.width, bottom: shrunk.height };
++          record.checks[`r${round}-${d}:dialogInside`] = within(geo.dialog, frame);
++          if (vp.width < 641) {
++            record.checks[`r${round}-${d}:bottomSheetFlushWithVisibleBottom`] = Math.abs(geo.dialog.bottom - shrunk.height) <= 1;
++          }
++          record.checks[`r${round}-${d}:actionsInside`] = within(geo.apply, frame) || (await actionsUsable(gm, frame));
++        }
++        await applyViewport(gm, vp);
++        await sleep(300);
++      }
++      const end = await ev(gm, MODAL_GEOMETRY);
++      const endTight = await ev(gm, `document.querySelector(".sheet").hasAttribute("data-tight")`);
++      record.checks["afterCollapseExpandLoops:sameGeometry"] =
++        Math.abs(end.dialog.top - base.dialog.top) <= 1 &&
++        Math.abs(end.dialog.height - base.dialog.height) <= 1 &&
++        endTight === baseTight;
++      record.screenshot = await screenshot(gm, `bt-chrome-${vp.width}x${vp.height}.jpg`, { fullPage: false });
++    });
++  }
++}
++
++async function probeForcedColors(gm) {
++  for (const vp of [byName["phone"], byName["tablet"], byName["desktop"]]) {
++    await probe(`forced-colors-${vp.name}`, vp, async (record) => {
++      await gm.cdp.send(
++        "Emulation.setEmulatedMedia",
++        { features: [{ name: "forced-colors", value: "active" }] },
++        gm.sessionId,
++      );
++      await sleep(300);
++      record.checks.mediaApplied = await ev(gm, `matchMedia("(forced-colors: active)").matches`);
++      // Page with the selects first (the GM console).
++      await ev(gm, `window.scrollTo(0, 0)`);
++      record.selectInfo = await ev(
++        gm,
++        `[...document.querySelectorAll("select")].map(s => { const cs = getComputedStyle(s); return { id: s.id, border: cs.borderTopWidth + " " + cs.borderTopStyle, fg: cs.color, bg: cs.backgroundColor, chevron: cs.backgroundImage.slice(0, 24), h: Math.round(s.getBoundingClientRect().height) }; })`,
++      );
++      record.checks.selectsKeepABorder = record.selectInfo.length > 0 && record.selectInfo.every((s) => parseFloat(s.border) >= 2);
++      record.pageScreenshot = await screenshot(gm, `bt-forced-colors-console-${vp.name}.jpg`, { fullPage: false });
++      await openCorrection(gm);
++      const info = await ev(
++        gm,
++        `(() => {
++          const d = document.querySelector('[role="dialog"]');
++          const bd = d.parentElement;
++          const cs = (el) => getComputedStyle(el);
++          const btn = (t) => [...d.querySelectorAll("button")].find(b => t.test(b.textContent.trim() || b.getAttribute("aria-label") || ""));
++          const border = (el) => ({ w: cs(el).borderTopWidth, s: cs(el).borderTopStyle, c: cs(el).borderTopColor });
++          return {
++            sheet: border(d),
++            backdropBg: cs(bd).backgroundColor,
++            sheetBg: cs(d).backgroundColor,
++            sheetColor: cs(d).color,
++            stepper: [...d.querySelectorAll(".stepper-controls button")].map(b => ({ label: b.getAttribute("aria-label"), border: border(b), bg: cs(b).backgroundColor, fg: cs(b).color })),
++            apply: border(btn(/apply correction/i)),
++            cancel: border(btn(/cancel/i)),
++            textarea: border(d.querySelector("#correction-reason")),
++            checkboxes: [...d.querySelectorAll('input[type=checkbox]')].slice(0, 2).map(c => ({ border: border(c), bg: cs(c).backgroundColor })),
++            grip: cs(d.querySelector(".sheet-grip")).backgroundColor,
++          };
++        })()`,
++      );
++      record.info = info;
++      const px = (v) => parseFloat(v);
++      record.checks.sheetHasVisibleBorder = px(info.sheet.w) >= 2 && info.sheet.s !== "none";
++      record.checks.sheetBorderDiffersFromBackdrop = info.sheet.c !== info.backdropBg;
++      record.checks.actionsHaveBorders = px(info.apply.w) >= 2 && px(info.cancel.w) >= 2;
++      record.checks.stepperButtonsHaveBorders = info.stepper.length > 0 && info.stepper.every((s) => px(s.border.w) >= 2);
++      record.checks.textareaHasBorder = px(info.textarea.w) >= 2;
++      // Focus indicator survives: Tab onto the first stepper button and read its outline.
++      await ev(gm, `document.querySelector('.stepper-controls button').focus()`);
++      record.focusOutline = await ev(
++        gm,
++        `(() => { const a = document.activeElement; const c = getComputedStyle(a); return { fv: a.matches(":focus-visible"), style: c.outlineStyle, width: c.outlineWidth, color: c.outlineColor }; })()`,
++      );
++      record.checks.focusIndicatorNotNone = record.focusOutline.style !== "none" && parseFloat(record.focusOutline.width) >= 2;
++      record.screenshot = await screenshot(gm, `bt-forced-colors-sheet-${vp.name}.jpg`, { fullPage: false });
++      const violations = (await runAxe(gm)).filter(isHardAxe).filter((v) => v.id !== "color-contrast");
++      record.axeHardViolationsExcludingContrast = violations.map((v) => v.id);
++      record.checks.noHardAxeViolations = violations.length === 0;
++    });
++  }
++}
++
++const BT_ACTIVE = `(() => {
++  const a = document.activeElement;
++  const d = document.querySelector('[role="dialog"]');
++  const r = a.getBoundingClientRect();
++  const cs = getComputedStyle(a);
++  const sheet = d?.getBoundingClientRect();
++  const footer = d?.querySelector(".sheet-footer");
++  const inFooter = Boolean(footer && footer.contains(a));
++  const ring = parseFloat(cs.outlineWidth) + parseFloat(cs.outlineOffset);
++  return {
++    tag: a.tagName.toLowerCase(),
++    label: (a.getAttribute("aria-label") || a.textContent || a.id || "").trim().slice(0, 34),
++    inside: Boolean(d && d.contains(a)),
++    inFooter,
++    rect: { top: r.top, bottom: r.bottom, left: r.left, right: r.right },
++    ring: cs.outlineStyle === "none" ? 0 : ring,
++    outline: cs.outlineStyle + " " + cs.outlineWidth + " " + cs.outlineColor,
++    footerRect: footer ? (({ top, bottom, left, right }) => ({ top, bottom, left, right }))(footer.getBoundingClientRect()) : null,
++    sheetRect: sheet ? { left: sheet.left, right: sheet.right, top: sheet.top, bottom: sheet.bottom } : null,
++  };
++})()`;
++
++async function pressKey(gm, name, { shift = false } = {}) {
++  const vk = { Tab: 9, Escape: 27 }[name];
++  const base = { key: name, code: name, windowsVirtualKeyCode: vk, nativeVirtualKeyCode: vk, modifiers: shift ? 8 : 0 };
++  await gm.cdp.send("Input.dispatchKeyEvent", { type: "keyDown", ...base }, gm.sessionId);
++  await gm.cdp.send("Input.dispatchKeyEvent", { type: "keyUp", ...base }, gm.sessionId);
++  await sleep(90);
++}
++
++async function probeKeyboardWalk(gm) {
++  const cases = [
++    [byName["phone"], 16, false],
++    [byName["phone-small"], 32, true],
++    [byName["phone-landscape"], 16, false],
++    [byName["tablet"], 16, false],
++    [byName["desktop"], 16, false],
++  ];
++  for (const [vp, px, withKeyboardShrink] of cases) {
++    await probe(`keys-${vp.name}${px === 32 ? "@200" : ""}${withKeyboardShrink ? "+kb" : ""}`, vp, async (record) => {
++      await ev(gm, `document.documentElement.style.fontSize = "${px}px"`);
++      await openCorrection(gm);
++      let frame = { left: 0, top: 0, right: vp.width, bottom: vp.height };
++      if (withKeyboardShrink) {
++        await ev(gm, `document.querySelector("#correction-reason").focus()`);
++        const shrunk = { ...vp, height: Math.round(vp.height * 0.55) };
++        console.log("  shrink", JSON.stringify(shrunk));
++        await applyViewport(gm, shrunk);
++        await sleep(500);
++        frame = { left: 0, top: 0, right: shrunk.width, bottom: shrunk.height };
++        await ev(gm, `document.querySelector(".sheet-header h2").focus()`);
++      }
++      const total = await ev(
++        gm,
++        `[...document.querySelectorAll('[role="dialog"] button:not([disabled]), [role="dialog"] input:not([disabled]), [role="dialog"] textarea, [role="dialog"] select')].length`,
++      );
++      const stops = [];
++      let clippedRing = 0;
++      let coveredByFooter = 0;
++      let escaped = 0;
++      for (let i = 0; i < total + 2; i += 1) {
++        await pressKey(gm, "Tab");
++        const a = await ev(gm, BT_ACTIVE);
++        stops.push(a.label);
++        if (!a.inside) escaped += 1;
++        const region = await ev(gm, BT_REGION);
++        const inner = a.sheetRect ? { left: a.sheetRect.left + 2, right: a.sheetRect.right - 2 } : null;
++        if (inner && (a.rect.left - a.ring < inner.left - 0.5 || a.rect.right + a.ring > inner.right + 0.5)) clippedRing += 1;
++        if (a.ring > 0 && !a.inFooter && (a.rect.top < region.top - 0.5 || a.rect.bottom > region.bottom + 0.5)) coveredByFooter += 1;
++        if (a.inFooter && a.footerRect) {
++          const vis = Math.min(a.rect.bottom, a.footerRect.bottom, frame.bottom) - Math.max(a.rect.top, a.footerRect.top, frame.top);
++          if (vis < Math.min(a.rect.bottom - a.rect.top, 44) - 0.5) coveredByFooter += 1;
++        }
++      }
++      record.stops = stops;
++      record.checks.focusNeverLeavesDialog = escaped === 0;
++      record.checks.tabCycleWraps = stops.length >= 2 && stops[total] === stops[0];
++      record.checks.focusRingNeverClippedHorizontally = clippedRing === 0;
++      record.checks.focusedControlNeverHiddenBehindPinnedRow = coveredByFooter === 0;
++      // Shift+Tab from the first stop wraps to the last one.
++      await ev(gm, `document.querySelector('[role="dialog"] h2').focus()`);
++      await pressKey(gm, "Tab", { shift: true });
++      const back = await ev(gm, BT_ACTIVE);
++      record.checks.shiftTabFromHeadingWrapsIntoDialog = back.inside;
++      record.screenshot = await screenshot(gm, `bt-keys-${vp.name}${px === 32 ? "-200" : ""}.jpg`, { fullPage: false });
++      // Escape closes and focus returns to the Correct button.
++      // A synthesized real Escape stalls this Mac's Chrome main thread for minutes (NSMenu key-equivalent
++      // validation in SCNetworkSetCopyAll), so it is sent for the 375px phone case and dispatched as a DOM
++      // KeyboardEvent (the sheet listens on document) for the rest; both are recorded in the report.
++      record.escapeVia = ["phone"].includes(vp.name) ? "cdp-real-key" : "dom-keyboardevent";
++      console.log("  sending Escape via", record.escapeVia);
++      if (record.escapeVia === "cdp-real-key") await pressKey(gm, "Escape");
++      else await ev(gm, `document.activeElement.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }))`);
++      console.log("  Escape sent");
++      await sleep(250);
++      const closed = await ev(
++        gm,
++        `({ open: Boolean(document.querySelector('[role="dialog"]')), focus: document.activeElement?.textContent?.trim(), anyInert: [...document.body.children].some(c => c.hasAttribute("inert")), locked: document.documentElement.classList.contains("sheet-open") })`,
++      );
++      console.log("  closed state", JSON.stringify(closed));
++      record.checks.escapeClosesSheet = closed.open === false;
++      record.checks.focusReturnsToCorrectButton = closed.focus === "Correct";
++      record.checks.noInertOrScrollLockLeftBehind = !closed.anyInert && !closed.locked;
++    });
++  }
++}
++
++const SPACING_CSS = `* { line-height: 1.5 !important; letter-spacing: 0.12em !important; word-spacing: 0.16em !important; } p { margin-bottom: 2em !important; }`;
++const CLIPPED_TEXT = `(() => {
++  const out = [];
++  for (const e of document.querySelectorAll("body *")) {
++    if (e.closest("svg") || e.closest("[inert]") && !e.closest('[role="dialog"]')) continue;
++    const cs = getComputedStyle(e);
++    if (cs.display === "none" || cs.visibility === "hidden") continue;
++    const clipsY = ["hidden", "clip"].includes(cs.overflowY);
++    const clipsX = ["hidden", "clip"].includes(cs.overflowX);
++    if (e.tagName === "SELECT") continue; // ellipsised on purpose; the OS owns the popup
++    if (clipsY && e.scrollHeight > e.clientHeight + 1 && e.clientHeight > 0 && (e.textContent || "").trim()) out.push("Y " + e.tagName.toLowerCase() + "." + String(e.className).split(" ")[0] + " " + e.scrollHeight + ">" + e.clientHeight);
++    if (clipsX && e.scrollWidth > e.clientWidth + 1 && (e.textContent || "").trim()) out.push("X " + e.tagName.toLowerCase() + "." + String(e.className).split(" ")[0] + " " + e.scrollWidth + ">" + e.clientWidth);
++  }
++  return out.slice(0, 12);
++})()`;
++
++async function spacingOn(device) {
++  await ev(
++    device,
++    `(() => { const s = document.createElement("style"); s.id = "bt-spacing"; s.textContent = ${JSON.stringify(SPACING_CSS)}; document.head.appendChild(s); })()`,
++  );
++  await sleep(250);
++}
++async function spacingOff(device) {
++  await ev(device, `document.getElementById("bt-spacing")?.remove()`);
++}
++
++async function probeTextSpacing(device, surface, viewports) {
++  for (const vp of viewports) {
++    const original = device.vp;
++    const record = { probe: `text-spacing-${surface}-${vp.name}`, viewport: vp.name, size: `${vp.width}x${vp.height}`, checks: {}, notes: [] };
++    try {
++      await applyViewport(device, vp);
++      await spacingOn(device);
++      const audit = await ev(device, CONTROL_AUDIT);
++      record.controls = audit.controls;
++      record.checks.noHorizontalOverflow = audit.overflowPx <= 1;
++      record.checks.controlsKeepTapSizeAndStayOnScreen = audit.issues.length === 0;
++      record.issues = audit.issues;
++      const clipped = await ev(device, CLIPPED_TEXT);
++      record.clipped = clipped;
++      record.checks.noTextClippedByItsOwnBox = clipped.length === 0;
++      record.screenshot = await screenshot(device, `bt-spacing-${surface}-${vp.name}.jpg`, { fullPage: true });
++    } catch (error) {
++      fail(`probe-${record.probe}`, `probe threw: ${error.message}`);
++    }
++    for (const [k, v] of Object.entries(record.checks)) if (!v) fail(`probe-${record.probe}`, `${k} failed`);
++    report.probe.push(record);
++    await spacingOff(device);
++    await applyViewport(device, original);
++  }
++}
++
++async function probeSheetTextSpacing(gm) {
++  for (const vp of [byName["phone-small"], byName["phone"], byName["phone-landscape"], byName["tablet"], byName["desktop"]]) {
++    await probe(`text-spacing-sheet-${vp.name}`, vp, async (record) => {
++      await openCorrection(gm);
++      await spacingOn(gm);
++      await sleep(400);
++      const { region } = await sheetInvariants(gm, record, "", vp);
++      record.tight = region.tight;
++      const clipped = await ev(gm, CLIPPED_TEXT);
++      record.clipped = clipped;
++      record.checks.noTextClippedByItsOwnBox = clipped.length === 0;
++      // With the keyboard open too (worst case), on the viewports a phone can have.
++      if (vp.mobile) {
++        await ev(gm, `document.querySelector("#correction-reason").focus()`);
++        const shrunk = { ...vp, height: Math.round(vp.height * 0.55) };
++        await applyViewport(gm, shrunk);
++        await sleep(500);
++        const s = await sheetInvariants(gm, record, "keyboard:", shrunk);
++        await ev(gm, `document.querySelector(".sheet[data-tight]")?.scrollTo(0, 0)`);
++        await ev(gm, `document.querySelector("#correction-reason").blur(); document.querySelector("#correction-reason").focus()`);
++        await sleep(250);
++        const refocus = await ev(gm, MODAL_GEOMETRY);
++        const region2 = await ev(gm, BT_REGION);
++        record.checks["keyboard:fieldClearsPinnedRowAfterFocusFromTop"] =
++          refocus.reason.top >= region2.top - 1 && refocus.reason.bottom <= region2.bottom + 1;
++        record.keyboardTight = s.region.tight;
++      }
++      record.screenshot = await screenshot(gm, `bt-spacing-sheet-${vp.name}.jpg`, { fullPage: false });
++    });
++  }
++}
++
++async function probeWideTable(table) {
++  const original = table.vp;
++  for (const vp of [
++    { name: "tv-1280x720", width: 1280, height: 720, mobile: false },
++    { name: "laptop-1366x768", width: 1366, height: 768, mobile: false },
++    { name: "qhd-2560x1440", width: 2560, height: 1440, mobile: false },
++    { name: "uhd-3840x2160", width: 3840, height: 2160, mobile: false },
++  ]) {
++    const record = { probe: `wide-table-${vp.name}`, viewport: vp.name, size: `${vp.width}x${vp.height}`, checks: {}, notes: [] };
++    try {
++      await applyViewport(table, vp);
++      await sleep(400);
++      const audit = await ev(table, CONTROL_AUDIT);
++      record.checks.noHorizontalOverflow = audit.overflowPx <= 1;
++      record.checks.tableSurfaceHasNoInteractiveControls = audit.controls === 0;
++      record.info = await ev(
++        table,
++        `(() => { const t = document.querySelector(".table-screen"); const cs = getComputedStyle(t);
++          const rendered = (e) => { const fs = parseFloat(getComputedStyle(e).fontSize); if (e instanceof SVGElement && e.getScreenCTM) { const m = e.getScreenCTM(); return fs * Math.hypot(m.a, m.b); } return fs; };
++          const texts = [...document.querySelectorAll(".table-screen *")].filter(e => e.children.length === 0 && (e.textContent || "").trim() && getComputedStyle(e).display !== "none");
++          const list = texts.map(e => ({ px: Math.round(rendered(e) * 10) / 10, svg: e instanceof SVGElement, el: e.tagName.toLowerCase() + "." + String(e.getAttribute("class") || "").split(" ")[0], t: e.textContent.trim().slice(0, 24) })).sort((a, b) => a.px - b.px);
++          const html = list.filter(x => !x.svg);
++          return { columns: cs.columnCount, screenFont: cs.fontSize, minRenderedPx: list[0]?.px, minHtmlPx: html[0]?.px, smallest: list.slice(0, 6), smallestHtml: html.slice(0, 4), scrollH: document.documentElement.scrollHeight, clientH: document.documentElement.clientHeight }; })()`,
++      );
++      record.checks.smallestRenderedTextAtLeast12px = record.info.minRenderedPx >= 12;
++      record.screenshot = await screenshot(table, `bt-table-${vp.name}.jpg`, { fullPage: true });
++    } catch (error) {
++      fail(`probe-${record.probe}`, `probe threw: ${error.message}`);
++    }
++    for (const [k, v] of Object.entries(record.checks)) if (!v) fail(`probe-${record.probe}`, `${k} failed`);
++    report.probe.push(record);
++  }
++  await applyViewport(table, original);
++}
++
++async function auditProbes(gm, player, table, only) {
++  _gm = gm;
++  const want = (n) => !only || only.includes(n);
++  if (want("rotate")) await probeRotate(gm);
++  if (want("chrome")) await probeBrowserChrome(gm);
++  if (want("forced")) await probeForcedColors(gm);
++  if (want("keys")) await probeKeyboardWalk(gm);
++  if (want("spacing")) {
++    await probeSheetTextSpacing(gm);
++    await probeTextSpacing(gm, "gm-console", [byName["phone-small"], byName["phone"], byName["tablet"], byName["desktop"]]);
++    await probeTextSpacing(player, "player", [byName["phone-small"], byName["phone"], byName["tablet"], byName["desktop"]]);
++    await probeTextSpacing(table, "table", [byName["phone"], byName["desktop"], byName["table"]]);
++  }
++  if (want("wide")) await probeWideTable(table);
++  await applyViewport(gm, byName["desktop"]);
++}
++
+ // ---------- flow ----------
+ 
+ async function main() {
+@@ -1033,8 +1499,7 @@
+     await waitFor(gm, `${textMatch("button", "/^Roll it$/")}`, 30000, "Roll it");
+     await captureState(gm, "console-pending");
+ 
+-    await auditModal(gm);
+-    await auditReducedMotion(gm);
++    await auditProbes(gm, player, table, PROBES);
+ 
+     // GM rolls; player allocates.
+     await applyViewport(gm, byName["desktop"]);

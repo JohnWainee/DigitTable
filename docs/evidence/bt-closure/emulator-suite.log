@@ -1,0 +1,108 @@
+(node:68748) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:68765) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+    at warnOnDeactivatedColors (node:internal/tty:112:13)
+    at Object.getColorDepth (node:internal/tty:137:9)
+    at Object.shouldColorize (node:internal/util/colors:20:32)
+    at Object.refresh (node:internal/util/colors:27:24)
+    at node:internal/util/colors:51:16
+    at BuiltinModule.compileForInternalLoader (node:internal/bootstrap/realm:398:7)
+    at requireBuiltin (node:internal/bootstrap/realm:429:14)
+    at node:internal/assert/assertion_error:23:16
+    at BuiltinModule.compileForInternalLoader (node:internal/bootstrap/realm:398:7)
+    at requireBuiltin (node:internal/bootstrap/realm:429:14)
+i  emulators: Starting emulators: auth, functions, firestore, database
+i  emulators: Detected demo project ID "demo-digitable", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+⚠  eventarc: Eventarc Emulator unable to start on port 9299, starting on 9300 instead.
+⚠  tasks: Cloud Tasks Emulator unable to start on port 9499, starting on 9500 instead.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9151.
+i  database: Database Emulator logging to database-debug.log
+i  functions: Watching "/private/tmp/digitable-sonnet-bt-reskin-closure-20260929/apps/functions" for Cloud Functions...
+⚠  functions: Your requested "node" version "22" doesn't match your global version "24". Using node@24 from host.
+Serving at port 8213
+
+✔  functions: Loaded functions definitions from source: admitMember, claimSeat, createRoom, recoverSeat, submitRoomCommand.
+✔  functions[us-west1-admitMember]: http function initialized (http://127.0.0.1:5101/demo-digitable/us-west1/admitMember).
+✔  functions[us-west1-claimSeat]: http function initialized (http://127.0.0.1:5101/demo-digitable/us-west1/claimSeat).
+✔  functions[us-west1-createRoom]: http function initialized (http://127.0.0.1:5101/demo-digitable/us-west1/createRoom).
+✔  functions[us-west1-recoverSeat]: http function initialized (http://127.0.0.1:5101/demo-digitable/us-west1/recoverSeat).
+✔  functions[us-west1-submitRoomCommand]: http function initialized (http://127.0.0.1:5101/demo-digitable/us-west1/submitRoomCommand).
+i  Running script: npm run test:emulator --workspaces --if-present
+
+> @digitable/testing@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+(node:68901) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v5.0.0 /private/tmp/digitable-sonnet-bt-reskin-closure-20260929/packages/testing
+
+(node:68903) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:68902) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  2 passed (2)
+      Tests  18 passed (18)
+   Start at  06:25:53
+   Duration  1.72s (tests 88%, import 10%, transform 2%)
+
+
+> @digitable/functions@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+(node:68930) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v5.0.0 /private/tmp/digitable-sonnet-bt-reskin-closure-20260929/apps/functions
+
+(node:68931) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:68933) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:68932) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:68934) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:68932) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+(node:68931) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+(node:68934) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+(node:68933) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+
+ Test Files  4 passed (4)
+      Tests  86 passed (86)
+   Start at  06:25:55
+   Duration  22.60s (tests 97%, import 2%, transform 1%)
+
+
+> @digitable/web@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+(node:69527) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v5.0.0 /private/tmp/digitable-sonnet-bt-reskin-closure-20260929/apps/web
+
+(node:69528) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  06:26:18
+   Duration  995ms (tests 76%, import 12%, transform 12%)
+
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  functions: Stopping Functions Emulator
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  auth: Stopping Authentication Emulator
+i  eventarc: Stopping Eventarc Emulator
+i  tasks: Stopping Cloud Tasks Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+emu-exit 0

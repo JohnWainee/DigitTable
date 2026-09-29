@@ -1,0 +1,231 @@
+{
+  "label": "bt-keys",
+  "base": "http://127.0.0.1:4210",
+  "startedAt": "2026-09-29T16:29:19.143Z",
+  "states": [],
+  "modal": [],
+  "reducedMotion": null,
+  "routes": [],
+  "failures": [],
+  "console": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  },
+  "probe": [
+    {
+      "probe": "keys-phone",
+      "viewport": "phone",
+      "size": "375x812",
+      "checks": {
+        "focusNeverLeavesDialog": true,
+        "tabCycleWraps": true,
+        "focusRingNeverClippedHorizontally": true,
+        "focusedControlNeverHiddenBehindPinnedRow": true,
+        "shiftTabFromHeadingWrapsIntoDialog": true,
+        "escapeClosesSheet": true,
+        "focusReturnsToCorrectButton": true,
+        "noInertOrScrollLockLeftBehind": true
+      },
+      "notes": [],
+      "stops": [
+        "Decrease Blood change",
+        "Increase Blood change",
+        "Decrease Exquisite hunting rifle u",
+        "Decrease Magic cavalry sabre uses",
+        "Decrease Explosive runes uses",
+        "Decrease Cigarettes taken from the",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "correction-reason",
+        "Cancel",
+        "Decrease Blood change",
+        "Increase Blood change"
+      ],
+      "screenshot": "bt-keys-phone.jpg",
+      "escapeVia": "cdp-real-key"
+    },
+    {
+      "probe": "keys-phone-small@200+kb",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "checks": {
+        "focusNeverLeavesDialog": true,
+        "tabCycleWraps": true,
+        "focusRingNeverClippedHorizontally": true,
+        "focusedControlNeverHiddenBehindPinnedRow": true,
+        "shiftTabFromHeadingWrapsIntoDialog": true,
+        "escapeClosesSheet": true,
+        "focusReturnsToCorrectButton": true,
+        "noInertOrScrollLockLeftBehind": true
+      },
+      "notes": [],
+      "stops": [
+        "Decrease Blood change",
+        "Increase Blood change",
+        "Decrease Exquisite hunting rifle u",
+        "Decrease Magic cavalry sabre uses",
+        "Decrease Explosive runes uses",
+        "Decrease Cigarettes taken from the",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "correction-reason",
+        "Cancel",
+        "Decrease Blood change",
+        "Increase Blood change"
+      ],
+      "screenshot": "bt-keys-phone-small-200.jpg",
+      "escapeVia": "dom-keyboardevent"
+    },
+    {
+      "probe": "keys-phone-landscape",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "checks": {
+        "focusNeverLeavesDialog": true,
+        "tabCycleWraps": true,
+        "focusRingNeverClippedHorizontally": true,
+        "focusedControlNeverHiddenBehindPinnedRow": true,
+        "shiftTabFromHeadingWrapsIntoDialog": true,
+        "escapeClosesSheet": true,
+        "focusReturnsToCorrectButton": true,
+        "noInertOrScrollLockLeftBehind": true
+      },
+      "notes": [],
+      "stops": [
+        "Decrease Blood change",
+        "Increase Blood change",
+        "Decrease Exquisite hunting rifle u",
+        "Decrease Magic cavalry sabre uses",
+        "Decrease Explosive runes uses",
+        "Decrease Cigarettes taken from the",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "correction-reason",
+        "Cancel",
+        "Decrease Blood change",
+        "Increase Blood change"
+      ],
+      "screenshot": "bt-keys-phone-landscape.jpg",
+      "escapeVia": "dom-keyboardevent"
+    },
+    {
+      "probe": "keys-tablet",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "checks": {
+        "focusNeverLeavesDialog": true,
+        "tabCycleWraps": true,
+        "focusRingNeverClippedHorizontally": true,
+        "focusedControlNeverHiddenBehindPinnedRow": true,
+        "shiftTabFromHeadingWrapsIntoDialog": true,
+        "escapeClosesSheet": true,
+        "focusReturnsToCorrectButton": true,
+        "noInertOrScrollLockLeftBehind": true
+      },
+      "notes": [],
+      "stops": [
+        "Decrease Blood change",
+        "Increase Blood change",
+        "Decrease Exquisite hunting rifle u",
+        "Decrease Magic cavalry sabre uses",
+        "Decrease Explosive runes uses",
+        "Decrease Cigarettes taken from the",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "correction-reason",
+        "Cancel",
+        "Decrease Blood change",
+        "Increase Blood change"
+      ],
+      "screenshot": "bt-keys-tablet.jpg",
+      "escapeVia": "dom-keyboardevent"
+    },
+    {
+      "probe": "keys-desktop",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "checks": {
+        "focusNeverLeavesDialog": true,
+        "tabCycleWraps": true,
+        "focusRingNeverClippedHorizontally": true,
+        "focusedControlNeverHiddenBehindPinnedRow": true,
+        "shiftTabFromHeadingWrapsIntoDialog": true,
+        "escapeClosesSheet": true,
+        "focusReturnsToCorrectButton": true,
+        "noInertOrScrollLockLeftBehind": true
+      },
+      "notes": [],
+      "stops": [
+        "Decrease Blood change",
+        "Increase Blood change",
+        "Decrease Exquisite hunting rifle u",
+        "Decrease Magic cavalry sabre uses",
+        "Decrease Explosive runes uses",
+        "Decrease Cigarettes taken from the",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "correction-reason",
+        "Cancel",
+        "Decrease Blood change",
+        "Increase Blood change"
+      ],
+      "screenshot": "bt-keys-desktop.jpg",
+      "escapeVia": "dom-keyboardevent"
+    }
+  ],
+  "finishedAt": "2026-09-29T16:29:54.982Z",
+  "ok": true,
+  "summary": {
+    "states": 0,
+    "controlsAudited": 0,
+    "controlIssues": 0,
+    "overflowStates": 0,
+    "axeHardViolations": 0,
+    "axeBestPractice": [],
+    "failures": 0
+  }
+}

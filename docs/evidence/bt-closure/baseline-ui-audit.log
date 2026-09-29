@@ -1,0 +1,15 @@
+(node:32664) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "states": 225,
+  "controlsAudited": 2367,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "axeHardViolations": 0,
+  "axeBestPractice": [
+    "anon/route-claim-no-such-room@phone: page-has-heading-one"
+  ],
+  "failures": 0
+}
+UI AUDIT PASSED
+node scripts/playtest/ui-audit.mjs --base http://127.0.0.1:4210 --label  --ou  1.28s user 0.54s system 0% cpu 6:35.93 total

@@ -1,0 +1,1100 @@
+{
+  "label": "bt-probe4",
+  "base": "http://127.0.0.1:4210",
+  "startedAt": "2026-09-29T16:25:08.282Z",
+  "states": [],
+  "modal": [],
+  "reducedMotion": null,
+  "routes": [],
+  "failures": [
+    {
+      "scope": "probe-wide-table-tv-1280x720",
+      "message": "smallestTextAtLeast14px failed"
+    },
+    {
+      "scope": "probe-wide-table-laptop-1366x768",
+      "message": "smallestTextAtLeast14px failed"
+    },
+    {
+      "scope": "probe-wide-table-qhd-2560x1440",
+      "message": "smallestTextAtLeast14px failed"
+    },
+    {
+      "scope": "probe-wide-table-uhd-3840x2160",
+      "message": "smallestTextAtLeast14px failed"
+    }
+  ],
+  "console": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  },
+  "probe": [
+    {
+      "probe": "forced-colors-phone",
+      "viewport": "phone",
+      "size": "375x812",
+      "checks": {
+        "mediaApplied": true,
+        "selectsKeepABorder": true,
+        "sheetHasVisibleBorder": true,
+        "sheetBorderDiffersFromBackdrop": true,
+        "actionsHaveBorders": true,
+        "stepperButtonsHaveBorders": true,
+        "textareaHasBorder": true,
+        "focusIndicatorNotNone": true,
+        "noHardAxeViolations": true
+      },
+      "notes": [],
+      "selectInfo": [
+        {
+          "id": "scene-select",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "edit-target",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "grant-character",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "advance-character",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "advance-select",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "reassign-character",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        }
+      ],
+      "pageScreenshot": "bt-forced-colors-console-phone.jpg",
+      "info": {
+        "sheet": {
+          "w": "2px",
+          "s": "solid",
+          "c": "rgb(0, 0, 0)"
+        },
+        "backdropBg": "rgba(255, 255, 255, 0.82)",
+        "sheetBg": "rgb(255, 255, 255)",
+        "sheetColor": "rgb(0, 0, 0)",
+        "stepper": [
+          {
+            "label": "Decrease Blood change",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Blood change",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Decrease Exquisite hunting rifle uses",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Exquisite hunting rifle uses",
+            "border": {
+              "w": "2px",
+              "s": "dashed",
+              "c": "rgb(96, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(96, 0, 0)"
+          },
+          {
+            "label": "Decrease Magic cavalry sabre uses",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Magic cavalry sabre uses",
+            "border": {
+              "w": "2px",
+              "s": "dashed",
+              "c": "rgb(96, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(96, 0, 0)"
+          },
+          {
+            "label": "Decrease Explosive runes uses",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Explosive runes uses",
+            "border": {
+              "w": "2px",
+              "s": "dashed",
+              "c": "rgb(96, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(96, 0, 0)"
+          },
+          {
+            "label": "Decrease Cigarettes taken from the pockets of hanged men uses",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Cigarettes taken from the pockets of hanged men uses",
+            "border": {
+              "w": "2px",
+              "s": "dashed",
+              "c": "rgb(96, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(96, 0, 0)"
+          }
+        ],
+        "apply": {
+          "w": "2px",
+          "s": "dashed",
+          "c": "rgb(96, 0, 0)"
+        },
+        "cancel": {
+          "w": "2px",
+          "s": "solid",
+          "c": "rgb(0, 0, 0)"
+        },
+        "textarea": {
+          "w": "2px",
+          "s": "solid",
+          "c": "rgb(0, 0, 0)"
+        },
+        "checkboxes": [
+          {
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)"
+          },
+          {
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)"
+          }
+        ],
+        "grip": "rgb(255, 255, 255)"
+      },
+      "focusOutline": {
+        "fv": true,
+        "style": "solid",
+        "width": "3px",
+        "color": "rgba(5, 0, 73, 0.8)"
+      },
+      "screenshot": "bt-forced-colors-sheet-phone.jpg",
+      "axeHardViolationsExcludingContrast": []
+    },
+    {
+      "probe": "forced-colors-tablet",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "checks": {
+        "mediaApplied": true,
+        "selectsKeepABorder": true,
+        "sheetHasVisibleBorder": true,
+        "sheetBorderDiffersFromBackdrop": true,
+        "actionsHaveBorders": true,
+        "stepperButtonsHaveBorders": true,
+        "textareaHasBorder": true,
+        "focusIndicatorNotNone": true,
+        "noHardAxeViolations": true
+      },
+      "notes": [],
+      "selectInfo": [
+        {
+          "id": "scene-select",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "edit-target",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "grant-character",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "advance-character",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "advance-select",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "reassign-character",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        }
+      ],
+      "pageScreenshot": "bt-forced-colors-console-tablet.jpg",
+      "info": {
+        "sheet": {
+          "w": "2px",
+          "s": "solid",
+          "c": "rgb(0, 0, 0)"
+        },
+        "backdropBg": "rgba(255, 255, 255, 0.82)",
+        "sheetBg": "rgb(255, 255, 255)",
+        "sheetColor": "rgb(0, 0, 0)",
+        "stepper": [
+          {
+            "label": "Decrease Blood change",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Blood change",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Decrease Exquisite hunting rifle uses",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Exquisite hunting rifle uses",
+            "border": {
+              "w": "2px",
+              "s": "dashed",
+              "c": "rgb(96, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(96, 0, 0)"
+          },
+          {
+            "label": "Decrease Magic cavalry sabre uses",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Magic cavalry sabre uses",
+            "border": {
+              "w": "2px",
+              "s": "dashed",
+              "c": "rgb(96, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(96, 0, 0)"
+          },
+          {
+            "label": "Decrease Explosive runes uses",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Explosive runes uses",
+            "border": {
+              "w": "2px",
+              "s": "dashed",
+              "c": "rgb(96, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(96, 0, 0)"
+          },
+          {
+            "label": "Decrease Cigarettes taken from the pockets of hanged men uses",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Cigarettes taken from the pockets of hanged men uses",
+            "border": {
+              "w": "2px",
+              "s": "dashed",
+              "c": "rgb(96, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(96, 0, 0)"
+          }
+        ],
+        "apply": {
+          "w": "2px",
+          "s": "dashed",
+          "c": "rgb(96, 0, 0)"
+        },
+        "cancel": {
+          "w": "2px",
+          "s": "solid",
+          "c": "rgb(0, 0, 0)"
+        },
+        "textarea": {
+          "w": "2px",
+          "s": "solid",
+          "c": "rgb(0, 0, 0)"
+        },
+        "checkboxes": [
+          {
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)"
+          },
+          {
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)"
+          }
+        ],
+        "grip": "rgb(255, 255, 255)"
+      },
+      "focusOutline": {
+        "fv": true,
+        "style": "solid",
+        "width": "3px",
+        "color": "rgba(5, 0, 73, 0.8)"
+      },
+      "screenshot": "bt-forced-colors-sheet-tablet.jpg",
+      "axeHardViolationsExcludingContrast": []
+    },
+    {
+      "probe": "forced-colors-desktop",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "checks": {
+        "mediaApplied": true,
+        "selectsKeepABorder": true,
+        "sheetHasVisibleBorder": true,
+        "sheetBorderDiffersFromBackdrop": true,
+        "actionsHaveBorders": true,
+        "stepperButtonsHaveBorders": true,
+        "textareaHasBorder": true,
+        "focusIndicatorNotNone": true,
+        "noHardAxeViolations": true
+      },
+      "notes": [],
+      "selectInfo": [
+        {
+          "id": "scene-select",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "edit-target",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "grant-character",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "advance-character",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "advance-select",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        },
+        {
+          "id": "reassign-character",
+          "border": "2px solid",
+          "fg": "rgb(0, 0, 0)",
+          "bg": "rgb(255, 255, 255)",
+          "chevron": "url(\"data:image/svg+xml,",
+          "h": 48
+        }
+      ],
+      "pageScreenshot": "bt-forced-colors-console-desktop.jpg",
+      "info": {
+        "sheet": {
+          "w": "2px",
+          "s": "solid",
+          "c": "rgb(0, 0, 0)"
+        },
+        "backdropBg": "rgba(255, 255, 255, 0.82)",
+        "sheetBg": "rgb(255, 255, 255)",
+        "sheetColor": "rgb(0, 0, 0)",
+        "stepper": [
+          {
+            "label": "Decrease Blood change",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Blood change",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Decrease Exquisite hunting rifle uses",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Exquisite hunting rifle uses",
+            "border": {
+              "w": "2px",
+              "s": "dashed",
+              "c": "rgb(96, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(96, 0, 0)"
+          },
+          {
+            "label": "Decrease Magic cavalry sabre uses",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Magic cavalry sabre uses",
+            "border": {
+              "w": "2px",
+              "s": "dashed",
+              "c": "rgb(96, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(96, 0, 0)"
+          },
+          {
+            "label": "Decrease Explosive runes uses",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Explosive runes uses",
+            "border": {
+              "w": "2px",
+              "s": "dashed",
+              "c": "rgb(96, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(96, 0, 0)"
+          },
+          {
+            "label": "Decrease Cigarettes taken from the pockets of hanged men uses",
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(0, 0, 0)"
+          },
+          {
+            "label": "Increase Cigarettes taken from the pockets of hanged men uses",
+            "border": {
+              "w": "2px",
+              "s": "dashed",
+              "c": "rgb(96, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)",
+            "fg": "rgb(96, 0, 0)"
+          }
+        ],
+        "apply": {
+          "w": "2px",
+          "s": "dashed",
+          "c": "rgb(96, 0, 0)"
+        },
+        "cancel": {
+          "w": "2px",
+          "s": "solid",
+          "c": "rgb(0, 0, 0)"
+        },
+        "textarea": {
+          "w": "2px",
+          "s": "solid",
+          "c": "rgb(0, 0, 0)"
+        },
+        "checkboxes": [
+          {
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)"
+          },
+          {
+            "border": {
+              "w": "2px",
+              "s": "solid",
+              "c": "rgb(0, 0, 0)"
+            },
+            "bg": "rgb(255, 255, 255)"
+          }
+        ],
+        "grip": "rgb(255, 255, 255)"
+      },
+      "focusOutline": {
+        "fv": true,
+        "style": "solid",
+        "width": "3px",
+        "color": "rgba(55, 0, 110, 0.8)"
+      },
+      "screenshot": "bt-forced-colors-sheet-desktop.jpg",
+      "axeHardViolationsExcludingContrast": []
+    },
+    {
+      "probe": "text-spacing-sheet-phone-small",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "rootLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true,
+        "reasonFullyVisibleAtEnd": true,
+        "actionsUsable": true,
+        "noTextClippedByItsOwnBox": true,
+        "keyboard:dialogInsideViewport": true,
+        "keyboard:noPageOverflow": true,
+        "keyboard:rootLocked": true,
+        "keyboard:backgroundInert": true,
+        "keyboard:focusInsideDialog": true,
+        "keyboard:reasonFullyVisibleAtEnd": true,
+        "keyboard:actionsUsable": true,
+        "keyboard:fieldClearsPinnedRowAfterFocusFromTop": true
+      },
+      "notes": [],
+      "tight": false,
+      "clipped": [],
+      "keyboardTight": true,
+      "screenshot": "bt-spacing-sheet-phone-small.jpg"
+    },
+    {
+      "probe": "text-spacing-sheet-phone",
+      "viewport": "phone",
+      "size": "375x812",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "rootLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true,
+        "reasonFullyVisibleAtEnd": true,
+        "actionsUsable": true,
+        "noTextClippedByItsOwnBox": true,
+        "keyboard:dialogInsideViewport": true,
+        "keyboard:noPageOverflow": true,
+        "keyboard:rootLocked": true,
+        "keyboard:backgroundInert": true,
+        "keyboard:focusInsideDialog": true,
+        "keyboard:reasonFullyVisibleAtEnd": true,
+        "keyboard:actionsUsable": true,
+        "keyboard:fieldClearsPinnedRowAfterFocusFromTop": true
+      },
+      "notes": [],
+      "tight": false,
+      "clipped": [],
+      "keyboardTight": false,
+      "screenshot": "bt-spacing-sheet-phone.jpg"
+    },
+    {
+      "probe": "text-spacing-sheet-phone-landscape",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "rootLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true,
+        "reasonFullyVisibleAtEnd": true,
+        "actionsUsable": true,
+        "noTextClippedByItsOwnBox": true,
+        "keyboard:dialogInsideViewport": true,
+        "keyboard:noPageOverflow": true,
+        "keyboard:rootLocked": true,
+        "keyboard:backgroundInert": true,
+        "keyboard:focusInsideDialog": true,
+        "keyboard:reasonFullyVisibleAtEnd": true,
+        "keyboard:actionsUsable": true,
+        "keyboard:fieldClearsPinnedRowAfterFocusFromTop": true
+      },
+      "notes": [],
+      "tight": false,
+      "clipped": [],
+      "keyboardTight": true,
+      "screenshot": "bt-spacing-sheet-phone-landscape.jpg"
+    },
+    {
+      "probe": "text-spacing-sheet-tablet",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "rootLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true,
+        "reasonFullyVisibleAtEnd": true,
+        "actionsUsable": true,
+        "noTextClippedByItsOwnBox": true,
+        "keyboard:dialogInsideViewport": true,
+        "keyboard:noPageOverflow": true,
+        "keyboard:rootLocked": true,
+        "keyboard:backgroundInert": true,
+        "keyboard:focusInsideDialog": true,
+        "keyboard:reasonFullyVisibleAtEnd": true,
+        "keyboard:actionsUsable": true,
+        "keyboard:fieldClearsPinnedRowAfterFocusFromTop": true
+      },
+      "notes": [],
+      "tight": false,
+      "clipped": [],
+      "keyboardTight": false,
+      "screenshot": "bt-spacing-sheet-tablet.jpg"
+    },
+    {
+      "probe": "text-spacing-sheet-desktop",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "rootLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true,
+        "reasonFullyVisibleAtEnd": true,
+        "actionsUsable": true,
+        "noTextClippedByItsOwnBox": true
+      },
+      "notes": [],
+      "tight": false,
+      "clipped": [],
+      "screenshot": "bt-spacing-sheet-desktop.jpg"
+    },
+    {
+      "probe": "text-spacing-gm-console-phone-small",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "controlsKeepTapSizeAndStayOnScreen": true,
+        "noTextClippedByItsOwnBox": true
+      },
+      "notes": [],
+      "controls": 37,
+      "issues": [],
+      "clipped": [],
+      "screenshot": "bt-spacing-gm-console-phone-small.jpg"
+    },
+    {
+      "probe": "text-spacing-gm-console-phone",
+      "viewport": "phone",
+      "size": "375x812",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "controlsKeepTapSizeAndStayOnScreen": true,
+        "noTextClippedByItsOwnBox": true
+      },
+      "notes": [],
+      "controls": 37,
+      "issues": [],
+      "clipped": [],
+      "screenshot": "bt-spacing-gm-console-phone.jpg"
+    },
+    {
+      "probe": "text-spacing-gm-console-tablet",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "controlsKeepTapSizeAndStayOnScreen": true,
+        "noTextClippedByItsOwnBox": true
+      },
+      "notes": [],
+      "controls": 37,
+      "issues": [],
+      "clipped": [],
+      "screenshot": "bt-spacing-gm-console-tablet.jpg"
+    },
+    {
+      "probe": "text-spacing-gm-console-desktop",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "controlsKeepTapSizeAndStayOnScreen": true,
+        "noTextClippedByItsOwnBox": true
+      },
+      "notes": [],
+      "controls": 37,
+      "issues": [],
+      "clipped": [],
+      "screenshot": "bt-spacing-gm-console-desktop.jpg"
+    },
+    {
+      "probe": "text-spacing-player-phone-small",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "controlsKeepTapSizeAndStayOnScreen": true,
+        "noTextClippedByItsOwnBox": true
+      },
+      "notes": [],
+      "controls": 1,
+      "issues": [],
+      "clipped": [],
+      "screenshot": "bt-spacing-player-phone-small.jpg"
+    },
+    {
+      "probe": "text-spacing-player-phone",
+      "viewport": "phone",
+      "size": "375x812",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "controlsKeepTapSizeAndStayOnScreen": true,
+        "noTextClippedByItsOwnBox": true
+      },
+      "notes": [],
+      "controls": 1,
+      "issues": [],
+      "clipped": [],
+      "screenshot": "bt-spacing-player-phone.jpg"
+    },
+    {
+      "probe": "text-spacing-player-tablet",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "controlsKeepTapSizeAndStayOnScreen": true,
+        "noTextClippedByItsOwnBox": true
+      },
+      "notes": [],
+      "controls": 1,
+      "issues": [],
+      "clipped": [],
+      "screenshot": "bt-spacing-player-tablet.jpg"
+    },
+    {
+      "probe": "text-spacing-player-desktop",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "controlsKeepTapSizeAndStayOnScreen": true,
+        "noTextClippedByItsOwnBox": true
+      },
+      "notes": [],
+      "controls": 1,
+      "issues": [],
+      "clipped": [],
+      "screenshot": "bt-spacing-player-desktop.jpg"
+    },
+    {
+      "probe": "text-spacing-table-phone",
+      "viewport": "phone",
+      "size": "375x812",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "controlsKeepTapSizeAndStayOnScreen": true,
+        "noTextClippedByItsOwnBox": true
+      },
+      "notes": [],
+      "controls": 0,
+      "issues": [],
+      "clipped": [],
+      "screenshot": "bt-spacing-table-phone.jpg"
+    },
+    {
+      "probe": "text-spacing-table-desktop",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "controlsKeepTapSizeAndStayOnScreen": true,
+        "noTextClippedByItsOwnBox": true
+      },
+      "notes": [],
+      "controls": 0,
+      "issues": [],
+      "clipped": [],
+      "screenshot": "bt-spacing-table-desktop.jpg"
+    },
+    {
+      "probe": "text-spacing-table-table",
+      "viewport": "table",
+      "size": "1920x1080",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "controlsKeepTapSizeAndStayOnScreen": true,
+        "noTextClippedByItsOwnBox": true
+      },
+      "notes": [],
+      "controls": 0,
+      "issues": [],
+      "clipped": [],
+      "screenshot": "bt-spacing-table-table.jpg"
+    },
+    {
+      "probe": "wide-table-tv-1280x720",
+      "viewport": "tv-1280x720",
+      "size": "1280x720",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "tableSurfaceHasNoInteractiveControls": true,
+        "smallestTextAtLeast14px": false
+      },
+      "notes": [],
+      "info": {
+        "columns": "2",
+        "rootFont": "16px",
+        "screenFont": "18.4px",
+        "minTextPx": 4.2,
+        "scrollH": 1173,
+        "clientH": 720
+      },
+      "screenshot": "bt-table-tv-1280x720.jpg"
+    },
+    {
+      "probe": "wide-table-laptop-1366x768",
+      "viewport": "laptop-1366x768",
+      "size": "1366x768",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "tableSurfaceHasNoInteractiveControls": true,
+        "smallestTextAtLeast14px": false
+      },
+      "notes": [],
+      "info": {
+        "columns": "2",
+        "rootFont": "16px",
+        "screenFont": "18.4px",
+        "minTextPx": 4.2,
+        "scrollH": 1113,
+        "clientH": 768
+      },
+      "screenshot": "bt-table-laptop-1366x768.jpg"
+    },
+    {
+      "probe": "wide-table-qhd-2560x1440",
+      "viewport": "qhd-2560x1440",
+      "size": "2560x1440",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "tableSurfaceHasNoInteractiveControls": true,
+        "smallestTextAtLeast14px": false
+      },
+      "notes": [],
+      "info": {
+        "columns": "2",
+        "rootFont": "16px",
+        "screenFont": "22.4px",
+        "minTextPx": 4.2,
+        "scrollH": 1440,
+        "clientH": 1440
+      },
+      "screenshot": "bt-table-qhd-2560x1440.jpg"
+    },
+    {
+      "probe": "wide-table-uhd-3840x2160",
+      "viewport": "uhd-3840x2160",
+      "size": "3840x2160",
+      "checks": {
+        "noHorizontalOverflow": true,
+        "tableSurfaceHasNoInteractiveControls": true,
+        "smallestTextAtLeast14px": false
+      },
+      "notes": [],
+      "info": {
+        "columns": "2",
+        "rootFont": "16px",
+        "screenFont": "22.4px",
+        "minTextPx": 4.2,
+        "scrollH": 2160,
+        "clientH": 2160
+      },
+      "screenshot": "bt-table-uhd-3840x2160.jpg"
+    }
+  ],
+  "finishedAt": "2026-09-29T16:26:09.458Z",
+  "ok": false,
+  "summary": {
+    "states": 0,
+    "controlsAudited": 0,
+    "controlIssues": 0,
+    "overflowStates": 0,
+    "axeHardViolations": 0,
+    "axeBestPractice": [],
+    "failures": 4
+  }
+}
