@@ -1,0 +1,64 @@
+{
+ "label": "real32",
+ "base": "http://127.0.0.1:4199",
+ "startedAt": "2026-09-29T12:02:37.406Z",
+ "finishedAt": "2026-09-29T12:05:04.815Z",
+ "ok": false,
+ "summary": {
+  "states": 225,
+  "controlsAudited": 2205,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "axeHardViolations": 0,
+  "axeBestPractice": [
+   "anon/route-claim-no-such-room@phone: page-has-heading-one"
+  ],
+  "failures": 11
+ },
+ "failures": [
+  {
+   "scope": "modal@phone-small",
+   "message": "actionsVisibleWithoutScrolling failed"
+  },
+  {
+   "scope": "modal@phone-small",
+   "message": "reasonReachableAfterScroll failed"
+  },
+  {
+   "scope": "modal-keyboard@phone-small",
+   "message": "actionsVisible failed"
+  },
+  {
+   "scope": "modal@phone",
+   "message": "reasonReachableAfterScroll failed"
+  },
+  {
+   "scope": "modal-keyboard@phone",
+   "message": "actionsVisible failed"
+  },
+  {
+   "scope": "modal@phone-landscape",
+   "message": "reasonReachableAfterScroll failed"
+  },
+  {
+   "scope": "modal-keyboard@phone-landscape",
+   "message": "actionsVisible failed"
+  },
+  {
+   "scope": "modal@phone-667x375",
+   "message": "actionsVisibleWithoutScrolling failed"
+  },
+  {
+   "scope": "modal@phone-667x375",
+   "message": "reasonReachableAfterScroll failed"
+  },
+  {
+   "scope": "modal-keyboard@phone-667x375",
+   "message": "actionsVisible failed"
+  },
+  {
+   "scope": "modal-zoom-emulated",
+   "message": "actionsInsideVisualViewportWhenZoomed failed"
+  }
+ ]
+}

@@ -707,3 +707,28 @@ before/after screenshots in `docs/evidence/bo-tight-sheet/`.
 **Current state / next action:** committed and pushed on this branch, not merged or deployed. John: review/merge; run the physical
 two-device rehearsal, including iOS Safari (the keyboard shrinks the visual viewport there, which headless Chrome cannot produce)
 and a large-text-size pass with the keyboard open on the GM correction sheet. Do not deploy without explicit direction.
+
+## Twelfth independent re-audit: real default-font (large text) pass, no product defect (branch `sonnet-bp/reskin-hourly-20260929`, 2026-09-29)
+
+Base `4417b8d` (the tight-sheet fix; reviewed, in this lineage). Evidence-only: **no source or harness change**. The audit found
+that every earlier text-scale scenario emulates large text with an inline `html { font-size }`, which does not rescale `rem` in
+media queries the way a real browser font-size setting does (above ~640px wide it exercises a different layout: e.g. 926x428 at
+200% is a card in the emulation, a bottom sheet for real). A real default font size was reproduced by seeding a throwaway Chrome
+profile (`webkit.webprefs.default_font_size`). With real 150% and 200% fonts: the full 225-state sweep across phone/landscape/
+tablet/desktop/table had 0 control issues, 0 overflow, 0 hard axe violations, and every keyboard x large-text sheet scenario
+(320x568 to 1280x800) passes the rigorous field/actions checks. The only failures are the legacy 100%-text modal assertions,
+which scroll `.sheet-body` although a tight sheet is its own scroller; they are harness artifacts, documented in the review.
+
+**Verification (fresh, emulator-mode production build, local `demo-digitable` only):** `npm run check` **724 passed | 11 todo**;
+`npm run build` ok; baseline `ui-audit.mjs` 225 states, 2,277 controls, 0 failures; `two-device-smoke.mjs --reload --no-images`
+ALL STEPS PASSED; `npm run test:emulator` on alternate ports (temporary config, removed) **18 + 86 + 4 = 108/108** with all five
+Functions loaded. Nothing was deployed or merged; staging evidence is still of `5e8907b` only.
+
+Record and evidence: [`docs/reviews/2026-09-29-sonnet-bp-real-default-font-reaudit.md`](docs/reviews/2026-09-29-sonnet-bp-real-default-font-reaudit.md),
+`docs/evidence/bp-real-font/` (probe patch, not applied; summaries).
+
+**Current state / next action:** committed and pushed on this branch, not merged or deployed. Optional harness follow-up: fold a
+real-default-font profile into `ui-audit.mjs` and make the modal loop's legacy checks scroller-aware. John: physical two-device
+rehearsal, including iOS Safari with the keyboard open and OS large text. Do not deploy without explicit direction.
+
+**Independent review (fresh agent): approve with record corrections, all applied** (subset of scenarios listed exactly, unrecorded inline probe labelled, Apply only partly visible in the capped row at 200% with the keyboard on the shortest layouts, a known accepted limit). It reproduced the legacy-check failures at 32px and confirmed they are scroller artifacts.

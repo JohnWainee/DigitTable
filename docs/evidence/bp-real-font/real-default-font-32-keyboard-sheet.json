@@ -1,0 +1,65 @@
+{
+ "defaultFontPx": 32,
+ "startedAt": "2026-09-29T12:06:29.532Z",
+ "keyboardTextScenarios": [
+  {
+   "scenario": "keyboard-text-320x568-200",
+   "size": "320x568",
+   "allChecksPass": true,
+   "failedChecks": []
+  },
+  {
+   "scenario": "keyboard-text-375x812-200",
+   "size": "375x812",
+   "allChecksPass": true,
+   "failedChecks": []
+  },
+  {
+   "scenario": "keyboard-text-768x1024-200",
+   "size": "768x1024",
+   "allChecksPass": true,
+   "failedChecks": []
+  },
+  {
+   "scenario": "keyboard-text-1024x768-200",
+   "size": "1024x768",
+   "allChecksPass": false,
+   "failedChecks": [
+    "sheetIsNotTight"
+   ]
+  },
+  {
+   "scenario": "keyboard-text-926x428-200",
+   "size": "926x428",
+   "allChecksPass": true,
+   "failedChecks": []
+  },
+  {
+   "scenario": "keyboard-text-667x375-200",
+   "size": "667x375",
+   "allChecksPass": true,
+   "failedChecks": []
+  },
+  {
+   "scenario": "keyboard-text-1280x800-200",
+   "size": "1280x800",
+   "allChecksPass": false,
+   "failedChecks": [
+    "sheetIsNotTight"
+   ]
+  }
+ ],
+ "legacy100pctModalChecksFailingAtLargeText": [
+  "modal@phone-small: actionsVisibleWithoutScrolling failed",
+  "modal@phone-small: reasonReachableAfterScroll failed",
+  "modal-keyboard@phone-small: actionsVisible failed",
+  "modal@phone: reasonReachableAfterScroll failed",
+  "modal-keyboard@phone: actionsVisible failed",
+  "modal@phone-landscape: reasonReachableAfterScroll failed",
+  "modal-keyboard@phone-landscape: actionsVisible failed",
+  "modal@phone-667x375: actionsVisibleWithoutScrolling failed",
+  "modal@phone-667x375: reasonReachableAfterScroll failed",
+  "modal-keyboard@phone-667x375: actionsVisible failed",
+  "modal-zoom-emulated: actionsInsideVisualViewportWhenZoomed failed"
+ ]
+}

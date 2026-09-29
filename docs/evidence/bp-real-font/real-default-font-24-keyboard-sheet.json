@@ -1,0 +1,49 @@
+{
+ "defaultFontPx": 24,
+ "startedAt": "2026-09-29T12:05:52.811Z",
+ "keyboardTextScenarios": [
+  {
+   "scenario": "keyboard-text-320x568-150",
+   "size": "320x568",
+   "allChecksPass": true,
+   "failedChecks": []
+  },
+  {
+   "scenario": "keyboard-text-667x375-150",
+   "size": "667x375",
+   "allChecksPass": true,
+   "failedChecks": []
+  },
+  {
+   "scenario": "keyboard-text-768x1024-150",
+   "size": "768x1024",
+   "allChecksPass": true,
+   "failedChecks": []
+  },
+  {
+   "scenario": "keyboard-text-1024x768-150",
+   "size": "1024x768",
+   "allChecksPass": true,
+   "failedChecks": []
+  },
+  {
+   "scenario": "keyboard-text-568x320-150",
+   "size": "568x320",
+   "allChecksPass": true,
+   "failedChecks": []
+  },
+  {
+   "scenario": "keyboard-text-926x428-150",
+   "size": "926x428",
+   "allChecksPass": true,
+   "failedChecks": []
+  }
+ ],
+ "legacy100pctModalChecksFailingAtLargeText": [
+  "modal-keyboard@phone-small: actionsVisible failed",
+  "modal-keyboard@phone-landscape: actionsVisible failed",
+  "modal@phone-667x375: reasonReachableAfterScroll failed",
+  "modal-keyboard@phone-667x375: actionsVisible failed",
+  "modal-zoom-emulated: actionsInsideVisualViewportWhenZoomed failed"
+ ]
+}

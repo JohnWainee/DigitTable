@@ -1,0 +1,43 @@
+diff --git a/scripts/playtest/ui-audit.mjs b/scripts/playtest/ui-audit.mjs
+index 8a5ad3b..269bf19 100644
+--- a/scripts/playtest/ui-audit.mjs
++++ b/scripts/playtest/ui-audit.mjs
+@@ -815,9 +815,22 @@ async function auditModal(gm) {
+     ["375x812-100", byName["phone"], 16, false],
+     ["667x375-150", { name: "phone-667x375", width: 667, height: 375, mobile: true }, 24, true],
+     ["812x375-100", byName["phone-landscape"], 16, true],
+-  ]) {
++    ["768x1024-100", byName["tablet"], 16, false],
++    ["768x1024-150", byName["tablet"], 24, false],
++    ["768x1024-200", byName["tablet"], 32, false],
++    ["1024x768-150", { name: "tab-l", width: 1024, height: 768, mobile: true }, 24, false],
++    ["1024x768-200", { name: "tab-l", width: 1024, height: 768, mobile: true }, 32, false],
++    ["568x320-100", { name: "se-l", width: 568, height: 320, mobile: true }, 16, true],
++    ["568x320-150", { name: "se-l", width: 568, height: 320, mobile: true }, 24, true],
++    ["926x428-100", { name: "max-l", width: 926, height: 428, mobile: true }, 16, true],
++    ["926x428-150", { name: "max-l", width: 926, height: 428, mobile: true }, 24, true],
++    ["926x428-200", { name: "max-l", width: 926, height: 428, mobile: true }, 32, true],
++    ["667x375-200", { name: "phone-667x375", width: 667, height: 375, mobile: true }, 32, true],
++    ["1280x800-200", byName["desktop"], 32, false],
++  ].filter((x) => !arg("chrome-font-px", "") || x[2] === Number(arg("chrome-font-px", "16")))) {
+     await scenario(`keyboard-text-${name}`, vp, async (record) => {
+-      await ev(gm, `document.documentElement.style.fontSize = "${px}px"`);
++      if (!arg("chrome-font-px", ""))
++        await ev(gm, `document.documentElement.style.fontSize = "${px}px"`);
+       await openCorrection(gm);
+       await ev(gm, `document.querySelector("#correction-reason").focus()`);
+       const shrunk = { ...vp, height: Math.round(vp.height * 0.55) };
+@@ -915,6 +928,13 @@ async function auditReducedMotion(gm) {
+ 
+ async function main() {
+   const profile = mkdtempSync(join(tmpdir(), "digitable-ui-audit-"));
++  if (arg("chrome-font-px", "")) {
++    mkdirSync(join(profile, "Default"), { recursive: true });
++    writeFileSync(
++      join(profile, "Default", "Preferences"),
++      JSON.stringify({ webkit: { webprefs: { default_font_size: Number(arg("chrome-font-px", "16")) } } }),
++    );
++  }
+   const chrome = spawn(
+     CHROME,
+     [
