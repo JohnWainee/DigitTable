@@ -1,9 +1,9 @@
 # Claude implementation handoff
 
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
-- **Branch:** `factory/staging-harness-integration-20260928` (isolated, origin/main-based integration of the independently reviewed smoke/audit evidence hardening; no deployment or merge). A sibling worktree, `sonnet-bk/reskin-uiux-orchestrated-20260928` (based on `d0dac74`), independently re-audited the ink-black reskin and mobile pop-out system and fixed a real, independently-confirmed test-harness regression — see "Seventh independent mobile pop-out re-audit" below — and, in a further pass, found and re-fixed a real parallel-worktree fix loss: the class-less utility-item tap-target buttons (originally fixed 2026-09-24 as `5663d7f`) were never actually merged into this branch's lineage despite this file's own narrative saying otherwise four times over — see "Eighth independent mobile pop-out re-audit" below. Neither is yet folded into this branch.
+- **Branch:** `sonnet-bo/reskin-physical-audit-20260929` (based on `f72cdc9`; presentation-only fix to the pop-out sheet under the on-screen keyboard / large text — see "Eleventh independent re-audit" at the end; no deployment or merge). Earlier lineage notes: `factory/staging-harness-integration-20260928` (isolated, origin/main-based integration of the independently reviewed smoke/audit evidence hardening; no deployment or merge). A sibling worktree, `sonnet-bk/reskin-uiux-orchestrated-20260928` (based on `d0dac74`), independently re-audited the ink-black reskin and mobile pop-out system and fixed a real, independently-confirmed test-harness regression — see "Seventh independent mobile pop-out re-audit" below — and, in a further pass, found and re-fixed a real parallel-worktree fix loss: the class-less utility-item tap-target buttons (originally fixed 2026-09-24 as `5663d7f`) were never actually merged into this branch's lineage despite this file's own narrative saying otherwise four times over — see "Eighth independent mobile pop-out re-audit" below. Neither is yet folded into this branch.
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-29 (`sonnet-bn/reskin-followup-20260929`: text-scale reflow fix, see the final section; prior entry 2026-09-28), this entry, after the `sonnet-bk` branch's own further audit pass found this file's "utility-item tap-target" narrative (four prior "independently re-confirmed integrated" entries) was true of other branches but not this one, and re-applied + re-tested + re-reviewed the fix directly (see "Eighth independent mobile pop-out re-audit" below). This is a real, narrowly-scoped `apps/web` UI change (two `className="link-button"` additions plus a hardened test contract and two new test files) — no engine/contracts/Functions/rules change, no deployment, no merge. The physical-device rehearsal remains open (see "Ninth independent review" below).
+- **Last updated:** 2026-09-29 (`sonnet-bo/reskin-physical-audit-20260929`: keyboard x text-scale fit of the pop-out sheet, see the final section). Previous entry: 2026-09-29 (`sonnet-bn/reskin-followup-20260929`: text-scale reflow fix, see the final section; prior entry 2026-09-28), this entry, after the `sonnet-bk` branch's own further audit pass found this file's "utility-item tap-target" narrative (four prior "independently re-confirmed integrated" entries) was true of other branches but not this one, and re-applied + re-tested + re-reviewed the fix directly (see "Eighth independent mobile pop-out re-audit" below). This is a real, narrowly-scoped `apps/web` UI change (two `className="link-button"` additions plus a hardened test contract and two new test files) — no engine/contracts/Functions/rules change, no deployment, no merge. The physical-device rehearsal remains open (see "Ninth independent review" below).
 
 ## Mission
 
@@ -676,3 +676,34 @@ Independent review found no defect and one hardening (applied); its accepted tra
 **Current state / next action:** the fix is committed and pushed on this branch, not merged or deployed. John: review/merge, and
 run the physical two-device rehearsal (including iOS Safari keyboard/visual-viewport and a large-text-size pass). Do not deploy
 without explicit direction.
+
+## Eleventh independent re-audit: pop-out squeezed its own field under the keyboard (branch `sonnet-bo/reskin-physical-audit-20260929`, 2026-09-29)
+
+Base `f72cdc9` verified as the merge-base (the tap-target class, roster-agnostic selector and text-scale reflow are all in this
+lineage). Baseline `ui-audit.mjs` at the base passed (225 states, 0 failures). The gap was the combination the harness never ran:
+the on-screen keyboard (emulated by shrinking the layout viewport) together with a short landscape viewport or 150-200% text, and
+the old keyboard check compared the field with the window rather than with the region it scrolls in. Measuring the region: with
+the keyboard open, the correction sheet's pinned header + action row left a 36-127px body, so the reason field was clipped at
+812x375 (100% text), 667x375 (150%), 375x812 (200%) and 320x568 (200%).
+
+**Fix (presentation only):** `apps/web/src/shared/useTightSheetFit.ts` sets `data-tight` on `SheetDialog` when its content overflows
+and header + action row would leave the body under half the sheet; `.sheet[data-tight]` makes the sheet the scroller (header
+scrolls with the content, action row stays sticky, `scroll-padding-bottom` = the row's height). Roomy sheets are unchanged. Harness:
+new gating `keyboard-text-*` scenarios (field fully inside the content region, focus-from-top clears the pinned row, both actions
+usable after clipping, axe on the tightest sheet), the old vacuous `actionsReachable` replaced by `actionsUsable` everywhere.
+
+**Verification (fresh, emulator-mode production build, local `demo-digitable` only):** `npm run check` **724 passed | 11 todo** (was
+712); `npm run build` ok; `ui-audit.mjs` before the fix on the new scenarios 11 failures, after **225 states, 2,295 controls, 0
+failures**, no console/request errors; `two-device-smoke.mjs --reload --no-images` all steps passed; `npm run test:emulator` on
+alternate ports (a temporary config, another worktree holds the defaults) **108/108**. Nothing was deployed; existing staging
+evidence is of `5e8907b` only.
+
+**Independent review (fresh agent):** approve with changes; the two actionable findings (a vacuous harness check, missing cleanup /
+visualViewport / ResizeObserver tests) are fixed; the accepted limit is that at 320px@200% with the keyboard the capped action row
+still scrolls internally (both buttons reachable, previously the field itself was not). Full record:
+[`docs/reviews/2026-09-29-sonnet-bo-tight-sheet-keyboard-text.md`](docs/reviews/2026-09-29-sonnet-bo-tight-sheet-keyboard-text.md);
+before/after screenshots in `docs/evidence/bo-tight-sheet/`.
+
+**Current state / next action:** committed and pushed on this branch, not merged or deployed. John: review/merge; run the physical
+two-device rehearsal, including iOS Safari (the keyboard shrinks the visual viewport there, which headless Chrome cannot produce)
+and a large-text-size pass with the keyboard open on the GM correction sheet. Do not deploy without explicit direction.

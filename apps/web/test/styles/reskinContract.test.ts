@@ -297,6 +297,23 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(rulesFor(/^\.sheet-footer$/), "flex")).toContain("none");
     });
 
+    it("lets a squeezed sheet scroll as one, keeping only the action row pinned (data-tight)", () => {
+      // useTightSheetFit sets data-tight when header + action row would take over half the sheet.
+      const sheet = rulesFor(/^\.sheet\[data-tight\]$/);
+      expect(declaration(sheet, "overflow-y")).toEqual(["auto"]);
+      expect(declaration(sheet, "overscroll-behavior")).toEqual(["contain"]);
+      // The sheet is the scroller, so focus/keyboard scrolling must leave room for the pinned row.
+      expect(declaration(sheet, "scroll-padding-bottom")[0]).toContain("var(--sheet-footer-h");
+      const body = rulesFor(/^\.sheet\[data-tight\] \.sheet-body$/);
+      expect(declaration(body, "overflow")).toEqual(["visible"]);
+      expect(declaration(body, "flex")).toEqual(["none"]);
+      const footer = rulesFor(/^\.sheet\[data-tight\] \.sheet-footer$/);
+      expect(declaration(footer, "position")).toEqual(["sticky"]);
+      expect(declaration(footer, "bottom")).toEqual(["0"]);
+      // The header is not pinned in this mode: nothing may make it sticky or fixed.
+      expect(rulesFor(/^\.sheet\[data-tight\] \.sheet-header$/)).toEqual([]);
+    });
+
     it("is an edge-attached bottom sheet by default and a centred card from 641px up", () => {
       expect(declaration(rulesFor(/^\.sheet-backdrop$/), "align-items")).toContain("flex-end");
       const wide = mediaBlock("(min-width: 40.0625rem)");

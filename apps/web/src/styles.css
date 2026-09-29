@@ -1504,6 +1504,28 @@ details ul {
   }
 }
 
+/* Tight fit (data-tight, set by useTightSheetFit): a pinned header PLUS a pinned action row would take
+   over half of a short or large-text sheet (landscape phone with the keyboard open, 150-200% text on a
+   320px phone) and squeeze the field being typed in to a sliver. The whole sheet then scrolls, so the
+   header moves with the content and only the action row stays pinned (and reachable). The sheet is
+   the scroller, so focus scrolling must leave room for the pinned row: scroll-padding-bottom. */
+.sheet[data-tight] {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-bottom: var(--sheet-footer-h, 6rem);
+}
+
+.sheet[data-tight] .sheet-body {
+  flex: none;
+  overflow: visible;
+}
+
+.sheet[data-tight] .sheet-footer {
+  position: sticky;
+  bottom: 0;
+}
+
 /* Two columns while each button has room, one full-width column otherwise (narrow or large text). */
 .sheet-actions {
   display: grid;

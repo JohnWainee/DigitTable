@@ -501,6 +501,33 @@ async function closeCorrection(gm) {
   await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 10000, "dialog closed");
 }
 
+/**
+ * Whether Apply and Cancel can actually be used: each must show at least a 44px practical target
+ * (or its whole self, if smaller) after clipping by the action row it sits in and by the window, at
+ * SOME scroll position of that row (Apply at its top, Cancel at its end). A bare
+ * getBoundingClientRect() test is vacuous here: it ignores the row's own overflow clip, so a button
+ * scrolled completely out of a capped, scrollable action row still "measures" inside the window.
+ */
+async function actionsUsable(gm, frame) {
+  const visiblePx = (label, position) =>
+    ev(
+      gm,
+      `(() => {
+        const f = document.querySelector(".sheet-footer");
+        f.scrollTop = ${position === "top" ? "0" : "f.scrollHeight"};
+        const b = [...f.querySelectorAll("button")].find(x => /${label}/i.test(x.textContent));
+        const r = b.getBoundingClientRect(), c = f.getBoundingClientRect();
+        const h = Math.min(r.bottom, c.bottom, ${frame.bottom}) - Math.max(r.top, c.top, ${frame.top});
+        const w = Math.min(r.right, c.right, ${frame.right}) - Math.max(r.left, c.left, ${frame.left});
+        return { h, w, needH: Math.min(r.height, 44), needW: Math.min(r.width, 44) };
+      })()`,
+    );
+  const apply = await visiblePx("apply correction", "top");
+  const cancel = await visiblePx("cancel", "end");
+  const ok = (v) => v.h >= v.needH - 0.5 && v.w >= v.needW - 0.5;
+  return ok(apply) && ok(cancel);
+}
+
 async function auditModal(gm) {
   await applyViewport(gm, byName["desktop"]);
   const cases = [
@@ -741,14 +768,19 @@ async function auditModal(gm) {
           gm,
           `(() => { const f = document.querySelector(".sheet-footer"); f.scrollTop = f.scrollHeight; })()`,
         );
-        const end = await ev(gm, MODAL_GEOMETRY);
-        record.checks.actionsReachable = within(end.apply, frame) && within(end.cancel, frame);
+        record.checks.actionsReachable = await actionsUsable(gm, frame);
         await ev(
           gm,
-          `(() => { const b = document.querySelector(".sheet-body"); b.scrollTop = b.scrollHeight; })()`,
+          `(() => { const b = document.querySelector(".sheet[data-tight]") ?? document.querySelector(".sheet-body"); b.scrollTop = b.scrollHeight; })()`,
         );
         const bottom = await ev(gm, MODAL_GEOMETRY);
-        record.checks.reasonReachable = within(bottom.reason, frame);
+        // In the tight layout the sheet itself scrolls (above), and the field must clear the pinned row.
+        const footerTop = await ev(
+          gm,
+          `document.querySelector(".sheet-footer").getBoundingClientRect().top`,
+        );
+        record.checks.reasonReachable =
+          within(bottom.reason, frame) && bottom.reason.bottom <= footerTop + 1;
         record.textPx = px;
         record.screenshot = await screenshot(
           gm,
@@ -758,6 +790,74 @@ async function auditModal(gm) {
       },
       { informationalChecks },
     );
+  }
+
+  // Keyboard x short viewport x text scale. Each case shrinks the layout viewport the way an open
+  // on-screen keyboard does (what Chrome Android's interactive-widget=resizes-content does) with the
+  // reason field focused, then checks what the person can actually SEE: the field must be entirely
+  // inside the scrolling content region (not merely inside the window: a field clipped by the body
+  // it scrolls in is inside the window), both action buttons must be reachable, and a field focused
+  // from the top of the sheet must land above the pinned action row. `expectTight` pins WHEN the
+  // sheet stops pinning its header (useTightSheetFit): only when header + action row would take over
+  // half of it, never on a roomy sheet.
+  const CONTENT_REGION = `(() => {
+    const sheet = document.querySelector(".sheet");
+    const footer = document.querySelector(".sheet-footer").getBoundingClientRect();
+    const body = document.querySelector(".sheet-body").getBoundingClientRect();
+    const s = sheet.getBoundingClientRect();
+    const tight = sheet.hasAttribute("data-tight");
+    return tight ? { tight, top: s.top, bottom: footer.top } : { tight, top: body.top, bottom: body.bottom };
+  })()`;
+  for (const [name, vp, px, expectTight] of [
+    ["320x568-150", byName["phone-small"], 24, true],
+    ["320x568-200", byName["phone-small"], 32, true],
+    ["375x812-200", byName["phone"], 32, true],
+    ["375x812-100", byName["phone"], 16, false],
+    ["667x375-150", { name: "phone-667x375", width: 667, height: 375, mobile: true }, 24, true],
+    ["812x375-100", byName["phone-landscape"], 16, true],
+  ]) {
+    await scenario(`keyboard-text-${name}`, vp, async (record) => {
+      await ev(gm, `document.documentElement.style.fontSize = "${px}px"`);
+      await openCorrection(gm);
+      await ev(gm, `document.querySelector("#correction-reason").focus()`);
+      const shrunk = { ...vp, height: Math.round(vp.height * 0.55) };
+      await applyViewport(gm, shrunk);
+      await sleep(500);
+      const frame = frameOf(shrunk);
+      const geo = await ev(gm, MODAL_GEOMETRY);
+      record.geometry = geo;
+      record.checks.dialogInsideViewport = within(geo.dialog, frame);
+      record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+      const region = await ev(gm, CONTENT_REGION);
+      record.region = region;
+      record.checks[expectTight ? "sheetIsTight" : "sheetIsNotTight"] =
+        region.tight === expectTight;
+      const inRegion = (box) => box.top >= region.top - 1 && box.bottom <= region.bottom + 1;
+      record.checks.focusedFieldFullyVisible = inRegion(geo.reason);
+      // Native focus scrolling (Tab / tap) from the top of the sheet must clear the pinned row too.
+      await ev(
+        gm,
+        `(() => { const sc = document.querySelector(".sheet[data-tight]") ?? document.querySelector(".sheet-body"); sc.scrollTop = 0; document.querySelector("#correction-reason").blur(); document.querySelector("#correction-reason").focus(); })()`,
+      );
+      await sleep(250);
+      const refocus = await ev(gm, MODAL_GEOMETRY);
+      record.checks.fieldClearsPinnedRowAfterFocusFromTop = inRegion(refocus.reason);
+      // Scroll everything as far as it goes; both buttons must then be inside the window.
+      await ev(
+        gm,
+        `(() => { for (const sc of [document.querySelector(".sheet"), document.querySelector(".sheet-body"), document.querySelector(".sheet-footer")]) sc.scrollTop = sc.scrollHeight; })()`,
+      );
+      record.checks.actionsReachable = await actionsUsable(gm, frame);
+      if (px === 32 && vp.name === "phone-small") {
+        // The tightest case is also run through axe (WCAG 2.x A/AA + best practice) with the sheet open.
+        const violations = (await runAxe(gm)).filter(isHardAxe);
+        record.axeHardViolations = violations.map((v) => v.id);
+        record.checks.noHardAxeViolations = violations.length === 0;
+      }
+      record.screenshot = await screenshot(gm, `gm-correction-keyboard-text-${name}.jpg`, {
+        fullPage: false,
+      });
+    });
   }
   await applyViewport(gm, byName["desktop"]);
 }
