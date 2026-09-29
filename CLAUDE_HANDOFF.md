@@ -771,3 +771,19 @@ horizontal overflow at 375/768/1024/1280/1920 px (the table's 1920px measurement
 This is current deployed-build evidence only. It neither deploys nor verifies the unmerged reskin-source changes on this branch.
 The only remaining release-evidence gap is still John's physical two-device rehearsal, including a fresh/private-browser recovery
 attempt and real iOS Safari visual-viewport/keyboard behavior.
+
+## Automation staging follow-up (2026-09-29)
+
+The named `digitable-staging-playthrough` Sonnet session remains absent from the active-session
+inventory, so its missing process was again not treated as a completed pass. A second fresh
+hardened live run from this branch completed against `https://digitable.signal-bleed.com`:
+`node scripts/playtest/two-device-smoke.mjs --base https://digitable.signal-bleed.com --out
+/private/tmp/digitable-hourly-staging-20260929-1900-rerun`. Its report records **16/16** applicable
+workflow steps passing (`ok: true`), with zero console errors and failed requests for GM, player,
+and table and no positive horizontal overflow. This invocation omitted the optional reload check;
+the preceding 17-step `--reload` run remains the stronger reload evidence.
+
+No product defect or source change was found. This remains deployed-build evidence only: it did
+not merge or deploy the unmerged reskin-source work. The remaining release-evidence gap is still
+John's physical two-device rehearsal, especially iOS Safari visual-viewport/keyboard behavior,
+Android browser-chrome collapse, and OS large-text/high-contrast paths.
