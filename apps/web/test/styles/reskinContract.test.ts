@@ -18,6 +18,7 @@ const css = readFileSync(join(here, "../../src/styles.css"), "utf8").replace(
   "",
 );
 const html = readFileSync(join(here, "../../index.html"), "utf8");
+const uiAudit = readFileSync(join(here, "../../../../scripts/playtest/ui-audit.mjs"), "utf8");
 
 /** All `selector { body }` rules at the top level or inside the named at-rule (or anywhere when omitted). */
 function rulesFor(selectorPattern: RegExp): string[] {
@@ -84,6 +85,14 @@ function sourceFiles(dir: string): string[] {
 }
 
 describe("reskin stylesheet contract", () => {
+  it("keeps the real-browser correction-sheet audit roster-agnostic", () => {
+    // The audit must exercise the sheet for the current content roster, not a retired fixture
+    // character. Otherwise a roster update can silently skip every mobile sheet scenario.
+    expect(uiAudit).toContain('querySelectorAll(".roster-panel-list button")');
+    expect(uiAudit).toContain("/^correct$/i.test(button.textContent.trim())");
+    expect(uiAudit).not.toMatch(/\^rook/i);
+  });
+
   describe("touch targets and text-entry size", () => {
     it("defines the tap size as 3rem (48px at the default root, and it scales with user font size)", () => {
       expect(css).toMatch(/--tap:\s*3rem/);
@@ -154,6 +163,32 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(rulesFor(/^\.sheet-backdrop$/), "touch-action")).toEqual(["auto"]);
       expect(html).toContain("viewport-fit=cover"); // required for env(safe-area-inset-*)
       expect(html).toContain("interactive-widget=resizes-content");
+    });
+  });
+
+  describe("large text on a 320px phone", () => {
+    // Stacked rem paddings (shell > step > card > fieldset > option) left ~67px for a check-box row at
+    // 200% text on 320px and overflowed the page. Inline gutters must stay capped by viewport width.
+    it("caps every stacked inline gutter with a viewport-relative min()", () => {
+      const shell = declaration(rulesFor(/^\.landing-screen,\s*\.player-screen/), "padding").join(
+        " ",
+      );
+      expect(shell).toMatch(/max\(min\(1rem, 5vw\), env\(safe-area-inset-right\)\)/);
+      expect(shell).toMatch(/max\(min\(1rem, 5vw\), env\(safe-area-inset-left\)\)/);
+      expect(declaration(rulesFor(/^\.step,/), "padding").join(" ")).toContain("min(1rem, 5vw)");
+      expect(declaration(rulesFor(/^fieldset$/), "padding").join(" ")).toContain(
+        "min(0.85rem, 4vw)",
+      );
+      expect(declaration(rulesFor(/^\.pending-action-card,/), "padding").join(" ")).toContain(
+        "min(0.85rem, 4vw)",
+      );
+      const option = rulesFor(/^\.gear-option,/);
+      expect(declaration(option, "padding").join(" ")).toContain("min(0.65rem, 3vw)");
+      expect(declaration(option, "gap").join(" ")).toContain("min(0.85rem, 4vw)");
+    });
+
+    it("gates the 320px / 200% text audit scenario instead of recording it", () => {
+      expect(uiAudit).toContain('[byName["phone-small"], 32, []]');
     });
   });
 
