@@ -213,6 +213,32 @@ describe("reskin stylesheet contract", () => {
     });
   });
 
+  describe("large text on a 320px phone", () => {
+    // Stacked rem paddings (shell > step > card > fieldset > option) left ~67px for a check-box row at
+    // 200% text on 320px and overflowed the page. Inline gutters must stay capped by viewport width.
+    it("caps every stacked inline gutter with a viewport-relative min()", () => {
+      const shell = declaration(rulesFor(/^\.landing-screen,\s*\.player-screen/), "padding").join(
+        " ",
+      );
+      expect(shell).toMatch(/max\(min\(1rem, 5vw\), env\(safe-area-inset-right\)\)/);
+      expect(shell).toMatch(/max\(min\(1rem, 5vw\), env\(safe-area-inset-left\)\)/);
+      expect(declaration(rulesFor(/^\.step,/), "padding").join(" ")).toContain("min(1rem, 5vw)");
+      expect(declaration(rulesFor(/^fieldset$/), "padding").join(" ")).toContain(
+        "min(0.85rem, 4vw)",
+      );
+      expect(declaration(rulesFor(/^\.pending-action-card,/), "padding").join(" ")).toContain(
+        "min(0.85rem, 4vw)",
+      );
+      const option = rulesFor(/^\.gear-option,/);
+      expect(declaration(option, "padding").join(" ")).toContain("min(0.65rem, 3vw)");
+      expect(declaration(option, "gap").join(" ")).toContain("min(0.85rem, 4vw)");
+    });
+
+    it("gates the 320px / 200% text audit scenario instead of recording it", () => {
+      expect(uiAudit).toContain('[byName["phone-small"], 32, []]');
+    });
+  });
+
   describe("pop-out sheet", () => {
     it("sizes the backdrop from the visual viewport, with a vh base and dvh only behind @supports", () => {
       const backdrop = rulesFor(/^\.sheet-backdrop$/);
