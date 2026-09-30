@@ -554,3 +554,16 @@ When pausing or finishing a material unit:
 - **Fresh browser evidence:** a production-built live-mode app with the fake `demo-digitable` Firebase configuration, local Auth/Firestore/RTDB/Functions emulators, and loopback-only Vite preview passed `scripts/playtest/ui-audit.mjs`: **150 states**, **1,482 controls**, **14/14 modal/sheet scenarios**; zero control issues, zero positive overflow, zero hard axe violations, zero console/request errors, and zero failures. The intentional nonexistent-room route retains its documented non-gating `page-has-heading-one` best-practice note. Full screenshots and report are under `/private/tmp/digitable-reskin-ca-integration-audit-20260930-live/`.
 - **Fresh session rehearsal:** `node scripts/playtest/two-device-smoke.mjs --base http://127.0.0.1:4174 --out /private/tmp/digitable-reskin-ca-integration-smoke-20260930 --reload` passed **17/17** GM/player/table steps with no console/request errors or positive responsive overflow. All local processes were stopped after the run.
 - **Next action:** push this review-ready integration branch; do not merge to `main` or deploy. The remaining release evidence is John’s physical two-device rehearsal, including iOS visual-viewport keyboard and fresh/private-browser recovery.
+
+## Sixth independent mobile pop-out re-audit (branch `sonnet-cb/reskin-ux-20260930`, 2026-09-30)
+
+**Result: no scoped defect at base `776af04`; no product code changed.** Record: [`docs/reviews/2026-09-30-cb-reskin-no-defect-review.md`](docs/reviews/2026-09-30-cb-reskin-no-defect-review.md); evidence: `docs/evidence/cb-reskin-20260930/ui-audit-report.json`.
+
+- `npm run check` — exit 0, **694 passed | 11 todo** (71 files passed, 1 skipped).
+- `npm run build` — exit 0 (existing chunk-size warning only).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **18 + 86 + 4** passed.
+- `ui-audit.mjs` (live emulator build, port 4188) — 150 states, 14 modal scenarios, 1,530 controls, 0 issues/overflow/hard axe/console/request errors.
+- `two-device-smoke.mjs --reload` (local emulators) — ALL STEPS PASSED. `git diff --check` clean.
+- Lineage: `c77cd94` (roster-agnostic audit selector) verified an ancestor of HEAD.
+- Process note: parallel sessions sharing one worktree rebuilt `apps/web/dist` non-live and killed emulators, producing spurious audit failures; use one owner per worktree.
+- **Next action unchanged:** physical two-device rehearsal (incl. iOS Safari keyboard/visualViewport). Nothing deployed.
