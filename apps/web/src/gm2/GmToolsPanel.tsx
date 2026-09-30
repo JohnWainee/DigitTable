@@ -123,6 +123,9 @@ export function GmToolsPanel({
           <input
             id="grant-item-id"
             type="text"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             value={itemId}
             onChange={(e) => setItemId(e.target.value)}
           />
@@ -279,6 +282,9 @@ export function GmToolsPanel({
           <input
             id="reassign-member-id"
             type="text"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             value={reassignMemberId}
             onChange={(e) => setReassignMemberId(e.target.value)}
           />
