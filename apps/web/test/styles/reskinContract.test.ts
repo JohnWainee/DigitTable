@@ -137,7 +137,13 @@ describe("reskin stylesheet contract", () => {
     });
 
     it("covers every styled <button> in the app: each className token is one the tap rule names", () => {
-      const covered = new Set(["primary-action", "secondary-action", "link-button"]);
+      // `gear-item-action` only positions a `link-button` (which carries the tap rule) inside its row.
+      const covered = new Set([
+        "primary-action",
+        "secondary-action",
+        "link-button",
+        "gear-item-action",
+      ]);
       const uncovered: string[] = [];
       for (const file of sourceFiles(join(here, "../../src"))) {
         const source = readFileSync(file, "utf8");
@@ -172,6 +178,13 @@ describe("reskin stylesheet contract", () => {
         }
       }
       expect(uncovered).toEqual([]);
+    });
+
+    it("lets a marked-use item action wrap inside its row instead of overflowing at large text", () => {
+      const action = rulesFor(/^\.gear-item-action$/);
+      expect(declaration(action, "max-width")[0]).toContain("100%");
+      expect(declaration(action, "overflow-wrap")).toEqual(["anywhere"]);
+      expect(declaration(rulesFor(/^\.gear-item$/), "min-width")).toEqual(["0"]);
     });
 
     it("keeps the read-only stepper value (role=spinbutton, focusable) at the tap size too", () => {

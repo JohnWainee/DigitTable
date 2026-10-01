@@ -461,6 +461,22 @@ button {
   text-align: left;
 }
 
+/* An item row: its checkbox label, then (for a marked-use item) the action under the label, indented to
+   the label text. A sibling of the label, so it can wrap and never overflows at large text sizes. */
+.gear-item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.gear-item-action {
+  --gear-indent: calc(2px + min(0.65rem, 3vw) + 1.65rem + min(0.85rem, 4vw));
+  align-self: flex-start;
+  max-width: calc(100% - var(--gear-indent));
+  margin-inline-start: var(--gear-indent);
+  overflow-wrap: anywhere;
+}
+
 .landing-actions {
   display: flex;
   flex-direction: column;
@@ -1380,7 +1396,8 @@ details ul {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  /* A strip of backdrop stays visible above the sheet so it reads as a sheet, not a page. */
+  /* A strip of backdrop stays visible above the sheet so it reads as a sheet, not a page (not on very
+     short viewports, see max-height: 28rem below). */
   padding: max(env(safe-area-inset-top), 1.5rem) env(safe-area-inset-right) 0
     env(safe-area-inset-left);
   background: rgba(3, 3, 4, 0.82);
@@ -1520,6 +1537,40 @@ details ul {
   .sheet-footer {
     padding-top: 0.5rem;
     padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Very short viewports (a landscape phone, where an on-screen keyboard leaves ~170-195px; iOS keeps the
+   layout viewport full height, so this matches there from the start): the title, the action row and the
+   body's own padding together left the scrolling body 24px tall, less than one field. Shrink the chrome
+   so label + field fit the body at once. The title stays (it names the dialog) at a smaller size. */
+@media (max-height: 28rem) {
+  /* Side padding is left to the rules above (notch insets); top/bottom give the room back. The footer
+     already pads itself by the bottom inset, so the sheet may sit flush with the bottom edge. */
+  .sheet-backdrop {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: 0;
+  }
+
+  .sheet-header {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+
+  .sheet-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .sheet-body {
+    padding-block: 0.4rem;
+    gap: 0.6rem;
+    /* No scroll margin: a revealed label + field must be able to sit flush in a ~75px body. */
+    scroll-padding-block: 0;
+  }
+
+  .sheet-footer {
+    padding-top: 0.35rem;
+    padding-bottom: calc(0.35rem + env(safe-area-inset-bottom));
   }
 }
 
