@@ -375,6 +375,35 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
     }
     report.states.push(entry);
   }
+  // Text-only 200% (what a browser "very large" font does to every rem) at the two narrowest phones, on
+  // every state, not just the correction sheet: nothing may be pushed outside the viewport (WCAG 1.4.4).
+  report.largeText ??= [];
+  for (const vp of [byName["phone-small"], byName["phone"]]) {
+    await applyViewport(device, vp);
+    await ev(device, `document.documentElement.style.fontSize = "32px"`);
+    await sleep(250);
+    const audit = await ev(device, CONTROL_AUDIT);
+    await ev(device, `document.documentElement.style.fontSize = ""`);
+    report.largeText.push({
+      surface: device.name,
+      state,
+      viewport: vp.name,
+      overflowPx: audit.overflowPx,
+      controlIssues: audit.issues,
+    });
+    if (audit.overflowPx > 1) {
+      fail(
+        `${device.name}/${state}@${vp.name}-text200`,
+        `horizontal overflow ${audit.overflowPx}px`,
+      );
+    }
+    for (const issue of audit.issues) {
+      fail(
+        `${device.name}/${state}@${vp.name}-text200`,
+        `${issue.control}: ${issue.problems.join("; ")}`,
+      );
+    }
+  }
   await applyViewport(device, original);
 }
 
@@ -398,6 +427,8 @@ const MODAL_GEOMETRY = `(() => {
     apply: box(apply),
     cancel: box(cancel),
     reason: box(reason),
+    reasonLabel: box(dialog.querySelector('label[for="correction-reason"]')),
+    bodyBox: box(body),
     body: { scrollHeight: body.scrollHeight, clientHeight: body.clientHeight, scrollTop: body.scrollTop, overflowY: getComputedStyle(body).overflowY },
     rootLocked: document.documentElement.classList.contains("sheet-open") && getComputedStyle(document.documentElement).overflow === "hidden",
     pageOverflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -447,6 +478,8 @@ async function auditModal(gm) {
     { name: "phone", ...byName["phone"] },
     { name: "phone-landscape", ...byName["phone-landscape"] },
     { name: "phone-667x375", width: 667, height: 375, mobile: true },
+    // Largest landscape phones (Plus/Max class), taller than the original compact-chrome threshold.
+    { name: "phone-926x428", width: 926, height: 428, mobile: true },
     { name: "tablet", ...byName["tablet"] },
     { name: "desktop", ...byName["desktop"] },
   ];
@@ -489,7 +522,8 @@ async function auditModal(gm) {
     // interactive-widget=resizes-content does) with the reason field focused.
     if (vp.mobile) {
       await ev(gm, `document.querySelector("#correction-reason").focus()`);
-      const keyboardHeight = Math.round(vp.height * 0.45);
+      // iOS landscape keyboards cover about 55% of the screen, portrait ones about 45%.
+      const keyboardHeight = Math.round(vp.height * (vp.width > vp.height ? 0.55 : 0.45));
       const shrunk = { ...vp, height: vp.height - keyboardHeight };
       await applyViewport(gm, shrunk);
       await sleep(400);
@@ -497,9 +531,14 @@ async function auditModal(gm) {
       const kbFrame = { left: 0, top: 0, right: shrunk.width, bottom: shrunk.height };
       record.keyboard = {
         size: `${shrunk.width}x${shrunk.height}`,
+        geometry: { reason: kb.reason, label: kb.reasonLabel, body: kb.bodyBox },
         checks: {
           dialogInsideViewport: within(kb.dialog, kbFrame),
           focusedFieldVisible: within(kb.reason, kbFrame),
+          // The sheet body clips its content, so a field can lie inside the viewport yet be cut off by
+          // the sheet's own title and action row. The field AND its label must fit the scrolling body.
+          fieldAndLabelInsideSheetBody:
+            within(kb.reason, kb.bodyBox, 1) && within(kb.reasonLabel, kb.bodyBox, 1),
           actionsVisible: within(kb.apply, kbFrame) && within(kb.cancel, kbFrame),
           noPageOverflow: kb.pageOverflowPx <= 1,
         },
@@ -935,6 +974,7 @@ async function main() {
     report.ok = report.failures.length === 0;
     report.summary = {
       states: report.states.length,
+      largeTextStates: (report.largeText ?? []).length,
       controlsAudited: report.states.reduce((n, s) => n + s.controls, 0),
       controlIssues: report.states.reduce((n, s) => n + s.controlIssues.length, 0),
       overflowStates: report.states.filter((s) => s.overflowPx > 1).length,

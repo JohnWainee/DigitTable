@@ -177,6 +177,54 @@ describe("SheetDialog", () => {
     ).toBe(true);
   });
 
+  it("reveals a focused field together with its label (the .form-field wrapper) so the control's context stays visible", async () => {
+    const user = userEvent.setup();
+    render(
+      <SheetDialog titleId="ctx-title" title="Context" onClose={() => {}} footer={<span />}>
+        <div className="form-field">
+          <label htmlFor="note">Note</label>
+          <input id="note" type="text" />
+        </div>
+      </SheetDialog>,
+    );
+    scrollIntoView.mockClear();
+
+    await user.click(screen.getByLabelText("Note"));
+    const revealed = scrollIntoView.mock.contexts[0] as HTMLElement;
+    expect(revealed).toHaveClass("form-field");
+    expect(revealed).toContainElement(screen.getByLabelText("Note"));
+  });
+
+  it("falls back to the field alone when label + field are taller than the sheet body's usable height", async () => {
+    const user = userEvent.setup();
+    render(
+      <SheetDialog titleId="tall-title" title="Tall" onClose={() => {}} footer={<span />}>
+        <div className="form-field">
+          <label htmlFor="tall-note">Note</label>
+          <input id="tall-note" type="text" />
+        </div>
+      </SheetDialog>,
+    );
+    const group = document.querySelector(".form-field") as HTMLElement;
+    const body = document.querySelector(".sheet-body") as HTMLElement;
+    // 74px of label + field in a 80px body whose scroll padding takes 2 x 6.4px: it cannot fit.
+    group.getBoundingClientRect = () => ({ height: 74 }) as DOMRect;
+    Object.defineProperty(body, "clientHeight", { configurable: true, value: 80 });
+    body.style.scrollPaddingTop = "6.4px";
+    body.style.scrollPaddingBottom = "6.4px";
+    scrollIntoView.mockClear();
+
+    await user.click(screen.getByLabelText("Note"));
+    expect(scrollIntoView.mock.contexts[0]).toBe(screen.getByLabelText("Note"));
+
+    // With room to spare (body 90px) the label + field pair is revealed instead.
+    Object.defineProperty(body, "clientHeight", { configurable: true, value: 90 });
+    scrollIntoView.mockClear();
+    await user.click(document.body);
+    await user.click(screen.getByLabelText("Note"));
+    expect(scrollIntoView.mock.contexts[0]).toBe(group);
+  });
+
   it("removes inert from the app BEFORE returning focus to the trigger (an inert node cannot take focus)", async () => {
     const user = userEvent.setup();
     const { container } = render(<Harness />);
