@@ -61,6 +61,10 @@ is not implemented yet).
    is not complete). Player and table switch to the new scene.
 9. **Reload test:** reload the player's browser tab. It should return to the dashboard without
    re-joining. Then briefly turn the phone's Wi-Fi off and on; the status strip should recover.
+10. **Lost-identity recovery:** in a fresh/private browser, choose *Join by code*, then *Lost your
+    browser? Recover your seat*. Enter the room code, the player's saved recovery code, and a display
+    name. Save the replacement code shown once, continue to the dashboard, and confirm the old code
+    no longer works.
 
 ## 4. Known behaviour and limits (read before blaming the app)
 
@@ -73,11 +77,11 @@ is not implemented yet).
   app uses `apps/web/src/shared/uuid.ts` instead. If you ever see
   `randomUUID is not a function`, you are running a build older than this fix.
 - **Identity lives in the browser profile.** A private/incognito tab, cleared site data, or a
-  different browser is a *new* anonymous identity and cannot resume the seat. There is currently
-  **no recovery-code entry screen** in this branch (the "Enter your recovery code" strip text has
-  nothing behind it). `sonnet-c/c08-recovery` (`97126b5`) adds one and applies cleanly onto this
-  base (tested in a scratch worktree); merging it is John's decision. Workaround: keep using the
-  same browser profile, or start a fresh room.
+  different browser is a *new* anonymous identity and cannot use the ordinary resume path. Use
+  *Lost your browser? Recover your seat* from *Join by code* with the saved room and recovery codes.
+  Redemption invalidates the old recovery code and shows a replacement once; save it before
+  continuing. This is intentionally a fresh-identity flow, not a workaround that reuses browser
+  storage.
 - The landing/create/join pages show "Connected" from a short timer, not from a live link check;
   the room screens (claim, player, GM, table) show real connection state.
 - Emulator data is volatile: stopping `lan-up.sh` deletes every room, member, and secret.
