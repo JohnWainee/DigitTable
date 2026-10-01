@@ -1,0 +1,2223 @@
+{
+  "label": "scratch",
+  "base": "http://127.0.0.1:4174",
+  "startedAt": "2026-10-01T23:37:24.179Z",
+  "states": [],
+  "modal": [
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 568,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 544
+        },
+        "apply": {
+          "top": 448,
+          "bottom": 496,
+          "left": 18,
+          "right": 302,
+          "width": 284,
+          "height": 48
+        },
+        "cancel": {
+          "top": 508,
+          "bottom": 556,
+          "left": 18,
+          "right": 302,
+          "width": 284,
+          "height": 48
+        },
+        "reason": {
+          "top": 1370.171875,
+          "bottom": 1418.171875,
+          "left": 18,
+          "right": 302,
+          "width": 284,
+          "height": 48
+        },
+        "reasonLabel": {
+          "top": 1344.1875,
+          "bottom": 1364.578125,
+          "left": 18,
+          "right": 302,
+          "width": 284,
+          "height": 20.390625
+        },
+        "bodyBox": {
+          "top": 87.984375,
+          "bottom": 434,
+          "left": 2,
+          "right": 318,
+          "width": 316,
+          "height": 346.015625
+        },
+        "body": {
+          "scrollHeight": 1346,
+          "clientHeight": 346,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "320x312",
+        "geometry": {
+          "reason": {
+            "top": 143.171875,
+            "bottom": 191.171875,
+            "left": 18,
+            "right": 302,
+            "width": 284,
+            "height": 48
+          },
+          "label": {
+            "top": 117.1875,
+            "bottom": 137.578125,
+            "left": 18,
+            "right": 302,
+            "width": 284,
+            "height": 20.390625
+          },
+          "body": {
+            "top": 29.59375,
+            "bottom": 190.8125,
+            "left": 2,
+            "right": 318,
+            "width": 316,
+            "height": 161.21875
+          }
+        },
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "fieldAndLabelInsideSheetBody": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 788
+        },
+        "apply": {
+          "top": 733.15625,
+          "bottom": 800,
+          "left": 18,
+          "right": 181.5,
+          "width": 163.5,
+          "height": 66.84375
+        },
+        "cancel": {
+          "top": 733.15625,
+          "bottom": 800,
+          "left": 193.5,
+          "right": 357,
+          "width": 163.5,
+          "height": 66.84375
+        },
+        "reason": {
+          "top": 1370.171875,
+          "bottom": 1418.171875,
+          "left": 18,
+          "right": 357,
+          "width": 339,
+          "height": 48
+        },
+        "reasonLabel": {
+          "top": 1344.1875,
+          "bottom": 1364.578125,
+          "left": 18,
+          "right": 357,
+          "width": 339,
+          "height": 20.390625
+        },
+        "bodyBox": {
+          "top": 87.984375,
+          "bottom": 719.15625,
+          "left": 2,
+          "right": 373,
+          "width": 371,
+          "height": 631.171875
+        },
+        "body": {
+          "scrollHeight": 1346,
+          "clientHeight": 631,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "375x447",
+        "geometry": {
+          "reason": {
+            "top": 319.171875,
+            "bottom": 367.171875,
+            "left": 18,
+            "right": 357,
+            "width": 339,
+            "height": 48
+          },
+          "label": {
+            "top": 293.1875,
+            "bottom": 313.578125,
+            "left": 18,
+            "right": 357,
+            "width": 339,
+            "height": 20.390625
+          },
+          "body": {
+            "top": 29.59375,
+            "bottom": 366.96875,
+            "left": 2,
+            "right": 373,
+            "width": 371,
+            "height": 337.375
+          }
+        },
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "fieldAndLabelInsideSheetBody": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 0,
+          "bottom": 375,
+          "left": 86,
+          "right": 726,
+          "width": 640,
+          "height": 375
+        },
+        "apply": {
+          "top": 319.40625,
+          "bottom": 367.40625,
+          "left": 104,
+          "right": 400,
+          "width": 296,
+          "height": 48
+        },
+        "cancel": {
+          "top": 319.40625,
+          "bottom": 367.40625,
+          "left": 412,
+          "right": 708,
+          "width": 296,
+          "height": 48
+        },
+        "reason": {
+          "top": 1246.171875,
+          "bottom": 1294.171875,
+          "left": 104,
+          "right": 708,
+          "width": 604,
+          "height": 48
+        },
+        "reasonLabel": {
+          "top": 1220.1875,
+          "bottom": 1240.578125,
+          "left": 104,
+          "right": 708,
+          "width": 604,
+          "height": 20.390625
+        },
+        "bodyBox": {
+          "top": 29.59375,
+          "bottom": 311.8125,
+          "left": 88,
+          "right": 724,
+          "width": 636,
+          "height": 282.21875
+        },
+        "body": {
+          "scrollHeight": 1271,
+          "clientHeight": 282,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "812x169",
+        "geometry": {
+          "reason": {
+            "top": 58.171875,
+            "bottom": 106.171875,
+            "left": 104,
+            "right": 708,
+            "width": 604,
+            "height": 48
+          },
+          "label": {
+            "top": 32.1875,
+            "bottom": 52.578125,
+            "left": 104,
+            "right": 708,
+            "width": 604,
+            "height": 20.390625
+          },
+          "body": {
+            "top": 29.59375,
+            "bottom": 105.8125,
+            "left": 88,
+            "right": 724,
+            "width": 636,
+            "height": 76.21875
+          }
+        },
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "fieldAndLabelInsideSheetBody": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 375,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 0,
+          "bottom": 375,
+          "left": 24,
+          "right": 643,
+          "width": 619,
+          "height": 375
+        },
+        "apply": {
+          "top": 319.40625,
+          "bottom": 367.40625,
+          "left": 42,
+          "right": 327.5,
+          "width": 285.5,
+          "height": 48
+        },
+        "cancel": {
+          "top": 319.40625,
+          "bottom": 367.40625,
+          "left": 339.5,
+          "right": 625,
+          "width": 285.5,
+          "height": 48
+        },
+        "reason": {
+          "top": 1246.171875,
+          "bottom": 1294.171875,
+          "left": 42,
+          "right": 625,
+          "width": 583,
+          "height": 48
+        },
+        "reasonLabel": {
+          "top": 1220.1875,
+          "bottom": 1240.578125,
+          "left": 42,
+          "right": 625,
+          "width": 583,
+          "height": 20.390625
+        },
+        "bodyBox": {
+          "top": 29.59375,
+          "bottom": 311.8125,
+          "left": 26,
+          "right": 641,
+          "width": 615,
+          "height": 282.21875
+        },
+        "body": {
+          "scrollHeight": 1271,
+          "clientHeight": 282,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "667x169",
+        "geometry": {
+          "reason": {
+            "top": 58.171875,
+            "bottom": 106.171875,
+            "left": 42,
+            "right": 625,
+            "width": 583,
+            "height": 48
+          },
+          "label": {
+            "top": 32.1875,
+            "bottom": 52.578125,
+            "left": 42,
+            "right": 625,
+            "width": 583,
+            "height": 20.390625
+          },
+          "body": {
+            "top": 29.59375,
+            "bottom": 105.8125,
+            "left": 26,
+            "right": 641,
+            "width": 615,
+            "height": 76.21875
+          }
+        },
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "fieldAndLabelInsideSheetBody": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-926x428",
+      "size": "926x428",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 926,
+          "innerHeight": 428,
+          "clientWidth": 926
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 926,
+          "height": 428,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 0,
+          "bottom": 428,
+          "left": 143,
+          "right": 783,
+          "width": 640,
+          "height": 428
+        },
+        "apply": {
+          "top": 372.40625,
+          "bottom": 420.40625,
+          "left": 161,
+          "right": 457,
+          "width": 296,
+          "height": 48
+        },
+        "cancel": {
+          "top": 372.40625,
+          "bottom": 420.40625,
+          "left": 469,
+          "right": 765,
+          "width": 296,
+          "height": 48
+        },
+        "reason": {
+          "top": 1246.171875,
+          "bottom": 1294.171875,
+          "left": 161,
+          "right": 765,
+          "width": 604,
+          "height": 48
+        },
+        "reasonLabel": {
+          "top": 1220.1875,
+          "bottom": 1240.578125,
+          "left": 161,
+          "right": 765,
+          "width": 604,
+          "height": 20.390625
+        },
+        "bodyBox": {
+          "top": 29.59375,
+          "bottom": 364.8125,
+          "left": 145,
+          "right": 781,
+          "width": 636,
+          "height": 335.21875
+        },
+        "body": {
+          "scrollHeight": 1271,
+          "clientHeight": 335,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "926x193",
+        "geometry": {
+          "reason": {
+            "top": 82.171875,
+            "bottom": 130.171875,
+            "left": 161,
+            "right": 765,
+            "width": 604,
+            "height": 48
+          },
+          "label": {
+            "top": 56.1875,
+            "bottom": 76.578125,
+            "left": 161,
+            "right": 765,
+            "width": 604,
+            "height": 20.390625
+          },
+          "body": {
+            "top": 29.59375,
+            "bottom": 129.8125,
+            "left": 145,
+            "right": 781,
+            "width": 636,
+            "height": 100.21875
+          }
+        },
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "fieldAndLabelInsideSheetBody": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "tablet",
+      "size": "768x1024",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 768,
+          "innerHeight": 1024,
+          "clientWidth": 768
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 768,
+          "height": 1024,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 160,
+          "bottom": 864,
+          "left": 64,
+          "right": 704,
+          "width": 640,
+          "height": 704
+        },
+        "apply": {
+          "top": 802,
+          "bottom": 850,
+          "left": 82,
+          "right": 378,
+          "width": 296,
+          "height": 48
+        },
+        "cancel": {
+          "top": 802,
+          "bottom": 850,
+          "left": 390,
+          "right": 686,
+          "width": 296,
+          "height": 48
+        },
+        "reason": {
+          "top": 1474.1875,
+          "bottom": 1522.1875,
+          "left": 82,
+          "right": 686,
+          "width": 604,
+          "height": 48
+        },
+        "reasonLabel": {
+          "top": 1448.203125,
+          "bottom": 1468.59375,
+          "left": 82,
+          "right": 686,
+          "width": 604,
+          "height": 20.390625
+        },
+        "bodyBox": {
+          "top": 216,
+          "bottom": 788,
+          "left": 66,
+          "right": 702,
+          "width": 636,
+          "height": 572
+        },
+        "body": {
+          "scrollHeight": 1322,
+          "clientHeight": 572,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "768x563",
+        "geometry": {
+          "reason": {
+            "top": 399.1875,
+            "bottom": 447.1875,
+            "left": 82,
+            "right": 686,
+            "width": 604,
+            "height": 48
+          },
+          "label": {
+            "top": 373.203125,
+            "bottom": 393.59375,
+            "left": 82,
+            "right": 686,
+            "width": 604,
+            "height": 20.390625
+          },
+          "body": {
+            "top": 80,
+            "bottom": 463,
+            "left": 66,
+            "right": 702,
+            "width": 636,
+            "height": 383
+          }
+        },
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "fieldAndLabelInsideSheetBody": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "desktop",
+      "size": "1280x800",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 1280,
+          "innerHeight": 800,
+          "clientWidth": 1280
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 1280,
+          "height": 800,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 752,
+          "left": 312.5,
+          "right": 952.5,
+          "width": 640,
+          "height": 704
+        },
+        "apply": {
+          "top": 690,
+          "bottom": 738,
+          "left": 330.5,
+          "right": 626.5,
+          "width": 296,
+          "height": 48
+        },
+        "cancel": {
+          "top": 690,
+          "bottom": 738,
+          "left": 638.5,
+          "right": 934.5,
+          "width": 296,
+          "height": 48
+        },
+        "reason": {
+          "top": 1362.1875,
+          "bottom": 1410.1875,
+          "left": 330.5,
+          "right": 919.5,
+          "width": 589,
+          "height": 48
+        },
+        "reasonLabel": {
+          "top": 1336.203125,
+          "bottom": 1356.59375,
+          "left": 330.5,
+          "right": 919.5,
+          "width": 589,
+          "height": 20.390625
+        },
+        "bodyBox": {
+          "top": 104,
+          "bottom": 676,
+          "left": 314.5,
+          "right": 950.5,
+          "width": 636,
+          "height": 572
+        },
+        "body": {
+          "scrollHeight": 1322,
+          "clientHeight": 572,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": -15,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "zoom-emulated",
+      "checks": {
+        "pageScaleApplied": true,
+        "dialogInsideVisualViewportWhenZoomed": true,
+        "actionsInsideVisualViewportWhenZoomed": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 234.375,
+          "height": 507.5,
+          "scale": 1.600000023841858
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 507.5,
+          "left": 0,
+          "right": 234.375,
+          "width": 234.375,
+          "height": 483.5
+        },
+        "apply": {
+          "top": 368.65625,
+          "bottom": 435.5,
+          "left": 18,
+          "right": 216.375,
+          "width": 198.375,
+          "height": 66.84375
+        },
+        "cancel": {
+          "top": 447.5,
+          "bottom": 495.5,
+          "left": 18,
+          "right": 216.375,
+          "width": 198.375,
+          "height": 48
+        },
+        "reason": {
+          "top": 1672.546875,
+          "bottom": 1720.546875,
+          "left": 18,
+          "right": 216.375,
+          "width": 198.375,
+          "height": 48
+        },
+        "reasonLabel": {
+          "top": 1646.5625,
+          "bottom": 1666.953125,
+          "left": 18,
+          "right": 216.375,
+          "width": 198.375,
+          "height": 20.390625
+        },
+        "bodyBox": {
+          "top": 87.984375,
+          "bottom": 354.65625,
+          "left": 2,
+          "right": 232.375,
+          "width": 230.375,
+          "height": 266.671875
+        },
+        "body": {
+          "scrollHeight": 1649,
+          "clientHeight": 267,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "pinch-gesture",
+      "checks": {
+        "pinchZoomStillWorksWithSheetOpen": true
+      },
+      "notes": [],
+      "scaleBefore": 1,
+      "scaleAfter": 2.0000014305114746,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "scenario": "safe-area-landscape-constrained",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfLeftInset": true,
+        "sheetClearOfRightInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 375,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 0,
+          "bottom": 375,
+          "left": 47,
+          "right": 620,
+          "width": 573,
+          "height": 375
+        },
+        "apply": {
+          "top": 298.40625,
+          "bottom": 346.40625,
+          "left": 65,
+          "right": 327.5,
+          "width": 262.5,
+          "height": 48
+        },
+        "cancel": {
+          "top": 298.40625,
+          "bottom": 346.40625,
+          "left": 339.5,
+          "right": 602,
+          "width": 262.5,
+          "height": 48
+        },
+        "reason": {
+          "top": 1246.171875,
+          "bottom": 1294.171875,
+          "left": 65,
+          "right": 602,
+          "width": 537,
+          "height": 48
+        },
+        "reasonLabel": {
+          "top": 1220.1875,
+          "bottom": 1240.578125,
+          "left": 65,
+          "right": 602,
+          "width": 537,
+          "height": 20.390625
+        },
+        "bodyBox": {
+          "top": 29.59375,
+          "bottom": 290.8125,
+          "left": 49,
+          "right": 618,
+          "width": 569,
+          "height": 261.21875
+        },
+        "body": {
+          "scrollHeight": 1271,
+          "clientHeight": 261,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 26.6,
+      "sheetWidth": 573,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "scenario": "safe-area-landscape-812",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfLeftInset": true,
+        "sheetClearOfRightInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 0,
+          "bottom": 375,
+          "left": 86,
+          "right": 726,
+          "width": 640,
+          "height": 375
+        },
+        "apply": {
+          "top": 298.40625,
+          "bottom": 346.40625,
+          "left": 104,
+          "right": 400,
+          "width": 296,
+          "height": 48
+        },
+        "cancel": {
+          "top": 298.40625,
+          "bottom": 346.40625,
+          "left": 412,
+          "right": 708,
+          "width": 296,
+          "height": 48
+        },
+        "reason": {
+          "top": 1246.171875,
+          "bottom": 1294.171875,
+          "left": 104,
+          "right": 708,
+          "width": 604,
+          "height": 48
+        },
+        "reasonLabel": {
+          "top": 1220.1875,
+          "bottom": 1240.578125,
+          "left": 104,
+          "right": 708,
+          "width": 604,
+          "height": 20.390625
+        },
+        "bodyBox": {
+          "top": 29.59375,
+          "bottom": 290.8125,
+          "left": 88,
+          "right": 724,
+          "width": 636,
+          "height": 261.21875
+        },
+        "body": {
+          "scrollHeight": 1271,
+          "clientHeight": 261,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 26.6,
+      "sheetWidth": 640,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "safe-area-portrait",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfTopInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 47,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 765
+        },
+        "apply": {
+          "top": 699.15625,
+          "bottom": 766,
+          "left": 18,
+          "right": 181.5,
+          "width": 163.5,
+          "height": 66.84375
+        },
+        "cancel": {
+          "top": 699.15625,
+          "bottom": 766,
+          "left": 193.5,
+          "right": 357,
+          "width": 163.5,
+          "height": 66.84375
+        },
+        "reason": {
+          "top": 1393.171875,
+          "bottom": 1441.171875,
+          "left": 18,
+          "right": 357,
+          "width": 339,
+          "height": 48
+        },
+        "reasonLabel": {
+          "top": 1367.1875,
+          "bottom": 1387.578125,
+          "left": 18,
+          "right": 357,
+          "width": 339,
+          "height": 20.390625
+        },
+        "bodyBox": {
+          "top": 110.984375,
+          "bottom": 685.15625,
+          "left": 2,
+          "right": 373,
+          "width": 371,
+          "height": 574.171875
+        },
+        "body": {
+          "scrollHeight": 1346,
+          "clientHeight": 574,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 46,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "text-150-phone-small",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 36,
+          "bottom": 568,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 532
+        },
+        "apply": {
+          "top": 361.71875,
+          "bottom": 460,
+          "left": 26,
+          "right": 294,
+          "width": 268,
+          "height": 98.28125
+        },
+        "cancel": {
+          "top": 478,
+          "bottom": 550,
+          "left": 26,
+          "right": 294,
+          "width": 268,
+          "height": 72
+        },
+        "reason": {
+          "top": 2503.921875,
+          "bottom": 2575.921875,
+          "left": 26,
+          "right": 294,
+          "width": 268,
+          "height": 72
+        },
+        "reasonLabel": {
+          "top": 2464.921875,
+          "bottom": 2495.53125,
+          "left": 26,
+          "right": 294,
+          "width": 268,
+          "height": 30.609375
+        },
+        "bodyBox": {
+          "top": 129.96875,
+          "bottom": 341.71875,
+          "left": 2,
+          "right": 318,
+          "width": 316,
+          "height": 211.75
+        },
+        "body": {
+          "scrollHeight": 2470,
+          "clientHeight": 212,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 24,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "text-200-phone",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 764
+        },
+        "apply": {
+          "top": 538.28125,
+          "bottom": 668,
+          "left": 34,
+          "right": 341,
+          "width": 307,
+          "height": 129.71875
+        },
+        "cancel": {
+          "top": 692,
+          "bottom": 788,
+          "left": 34,
+          "right": 341,
+          "width": 307,
+          "height": 96
+        },
+        "reason": {
+          "top": 3687.234375,
+          "bottom": 3783.234375,
+          "left": 34,
+          "right": 341,
+          "width": 307,
+          "height": 96
+        },
+        "reasonLabel": {
+          "top": 3635.25,
+          "bottom": 3676.046875,
+          "left": 34,
+          "right": 341,
+          "width": 307,
+          "height": 40.796875
+        },
+        "bodyBox": {
+          "top": 216.765625,
+          "bottom": 512.28125,
+          "left": 2,
+          "right": 373,
+          "width": 371,
+          "height": 295.515625
+        },
+        "body": {
+          "scrollHeight": 3598,
+          "clientHeight": 296,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "text-200-phone-small",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 568,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 520
+        },
+        "apply": {
+          "top": 366.8125,
+          "bottom": 537,
+          "left": 34,
+          "right": 286,
+          "width": 252,
+          "height": 170.1875
+        },
+        "cancel": {
+          "top": 561,
+          "bottom": 657,
+          "left": 34,
+          "right": 286,
+          "width": 252,
+          "height": 96
+        },
+        "reason": {
+          "top": 4318.359375,
+          "bottom": 4414.359375,
+          "left": 34,
+          "right": 286,
+          "width": 252,
+          "height": 96
+        },
+        "reasonLabel": {
+          "top": 4225.578125,
+          "bottom": 4307.171875,
+          "left": 34,
+          "right": 286,
+          "width": 252,
+          "height": 81.59375
+        },
+        "bodyBox": {
+          "top": 216.765625,
+          "bottom": 340.8125,
+          "left": 2,
+          "right": 318,
+          "width": 316,
+          "height": 124.046875
+        },
+        "body": {
+          "scrollHeight": 4230,
+          "clientHeight": 124,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "scenario": "text-150-phone-landscape",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 0,
+          "bottom": 375,
+          "left": 36,
+          "right": 776,
+          "width": 740,
+          "height": 375
+        },
+        "apply": {
+          "top": 292.609375,
+          "bottom": 364.609375,
+          "left": 62,
+          "right": 397,
+          "width": 335,
+          "height": 72
+        },
+        "cancel": {
+          "top": 292.609375,
+          "bottom": 364.609375,
+          "left": 415,
+          "right": 750,
+          "width": 335,
+          "height": 72
+        },
+        "reason": {
+          "top": 1864.390625,
+          "bottom": 1936.390625,
+          "left": 62,
+          "right": 750,
+          "width": 688,
+          "height": 72
+        },
+        "reasonLabel": {
+          "top": 1825.390625,
+          "bottom": 1856,
+          "left": 62,
+          "right": 750,
+          "width": 688,
+          "height": 30.609375
+        },
+        "bodyBox": {
+          "top": 42.40625,
+          "bottom": 282.21875,
+          "left": 38,
+          "right": 774,
+          "width": 736,
+          "height": 239.8125
+        },
+        "body": {
+          "scrollHeight": 1904,
+          "clientHeight": 240,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 24,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "scenario": "text-200-phone-landscape",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 0,
+          "bottom": 375,
+          "left": 48,
+          "right": 764,
+          "width": 716,
+          "height": 375
+        },
+        "apply": {
+          "top": 236.1875,
+          "bottom": 365.90625,
+          "left": 82,
+          "right": 394,
+          "width": 312,
+          "height": 129.71875
+        },
+        "cancel": {
+          "top": 236.1875,
+          "bottom": 365.90625,
+          "left": 418,
+          "right": 730,
+          "width": 312,
+          "height": 129.71875
+        },
+        "reason": {
+          "top": 2530.53125,
+          "bottom": 2626.53125,
+          "left": 82,
+          "right": 730,
+          "width": 648,
+          "height": 96
+        },
+        "reasonLabel": {
+          "top": 2478.546875,
+          "bottom": 2519.34375,
+          "left": 82,
+          "right": 730,
+          "width": 648,
+          "height": 40.796875
+        },
+        "bodyBox": {
+          "top": 55.203125,
+          "bottom": 223,
+          "left": 50,
+          "right": 762,
+          "width": 712,
+          "height": 167.796875
+        },
+        "body": {
+          "scrollHeight": 2584,
+          "clientHeight": 168,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "scenario": "text-200-phone-667x375",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 375,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 0,
+          "bottom": 375,
+          "left": 48,
+          "right": 619,
+          "width": 571,
+          "height": 375
+        },
+        "apply": {
+          "top": 236.1875,
+          "bottom": 332.1875,
+          "left": 82,
+          "right": 585,
+          "width": 503,
+          "height": 96
+        },
+        "cancel": {
+          "top": 356.1875,
+          "bottom": 452.1875,
+          "left": 82,
+          "right": 585,
+          "width": 503,
+          "height": 96
+        },
+        "reason": {
+          "top": 2530.53125,
+          "bottom": 2626.53125,
+          "left": 82,
+          "right": 585,
+          "width": 503,
+          "height": 96
+        },
+        "reasonLabel": {
+          "top": 2478.546875,
+          "bottom": 2519.34375,
+          "left": 82,
+          "right": 585,
+          "width": 503,
+          "height": 40.796875
+        },
+        "bodyBox": {
+          "top": 55.203125,
+          "bottom": 223,
+          "left": 50,
+          "right": 617,
+          "width": 567,
+          "height": 167.796875
+        },
+        "body": {
+          "scrollHeight": 2584,
+          "clientHeight": 168,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-926x428",
+      "size": "926x428",
+      "scenario": "text-200-phone-926x428",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 926,
+          "innerHeight": 428,
+          "clientWidth": 926
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 926,
+          "height": 428,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 0,
+          "bottom": 428,
+          "left": 48,
+          "right": 878,
+          "width": 830,
+          "height": 428
+        },
+        "apply": {
+          "top": 285.09375,
+          "bottom": 414.8125,
+          "left": 82,
+          "right": 451,
+          "width": 369,
+          "height": 129.71875
+        },
+        "cancel": {
+          "top": 285.09375,
+          "bottom": 414.8125,
+          "left": 475,
+          "right": 844,
+          "width": 369,
+          "height": 129.71875
+        },
+        "reason": {
+          "top": 2482.53125,
+          "bottom": 2578.53125,
+          "left": 82,
+          "right": 844,
+          "width": 762,
+          "height": 96
+        },
+        "reasonLabel": {
+          "top": 2430.546875,
+          "bottom": 2471.34375,
+          "left": 82,
+          "right": 844,
+          "width": 762,
+          "height": 40.796875
+        },
+        "bodyBox": {
+          "top": 55.203125,
+          "bottom": 271.90625,
+          "left": 50,
+          "right": 876,
+          "width": 826,
+          "height": 216.703125
+        },
+        "body": {
+          "scrollHeight": 2536,
+          "clientHeight": 217,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "tablet",
+      "size": "768x1024",
+      "scenario": "text-200-tablet",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 768,
+          "innerHeight": 1024,
+          "clientWidth": 768
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 768,
+          "height": 1024,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 976,
+          "left": 48,
+          "right": 720,
+          "width": 672,
+          "height": 928
+        },
+        "apply": {
+          "top": 779.8125,
+          "bottom": 950,
+          "left": 82,
+          "right": 372,
+          "width": 290,
+          "height": 170.1875
+        },
+        "cancel": {
+          "top": 779.8125,
+          "bottom": 950,
+          "left": 396,
+          "right": 686,
+          "width": 290,
+          "height": 170.1875
+        },
+        "reason": {
+          "top": 2698.515625,
+          "bottom": 2794.515625,
+          "left": 82,
+          "right": 686,
+          "width": 604,
+          "height": 96
+        },
+        "reasonLabel": {
+          "top": 2646.53125,
+          "bottom": 2687.328125,
+          "left": 82,
+          "right": 686,
+          "width": 604,
+          "height": 40.796875
+        },
+        "bodyBox": {
+          "top": 139.984375,
+          "bottom": 753.8125,
+          "left": 50,
+          "right": 718,
+          "width": 668,
+          "height": 613.828125
+        },
+        "body": {
+          "scrollHeight": 2687,
+          "clientHeight": 614,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "tablet-landscape",
+      "size": "1024x768",
+      "scenario": "text-200-tablet-landscape",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 1024,
+          "innerHeight": 768,
+          "clientWidth": 1024
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 1024,
+          "height": 768,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 720,
+          "left": 48,
+          "right": 976,
+          "width": 928,
+          "height": 672
+        },
+        "apply": {
+          "top": 598,
+          "bottom": 694,
+          "left": 82,
+          "right": 500,
+          "width": 418,
+          "height": 96
+        },
+        "cancel": {
+          "top": 598,
+          "bottom": 694,
+          "left": 524,
+          "right": 942,
+          "width": 418,
+          "height": 96
+        },
+        "reason": {
+          "top": 2662.03125,
+          "bottom": 2758.03125,
+          "left": 82,
+          "right": 942,
+          "width": 860,
+          "height": 96
+        },
+        "reasonLabel": {
+          "top": 2610.046875,
+          "bottom": 2650.84375,
+          "left": 82,
+          "right": 942,
+          "width": 860,
+          "height": 40.796875
+        },
+        "bodyBox": {
+          "top": 151.5,
+          "bottom": 572,
+          "left": 50,
+          "right": 974,
+          "width": 924,
+          "height": 420.5
+        },
+        "body": {
+          "scrollHeight": 2639,
+          "clientHeight": 421,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "desktop-short",
+      "size": "1280x400",
+      "scenario": "text-200-desktop-short",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 1280,
+          "innerHeight": 400,
+          "clientWidth": 1280
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 1280,
+          "height": 400,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 0,
+          "bottom": 400,
+          "left": 48,
+          "right": 1217,
+          "width": 1169,
+          "height": 400
+        },
+        "apply": {
+          "top": 290.8125,
+          "bottom": 386.8125,
+          "left": 82,
+          "right": 620.5,
+          "width": 538.5,
+          "height": 96
+        },
+        "cancel": {
+          "top": 290.8125,
+          "bottom": 386.8125,
+          "left": 644.5,
+          "right": 1183,
+          "width": 538.5,
+          "height": 96
+        },
+        "reason": {
+          "top": 2482.53125,
+          "bottom": 2578.53125,
+          "left": 82,
+          "right": 1168,
+          "width": 1086,
+          "height": 96
+        },
+        "reasonLabel": {
+          "top": 2430.546875,
+          "bottom": 2471.34375,
+          "left": 82,
+          "right": 1168,
+          "width": 1086,
+          "height": 40.796875
+        },
+        "bodyBox": {
+          "top": 55.203125,
+          "bottom": 277.625,
+          "left": 50,
+          "right": 1215,
+          "width": 1165,
+          "height": 222.421875
+        },
+        "body": {
+          "scrollHeight": 2536,
+          "clientHeight": 222,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": -15,
+        "animationName": "sheet-rise",
+        "background": "rgb(13, 13, 16)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": null,
+      "informationalChecks": []
+    }
+  ],
+  "reducedMotion": {
+    "allowed": {
+      "sheetAnimation": "sheet-rise",
+      "sheetDuration": "0.18s",
+      "backdropAnimation": "sheet-fade",
+      "anyLongTransition": true,
+      "matches": false
+    },
+    "reduced": {
+      "sheetAnimation": "none",
+      "sheetDuration": "1e-06s",
+      "backdropAnimation": "none",
+      "anyLongTransition": false,
+      "matches": true
+    }
+  },
+  "routes": [],
+  "failures": [],
+  "console": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  },
+  "finishedAt": "2026-10-01T23:37:57.481Z",
+  "ok": true,
+  "summary": {
+    "states": 0,
+    "largeTextStates": 0,
+    "controlsAudited": 0,
+    "controlIssues": 0,
+    "overflowStates": 0,
+    "axeHardViolations": 0,
+    "axeBestPractice": [],
+    "failures": 0
+  }
+}
