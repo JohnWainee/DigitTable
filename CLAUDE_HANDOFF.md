@@ -582,3 +582,16 @@ When pausing or finishing a material unit:
 - `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator`: **108/108** (18 testing, 86 Functions, 4 web).
 - Emulator-mode build (`VITE_FIREBASE_USE_EMULATOR=true`, fake `demo-digitable` config, `127.0.0.1:4181`; 4174 was held by another session) under `firebase emulators:exec`: `ui-audit.mjs` passed with **150 states, 1,422 controls, 14 modal/sheet scenarios, 0 control issues, 0 overflow states, 0 hard axe violations, 0 failures**; `two-device-smoke.mjs --reload` passed **17/17** steps. Reports: `/private/tmp/digitable-sonnet-ch-evidence-20261001/{ui-audit-report,smoke-report}.json`.
 - Still open, unchanged: physical iOS/Android device pass (real Safari visual-viewport keyboard behaviour) for John.
+
+## Sonnet CI reskin audit (branch `sonnet-ci/reskin-fresh-20261001`, from `90d3954`, 2026-09-30)
+
+**Scope:** independent hunt for one concrete, reproducible mobile UI/UX defect (select/menu/disclosure/modal/drawer/allocation controls at 320-430px visual viewports, keyboard-open, safe areas, contrast, touch targets, focus, reduced motion).
+
+**Finding: no defect found; no source change.** Re-read `shared/SheetDialog.tsx`, `shared/useVisualViewportBox.ts` and the `.sheet*` rules: visual-viewport-sized backdrop, pinned header/footer with only the body scrolling, footer capped at 40% of the visual viewport with safe-area-bottom padding, `touch-action: auto` (pinch-zoom preserved), inert siblings, reachable-only Tab trap, focus restore, keyboard-reveal `scrollIntoView`, `@supports` dvh fallbacks, and a reduced-motion branch. No authorization, projection-isolation, provenance or GM/player/table semantic was touched. Because nothing changed, no before/after screenshots or independent code review were required. The only axe note, `page-has-heading-one` on the `anon/route-claim-no-such-room` phone state, is a best-practice rule (not a hard WCAG failure) and was already recorded in `docs/evidence/ca-reskin-20260929/`.
+
+**Evidence (this session; nothing deployed, no Firebase resource touched):**
+
+- `npm run check`: format, lint, typecheck clean; **704** active tests passed, 11 todo.
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator`: **108/108** (18 testing, 86 Functions, 4 web).
+- Emulator-mode production build (fake `demo-digitable` config, `127.0.0.1:4192`) under `firebase emulators:exec`: `ui-audit.mjs` reported **150 states, 1,482 controls, 0 control issues, 0 overflow states, 0 hard axe violations, 0 failures**; `two-device-smoke.mjs --reload` passed **all 17 steps**. Reports: `/private/tmp/digitable-sonnet-ci-evidence-20261001/{ui,smoke}/report.json`.
+- Still open, unchanged: physical iOS/Android pass (real Safari visual-viewport keyboard behaviour) for John.
