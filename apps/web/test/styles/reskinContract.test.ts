@@ -113,7 +113,18 @@ describe("reskin stylesheet contract", () => {
         }
       }
       expect(uncovered).toEqual([]);
-      // Class-less buttons are only the +/- steppers inside .stepper-controls (rule names them).
+      // `=>` inside an onClick must not end the opening tag, or class-less buttons slip past.
+      const classless: string[] = [];
+      for (const file of sourceFiles(join(here, "../../src"))) {
+        // The +/- steppers inside .stepper-controls are named by the tap rule, checked below.
+        if (/gm2\/CorrectionDialog\.tsx$|shared\/AllocationStepper\.tsx$/.test(file)) continue;
+        const source = readFileSync(file, "utf8");
+        for (const match of source.matchAll(/<button\b((?:=>|[^>])*)>/g)) {
+          if (!/\bclassName=/.test(match[1] ?? "")) classless.push(file.split("/src/")[1] ?? file);
+        }
+      }
+      expect(classless).toEqual([]);
+      // The remaining class-less buttons are the +/- steppers inside .stepper-controls (rule names them).
       const buttonRule = rulesFor(/\.primary-action.*\.stepper-controls button/s);
       expect(declaration(buttonRule, "min-height")).toContain("var(--tap)");
     });

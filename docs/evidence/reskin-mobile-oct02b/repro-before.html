@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="styles-before.css" />
+  </head>
+  <body>
+    <main>
+      <section class="step">
+        <fieldset>
+          <legend>Items</legend>
+          <div class="gear-list">
+            <label class="gear-option"
+              ><input type="checkbox" />Cigarettes taken from the pockets of hanged men (3/3 uses) —
+              mark to regain 2 Blood<button type="button">Mark and regain Blood</button></label
+            >
+          </div>
+        </fieldset>
+      </section>
+    </main>
+    <pre id="out"></pre>
+    <script>
+      const l = document.querySelector(".gear-option"),
+        b = l.querySelector("button"),
+        r = b.getBoundingClientRect(),
+        lr = l.getBoundingClientRect();
+      document.getElementById("out").textContent = JSON.stringify({
+        vw: innerWidth,
+        label: [lr.left, lr.right, lr.height],
+        btn: [r.left, r.right, r.width, r.height],
+        docW: document.documentElement.scrollWidth,
+      });
+    </script>
+  </body>
+</html>

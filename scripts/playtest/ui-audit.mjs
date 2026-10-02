@@ -419,8 +419,10 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  // The audit's player claims the first roster entry, whatever the roster calls it (the sourcebook
+  // roster replaced "Rook"), so correct whichever sheet is claimed.
+  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /—\\s*claimed/.test(li.textContent))?.querySelector("button")`;
+  await waitFor(gm, finder, 20000, "the claimed character's Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,

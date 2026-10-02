@@ -642,24 +642,6 @@ input[type="radio"]:disabled {
   flex-direction: row;
 }
 
-/* A gear row plus its optional own-action button (utility items): the button sits under the
-   label at its natural width instead of being squeezed beside the label text. */
-.gear-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.35rem;
-}
-
-.gear-item > .gear-option {
-  align-self: stretch;
-}
-
-.gear-item > .secondary-action {
-  max-width: 100%;
-  margin-left: 0.65rem;
-}
-
 .gear-option:has(:checked) {
   border-color: var(--acid);
   background: rgba(255, 230, 0, 0.1);
