@@ -375,6 +375,41 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
     }
     report.states.push(entry);
   }
+  // Text-only 200% (what a browser "very large" font does to every rem) at both portrait phones, the
+  // landscape phone and the tablet, on every state, not just the correction sheet: nothing may be
+  // pushed outside the viewport (WCAG 1.4.4).
+  report.largeText ??= [];
+  for (const vp of [
+    byName["phone-small"],
+    byName["phone"],
+    byName["phone-landscape"],
+    byName["tablet"],
+  ]) {
+    await applyViewport(device, vp);
+    await ev(device, `document.documentElement.style.fontSize = "32px"`);
+    await sleep(250);
+    const audit = await ev(device, CONTROL_AUDIT);
+    await ev(device, `document.documentElement.style.fontSize = ""`);
+    report.largeText.push({
+      surface: device.name,
+      state,
+      viewport: vp.name,
+      overflowPx: audit.overflowPx,
+      controlIssues: audit.issues,
+    });
+    if (audit.overflowPx > 1) {
+      fail(
+        `${device.name}/${state}@${vp.name}-text200`,
+        `horizontal overflow ${audit.overflowPx}px`,
+      );
+    }
+    for (const issue of audit.issues) {
+      fail(
+        `${device.name}/${state}@${vp.name}-text200`,
+        `${issue.control}: ${issue.problems.join("; ")}`,
+      );
+    }
+  }
   await applyViewport(device, original);
 }
 
@@ -398,6 +433,8 @@ const MODAL_GEOMETRY = `(() => {
     apply: box(apply),
     cancel: box(cancel),
     reason: box(reason),
+    reasonLabel: box(dialog.querySelector('label[for="correction-reason"]')),
+    bodyBox: box(body),
     body: { scrollHeight: body.scrollHeight, clientHeight: body.clientHeight, scrollTop: body.scrollTop, overflowY: getComputedStyle(body).overflowY },
     rootLocked: document.documentElement.classList.contains("sheet-open") && getComputedStyle(document.documentElement).overflow === "hidden",
     pageOverflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -419,8 +456,11 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  // The roster is content-owned and has changed since this audit was first written. Audit the
+  // correction affordance itself rather than one fixture character, so the mobile sheet gate
+  // remains valid for any shipped roster.
+  const finder = `[...document.querySelectorAll(".roster-panel-list button")].find(button => /^correct$/i.test(button.textContent.trim()) && !button.disabled)`;
+  await waitFor(gm, finder, 20000, "a roster Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
@@ -444,6 +484,8 @@ async function auditModal(gm) {
     { name: "phone", ...byName["phone"] },
     { name: "phone-landscape", ...byName["phone-landscape"] },
     { name: "phone-667x375", width: 667, height: 375, mobile: true },
+    // Largest landscape phones (Plus/Max class), taller than the original compact-chrome threshold.
+    { name: "phone-926x428", width: 926, height: 428, mobile: true },
     { name: "tablet", ...byName["tablet"] },
     { name: "desktop", ...byName["desktop"] },
   ];
@@ -486,7 +528,8 @@ async function auditModal(gm) {
     // interactive-widget=resizes-content does) with the reason field focused.
     if (vp.mobile) {
       await ev(gm, `document.querySelector("#correction-reason").focus()`);
-      const keyboardHeight = Math.round(vp.height * 0.45);
+      // iOS landscape keyboards cover about 55% of the screen, portrait ones about 45%.
+      const keyboardHeight = Math.round(vp.height * (vp.width > vp.height ? 0.55 : 0.45));
       const shrunk = { ...vp, height: vp.height - keyboardHeight };
       await applyViewport(gm, shrunk);
       await sleep(400);
@@ -494,9 +537,14 @@ async function auditModal(gm) {
       const kbFrame = { left: 0, top: 0, right: shrunk.width, bottom: shrunk.height };
       record.keyboard = {
         size: `${shrunk.width}x${shrunk.height}`,
+        geometry: { reason: kb.reason, label: kb.reasonLabel, body: kb.bodyBox },
         checks: {
           dialogInsideViewport: within(kb.dialog, kbFrame),
           focusedFieldVisible: within(kb.reason, kbFrame),
+          // The sheet body clips its content, so a field can lie inside the viewport yet be cut off by
+          // the sheet's own title and action row. The field AND its label must fit the scrolling body.
+          fieldAndLabelInsideSheetBody:
+            within(kb.reason, kb.bodyBox, 1) && within(kb.reasonLabel, kb.bodyBox, 1),
           actionsVisible: within(kb.apply, kbFrame) && within(kb.cancel, kbFrame),
           noPageOverflow: kb.pageOverflowPx <= 1,
         },
@@ -646,16 +694,13 @@ async function auditModal(gm) {
   }
 
   // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150% and
-  // 375px at 200% are gating. 320px at 200% is recorded but NOT gating: at that size the (unchanged,
-  // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
-  // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
-  // the handoff.
+  // 375px at 200% and 320px at 200% are all gating.
   for (const [vp, px, informationalChecks] of [
     [byName["phone-small"], 24, []],
     [byName["phone"], 32, []],
-    // Only the two geometry checks the console's overflow can break are non-gating here; the sheet's own
-    // bodyKeepsRoom / actionsReachable / reasonReachable still gate.
-    [byName["phone-small"], 32, ["dialogInsideViewport", "noPageOverflow"]],
+    // Gating since the stacked console paddings were capped by viewport width (styles.css); previously the
+    // two geometry checks were recorded only, because those panels overflowed the page at this combination.
+    [byName["phone-small"], 32, []],
   ]) {
     await scenario(
       `text-${px === 24 ? "150" : "200"}-${vp.name}`,
@@ -828,6 +873,25 @@ async function main() {
     await clickText(player, "button", /^Join session$/);
     await waitFor(player, `document.querySelector(".reveal-card")`, 30000, "player reveal");
     await captureState(player, "join-reveal");
+    codes.playerRecovery = await ev(
+      player,
+      `document.querySelector(".reveal-code")?.textContent.trim() ?? ""`,
+    );
+
+    // Recovery entry (a secret-entry form on a fresh/private browser): empty, filled, rejected.
+    // The successful redemption runs at the very end, because it rebinds the seat to the anon UID.
+    await goto(anon, "#/join");
+    await clickText(anon, "button", /Lost your browser/);
+    await waitFor(anon, `document.querySelector("#recovery-code")`, 30000, "recovery form");
+    await captureState(anon, "recover-form");
+    await setInput(anon, "#recover-room-code", codes["Room code"]);
+    await setInput(anon, "#recovery-code", "WRONG-CODE-0000");
+    await setInput(anon, "#recover-display-name", "Ada");
+    await captureState(anon, "recover-filled");
+    await clickText(anon, "button", /^Recover my seat$/);
+    await waitFor(anon, `document.querySelector(".error-message")`, 30000, "recovery rejection");
+    await captureState(anon, "recover-rejected");
+
     await clickText(player, "button", /wrote it down/);
     await waitFor(player, `document.querySelector(".roster-grid")`, 30000, "roster");
     await captureState(player, "claim-roster");
@@ -920,6 +984,16 @@ async function main() {
     );
     await captureState(table, "next-scene");
     await captureState(gm, "console-next-scene");
+
+    // Successful recovery redemption (last: it rebinds the player's seat to the anon identity).
+    // `anon` is still in recover mode from the rejected attempt (same hash, so no remount).
+    await waitFor(anon, `document.querySelector("#recovery-code")`, 30000, "recovery form 2");
+    await setInput(anon, "#recover-room-code", codes["Room code"]);
+    await setInput(anon, "#recovery-code", codes.playerRecovery.toLowerCase());
+    await setInput(anon, "#recover-display-name", "Ada");
+    await clickText(anon, "button", /^Recover my seat$/);
+    await waitFor(anon, `document.querySelector(".reveal-card")`, 30000, "recovery success");
+    await captureState(anon, "recover-success");
   } catch (error) {
     fail("flow", String(error.message));
   } finally {
@@ -935,6 +1009,7 @@ async function main() {
     report.ok = report.failures.length === 0;
     report.summary = {
       states: report.states.length,
+      largeTextStates: (report.largeText ?? []).length,
       controlsAudited: report.states.reduce((n, s) => n + s.controls, 0),
       controlIssues: report.states.reduce((n, s) => n + s.controlIssues.length, 0),
       overflowStates: report.states.filter((s) => s.overflowPx > 1).length,

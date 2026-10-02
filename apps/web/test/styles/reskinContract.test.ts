@@ -18,6 +18,7 @@ const css = readFileSync(join(here, "../../src/styles.css"), "utf8").replace(
   "",
 );
 const html = readFileSync(join(here, "../../index.html"), "utf8");
+const uiAudit = readFileSync(join(here, "../../../../scripts/playtest/ui-audit.mjs"), "utf8");
 
 /** All `selector { body }` rules at the top level or inside the named at-rule (or anywhere when omitted). */
 function rulesFor(selectorPattern: RegExp): string[] {
@@ -76,6 +77,34 @@ function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
+/**
+ * Character ranges of every balanced `<div className="...stepper-controls...">...</div>` block in
+ * `source` — the one place a class-less `<button>` is legitimate, because `.stepper-controls button`
+ * names it. Depth-counts nested `<div>`s so the range covers the whole block, not just its first
+ * child (the AllocationStepper's inner `role="spinbutton"` div would otherwise truncate it early).
+ */
+function stepperControlsRanges(source: string): [number, number][] {
+  const ranges: [number, number][] = [];
+  const openRe = /<div\b[^>]*className="[^"]*\bstepper-controls\b[^"]*"[^>]*>/g;
+  for (let open = openRe.exec(source); open; open = openRe.exec(source)) {
+    const start = open.index;
+    const tagRe = /<div\b[^>]*>|<\/div>/g;
+    tagRe.lastIndex = openRe.lastIndex;
+    let depth = 1;
+    let end = source.length;
+    for (let tag = tagRe.exec(source); tag; tag = tagRe.exec(source)) {
+      depth += tag[0].startsWith("</") ? -1 : 1;
+      if (depth === 0) {
+        end = tagRe.lastIndex;
+        break;
+      }
+    }
+    ranges.push([start, end]);
+    openRe.lastIndex = end;
+  }
+  return ranges;
+}
+
 function sourceFiles(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
     const path = join(dir, name);
@@ -84,6 +113,30 @@ function sourceFiles(dir: string): string[] {
 }
 
 describe("reskin stylesheet contract", () => {
+  it("keeps the real-browser correction-sheet audit roster-agnostic", () => {
+    // The audit must exercise the sheet for the current content roster, not a retired fixture
+    // character. Otherwise a roster update can silently skip every mobile sheet scenario.
+    expect(uiAudit).toContain('querySelectorAll(".roster-panel-list button")');
+    expect(uiAudit).toContain("/^correct$/i.test(button.textContent.trim())");
+    expect(uiAudit).not.toMatch(/\^rook/i);
+  });
+
+  it("keeps recovery entry and landscape/tablet 200% text inside the real-browser audit", () => {
+    // Recovery is the one secret-entry screen reached by a fresh/private browser; the audit once
+    // had no state for it. The successful redemption must stay last (it rebinds the player's seat).
+    const capture = (state: string): number =>
+      uiAudit.search(new RegExp(`captureState\\(anon, "${state}"`));
+    for (const state of ["recover-form", "recover-filled", "recover-rejected", "recover-success"]) {
+      expect(capture(state), state).toBeGreaterThan(-1);
+    }
+    expect(capture("recover-success")).toBeGreaterThan(
+      uiAudit.search(/captureState\(gm, "console-next-scene"/),
+    );
+    // The redemption types the code in lower case, exercising the server-bound normalisation.
+    expect(uiAudit).toMatch(/codes\.playerRecovery\.toLowerCase\(\)/);
+    expect(uiAudit.replace(/\s+/g, " ")).toContain('byName["phone-landscape"], byName["tablet"],');
+  });
+
   describe("touch targets and text-entry size", () => {
     it("defines the tap size as 3rem (48px at the default root, and it scales with user font size)", () => {
       expect(css).toMatch(/--tap:\s*3rem/);
@@ -100,7 +153,13 @@ describe("reskin stylesheet contract", () => {
     });
 
     it("covers every styled <button> in the app: each className token is one the tap rule names", () => {
-      const covered = new Set(["primary-action", "secondary-action", "link-button"]);
+      // `gear-item-action` only positions a `link-button` (which carries the tap rule) inside its row.
+      const covered = new Set([
+        "primary-action",
+        "secondary-action",
+        "link-button",
+        "gear-item-action",
+      ]);
       const uncovered: string[] = [];
       for (const file of sourceFiles(join(here, "../../src"))) {
         const source = readFileSync(file, "utf8");
@@ -116,6 +175,32 @@ describe("reskin stylesheet contract", () => {
       // Class-less buttons are only the +/- steppers inside .stepper-controls (rule names them).
       const buttonRule = rulesFor(/\.primary-action.*\.stepper-controls button/s);
       expect(declaration(buttonRule, "min-height")).toContain("var(--tap)");
+    });
+
+    it("never adds a <button> with no className at all outside .stepper-controls (it would get no tap-size rule)", () => {
+      const uncovered: string[] = [];
+      for (const file of sourceFiles(join(here, "../../src"))) {
+        const source = readFileSync(file, "utf8");
+        const stepperRanges = stepperControlsRanges(source);
+        for (const match of source.matchAll(/<button\b[^>]*?>/gs)) {
+          if (/className=/.test(match[0])) continue;
+          const insideStepper = stepperRanges.some(
+            ([start, end]) => match.index >= start && match.index < end,
+          );
+          if (!insideStepper) {
+            const line = source.slice(0, match.index).split("\n").length;
+            uncovered.push(`${file.split("/src/")[1]}:${line}`);
+          }
+        }
+      }
+      expect(uncovered).toEqual([]);
+    });
+
+    it("lets a marked-use item action wrap inside its row instead of overflowing at large text", () => {
+      const action = rulesFor(/^\.gear-item-action$/);
+      expect(declaration(action, "max-width")[0]).toContain("100%");
+      expect(declaration(action, "overflow-wrap")).toEqual(["anywhere"]);
+      expect(declaration(rulesFor(/^\.gear-item$/), "min-width")).toEqual(["0"]);
     });
 
     it("keeps the read-only stepper value (role=spinbutton, focusable) at the tap size too", () => {
@@ -154,6 +239,32 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(rulesFor(/^\.sheet-backdrop$/), "touch-action")).toEqual(["auto"]);
       expect(html).toContain("viewport-fit=cover"); // required for env(safe-area-inset-*)
       expect(html).toContain("interactive-widget=resizes-content");
+    });
+  });
+
+  describe("large text on a 320px phone", () => {
+    // Stacked rem paddings (shell > step > card > fieldset > option) left ~67px for a check-box row at
+    // 200% text on 320px and overflowed the page. Inline gutters must stay capped by viewport width.
+    it("caps every stacked inline gutter with a viewport-relative min()", () => {
+      const shell = declaration(rulesFor(/^\.landing-screen,\s*\.player-screen/), "padding").join(
+        " ",
+      );
+      expect(shell).toMatch(/max\(min\(1rem, 5vw\), env\(safe-area-inset-right\)\)/);
+      expect(shell).toMatch(/max\(min\(1rem, 5vw\), env\(safe-area-inset-left\)\)/);
+      expect(declaration(rulesFor(/^\.step,/), "padding").join(" ")).toContain("min(1rem, 5vw)");
+      expect(declaration(rulesFor(/^fieldset$/), "padding").join(" ")).toContain(
+        "min(0.85rem, 4vw)",
+      );
+      expect(declaration(rulesFor(/^\.pending-action-card,/), "padding").join(" ")).toContain(
+        "min(0.85rem, 4vw)",
+      );
+      const option = rulesFor(/^\.gear-option,/);
+      expect(declaration(option, "padding").join(" ")).toContain("min(0.65rem, 3vw)");
+      expect(declaration(option, "gap").join(" ")).toContain("min(0.85rem, 4vw)");
+    });
+
+    it("gates the 320px / 200% text audit scenario instead of recording it", () => {
+      expect(uiAudit).toContain('[byName["phone-small"], 32, []]');
     });
   });
 

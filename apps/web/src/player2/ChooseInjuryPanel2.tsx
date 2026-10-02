@@ -80,7 +80,7 @@ export function ChooseInjuryPanel2({
         Confirm
       </button>
       {onUseHat && usableHat ? (
-        <button type="button" onClick={() => onUseHat(usableHat.id)}>
+        <button type="button" className="link-button" onClick={() => onUseHat(usableHat.id)}>
           Destroy Cowboy hat to ignore this result
         </button>
       ) : null}

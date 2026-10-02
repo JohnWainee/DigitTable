@@ -71,7 +71,7 @@ export interface SheetDialogProps {
  * - Sized from the *visual* viewport (`useVisualViewportBox`) so it never
  *   slides under an on-screen keyboard or off screen with dynamic browser
  *   chrome; the header and footer stay pinned while only the body scrolls.
- * - Root scrolling is locked while it is open, and a focused text field is
+ * - Root scrolling is locked while it is open, and a focused text field (with its label) is
  *   scrolled back into view when the keyboard appears.
  * - Focus moves to the heading on open and returns to the trigger on close;
  *   Escape closes; Tab and Shift+Tab cycle inside the dialog.
@@ -166,7 +166,21 @@ export function SheetDialog({
         active.matches(TEXT_ENTRY_SELECTOR) &&
         typeof active.scrollIntoView === "function" // absent in jsdom and very old engines
       ) {
-        active.scrollIntoView({ block: "nearest", inline: "nearest" });
+        // Reveal the field together with its label (its `.form-field`) so the control's context stays
+        // visible, unless the pair is taller than the sheet body (short viewport, keyboard open): then
+        // the field alone, which is what must stay usable.
+        const group = active.closest<HTMLElement>(".form-field");
+        const body = root.querySelector<HTMLElement>(".sheet-body");
+        let target: HTMLElement = active;
+        if (group && body) {
+          // "nearest" scrolling keeps the body's scroll-padding clear, so that is not usable room.
+          const style = getComputedStyle(body);
+          const padding =
+            (Number.parseFloat(style.scrollPaddingTop) || 0) +
+            (Number.parseFloat(style.scrollPaddingBottom) || 0);
+          if (group.getBoundingClientRect().height <= body.clientHeight - padding) target = group;
+        }
+        target.scrollIntoView({ block: "nearest", inline: "nearest" });
       }
     }
     root.addEventListener("focusin", reveal);
