@@ -121,6 +121,22 @@ describe("reskin stylesheet contract", () => {
     expect(uiAudit).not.toMatch(/\^rook/i);
   });
 
+  it("keeps recovery entry and landscape/tablet 200% text inside the real-browser audit", () => {
+    // Recovery is the one secret-entry screen reached by a fresh/private browser; the audit once
+    // had no state for it. The successful redemption must stay last (it rebinds the player's seat).
+    const capture = (state: string): number =>
+      uiAudit.search(new RegExp(`captureState\\(anon, "${state}"`));
+    for (const state of ["recover-form", "recover-filled", "recover-rejected", "recover-success"]) {
+      expect(capture(state), state).toBeGreaterThan(-1);
+    }
+    expect(capture("recover-success")).toBeGreaterThan(
+      uiAudit.search(/captureState\(gm, "console-next-scene"/),
+    );
+    // The redemption types the code in lower case, exercising the server-bound normalisation.
+    expect(uiAudit).toMatch(/codes\.playerRecovery\.toLowerCase\(\)/);
+    expect(uiAudit.replace(/\s+/g, " ")).toContain('byName["phone-landscape"], byName["tablet"],');
+  });
+
   describe("touch targets and text-entry size", () => {
     it("defines the tap size as 3rem (48px at the default root, and it scales with user font size)", () => {
       expect(css).toMatch(/--tap:\s*3rem/);

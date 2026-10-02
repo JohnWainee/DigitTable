@@ -375,10 +375,16 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
     }
     report.states.push(entry);
   }
-  // Text-only 200% (what a browser "very large" font does to every rem) at the two narrowest phones, on
-  // every state, not just the correction sheet: nothing may be pushed outside the viewport (WCAG 1.4.4).
+  // Text-only 200% (what a browser "very large" font does to every rem) at both portrait phones, the
+  // landscape phone and the tablet, on every state, not just the correction sheet: nothing may be
+  // pushed outside the viewport (WCAG 1.4.4).
   report.largeText ??= [];
-  for (const vp of [byName["phone-small"], byName["phone"]]) {
+  for (const vp of [
+    byName["phone-small"],
+    byName["phone"],
+    byName["phone-landscape"],
+    byName["tablet"],
+  ]) {
     await applyViewport(device, vp);
     await ev(device, `document.documentElement.style.fontSize = "32px"`);
     await sleep(250);
@@ -867,6 +873,25 @@ async function main() {
     await clickText(player, "button", /^Join session$/);
     await waitFor(player, `document.querySelector(".reveal-card")`, 30000, "player reveal");
     await captureState(player, "join-reveal");
+    codes.playerRecovery = await ev(
+      player,
+      `document.querySelector(".reveal-code")?.textContent.trim() ?? ""`,
+    );
+
+    // Recovery entry (a secret-entry form on a fresh/private browser): empty, filled, rejected.
+    // The successful redemption runs at the very end, because it rebinds the seat to the anon UID.
+    await goto(anon, "#/join");
+    await clickText(anon, "button", /Lost your browser/);
+    await waitFor(anon, `document.querySelector("#recovery-code")`, 30000, "recovery form");
+    await captureState(anon, "recover-form");
+    await setInput(anon, "#recover-room-code", codes["Room code"]);
+    await setInput(anon, "#recovery-code", "WRONG-CODE-0000");
+    await setInput(anon, "#recover-display-name", "Ada");
+    await captureState(anon, "recover-filled");
+    await clickText(anon, "button", /^Recover my seat$/);
+    await waitFor(anon, `document.querySelector(".error-message")`, 30000, "recovery rejection");
+    await captureState(anon, "recover-rejected");
+
     await clickText(player, "button", /wrote it down/);
     await waitFor(player, `document.querySelector(".roster-grid")`, 30000, "roster");
     await captureState(player, "claim-roster");
@@ -959,6 +984,16 @@ async function main() {
     );
     await captureState(table, "next-scene");
     await captureState(gm, "console-next-scene");
+
+    // Successful recovery redemption (last: it rebinds the player's seat to the anon identity).
+    // `anon` is still in recover mode from the rejected attempt (same hash, so no remount).
+    await waitFor(anon, `document.querySelector("#recovery-code")`, 30000, "recovery form 2");
+    await setInput(anon, "#recover-room-code", codes["Room code"]);
+    await setInput(anon, "#recovery-code", codes.playerRecovery.toLowerCase());
+    await setInput(anon, "#recover-display-name", "Ada");
+    await clickText(anon, "button", /^Recover my seat$/);
+    await waitFor(anon, `document.querySelector(".reveal-card")`, 30000, "recovery success");
+    await captureState(anon, "recover-success");
   } catch (error) {
     fail("flow", String(error.message));
   } finally {
