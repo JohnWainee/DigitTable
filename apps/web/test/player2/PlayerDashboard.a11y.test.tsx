@@ -155,7 +155,13 @@ describe("Player dashboard (C02/C06)", () => {
 
     await reviewAsGm(currentRoomId(), gmMemberId);
     expect(await screen.findByRole("heading", { name: /your roll/i })).toBeInTheDocument();
-    expect(screen.getByText(/still need a target/i)).toBeInTheDocument();
+    // The status line agrees in number with the count it states ("1 of 4 dice still needs a target").
+    const status = screen.getByText(/still needs? a target/i).textContent.trim();
+    const parts = /^(\d+) of (\d+) (die|dice) still (needs?) a target\.$/.exec(status);
+    expect(parts, status).not.toBeNull();
+    const [, remaining, total, noun, verb] = parts!;
+    expect(verb).toBe(remaining === "1" ? "needs" : "need");
+    expect(noun).toBe(total === "1" ? "die" : "dice");
   });
 
   it("allocates every kept die and reaches a resolved confirmation", async () => {

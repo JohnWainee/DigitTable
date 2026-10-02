@@ -74,3 +74,72 @@ describe("ui-audit.mjs interaction coverage", () => {
     );
   });
 });
+
+describe("ui-audit.mjs pop-out, picker and form coverage", () => {
+  it("audits every roster character's own compose screen and correction sheet, not only the first one's", () => {
+    expect(audit).toContain("rosterSweep(cdp, gm, table, codes)");
+    // The sweep walks the roster by position and the sheet audit takes an index: no character is named.
+    expect(audit).toContain("auditSheetCase(gm, vp, index)");
+    expect(audit).toContain('document.querySelectorAll(".roster-panel-list li button")[${index}]');
+    expect(audit).toContain("/^Claim$/");
+    // Redeeming a recovery code revokes the original device's binding, so the sweep runs before it.
+    expect(audit.indexOf("await rosterSweep(")).toBeLessThan(audit.indexOf('"recover-reveal"'));
+  });
+
+  it("proves every text-entry control stays inside the viewport and uncovered with the keyboard up", () => {
+    expect(audit).toContain("KEYBOARD_FOCUS_AUDIT");
+    expect(audit).toContain("document.elementFromPoint");
+    for (const name of ["phone-small", "phone", "phone-landscape"]) {
+      expect(audit).toContain(`byName["${name}"]`);
+    }
+    // Run on the signed-out forms and on the GM console's long tools form.
+    expect(audit).toContain("await auditKeyboardFocus(anon, name)");
+    expect(audit).toContain('await auditKeyboardFocus(anon, "recover-form")');
+    expect(audit).toContain('await auditKeyboardFocus(gm, "console-scene-loaded")');
+  });
+
+  it("submits each of the four signed-out forms invalid and expects the app's own inline errors", () => {
+    for (const form of ["create-form", "join-form", "table-join-form", "recover-form"]) {
+      expect(audit, form).toContain(`"${form}": {`);
+    }
+    expect(audit).toContain("auditInlineValidation(anon, VALIDATION[name])");
+    expect(audit).toContain('auditInlineValidation(anon, VALIDATION["recover-form"])');
+    expect(audit).toContain('[aria-invalid="true"]');
+  });
+
+  it("flags the defect classes a size-only control check let through", () => {
+    for (const problem of [
+      "interactive control nested inside a <label>",
+      "button without a reskin class",
+      "is truncated and not echoed in full",
+      "relies on native validation bubbles",
+    ]) {
+      expect(audit, problem).toContain(problem);
+    }
+  });
+
+  it("judges the sheet by what its mode promises: pinned actions normally, scrollable ones when compact", () => {
+    // Real iOS Safari leaves ~70-140px on a landscape phone with the keyboard up; there the whole sheet
+    // scrolls (data-compact), so "actions visible without scrolling" is the wrong test.
+    for (const check of [
+      "compactSheetScrolls",
+      "actionsReachableByScrollingSheet",
+      "titleReachableByScrollingSheet",
+      "actionsVisible",
+    ]) {
+      expect(audit, check).toContain(check);
+    }
+    expect(audit).toContain("hasAttribute('data-compact')");
+  });
+
+  it("reproduces the iOS landscape-with-keyboard height (about 90px) and demands the compact sheet there", () => {
+    expect(audit).toContain("tight-keyboard-${vp.name}");
+    expect(audit).toContain("height: 90");
+    expect(audit).toContain("compactModeEngaged");
+  });
+
+  it("selects a long-labelled edit target so the select-echo check is not vacuous", () => {
+    expect(audit).toContain('await setSelect(gm, "#edit-target", /^threat:/)');
+    expect(audit).toContain('"console-edit-target"');
+  });
+});

@@ -6,6 +6,7 @@ import {
 } from "@digitable/template-eat-the-reich";
 import { Icon } from "../shared/Icon.js";
 import { SceneArt } from "../shared/SceneArt.js";
+import { SelectedOptionEcho } from "../shared/SelectedOptionEcho.js";
 
 export interface SceneDirectorProps {
   readonly scene: EatTheReichView["scene"];
@@ -106,6 +107,11 @@ export function SceneDirector({
     editTarget?.kind === "objective" ? objectives.find((o) => o.id === editTarget.id) : null;
   const editThreat =
     editTarget?.kind === "threat" ? threats.find((t) => t.id === editTarget.id) : null;
+  const editTargetLabel = editObjective
+    ? `Objective: ${editObjective.title}`
+    : editThreat
+      ? `Threat: ${editThreat.name}`
+      : null;
 
   function loadEditTargetDefaults(key: string): void {
     setEditTargetKey(key);
@@ -218,6 +224,7 @@ export function SceneDirector({
             </option>
           ))}
         </select>
+        <SelectedOptionEcho selectId="scene-select">{selected.title}</SelectedOptionEcho>
         <p className="form-hint">{selected.gmBriefing}</p>
         {scene && !primaryComplete && (
           <div className="form-field">
@@ -292,6 +299,9 @@ export function SceneDirector({
               </option>
             ))}
           </select>
+          {editTargetLabel && (
+            <SelectedOptionEcho selectId="edit-target">{editTargetLabel}</SelectedOptionEcho>
+          )}
           {editTarget && (editObjective ?? editThreat) && (
             <>
               <div className="form-field">

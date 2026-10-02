@@ -140,27 +140,37 @@ export function ComposeStep2({
         <legend>Items</legend>
         <div className="gear-list">
           {character.items.map((item) => (
-            <label key={item.id} className="gear-option">
-              <input
-                type="checkbox"
-                checked={itemIds.includes(item.id)}
-                disabled={item.usesRemaining <= 0 || item.poolEligible === false}
-                onChange={() => toggleClaimable(itemIds, item.id, setItemIds)}
-              />
-              {item.name} ({item.usesRemaining}/{item.maxUses} uses)
-              {item.usesRemaining <= 0 ? " — no uses left" : ""}
-              {item.useEffect?.kind === "gainBlood"
-                ? ` — mark to regain ${item.useEffect.amount} Blood`
-                : ""}
-              {item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
-                ? " — mark to ignore an Injury or being Downed; then destroy the hat"
-                : ""}
+            // A utility item's own action sits beside its claim row, never inside the label: a button
+            // inside a label is invalid, its text is folded into the checkbox's accessible name, and on a
+            // phone it was squeezed into a narrow, unstyled sliver next to the label text.
+            <div key={item.id} className="gear-item">
+              <label id={`item-${item.id}-label`} className="gear-option">
+                <input
+                  type="checkbox"
+                  checked={itemIds.includes(item.id)}
+                  disabled={item.usesRemaining <= 0 || item.poolEligible === false}
+                  onChange={() => toggleClaimable(itemIds, item.id, setItemIds)}
+                />
+                {item.name} ({item.usesRemaining}/{item.maxUses} uses)
+                {item.usesRemaining <= 0 ? " — no uses left" : ""}
+                {item.useEffect?.kind === "gainBlood"
+                  ? ` — mark to regain ${item.useEffect.amount} Blood`
+                  : ""}
+                {item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
+                  ? " — mark to ignore an Injury or being Downed; then destroy the hat"
+                  : ""}
+              </label>
               {item.useEffect?.kind === "gainBlood" && item.usesRemaining > 0 ? (
-                <button type="button" onClick={() => onUseUtilityItem(item.id)}>
+                <button
+                  type="button"
+                  className="secondary-action"
+                  aria-describedby={`item-${item.id}-label`}
+                  onClick={() => onUseUtilityItem(item.id)}
+                >
                   Mark and regain Blood
                 </button>
               ) : null}
-            </label>
+            </div>
           ))}
         </div>
       </fieldset>

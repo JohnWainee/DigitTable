@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { CharacterFullSheet, RollView, RollViewFull } from "@digitable/template-eat-the-reich";
+import { SelectedOptionEcho } from "../shared/SelectedOptionEcho.js";
 
 export interface GmToolsPanelProps {
   readonly gmSheets: readonly CharacterFullSheet[];
@@ -57,6 +58,7 @@ export function GmToolsPanel({
   const [advanceCharacterId, setAdvanceCharacterId] = useState(gmSheets[0]?.id ?? "");
   const advanceCharacter = gmSheets.find((c) => c.id === advanceCharacterId);
   const [advanceId, setAdvanceId] = useState(advanceCharacter?.advances[0]?.id ?? "");
+  const chosenAdvance = advanceCharacter?.advances.find((a) => a.id === advanceId);
   const [advanceReason, setAdvanceReason] = useState("");
 
   const [reassignCharacterId, setReassignCharacterId] = useState(gmSheets[0]?.id ?? "");
@@ -236,6 +238,12 @@ export function GmToolsPanel({
               </option>
             ))}
           </select>
+          {chosenAdvance && (
+            <SelectedOptionEcho selectId="advance-select">
+              {chosenAdvance.label}
+              {chosenAdvance.unlocked ? " (already unlocked)" : ""}
+            </SelectedOptionEcho>
+          )}
           <div className="form-field">
             <label htmlFor="advance-reason">Reason</label>
             <input

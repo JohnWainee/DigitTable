@@ -87,6 +87,8 @@ const report = {
   startedAt: new Date().toISOString(),
   states: [],
   modal: [],
+  keyboard: [],
+  validation: [],
   reducedMotion: null,
   routes: [],
   failures: [],
@@ -297,6 +299,12 @@ const CONTROL_AUDIT = `(() => {
   const issues = [];
   let count = 0;
   const selector = 'button, a[href], select, textarea, input, summary, [role="spinbutton"], [role="button"]';
+  // Every <button> must carry a reskin class (or be a +/- stepper): a class-less one renders as the
+  // browser's own grey button, without the tap size, the type, or the focus treatment.
+  const STYLED_BUTTON = ".primary-action, .secondary-action, .link-button, .stepper-controls button";
+  // A control's label is wrapped into this many text lines; four or more means it was squeezed.
+  const lineCount = (el) => new Set([...(() => { const r = document.createRange(); r.selectNodeContents(el); return r.getClientRects(); })()].map(q => Math.round(q.top))).size;
+  const measure = document.createElement("canvas").getContext("2d");
   for (const el of document.querySelectorAll(selector)) {
     if (!visible(el) || el.closest("svg")) continue;
     count += 1;
@@ -308,7 +316,32 @@ const CONTROL_AUDIT = `(() => {
     if (Math.min(r.width, r.height) < 43.5) found.push("target " + Math.round(r.width) + "x" + Math.round(r.height));
     if (r.right > vw + 0.5 || r.left < -0.5) found.push("outside viewport (" + Math.round(r.left) + ".." + Math.round(r.right) + " of " + vw + ")");
     if (el.matches('input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), select, textarea') && parseFloat(cs.fontSize) < 16) found.push("font-size " + cs.fontSize);
+    // An interactive control inside a <label> that is not the label's own control: the label's tap
+    // area and accessible name swallow it (invalid HTML, and a squeezed target on a phone).
+    const label = el.closest("label");
+    if (label && label.control !== el && !el.matches("input[type=hidden]")) found.push("interactive control nested inside a <label>");
+    if (el.matches("button") && !el.matches(STYLED_BUTTON)) found.push("button without a reskin class (browser-default styling)");
+    if (el.matches("button") && !el.closest(".stepper-controls") && lineCount(el) >= 4) found.push("label squeezed onto " + lineCount(el) + " lines");
+    // A native select ellipsises its closed value. When the chosen option is wider than the control the
+    // decisive part of the label can be cut off, so the full text must be echoed visibly beside it.
+    if (el.matches("select") && el.selectedOptions[0]) {
+      const text = el.selectedOptions[0].textContent.trim();
+      measure.font = cs.fontStyle + " " + cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily;
+      const inner = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 2 * parseFloat(cs.borderLeftWidth);
+      if (measure.measureText(text).width > inner) {
+        const echo = el.id && document.querySelector('[data-select-echo-for="' + el.id + '"]');
+        if (!echo || !echo.textContent.includes(text) || !visible(echo)) found.push('selected option "' + text.slice(0, 40) + '" is truncated and not echoed in full');
+      }
+    }
     if (found.length) issues.push({ control: describe(el), problems: found });
+  }
+  // A form that leaves validation to the browser raises its unstyled, short-lived, keyboard-prone
+  // native bubble; the app renders its own inline errors instead (noValidate).
+  for (const form of document.querySelectorAll("form")) {
+    if (!visible(form)) continue;
+    if (!form.noValidate && form.querySelector("[required], [pattern], [minlength]")) {
+      issues.push({ control: "form" + (form.className ? "." + form.className.trim().split(/\\s+/).join(".") : ""), problems: ["relies on native validation bubbles (no noValidate)"] });
+    }
   }
   const de = document.documentElement;
   return { controls: count, overflowPx: de.scrollWidth - de.clientWidth, issues };
@@ -398,6 +431,9 @@ const MODAL_GEOMETRY = `(() => {
     apply: box(apply),
     cancel: box(cancel),
     reason: box(reason),
+    heading: box(dialog.querySelector('h2')),
+    compact: dialog.parentElement.hasAttribute('data-compact'),
+    sheetScroll: { scrollHeight: dialog.scrollHeight, clientHeight: dialog.clientHeight, overflowY: cs.overflowY },
     body: { scrollHeight: body.scrollHeight, clientHeight: body.clientHeight, scrollTop: body.scrollTop, overflowY: getComputedStyle(body).overflowY },
     rootLocked: document.documentElement.classList.contains("sheet-open") && getComputedStyle(document.documentElement).overflow === "hidden",
     pageOverflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -418,11 +454,14 @@ function within(box, frame, tolerance = 1) {
   );
 }
 
-async function openCorrection(gm) {
-  // Roster-agnostic on purpose: the first listed character's Correct button. Matching a character
+async function openCorrection(gm, index = 0) {
+  // Roster-agnostic on purpose: the Nth listed character's Correct button. Matching a character
   // by name silently broke this audit when the sourcebook roster renamed the "rook" seat (the id
   // stayed, the display name changed); apps/web/test/playtest/auditHarnessContract.test.ts guards it.
-  const finder = `document.querySelector(".roster-panel-list li button")`;
+  const finder =
+    index === 0
+      ? `document.querySelector(".roster-panel-list li button")`
+      : `document.querySelectorAll(".roster-panel-list li button")[${index}]`;
   await waitFor(gm, finder, 20000, "a character's Correct button");
   await ev(
     gm,
@@ -440,6 +479,117 @@ async function closeCorrection(gm) {
   await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 10000, "dialog closed");
 }
 
+/**
+ * One viewport's checks of the correction sheet for the roster's `index`-th character: containment,
+ * actions reachable, root scroll lock, inert background, focus handling, an emulated on-screen keyboard
+ * with the reason field focused, then the focus-return/cleanup checks after closing. Characters differ
+ * in item and injury-box counts, so the sheet's length (and its scroll) differs per character.
+ */
+async function auditSheetCase(gm, vp, index = 0) {
+  await applyViewport(gm, vp);
+  await openCorrection(gm, index);
+  const record = {
+    viewport: vp.name,
+    size: `${vp.width}x${vp.height}`,
+    rosterIndex: index,
+    checks: {},
+  };
+  const tag = index === 0 ? vp.name : `${vp.name}#${index}`;
+  const geo = await ev(gm, MODAL_GEOMETRY);
+  record.geometry = geo;
+  const frame = { left: 0, top: 0, right: vp.width, bottom: vp.height };
+  record.checks.dialogInsideViewport = within(geo.dialog, frame);
+  record.checks.actionsVisibleWithoutScrolling =
+    within(geo.apply, frame) && within(geo.cancel, frame);
+  record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+  record.checks.actionTargets44 =
+    geo.apply?.height >= 43.5 && geo.cancel?.height >= 43.5 && geo.apply?.width >= 43.5;
+  // Scroll the sheet body to its end; the last control must then be reachable and visible.
+  if (geo.body.scrollHeight > geo.body.clientHeight) {
+    await ev(
+      gm,
+      `(() => { const b = document.querySelector('[role="dialog"] .sheet-body') || document.querySelector('[role="dialog"]'); b.scrollTop = b.scrollHeight; })()`,
+    );
+    await sleep(150);
+  }
+  const end = await ev(gm, MODAL_GEOMETRY);
+  record.checks.reasonReachableAfterScroll = within(end.reason, {
+    left: 0,
+    top: 0,
+    right: vp.width,
+    bottom: end.apply ? end.apply.top + 1 : vp.height,
+  });
+  record.checks.rootScrollLocked = geo.rootLocked;
+  record.checks.backgroundInert = geo.inertSiblings;
+  record.checks.focusInsideDialog = geo.activeIsInside;
+  record.screenshot = await screenshot(gm, `gm-correction-sheet-${tag}.jpg`, {
+    fullPage: false,
+  });
+
+  // Emulated on-screen keyboard: shrink the viewport (what Chrome Android's
+  // interactive-widget=resizes-content does) with the reason field focused.
+  if (vp.mobile) {
+    await ev(gm, `document.querySelector("#correction-reason").focus()`);
+    const keyboardHeight = Math.round(vp.height * 0.45);
+    const shrunk = { ...vp, height: vp.height - keyboardHeight };
+    await applyViewport(gm, shrunk);
+    await sleep(400);
+    const kb = await ev(gm, MODAL_GEOMETRY);
+    const kbFrame = { left: 0, top: 0, right: shrunk.width, bottom: shrunk.height };
+    record.keyboard = {
+      size: `${shrunk.width}x${shrunk.height}`,
+      compact: kb.compact,
+      checks: {
+        dialogInsideViewport: within(kb.dialog, kbFrame),
+        focusedFieldVisible: within(kb.reason, kbFrame),
+        noPageOverflow: kb.pageOverflowPx <= 1,
+      },
+    };
+    if (kb.compact) {
+      // Too little visible height for a pinned title and action row (what real iOS Safari leaves on a
+      // landscape phone with the keyboard up): the WHOLE sheet scrolls, so the actions and the title
+      // are reached by scrolling the sheet itself, and must not be clipped when they get there.
+      record.keyboard.checks.compactSheetScrolls =
+        kb.sheetScroll.overflowY === "auto" &&
+        kb.sheetScroll.scrollHeight > kb.sheetScroll.clientHeight;
+      await ev(
+        gm,
+        `(() => { const s = document.querySelector('[role="dialog"]'); s.scrollTop = s.scrollHeight; })()`,
+      );
+      const bottom = await ev(gm, MODAL_GEOMETRY);
+      record.keyboard.checks.actionsReachableByScrollingSheet =
+        within(bottom.apply, kbFrame) && within(bottom.cancel, kbFrame);
+      await ev(gm, `document.querySelector('[role="dialog"]').scrollTop = 0`);
+      const top = await ev(gm, MODAL_GEOMETRY);
+      record.keyboard.checks.titleReachableByScrollingSheet = within(top.heading, kbFrame);
+    } else {
+      record.keyboard.checks.actionsVisible =
+        within(kb.apply, kbFrame) && within(kb.cancel, kbFrame);
+    }
+    record.keyboard.screenshot = await screenshot(gm, `gm-correction-keyboard-${tag}.jpg`, {
+      fullPage: false,
+    });
+    await applyViewport(gm, vp);
+  }
+  for (const [k, v] of Object.entries(record.checks)) {
+    if (!v) fail(`modal@${tag}`, `${k} failed`);
+  }
+  for (const [k, v] of Object.entries(record.keyboard?.checks ?? {})) {
+    if (!v) fail(`modal-keyboard@${tag}`, `${k} failed`);
+  }
+  report.modal.push(record);
+  await closeCorrection(gm);
+  // Focus must return to the trigger, and the background must no longer be inert.
+  const afterClose = await ev(
+    gm,
+    `({ focusOnTrigger: document.activeElement?.tagName === "BUTTON" && /correct/i.test(document.activeElement.textContent), anyInert: [...document.body.children].some(c => c.hasAttribute("inert")), rootLocked: document.documentElement.classList.contains("sheet-open") })`,
+  );
+  record.afterClose = afterClose;
+  if (!afterClose.focusOnTrigger) fail(`modal@${tag}`, "focus did not return to trigger");
+  if (afterClose.anyInert) fail(`modal@${tag}`, "background still inert after close");
+  if (afterClose.rootLocked) fail(`modal@${tag}`, "root scroll lock left on after close");
+}
+
 async function auditModal(gm) {
   await applyViewport(gm, byName["desktop"]);
   const cases = [
@@ -450,83 +600,7 @@ async function auditModal(gm) {
     { name: "tablet", ...byName["tablet"] },
     { name: "desktop", ...byName["desktop"] },
   ];
-  for (const vp of cases) {
-    await applyViewport(gm, vp);
-    await openCorrection(gm);
-    const record = { viewport: vp.name, size: `${vp.width}x${vp.height}`, checks: {} };
-    const geo = await ev(gm, MODAL_GEOMETRY);
-    record.geometry = geo;
-    const frame = { left: 0, top: 0, right: vp.width, bottom: vp.height };
-    record.checks.dialogInsideViewport = within(geo.dialog, frame);
-    record.checks.actionsVisibleWithoutScrolling =
-      within(geo.apply, frame) && within(geo.cancel, frame);
-    record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
-    record.checks.actionTargets44 =
-      geo.apply?.height >= 43.5 && geo.cancel?.height >= 43.5 && geo.apply?.width >= 43.5;
-    // Scroll the sheet body to its end; the last control must then be reachable and visible.
-    if (geo.body.scrollHeight > geo.body.clientHeight) {
-      await ev(
-        gm,
-        `(() => { const b = document.querySelector('[role="dialog"] .sheet-body') || document.querySelector('[role="dialog"]'); b.scrollTop = b.scrollHeight; })()`,
-      );
-      await sleep(150);
-    }
-    const end = await ev(gm, MODAL_GEOMETRY);
-    record.checks.reasonReachableAfterScroll = within(end.reason, {
-      left: 0,
-      top: 0,
-      right: vp.width,
-      bottom: end.apply ? end.apply.top + 1 : vp.height,
-    });
-    record.checks.rootScrollLocked = geo.rootLocked;
-    record.checks.backgroundInert = geo.inertSiblings;
-    record.checks.focusInsideDialog = geo.activeIsInside;
-    record.screenshot = await screenshot(gm, `gm-correction-sheet-${vp.name}.jpg`, {
-      fullPage: false,
-    });
-
-    // Emulated on-screen keyboard: shrink the viewport (what Chrome Android's
-    // interactive-widget=resizes-content does) with the reason field focused.
-    if (vp.mobile) {
-      await ev(gm, `document.querySelector("#correction-reason").focus()`);
-      const keyboardHeight = Math.round(vp.height * 0.45);
-      const shrunk = { ...vp, height: vp.height - keyboardHeight };
-      await applyViewport(gm, shrunk);
-      await sleep(400);
-      const kb = await ev(gm, MODAL_GEOMETRY);
-      const kbFrame = { left: 0, top: 0, right: shrunk.width, bottom: shrunk.height };
-      record.keyboard = {
-        size: `${shrunk.width}x${shrunk.height}`,
-        checks: {
-          dialogInsideViewport: within(kb.dialog, kbFrame),
-          focusedFieldVisible: within(kb.reason, kbFrame),
-          actionsVisible: within(kb.apply, kbFrame) && within(kb.cancel, kbFrame),
-          noPageOverflow: kb.pageOverflowPx <= 1,
-        },
-      };
-      record.keyboard.screenshot = await screenshot(gm, `gm-correction-keyboard-${vp.name}.jpg`, {
-        fullPage: false,
-      });
-      await applyViewport(gm, vp);
-    }
-    for (const [k, v] of Object.entries(record.checks)) {
-      if (!v) fail(`modal@${vp.name}`, `${k} failed`);
-    }
-    for (const [k, v] of Object.entries(record.keyboard?.checks ?? {})) {
-      if (!v) fail(`modal-keyboard@${vp.name}`, `${k} failed`);
-    }
-    report.modal.push(record);
-    await closeCorrection(gm);
-    // Focus must return to the trigger, and the background must no longer be inert.
-    const afterClose = await ev(
-      gm,
-      `({ focusOnTrigger: document.activeElement?.tagName === "BUTTON" && /correct/i.test(document.activeElement.textContent), anyInert: [...document.body.children].some(c => c.hasAttribute("inert")), rootLocked: document.documentElement.classList.contains("sheet-open") })`,
-    );
-    record.afterClose = afterClose;
-    if (!afterClose.focusOnTrigger) fail(`modal@${vp.name}`, "focus did not return to trigger");
-    if (afterClose.anyInert) fail(`modal@${vp.name}`, "background still inert after close");
-    if (afterClose.rootLocked) fail(`modal@${vp.name}`, "root scroll lock left on after close");
-  }
+  for (const vp of cases) await auditSheetCase(gm, vp, 0);
 
   // ---- Scenarios that layout-viewport resizing cannot reach. Each MUST execute at least one check;
   // an exception, or an emulation this Chrome cannot perform, is a FAILURE and never a silent skip. ----
@@ -701,6 +775,42 @@ async function auditModal(gm) {
       { informationalChecks },
     );
   }
+  // The case real iOS Safari produced in the iOS Simulator (scripts/playtest/ios-simulator): a landscape
+  // phone with the software keyboard up leaves roughly 70-140px of visible height. A pinned title and
+  // action row alone need more than that, so the sheet must switch to scrolling as one page (compact)
+  // and keep the typed-in field in view, with the title and actions reachable by scrolling the sheet.
+  for (const vp of [
+    { name: "phone-667x375", width: 667, height: 375, mobile: true },
+    byName["phone-landscape"],
+  ]) {
+    await scenario(`tight-keyboard-${vp.name}`, vp, async (record) => {
+      await openCorrection(gm);
+      await ev(gm, `document.querySelector("#correction-reason").focus()`);
+      const shrunk = { ...vp, height: 90 };
+      await applyViewport(gm, shrunk);
+      await sleep(500);
+      const frame = frameOf(shrunk);
+      const geo = await ev(gm, MODAL_GEOMETRY);
+      record.geometry = geo;
+      record.checks.compactModeEngaged = geo.compact === true;
+      record.checks.dialogInsideViewport = within(geo.dialog, frame);
+      record.checks.focusedFieldVisible = within(geo.reason, frame);
+      record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+      await ev(
+        gm,
+        `(() => { const s = document.querySelector('[role="dialog"]'); s.scrollTop = s.scrollHeight; })()`,
+      );
+      const bottom = await ev(gm, MODAL_GEOMETRY);
+      record.checks.actionsReachableByScrollingSheet =
+        within(bottom.apply, frame) && within(bottom.cancel, frame);
+      await ev(gm, `document.querySelector('[role="dialog"]').scrollTop = 0`);
+      const top = await ev(gm, MODAL_GEOMETRY);
+      record.checks.titleReachableByScrollingSheet = within(top.heading, frame);
+      record.screenshot = await screenshot(gm, `gm-correction-tight-keyboard-${vp.name}.jpg`, {
+        fullPage: false,
+      });
+    });
+  }
   await applyViewport(gm, byName["desktop"]);
 }
 
@@ -753,7 +863,286 @@ async function auditReducedMotion(gm) {
     fail("reduced-motion", "a transition longer than 50ms remains under reduce");
 }
 
+// ---------- on-screen keyboard: every text-entry control stays reachable ----------
+
+/**
+ * With the keyboard up, focusing each text-entry control must leave it inside the visible viewport
+ * AND not covered by anything (WCAG 2.2 SC 2.4.11 Focus Not Obscured). Runs in the page so the
+ * browser's own scroll-into-view-on-focus decides where the control ends up.
+ */
+const KEYBOARD_FOCUS_AUDIT = `(async () => {
+  const selector = 'input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), textarea, select';
+  const visible = (el) => { const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return r.width > 0 && r.height > 0 && cs.visibility !== "hidden" && cs.display !== "none" && !el.closest("[inert]"); };
+  const describe = (el) => el.tagName.toLowerCase() + (el.id ? "#" + el.id : "");
+  const results = [];
+  for (const el of [...document.querySelectorAll(selector)].filter(visible).slice(0, 40)) {
+    // Start from the top of the page and of any scrolled sheet body, so the browser must scroll to it.
+    window.scrollTo(0, 0);
+    document.querySelectorAll(".sheet-body").forEach((b) => { b.scrollTop = 0; });
+    el.focus();
+    await new Promise((resolve) => setTimeout(resolve, 80));
+    const r = el.getBoundingClientRect();
+    const vw = document.documentElement.clientWidth;
+    const inside = r.top >= -0.5 && r.bottom <= innerHeight + 0.5 && r.left >= -0.5 && r.right <= vw + 0.5;
+    const probeX = Math.min(Math.max(r.left + r.width / 2, 0), vw - 1);
+    const probeY = Math.min(Math.max(r.top + r.height / 2, 0), innerHeight - 1);
+    const hit = document.elementFromPoint(probeX, probeY);
+    results.push({ control: describe(el), inside, unobscured: hit === el || el.contains(hit), top: Math.round(r.top), bottom: Math.round(r.bottom), viewportHeight: innerHeight });
+  }
+  if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+  return results;
+})()`;
+
+async function auditKeyboardFocus(device, state) {
+  if (MODAL_ONLY) return;
+  const original = device.vp;
+  for (const vp of [byName["phone-small"], byName["phone"], byName["phone-landscape"]]) {
+    // An on-screen keyboard covers roughly 40% of a portrait phone and half of a landscape one.
+    const keyboard = Math.round(vp.height * (vp.width > vp.height ? 0.5 : 0.42));
+    await applyViewport(device, { ...vp, height: vp.height - keyboard });
+    const results = await ev(device, KEYBOARD_FOCUS_AUDIT);
+    const scope = `${device.name}/${state}-keyboard@${vp.name}`;
+    report.keyboard.push({ scope, controls: results.length, results });
+    if (results.length === 0) fail(scope, "no text-entry controls were exercised");
+    for (const result of results) {
+      if (!result.inside)
+        fail(scope, `${result.control} is outside the visible viewport when focused`);
+      if (!result.unobscured) fail(scope, `${result.control} is covered when focused`);
+    }
+  }
+  await applyViewport(device, original);
+}
+
+// ---------- forms: inline validation instead of the browser's own bubbles ----------
+
+/**
+ * Submits a signed-out form empty, then with exactly one invalid value, at two phone sizes. The app
+ * must raise its OWN errors in the page (not the browser's unstyled, transient bubble): every empty
+ * required field flagged `aria-invalid` and described by visible text, an alert next to the submit
+ * button, and focus moved to the first invalid field with that field inside the viewport.
+ */
+async function auditInlineValidation(device, config) {
+  if (MODAL_ONLY) return;
+  const original = device.vp;
+  for (const vp of [byName["phone-small"], byName["phone"]]) {
+    await applyViewport(device, vp);
+    const scope = `${device.name}/${config.name}-validation@${vp.name}`;
+    const probe = `(() => {
+      const el = (id) => document.getElementById(id);
+      const described = (input) => (input.getAttribute("aria-describedby") || "").split(/\\s+/).map((id) => el(id)).filter(Boolean).map((n) => n.textContent.trim()).join(" ").trim();
+      const form = document.querySelector("form");
+      const flagged = [...form.querySelectorAll('[aria-invalid="true"]')];
+      const active = document.activeElement;
+      const r = active.getBoundingClientRect();
+      return {
+        flagged: flagged.map((i) => {
+          const cs = getComputedStyle(i);
+          return { id: i.id, message: described(i), borderColor: cs.borderTopColor, borderWidth: parseFloat(cs.borderTopWidth) };
+        }),
+        riot: (() => { const probe = document.createElement("i"); probe.style.color = "var(--riot)"; document.body.append(probe); const color = getComputedStyle(probe).color; probe.remove(); return color; })(),
+        alerts: [...form.querySelectorAll('[role="alert"]')].filter((n) => n.textContent.trim()).length,
+        focusedId: active.id,
+        focusedInside: r.top >= -0.5 && r.bottom <= innerHeight + 0.5,
+        hash: location.hash,
+        overflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      };
+    })()`;
+    // 1. Everything empty.
+    for (const id of config.fields) await setInput(device, `#${id}`, "");
+    const hashBefore = await ev(device, `location.hash`);
+    await ev(
+      device,
+      `[...document.querySelectorAll("form button[type=submit]")].find(b => ${config.submit}.test(b.textContent.trim())).click()`,
+    );
+    await sleep(350);
+    const empty = await ev(device, probe);
+    const record = { scope, empty, hashBefore };
+    record.screenshot = await screenshot(
+      device,
+      `${device.name}-${config.name}-errors-${vp.name}.jpg`,
+      {
+        fullPage: false,
+      },
+    );
+    for (const id of config.required) {
+      const hit = empty.flagged.find((f) => f.id === id);
+      if (!hit) fail(scope, `empty #${id} is not marked aria-invalid`);
+      else if (hit.message.length < 4) fail(scope, `empty #${id} has no visible error text`);
+    }
+    // An invalid field must LOOK invalid: a heavier border in the error colour (computed, so a
+    // specificity slip that leaves the border grey is caught).
+    for (const f of empty.flagged) {
+      if (f.borderColor !== empty.riot || f.borderWidth < 3) {
+        fail(
+          scope,
+          `#${f.id} is flagged but its border is ${f.borderWidth}px ${f.borderColor}, not 3px ${empty.riot}`,
+        );
+      }
+    }
+    if (empty.alerts < 1) fail(scope, "no inline alert after an invalid submit");
+    if (empty.focusedId !== config.required[0]) {
+      fail(
+        scope,
+        `focus is on "${empty.focusedId}", not the first invalid field #${config.required[0]}`,
+      );
+    }
+    if (!empty.focusedInside) fail(scope, "first invalid field is outside the viewport");
+    if (empty.hash !== hashBefore) fail(scope, "an invalid submit navigated away");
+    if (empty.overflowPx > 1)
+      fail(scope, `horizontal overflow ${empty.overflowPx}px with errors shown`);
+    // 2. Valid everywhere except one field.
+    if (config.bad) {
+      for (const [id, value] of Object.entries(config.valid))
+        await setInput(device, `#${id}`, value);
+      await setInput(device, `#${config.bad[0]}`, config.bad[1]);
+      await ev(
+        device,
+        `[...document.querySelectorAll("form button[type=submit]")].find(b => ${config.submit}.test(b.textContent.trim())).click()`,
+      );
+      await sleep(350);
+      const one = await ev(device, probe);
+      record.oneInvalid = one;
+      if (one.flagged.length !== 1 || one.flagged[0].id !== config.bad[0]) {
+        fail(
+          scope,
+          `expected only #${config.bad[0]} flagged, got ${JSON.stringify(one.flagged.map((f) => f.id))}`,
+        );
+      }
+      if (one.flagged[0] && one.flagged[0].message.length < 4)
+        fail(scope, `#${config.bad[0]} has no visible error text`);
+      if (one.focusedId !== config.bad[0])
+        fail(scope, `focus is on "${one.focusedId}", not #${config.bad[0]}`);
+      // Fixing the value clears the flag as the person types.
+      await setInput(device, `#${config.bad[0]}`, config.valid[config.bad[0]]);
+      await sleep(250);
+      const cleared = await ev(device, probe);
+      record.cleared = cleared;
+      if (cleared.flagged.some((f) => f.id === config.bad[0])) {
+        fail(scope, `#${config.bad[0]} stays flagged after it is corrected`);
+      }
+    }
+    report.validation.push(record);
+  }
+  await applyViewport(device, original);
+}
+
+// ---------- the whole roster: every character's own compose screen and correction sheet ----------
+
+async function joinAndClaim(device, codes, displayName) {
+  await goto(device, "#/join");
+  await setInput(device, "#room-code", codes["Room code"]);
+  await setInput(device, "#join-passphrase", "audit-pass-1");
+  await setInput(device, "#join-display-name", displayName);
+  await clickText(device, "button", /^Join session$/);
+  await waitFor(device, `document.querySelector(".reveal-card")`, 30000, `${displayName} reveal`);
+  await clickText(device, "button", /wrote it down/);
+  await waitFor(device, `document.querySelector(".roster-grid")`, 30000, `${displayName} roster`);
+  // The first still-unclaimed character, so five more players walk the roster in order without
+  // this script ever naming a character.
+  await clickText(device, "button", /^Claim$/);
+  await clickText(device, "button", /Continue to your dashboard/);
+  await waitFor(
+    device,
+    `document.body.textContent.includes("Choose an action")`,
+    30000,
+    `${displayName} compose`,
+  );
+}
+
+/**
+ * Characters differ in items, abilities, utility actions and injury boxes, and the first character's
+ * screens are the only ones the main flow visits. Five more players claim the rest; each compose
+ * screen is audited at every viewport, then the GM's correction sheet is audited for each of them.
+ */
+async function rosterSweep(cdp, gm, table, codes) {
+  const players = [];
+  for (const [i, name] of ["Bea", "Cy", "Dee", "Eli", "Fay"].entries()) {
+    const device = await openDevice(cdp, `player${i + 2}`, byName["phone"]);
+    await joinAndClaim(device, codes, name);
+    await captureState(device, "compose", { axeViewports: ["phone-small", "phone"] });
+    players.push(device);
+  }
+  await waitFor(
+    gm,
+    `/Characters claimed: 6\\//.test(document.body.textContent)`,
+    30000,
+    "all six claimed",
+  );
+  await captureState(gm, "console-full-roster", { axeViewports: ["phone"] });
+  await captureState(table, "full-party", { axeViewports: ["phone"] });
+  const count = await ev(gm, `document.querySelectorAll(".roster-panel-list li button").length`);
+  if (count < 6) fail("roster-sweep", `GM roster lists ${count} characters, expected at least 6`);
+  for (let index = 1; index < count; index += 1) {
+    for (const vp of [byName["phone-small"], byName["phone"], byName["phone-landscape"]]) {
+      await auditSheetCase(gm, vp, index);
+    }
+  }
+  await applyViewport(gm, byName["desktop"]);
+  return players;
+}
+
+async function setSelect(device, selector, valuePattern) {
+  await waitFor(device, `document.querySelector(${JSON.stringify(selector)})`, 15000, selector);
+  const chosen = await ev(
+    device,
+    `(() => {
+      const el = document.querySelector(${JSON.stringify(selector)});
+      const option = [...el.options].reverse().find(o => ${valuePattern}.test(o.value));
+      if (!option) return null;
+      Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value").set.call(el, option.value);
+      el.dispatchEvent(new Event("change", { bubbles: true }));
+      return option.value;
+    })()`,
+  );
+  if (chosen === null) throw new Error(`${selector} has no option matching ${valuePattern}`);
+  await sleep(250);
+}
+
 // ---------- flow ----------
+
+/** Signed-out forms whose validation the app must render inline (see auditInlineValidation). */
+const VALIDATION = {
+  "create-form": {
+    name: "create",
+    fields: ["session-name", "passphrase", "creator-display-name"],
+    required: ["session-name", "passphrase", "creator-display-name"],
+    submit: "/^Create session$/",
+    valid: { "session-name": "Audit", passphrase: "audit-pass-1", "creator-display-name": "Ada" },
+    bad: ["passphrase", "abc"], // shorter than the 4-character minimum
+  },
+  "join-form": {
+    name: "join",
+    fields: ["room-code", "join-passphrase", "join-display-name"],
+    required: ["room-code", "join-passphrase", "join-display-name"],
+    submit: "/^Join session$/",
+    valid: {
+      "room-code": "ABCD-1234",
+      "join-passphrase": "audit-pass-1",
+      "join-display-name": "Ada",
+    },
+    bad: ["room-code", "bad code!"], // outside [A-Za-z0-9-]
+  },
+  "table-join-form": {
+    name: "table-join",
+    fields: ["table-room-code", "table-code"],
+    required: ["table-room-code", "table-code"],
+    submit: "/^Connect display$/",
+    valid: { "table-room-code": "ABCD-1234", "table-code": "ABCD" },
+    bad: null,
+  },
+  "recover-form": {
+    name: "recover",
+    fields: ["recover-room-code", "recovery-code", "recover-display-name"],
+    required: ["recover-room-code", "recovery-code", "recover-display-name"],
+    submit: "/^Recover my seat$/",
+    valid: {
+      "recover-room-code": "ABCD-1234",
+      "recovery-code": "ABCD-EFGH",
+      "recover-display-name": "Ada",
+    },
+    bad: ["recover-room-code", "bad code!"],
+  },
+};
 
 async function main() {
   const profile = mkdtempSync(join(tmpdir(), "digitable-ui-audit-"));
@@ -787,6 +1176,10 @@ async function main() {
     ]) {
       await goto(anon, path);
       await captureState(anon, name);
+      if (VALIDATION[name]) {
+        await auditKeyboardFocus(anon, name);
+        await auditInlineValidation(anon, VALIDATION[name]);
+      }
     }
     for (const path of [
       "#/claim/no-such-room",
@@ -805,6 +1198,8 @@ async function main() {
     await clickText(anon, "button", /Recover your seat/);
     await waitFor(anon, `document.querySelector("#recovery-code")`, 15000, "recovery form");
     await captureState(anon, "recover-form");
+    await auditKeyboardFocus(anon, "recover-form");
+    await auditInlineValidation(anon, VALIDATION["recover-form"]);
     await setInput(anon, "#recover-room-code", "NOPE-0000");
     await setInput(anon, "#recovery-code", "not-a-real-recovery-code");
     await setInput(anon, "#recover-display-name", "Ada");
@@ -888,6 +1283,12 @@ async function main() {
       "claimed",
     );
     await captureState(gm, "console-scene-loaded");
+    await auditKeyboardFocus(gm, "console-scene-loaded");
+    // A native select ellipsises its closed value: pick the longest-labelled target so the audit can
+    // prove the full text is echoed beside it, then put it back.
+    await setSelect(gm, "#edit-target", /^threat:/);
+    await captureState(gm, "console-edit-target", { axeViewports: ["phone"] });
+    await setSelect(gm, "#edit-target", /^$/);
 
     // Player declares; GM sees pending.
     await clickText(player, "button", /^Declare action$/);
@@ -944,6 +1345,7 @@ async function main() {
     );
     await captureState(table, "next-scene");
     await captureState(gm, "console-next-scene");
+    await rosterSweep(cdp, gm, table, codes);
 
     // Last on purpose: redeeming the player's recovery code rebinds the seat to the anon device and
     // revokes the player device's binding, so nothing that needs that device may run after this.
@@ -987,6 +1389,9 @@ async function main() {
           .filter((v) => !isHardAxe(v))
           .map((v) => `${s.surface}/${s.state}@${s.viewport}: ${v.id}`),
       ),
+      keyboardFocusChecks: report.keyboard.reduce((n, k) => n + k.controls, 0),
+      validationScenarios: report.validation.length,
+      sheetCases: report.modal.filter((m) => m.rosterIndex !== undefined).length,
       failures: report.failures.length,
     };
     writeFileSync(join(OUT, "report.json"), JSON.stringify(report, null, 2) + "\n");

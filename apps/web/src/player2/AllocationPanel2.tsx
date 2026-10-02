@@ -112,8 +112,8 @@ export function AllocationPanel2({
         </p>
       )}
       <p>
-        {unassignedCount} of {keptDice.length} {keptDice.length === 1 ? "die" : "dice"} still need a
-        target.
+        {unassignedCount} of {keptDice.length} {keptDice.length === 1 ? "die" : "dice"} still{" "}
+        {unassignedCount === 1 ? "needs" : "need"} a target.
       </p>
 
       <div className="allocation-list">

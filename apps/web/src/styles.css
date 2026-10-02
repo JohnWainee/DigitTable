@@ -292,6 +292,18 @@ li + li {
   gap: 0.75rem;
 }
 
+/* The director's Objectives / Threats readout: label, list, label, list with a steady rhythm instead of
+   the second label sitting flush against the first list. */
+.scene-director-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.scene-director-detail h3:not(:first-child) {
+  margin-top: 0.5rem;
+}
+
 .scene-card-description {
   color: var(--dim);
   font-style: italic;
@@ -519,6 +531,35 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 
+/* Inline validation (landing/inlineValidation.tsx): the app's own error, in the page, instead of the
+   browser's transient bubble. The first selector repeats the base input rule's :not() chain so it
+   out-specifies it (a bare input[aria-invalid] would lose and the border would stay grey). Colour is never the only channel: the message and the "Error:" lead-in
+   carry it, the border changes weight as well as hue. */
+input:not([type="checkbox"]):not([type="radio"])[aria-invalid="true"],
+select[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: var(--riot);
+  border-width: 3px;
+}
+
+.field-error {
+  margin: 0;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--paper);
+  border-left: 0.4rem solid var(--riot);
+  background: rgba(255, 51, 72, 0.16);
+}
+
+.field-error::before {
+  content: "Error: ";
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 input::placeholder,
 textarea::placeholder {
   color: var(--mute);
@@ -549,6 +590,28 @@ select {
   white-space: nowrap;
   overflow: hidden;
   cursor: pointer;
+}
+
+/* The chosen option written out in full under a select that would otherwise ellipsise it. */
+.select-echo {
+  margin: 0;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.9rem;
+  line-height: 1.3;
+  color: var(--paper);
+  border-left: 0.35rem solid var(--cyan);
+  background: rgba(34, 230, 255, 0.07);
+  overflow-wrap: anywhere;
+}
+
+.select-echo-label {
+  margin-right: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cyan);
 }
 
 option,
@@ -640,6 +703,24 @@ input[type="radio"]:disabled {
 
 .form-field--checkbox {
   flex-direction: row;
+}
+
+/* A gear row plus its optional own-action button (a utility item): the button sits under the label at
+   its natural width, aligned with the label text, instead of being squeezed beside it. */
+.gear-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.gear-item > .gear-option {
+  align-self: stretch;
+}
+
+.gear-item > .secondary-action {
+  max-width: 100%;
+  margin: 0 0 4px 0.65rem; /* the 4px hard shadow hangs below the button */
 }
 
 .gear-option:has(:checked) {
@@ -1472,6 +1553,26 @@ details ul {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
   gap: 0.75rem;
+}
+
+/* Compact (useVisualViewportBox sets data-compact under 15rem of visible height): a landscape phone with
+   the on-screen keyboard up leaves roughly 70-140px, measured in real iOS Safari. A pinned title and
+   action row alone need more than that, which clipped the buttons and pushed the title out of view. The
+   whole sheet scrolls as one page instead; nothing is pinned, nothing is clipped, and the focused field
+   is scrolled into view by the sheet itself. */
+.sheet-backdrop[data-compact] .sheet {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.sheet-backdrop[data-compact] .sheet-body {
+  flex: none;
+  overflow: visible;
+}
+
+.sheet-backdrop[data-compact] .sheet-footer {
+  max-height: none;
+  overflow: visible;
 }
 
 /* Wide: a centred card with room around it instead of an edge-attached sheet. */

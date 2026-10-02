@@ -113,9 +113,51 @@ describe("reskin stylesheet contract", () => {
         }
       }
       expect(uncovered).toEqual([]);
-      // Class-less buttons are only the +/- steppers inside .stepper-controls (rule names them).
       const buttonRule = rulesFor(/\.primary-action.*\.stepper-controls button/s);
       expect(declaration(buttonRule, "min-height")).toContain("var(--tap)");
+    });
+
+    it("leaves no class-less <button> anywhere except the +/- steppers the tap rule names by position", () => {
+      // The scan above only sees buttons that HAVE a className, so a class-less button (rendered as the
+      // browser's own grey button: no tap size, no type, no focus treatment) slipped straight through it.
+      // The only legitimate ones are the +/- buttons inside `.stepper-controls`, pinned per file.
+      const allowed: Record<string, number> = {
+        "shared/AllocationStepper.tsx": 2,
+        "gm2/CorrectionDialog.tsx": 4,
+      };
+      const found: Record<string, number> = {};
+      for (const file of sourceFiles(join(here, "../../src"))) {
+        const source = readFileSync(file, "utf8");
+        const name = file.split("/src/")[1]!;
+        for (const match of source.matchAll(/<button\b[^>]*?>/gs)) {
+          if (/className=/.test(match[0])) continue;
+          found[name] = (found[name] ?? 0) + 1;
+          // Each must sit inside a stepper row: `.stepper-controls` opens shortly before it.
+          const before = source.slice(Math.max(0, match.index - 700), match.index);
+          expect(before, `${name}: a class-less <button> outside .stepper-controls`).toContain(
+            "stepper-controls",
+          );
+        }
+      }
+      expect(found).toEqual(allowed);
+    });
+
+    it("styles a gear row's own action button and the select echo, and flags invalid fields", () => {
+      expect(rulesFor(/^\.gear-item$/).join("")).toMatch(/flex-direction:\s*column/);
+      expect(declaration(rulesFor(/^\.gear-item > \.secondary-action$/), "max-width")).toEqual([
+        "100%",
+      ]);
+      expect(rulesFor(/^\.select-echo$/).join("")).toMatch(/overflow-wrap:\s*anywhere/);
+      // Invalid inputs change weight as well as hue (colour is never the only channel). The selector must
+      // out-specify the base `input:not([type=checkbox]):not([type=radio])` rule or the border stays grey
+      // (a bare `input[aria-invalid]` is (0,1,1) against the base's (0,2,1)).
+      const invalid = rulesFor(
+        /^input:not\(\[type="checkbox"\]\):not\(\[type="radio"\]\)\[aria-invalid="true"\],/s,
+      );
+      expect(invalid).toHaveLength(1);
+      expect(declaration(invalid, "border-width")).toEqual(["3px"]);
+      expect(declaration(invalid, "border-color")).toEqual(["var(--riot)"]);
+      expect(rulesFor(/^\.field-error::before$/).join("")).toContain('content: "Error: "');
     });
 
     it("keeps the read-only stepper value (role=spinbutton, focusable) at the tap size too", () => {
@@ -172,6 +214,20 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(backdrop, "left")).toContain("var(--vv-left, 0px)");
       expect(declaration(backdrop, "width")).toContain("var(--vv-width, 100vw)");
       expect(declaration(backdrop, "position")).toEqual(["fixed"]);
+    });
+
+    it("makes the whole sheet scroll as one page when too little height is visible (data-compact)", () => {
+      // Landscape phone + on-screen keyboard leaves ~70-140px in real iOS Safari: a pinned header and
+      // action row cannot fit, so nothing may be pinned or clipped.
+      const sheet = rulesFor(/^\.sheet-backdrop\[data-compact\] \.sheet$/);
+      expect(declaration(sheet, "overflow-y")).toEqual(["auto"]);
+      expect(declaration(sheet, "overscroll-behavior")).toEqual(["contain"]);
+      const body = rulesFor(/^\.sheet-backdrop\[data-compact\] \.sheet-body$/);
+      expect(declaration(body, "overflow")).toEqual(["visible"]);
+      expect(declaration(body, "flex")).toEqual(["none"]);
+      const footer = rulesFor(/^\.sheet-backdrop\[data-compact\] \.sheet-footer$/);
+      expect(declaration(footer, "max-height")).toEqual(["none"]);
+      expect(declaration(footer, "overflow")).toEqual(["visible"]);
     });
 
     it("clears device notches on the sides and top, and the home indicator at the bottom", () => {
