@@ -247,4 +247,65 @@ describe("Landing / create / join / claim (C01)", () => {
     await user.click(screen.getByRole("button", { name: /^recover my seat$/i }));
     expect(await screen.findByRole("alert")).toHaveTextContent(/code not recognised/i);
   });
+  it("accepts a recovery code typed the way a phone keyboard shows it (lower case, padded)", async () => {
+    const user = userEvent.setup();
+    renderApp("#/");
+    const { roomCode } = await createSession(user);
+
+    window.localStorage.clear();
+    goTo("#/join");
+    await user.type(screen.getByLabelText(/room code/i), roomCode);
+    await user.type(screen.getByLabelText(/^passphrase$/i), "wolfbane");
+    await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
+    await user.click(screen.getByRole("button", { name: /^join session$/i }));
+    await screen.findByRole("heading", { name: /your recovery code/i });
+    const originalCode = screen.getByText(/^[A-Z0-9]{6,}$/).textContent;
+
+    window.localStorage.clear();
+    goTo("#/");
+    goTo("#/join");
+    await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+    await user.type(screen.getByLabelText(/^room code$/i), roomCode.toLowerCase());
+    await user.type(screen.getByLabelText(/recovery code/i), ` ${originalCode.toLowerCase()} `);
+    await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
+    await user.click(screen.getByRole("button", { name: /^recover my seat$/i }));
+
+    expect(
+      await screen.findByRole("heading", { name: /your new recovery code/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("tells phone keyboards not to capitalise, correct or spell-check secret and code entry", async () => {
+    renderApp("#/join");
+    const joinCode = screen.getByLabelText(/^room code$/i);
+    const joinPass = screen.getByLabelText(/^passphrase$/i);
+    expect(joinCode).toHaveAttribute("autocapitalize", "characters");
+    expect(joinPass).toHaveAttribute("autocapitalize", "none");
+    for (const field of [joinCode, joinPass]) {
+      expect(field).toHaveAttribute("autocorrect", "off");
+      expect(field).toHaveAttribute("spellcheck", "false");
+    }
+
+    await userEvent.setup().click(screen.getByRole("button", { name: /lost your browser/i }));
+    for (const label of [/^room code$/i, /recovery code/i]) {
+      const field = screen.getByLabelText(label);
+      expect(field).toHaveAttribute("autocapitalize", "characters");
+      expect(field).toHaveAttribute("autocorrect", "off");
+      expect(field).toHaveAttribute("spellcheck", "false");
+    }
+
+    goTo("#/table");
+    for (const label of [/^room code$/i, /^table code$/i]) {
+      const field = screen.getByLabelText(label);
+      expect(field).toHaveAttribute("autocapitalize", "characters");
+      expect(field).toHaveAttribute("autocorrect", "off");
+      expect(field).toHaveAttribute("spellcheck", "false");
+    }
+
+    goTo("#/create");
+    const createPass = screen.getByLabelText(/^passphrase$/i);
+    expect(createPass).toHaveAttribute("autocapitalize", "none");
+    expect(createPass).toHaveAttribute("autocorrect", "off");
+    expect(createPass).toHaveAttribute("spellcheck", "false");
+  });
 });

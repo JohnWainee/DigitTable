@@ -419,8 +419,11 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  // Roster-agnostic on purpose: the first listed character's Correct button. Matching a character
+  // by name silently broke this audit when the sourcebook roster renamed the "rook" seat (the id
+  // stayed, the display name changed); apps/web/test/playtest/auditHarnessContract.test.ts guards it.
+  const finder = `document.querySelector(".roster-panel-list li button")`;
+  await waitFor(gm, finder, 20000, "a character's Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
@@ -797,6 +800,23 @@ async function main() {
       });
     }
 
+    // Signed-out secret/recovery form: reachable from the join form, never visited by the sweep above.
+    await goto(anon, "#/join");
+    await clickText(anon, "button", /Recover your seat/);
+    await waitFor(anon, `document.querySelector("#recovery-code")`, 15000, "recovery form");
+    await captureState(anon, "recover-form");
+    await setInput(anon, "#recover-room-code", "NOPE-0000");
+    await setInput(anon, "#recovery-code", "not-a-real-recovery-code");
+    await setInput(anon, "#recover-display-name", "Ada");
+    await clickText(anon, "button", /^Recover my seat$/);
+    await waitFor(
+      anon,
+      `document.querySelector('[role="alert"].error-message')`,
+      30000,
+      "recovery rejection",
+    );
+    await captureState(anon, "recover-rejected", { axeViewports: ["phone"] });
+
     // GM creates the session.
     await goto(gm, "#/create");
     await setInput(gm, "#session-name", "UI Audit Session");
@@ -828,6 +848,10 @@ async function main() {
     await clickText(player, "button", /^Join session$/);
     await waitFor(player, `document.querySelector(".reveal-card")`, 30000, "player reveal");
     await captureState(player, "join-reveal");
+    codes.playerRecovery = await ev(
+      player,
+      `document.querySelector(".reveal-code").textContent.trim()`,
+    );
     await clickText(player, "button", /wrote it down/);
     await waitFor(player, `document.querySelector(".roster-grid")`, 30000, "roster");
     await captureState(player, "claim-roster");
@@ -920,6 +944,22 @@ async function main() {
     );
     await captureState(table, "next-scene");
     await captureState(gm, "console-next-scene");
+
+    // Last on purpose: redeeming the player's recovery code rebinds the seat to the anon device and
+    // revokes the player device's binding, so nothing that needs that device may run after this.
+    // The anon page is still on #/join in recover mode; a same-hash navigation would keep that
+    // component state, so leave the route first to get a fresh join form.
+    await goto(anon, "#/");
+    await goto(anon, "#/join");
+    await clickText(anon, "button", /Recover your seat/);
+    await setInput(anon, "#recover-room-code", codes["Room code"]);
+    // Typed the way a phone keyboard or a paste can deliver it (lower-cased, padded): proves the
+    // client-side normalisation end to end against the real callable, not just in jsdom.
+    await setInput(anon, "#recovery-code", ` ${codes.playerRecovery.toLowerCase()} `);
+    await setInput(anon, "#recover-display-name", "Ada");
+    await clickText(anon, "button", /^Recover my seat$/);
+    await waitFor(anon, `document.querySelector(".reveal-card")`, 30000, "recovery reveal");
+    await captureState(anon, "recover-reveal");
   } catch (error) {
     fail("flow", String(error.message));
   } finally {

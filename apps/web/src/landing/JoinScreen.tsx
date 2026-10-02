@@ -16,6 +16,7 @@ import type { RecoverSeatResult } from "../session/FirebaseSessionClient.js";
 import type { RoomAdmissionAccepted, SessionRequestState } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
 import { newUuid } from "../shared/uuid.js";
+import { normalizeRecoveryCodeEntry } from "./secretEntry.js";
 import { resumeRoute } from "./resumeRoute.js";
 
 type JoinMode = "join" | "recover";
@@ -64,7 +65,10 @@ export function JoinScreen(): JSX.Element {
     const requestId = newUuid();
     setRecoveryRequest({ status: "pending", requestId });
     const normalizedRoomCode = recoveryRoomCode.toUpperCase();
-    const result = await recoverSeat({ roomCode: normalizedRoomCode, recoveryCode });
+    const result = await recoverSeat({
+      roomCode: normalizedRoomCode,
+      recoveryCode: normalizeRecoveryCodeEntry(recoveryCode),
+    });
     if (result.ok) {
       setRecoveryRequest({ status: "accepted", requestId, result });
       const ownership = ownershipFromRecoverySeat(
@@ -113,6 +117,8 @@ export function JoinScreen(): JSX.Element {
                 type="text"
                 required
                 autoCapitalize="characters"
+                autoCorrect="off"
+                spellCheck={false}
                 pattern="[A-Za-z0-9-]+"
                 value={recoveryRoomCode}
                 onChange={(event) => setRecoveryRoomCode(event.target.value)}
@@ -124,6 +130,9 @@ export function JoinScreen(): JSX.Element {
                 id="recovery-code"
                 type="text"
                 required
+                autoCapitalize="characters"
+                autoCorrect="off"
+                spellCheck={false}
                 autoComplete="off"
                 value={recoveryCode}
                 onChange={(event) => setRecoveryCode(event.target.value)}
@@ -213,6 +222,8 @@ export function JoinScreen(): JSX.Element {
               type="text"
               required
               autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck={false}
               pattern="[A-Za-z0-9-]+"
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value)}
@@ -224,6 +235,9 @@ export function JoinScreen(): JSX.Element {
               id="join-passphrase"
               type="text"
               required
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               autoComplete="off"
               value={passphrase}
               onChange={(e) => setPassphrase(e.target.value)}

@@ -451,6 +451,16 @@ When pausing or finishing a material unit:
 
 ## Integrated verification and next action
 
+### 2026-10-02: mobile code-entry and browser-audit hardening — candidate ready for integration review
+
+- **Branch:** `sonnet-cz/reskin-uiux-polish-20261002`, from `origin/main` at `b599abd`; no deployment or merge.
+- **Change:** recovery-code entry now accepts the lower-case/padded form real mobile keyboards and paste commonly produce (whitespace removal plus upper-casing before the existing exact server check). Code, table-code, passphrase, and GM machine-ID fields declare appropriate no-autocorrect/no-spellcheck/no-autocapitalize behavior. This does not change authority, membership, secret storage, projection, or command semantics.
+- **Audit repair:** `ui-audit.mjs` no longer hard-codes the retired Rook display name when opening the correction sheet. It uses the first live roster action and has a regression contract against every live roster name/id. The audit now covers recovery form, rejected recovery, and the final successful recovery-code redemption without invalidating the original device before the GM/player/table flow completes.
+- **Evidence:** before/after captures at phone, tablet, desktop, and table widths plus the final raw report are recorded under `docs/evidence/cz-mobile-entry-audit-20261002/`. Final local audit: **168 states, 1,548 controls, zero control findings, zero horizontal overflow, zero hard axe violations**. The known non-gating `page-has-heading-one` best-practice note on the intentional missing-room route remains.
+- **Checks:** `npm run check` — **703 passed, 11 todo**; `npm run build` — passed (existing chunk-size warning); `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **18 rules + 86 Functions + 4 web** passed from a clean local emulator run. The deploy-staging smoke rerun also remains clean at **17/17**, but validates the deployed baseline only.
+- **Independent review:** approved with no blocking findings in `docs/reviews/2026-10-02-cz-mobile-entry-and-audit-independent-review.md`.
+- **Still required before deployment or merge:** physical iOS/Android device and assistive-technology rehearsal in `docs/PLAYTEST_TWO_DEVICE.md`; no browser emulation substitutes for that evidence.
+
 - `npm run check` — format, lint, typecheck, **589 tests passed | 11 todo** (62 files passed, 1 skipped).
 - `npm run build` — Functions and web builds passed; the existing Vite chunk-size warning remains non-blocking.
 - `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **18/18** rules, **86/86** Functions, **3/3** web.
