@@ -802,6 +802,31 @@ details ul {
   border-left: 0.4rem solid var(--riot);
 }
 
+/* Keep an in-flight command or its rejection in the visual viewport while a
+ * long GM/player page is scrolled.  It is deliberately a normal document
+ * region until needed, then sticks below the safe area without obscuring the
+ * control context beneath it. */
+.action-feedback {
+  position: sticky;
+  top: max(0.5rem, env(safe-area-inset-top));
+  z-index: 5;
+  display: grid;
+  gap: 0.5rem;
+  max-height: 18rem;
+  max-height: min(40dvh, 18rem);
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: var(--ink-0);
+  border: 1px solid var(--mute);
+  box-shadow: 0 0.35rem 0.8rem rgba(0, 0, 0, 0.42);
+}
+
+.action-feedback p {
+  margin: 0;
+}
+
 [role="status"].form-hint {
   padding: 0.4rem 0.75rem;
   font-family: var(--font-mono);

@@ -165,6 +165,26 @@ describe("GM director console and table display (C03)", () => {
     expect(keptCount + discardedCount).toBe(5);
   });
 
+  it("keeps a rejected GM command in the sticky action-feedback region", async () => {
+    const user = userEvent.setup();
+    const { roomCode, roomId, gmOwnership } = await createSessionAsGm(user);
+    await joinAndClaimRook(user, roomCode);
+
+    await user.click(screen.getByRole("button", { name: /declare action/i }));
+    await screen.findByRole("heading", { name: /^declared$/i });
+
+    writeOwnershipRecord(gmOwnership);
+    goTo(`#/room/${roomId}/gm`);
+    await screen.findByRole("heading", { name: /pending actions/i });
+    await user.click(screen.getByRole("button", { name: /end round 1/i }));
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(/open rolls|resolve/i);
+    const feedback = screen.getByRole("region", { name: /action feedback/i });
+    expect(feedback).toHaveClass("action-feedback");
+    expect(feedback).toContainElement(alert);
+  });
+
   it("lets the GM correct a character's Blood with a required reason", async () => {
     const user = userEvent.setup();
     const { roomCode, roomId, gmOwnership } = await createSessionAsGm(user);

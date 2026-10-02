@@ -13,6 +13,7 @@ import type {
   SceneDefinition,
 } from "@digitable/template-eat-the-reich";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
+import { ActionFeedback } from "../shared/ActionFeedback.js";
 import { GmSeatRequired } from "./GmSeatRequired.js";
 import { InvitePanel } from "./InvitePanel.js";
 import { SceneDirector } from "./SceneDirector.js";
@@ -113,15 +114,8 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
       <FixtureModeBanner />
       <h1>Director console</h1>
       <LiveRegion politeness="polite" message={pendingAnnouncement} />
-      {commandPending && (
-        <p role="status">
-          Your action is awaiting confirmation. Reconnecting will check it automatically.
-        </p>
-      )}
-      {(error || lastError) && (
-        <p role="alert" className="error-message">
-          {error ?? lastError?.message}
-        </p>
+      {(commandPending || error || lastError) && (
+        <ActionFeedback pending={commandPending} error={error ?? lastError?.message} />
       )}
       {view.paused && (
         <p role="status" className="form-hint">

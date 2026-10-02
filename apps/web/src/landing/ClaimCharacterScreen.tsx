@@ -10,6 +10,7 @@ import { LiveRegion } from "../accessibility/LiveRegion.js";
 import { PortraitImage } from "../shared/PortraitImage.js";
 import { newUuid } from "../shared/uuid.js";
 import { Icon, STAT_ICON_NAMES, STAT_LABELS } from "../shared/Icon.js";
+import { ActionFeedback } from "../shared/ActionFeedback.js";
 
 export interface ClaimCharacterScreenProps {
   readonly roomId: string;
@@ -80,15 +81,8 @@ export function ClaimCharacterScreen({ roomId }: ClaimCharacterScreenProps): JSX
       <FixtureModeBanner />
       <h1>Pick your character</h1>
       <LiveRegion politeness="polite" message={announcement} />
-      {pending && (
-        <p role="status">
-          Your action is awaiting confirmation. Reconnecting will check it automatically.
-        </p>
-      )}
-      {(error || lastError) && (
-        <p role="alert" className="error-message">
-          {error ?? lastError?.message}
-        </p>
+      {(pending || error || lastError) && (
+        <ActionFeedback pending={pending} error={error ?? lastError?.message} />
       )}
 
       {roster === null ? (
