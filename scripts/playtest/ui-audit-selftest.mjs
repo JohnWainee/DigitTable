@@ -264,7 +264,7 @@ expectDock(
 // width the actions were `flex: none`, crushed the status to a one-character column and overflowed.
 const realCss = readFileSync(join(here, "../../apps/web/src/styles.css"), "utf8");
 const APPLY_CLIPPED = true;
-async function dockLayoutAt(width, rootFontPx = 16, height = 900) {
+async function dockLayoutAt(width, rootFontPx = 16, height = 900, gmCard = false) {
   await send(
     "Emulation.setDeviceMetricsOverride",
     { width, height, deviceScaleFactor: 1, mobile: false },
@@ -274,8 +274,9 @@ async function dockLayoutAt(width, rootFontPx = 16, height = 900) {
     { length: 8 },
     (_, i) => `<label class="gear-option"><input type="radio" name="c"> Category ${i}</label>`,
   ).join("");
+  const dockHtml = `<div class="action-dock"><p id="s" class="action-dock-status">Pool: 4 dice</p><div class="action-dock-actions"><button class="primary-action">Roll it</button><button class="secondary-action">Destroy Cowboy hat to ignore this result</button></div></div>`;
   const result = await page(
-    `<style>${realCss}</style><style>html{font-size:${rootFontPx}px}</style><main class="player-screen"><section class="step"><h2>Choose an injury</h2>${rowsHtml}<div class="action-dock"><p id="s" class="action-dock-status">Marking: Light injuries.</p><div class="action-dock-actions"><button class="primary-action">Confirm</button><button class="secondary-action">Destroy Cowboy hat to ignore this result</button></div></div></section></main>`,
+    `<style>${realCss}</style><style>html{font-size:${rootFontPx}px}</style>${gmCard ? `<main class="gm-screen"><section class="step"><h2>Pending actions</h2><ul class="pending-actions-list"><li class="pending-action-card">${dockHtml}</li></ul></section></main>` : `<main class="player-screen"><section class="step"><h2>Choose an injury</h2>${rowsHtml}${dockHtml}</section></main>`}`,
     `(() => {
       const dock = document.querySelector(".action-dock");
       const status = document.querySelector(".action-dock-status");
@@ -297,18 +298,20 @@ async function dockLayoutAt(width, rootFontPx = 16, height = 900) {
   return result;
 }
 // 320 and 360 are the phone column; the 32px root is "200% text" (rem-sized padding and type double).
-for (const [width, font, height] of [
+for (const [width, font, height, gm] of [
   [320, 16],
   [360, 16],
   [320, 32],
   [320, 32, 568],
   [375, 24, 667],
+  [320, 32, 568, true],
+  [320, 24, 568, true],
   [540, 16],
   [600, 16],
   [700, 16],
   [800, 16],
 ]) {
-  const layout = await dockLayoutAt(width, font, height);
+  const layout = await dockLayoutAt(width, font, height, gm);
   const ok =
     layout.statusWidth >= 120 &&
     layout.dockHeight <= layout.innerHeight * 0.45 + 1 &&
@@ -317,9 +320,9 @@ for (const [width, font, height] of [
     // The primary action is visible without scrolling the dock, even when the content overflows its cap.
     layout.primaryVisible;
   console.log(
-    `${ok ? "ok  " : "FAIL"} real stylesheet, dock at ${width}px / ${font}px text, ${height ?? 900}px tall, with two long buttons: ${JSON.stringify(layout)}`,
+    `${ok ? "ok  " : "FAIL"} real stylesheet, dock at ${width}px / ${font}px text, ${height ?? 900}px tall${gm ? ", GM card" : ""}, with two long buttons: ${JSON.stringify(layout)}`,
   );
-  if (!ok) failures.push(`dock-layout-${width}-${font}-${height ?? 900}`);
+  if (!ok) failures.push(`dock-layout-${width}-${font}-${height ?? 900}${gm ? "-gm" : ""}`);
 }
 await send(
   "Emulation.setDeviceMetricsOverride",

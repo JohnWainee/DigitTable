@@ -16,6 +16,7 @@ type ResizeCallback = () => void;
 /** A controllable ResizeObserver: jsdom has none, and the dock reads a laid-out height. */
 function installResizeObserver(heights: Map<Element, number>): {
   readonly fire: () => void;
+  readonly observed: () => Element[];
   readonly restore: () => void;
 } {
   const observers = new Set<{ callback: ResizeCallback; targets: Set<Element> }>();
@@ -43,6 +44,7 @@ function installResizeObserver(heights: Map<Element, number>): {
     fire: () => {
       for (const { callback } of observers) callback();
     },
+    observed: () => Array.from(observers).flatMap(({ targets }) => Array.from(targets)),
     restore: () => {
       vi.unstubAllGlobals();
       if (original) globalThis.ResizeObserver = original;
@@ -130,6 +132,14 @@ describe("ActionDock", () => {
         </ActionDock>,
       );
       const dock = container.querySelector<HTMLElement>(".action-dock")!;
+      // Content growth does not resize a capped dock, so the status and the actions are watched too.
+      expect(observer.observed()).toEqual(
+        expect.arrayContaining([
+          dock,
+          dock.querySelector(".action-dock-status"),
+          dock.querySelector(".action-dock-actions"),
+        ]),
+      );
       const measure = (scrollHeight: number, clientHeight: number): void => {
         Object.defineProperty(dock, "scrollHeight", { value: scrollHeight, configurable: true });
         Object.defineProperty(dock, "clientHeight", { value: clientHeight, configurable: true });

@@ -572,6 +572,25 @@ describe("reskin stylesheet contract", () => {
       expect(card).toContain("padding: var(--pending-pad)");
     });
 
+    it("caps the GM card's nested inline padding in px so 200% text cannot squeeze its rows", () => {
+      expect(declaration(rulesFor(/^\.pending-action-card fieldset$/), "padding-inline")).toEqual([
+        "min(0.85rem, 10px)",
+      ]);
+      const option = rulesFor(/^\.pending-action-card \.gear-option$/);
+      expect(declaration(option, "padding-inline")).toEqual(["min(0.65rem, 8px)"]);
+      expect(declaration(option, "gap")).toEqual(["min(0.85rem, 12px)"]);
+      expect(declaration(option, "overflow-wrap")).toEqual(["anywhere"]);
+      expect(
+        declaration(rulesFor(/^\.pending-action-card \.action-dock$/), "padding-inline"),
+      ).toEqual(["min(1rem, 12px)"]);
+      expect(
+        declaration(
+          rulesFor(/^\.pending-action-card \.action-dock-actions > button$/),
+          "padding-inline",
+        ),
+      ).toEqual(["min(1.25rem, 14px)"]);
+    });
+
     it("stacks status over a full-width, wrapping action row below 34rem (phones)", () => {
       expect(declaration(dock(), "flex-direction")[0]).toBe("column");
       const actions = rulesFor(/^\.action-dock-actions$/);

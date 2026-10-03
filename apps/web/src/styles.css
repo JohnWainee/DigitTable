@@ -845,6 +845,16 @@ details ul {
   overflow-wrap: anywhere;
 }
 
+/* The dock is the narrowest thing in the card (card width minus the screen, panel and card padding);
+   its own rem padding and the button's would otherwise break "Roll it" one letter per line at 200% text. */
+.pending-action-card .action-dock {
+  padding-inline: min(1rem, 12px);
+}
+
+.pending-action-card .action-dock-actions > button {
+  padding-inline: min(1.25rem, 14px);
+}
+
 .action-dock-status {
   margin: 0;
   font-family: var(--font-mono);
