@@ -1376,6 +1376,44 @@ details ul {
   border-color: var(--pink);
 }
 
+/* ---------- Commit bar (long pickers: compose, allocation) ----------
+   On a phone the stat/item lists and the per-die target lists run to several screens, which leaves
+   the primary button far below the option being chosen. The bar pins it (and any running count) to
+   the bottom of the viewport while its card is on screen. It is plain `position: sticky` in the
+   card's own flow, not a fixed overlay, so it never fights the on-screen keyboard (neither picker
+   has a text field), pinch-zoom, or the dynamic browser toolbar; the home-indicator inset is
+   padded in. It is only pinned when the viewport is tall enough to keep most of the picker
+   visible: in phone landscape, or under large text (rem media queries follow the browser's text
+   size), it falls back to an ordinary in-flow row so it can never cover the screen. */
+
+.commit-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.commit-status {
+  margin: 0;
+}
+
+@media (min-height: 32rem) {
+  .commit-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    /* Bleed to the card's edges so the options never show beside or beneath the bar. */
+    margin-inline: -1rem;
+    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    background: var(--ink-1);
+    border-top: 2px solid var(--acid);
+  }
+
+  /* A focused option scrolls into view clear of the pinned bar (WCAG 2.4.11 Focus Not Obscured). */
+  .step .gear-option {
+    scroll-margin-block-end: 9rem;
+  }
+}
+
 /* ---------- Route map (shared table display) ---------- */
 
 .route-map {

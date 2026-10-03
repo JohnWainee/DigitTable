@@ -53,6 +53,12 @@ const PORT = Number(arg("port", "9350"));
 const SHOTS = !args.includes("--no-shots");
 const TOLERATE = args.includes("--tolerate-baseline");
 const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (fast iteration on the pop-out)
+// `--text-scale 200` launches Chrome with its default font size scaled (a real browser text-size setting: it
+// moves both the root font size AND the `rem` basis of media queries, which a CSS font-size override on
+// <html> does not) and runs only the commit-bar audit, the one check whose layout depends on that basis.
+const TEXT_SCALE = Number(arg("text-scale", "100")) / 100;
+const COMMIT_BAR_ONLY = args.includes("--text-scale");
+const SKIP_SWEEP = MODAL_ONLY || COMMIT_BAR_ONLY;
 const CHROME =
   process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 mkdirSync(OUT, { recursive: true });
@@ -88,6 +94,7 @@ const report = {
   states: [],
   modal: [],
   keyboard: [],
+  commitBar: [],
   validation: [],
   reducedMotion: null,
   routes: [],
@@ -384,7 +391,7 @@ function isHardAxe(violation) {
  * `axeViewports` limits the (slower) axe pass to a representative subset.
  */
 async function captureState(device, state, { axeViewports = ["phone", "tablet", "desktop"] } = {}) {
-  if (MODAL_ONLY) return;
+  if (SKIP_SWEEP) return;
   const original = device.vp;
   for (const vp of VIEWPORTS) {
     await applyViewport(device, vp);
@@ -966,7 +973,7 @@ const KEYBOARD_FOCUS_AUDIT = `(async () => {
 })()`;
 
 async function auditKeyboardFocus(device, state) {
-  if (MODAL_ONLY) return;
+  if (SKIP_SWEEP) return;
   const original = device.vp;
   for (const vp of [byName["phone-small"], byName["phone"], byName["phone-landscape"]]) {
     // An on-screen keyboard covers roughly 40% of a portrait phone and half of a landscape one.
@@ -985,6 +992,108 @@ async function auditKeyboardFocus(device, state) {
   await applyViewport(device, original);
 }
 
+// ---------- commit bar (compose and allocation) ----------
+
+/**
+ * The compose and allocation cards run to several phone screens, so their primary button lives in a
+ * `.commit-bar` that is pinned to the bottom of the viewport while the card is on screen (and falls
+ * back to an in-flow row when the viewport is short or the text is enlarged). In the live page at
+ * every viewport this proves: the primary button is fully on screen, at least 44 px tall and
+ * not covered, while the card fills the screen (card top and half way down), wherever the card is
+ * taller than the screen; the bar never takes
+ * more than half the visible height; it is `static` (cannot cover anything) below the 32rem height
+ * gate; a keyboard-focused option at the very end of the longest list scrolls clear of the bar
+ * (WCAG 2.4.11); and the bar bleeds neither past the viewport edge nor into a horizontal scrollbar.
+ * Run again with `--text-scale 200` (real browser text size, commit-bar checks only) for large text.
+ */
+const COMMIT_BAR_AUDIT = `(() => {
+  const bar = document.querySelector(".commit-bar");
+  if (!bar) return { found: false, innerHeight, overflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth };
+  const card = bar.closest(".step");
+  const button = bar.querySelector("button");
+  const box = (el) => { const r = el.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, height: r.height }; };
+  const sticky = getComputedStyle(bar).position === "sticky";
+  const probe = () => {
+    const b = box(button);
+    const x = (b.left + b.right) / 2, y = (b.top + b.bottom) / 2;
+    const hit = y >= 0 && y < innerHeight ? document.elementFromPoint(x, y) : null;
+    return { button: b, bar: box(bar), card: box(card), covered: !(hit === button || button.contains(hit)) };
+  };
+  // Scroll positions where the card fills the screen: its top at the top edge, and half way down it.
+  card.scrollIntoView({ block: "start" });
+  const cardTop = probe();
+  const span = Math.max(0, card.getBoundingClientRect().height - innerHeight);
+  window.scrollBy(0, span / 2);
+  const cardMiddle = probe();
+  window.scrollTo(0, document.documentElement.scrollHeight);
+  const pageEnd = probe();
+  // The very last option of the picker, focused by keyboard, must scroll clear of the bar.
+  const options = [...card.querySelectorAll(".gear-option input")];
+  const last = options[options.length - 1];
+  let focus = null;
+  if (last) {
+    window.scrollTo(0, 0);
+    last.focus();
+    const label = last.closest("label").getBoundingClientRect();
+    const b = bar.getBoundingClientRect();
+    focus = { labelTop: label.top, labelBottom: label.bottom, barTop: b.top, clear: !sticky || label.bottom <= b.top + 1 };
+    last.blur();
+  }
+  window.scrollTo(0, 0);
+  return {
+    found: true,
+    position: getComputedStyle(bar).position,
+    rootFontPx: parseFloat(getComputedStyle(document.documentElement).fontSize),
+    innerHeight, innerWidth,
+    cardHeight: card.getBoundingClientRect().height,
+    cardTop, cardMiddle, pageEnd, focus,
+    overflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  };
+})()`;
+
+async function auditCommitBar(device, state) {
+  if (MODAL_ONLY) return;
+  const original = device.vp;
+  for (const vp of VIEWPORTS) {
+    await applyViewport(device, vp);
+    await sleep(200);
+    const r = await ev(device, COMMIT_BAR_AUDIT);
+    const scope = `${device.name}/${state}-commit-bar@${vp.name}${TEXT_SCALE === 1 ? "" : `-text${Math.round(TEXT_SCALE * 100)}`}`;
+    report.commitBar.push({ scope, ...r });
+    if (!r.found) {
+      fail(scope, "no .commit-bar rendered");
+      continue;
+    }
+    // The stylesheet's gate is `@media (min-height: 32rem)`; with a scaled default font size the rem is bigger.
+    const gated = r.innerHeight >= 32 * r.rootFontPx;
+    if (!gated && r.position !== "static")
+      fail(scope, `bar is ${r.position} in a ${r.innerHeight}px-tall viewport (must be static)`);
+    if (gated && r.position !== "sticky") fail(scope, `bar is ${r.position}, expected sticky`);
+    if (r.cardTop.button.height < 44) fail(scope, `button is ${r.cardTop.button.height}px tall`);
+    if (r.overflowPx > 1) fail(scope, `horizontal overflow ${r.overflowPx}px`);
+    if (r.cardTop.bar.left < -1 || r.cardTop.bar.right > r.innerWidth + 1)
+      fail(scope, "bar extends past the viewport edge");
+    if (gated && r.cardHeight > r.innerHeight * 1.2) {
+      // The card is taller than the screen: the button must be on screen and uncovered while the card fills it.
+      for (const [where, p] of [
+        ["top", r.cardTop],
+        ["middle", r.cardMiddle],
+      ]) {
+        if (p.button.top < 0 || p.button.bottom > r.innerHeight)
+          fail(scope, `button is off screen with the card's ${where} in view`);
+        else if (p.covered) fail(scope, `button is covered with the card's ${where} in view`);
+      }
+      if (r.cardTop.bar.height > r.innerHeight * 0.5)
+        fail(scope, `bar takes ${Math.round(r.cardTop.bar.height)}px of ${r.innerHeight}px`);
+    }
+    if (r.pageEnd.button.top < 0 || r.pageEnd.button.bottom > r.innerHeight)
+      fail(scope, "button is off screen once scrolled to the end of the page");
+    if (r.focus && !r.focus.clear)
+      fail(scope, "the last option is covered by the bar when it takes keyboard focus");
+  }
+  await applyViewport(device, original);
+}
+
 // ---------- forms: inline validation instead of the browser's own bubbles ----------
 
 /**
@@ -994,7 +1103,7 @@ async function auditKeyboardFocus(device, state) {
  * button, and focus moved to the first invalid field with that field inside the viewport.
  */
 async function auditInlineValidation(device, config) {
-  if (MODAL_ONLY) return;
+  if (SKIP_SWEEP) return;
   const original = device.vp;
   for (const vp of [byName["phone-small"], byName["phone"]]) {
     await applyViewport(device, vp);
@@ -1229,6 +1338,9 @@ async function main() {
       `--user-data-dir=${profile}`,
       "--no-first-run",
       "--no-default-browser-check",
+      ...(TEXT_SCALE === 1
+        ? []
+        : [`--blink-settings=defaultFontSize=${Math.round(16 * TEXT_SCALE)}`]),
       "about:blank",
     ],
     { stdio: "ignore" },
@@ -1334,6 +1446,7 @@ async function main() {
       "compose",
     );
     await captureState(player, "compose");
+    await auditCommitBar(player, "compose");
 
     // Disclosure: "Why?" opened.
     await ev(player, `document.querySelector("details summary").click()`);
@@ -1372,14 +1485,17 @@ async function main() {
     await waitFor(gm, `${textMatch("button", "/^Roll it$/")}`, 30000, "Roll it");
     await captureState(gm, "console-pending");
 
-    await auditModal(gm);
-    await auditReducedMotion(gm);
+    if (!COMMIT_BAR_ONLY) {
+      await auditModal(gm);
+      await auditReducedMotion(gm);
+    }
 
     // GM rolls; player allocates.
     await applyViewport(gm, byName["desktop"]);
     await clickText(gm, "button", /^Roll it$/);
     await waitFor(player, `document.body.textContent.includes("Your roll")`, 30000, "allocation");
     await captureState(player, "allocation");
+    await auditCommitBar(player, "allocation");
     await ev(
       player,
       `document.querySelectorAll("fieldset.allocation-die-group").forEach(g => g.querySelector("input[type=radio]")?.click())`,
@@ -1420,7 +1536,7 @@ async function main() {
     );
     await captureState(table, "next-scene");
     await captureState(gm, "console-next-scene");
-    await rosterSweep(cdp, gm, table, codes);
+    if (!COMMIT_BAR_ONLY) await rosterSweep(cdp, gm, table, codes);
 
     // Last on purpose: redeeming the player's recovery code rebinds the seat to the anon device and
     // revokes the player device's binding, so nothing that needs that device may run after this.
@@ -1465,6 +1581,7 @@ async function main() {
           .map((v) => `${s.surface}/${s.state}@${s.viewport}: ${v.id}`),
       ),
       keyboardFocusChecks: report.keyboard.reduce((n, k) => n + k.controls, 0),
+      commitBarCases: report.commitBar.length,
       validationScenarios: report.validation.length,
       sheetCases: report.modal.filter((m) => m.rosterIndex !== undefined).length,
       failures: report.failures.length,

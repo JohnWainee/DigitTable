@@ -142,6 +142,10 @@ describe("Player dashboard (C02/C06)", () => {
     expect(screen.getByRole("heading", { name: /^party$/i })).toBeInTheDocument();
     expect(screen.getByText(/iryna \(you\)/i)).toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: /exquisite hunting rifle/i })).toBeInTheDocument();
+    // Declare lives in the commit bar so it stays reachable below the long stat/item lists on a phone.
+    expect(
+      screen.getByRole("button", { name: /declare action/i }).closest(".commit-bar"),
+    ).not.toBeNull();
   });
 
   it("declares an action, waits for the roll, and reaches the allocation step", async () => {
@@ -162,6 +166,11 @@ describe("Player dashboard (C02/C06)", () => {
     const [, remaining, total, noun, verb] = parts!;
     expect(verb).toBe(remaining === "1" ? "needs" : "need");
     expect(noun).toBe(total === "1" ? "die" : "dice");
+    // The running count and the confirm button share the pinned commit bar, so the count stays beside
+    // the button on a phone however far the per-die lists scroll.
+    const bar = screen.getByRole("button", { name: /confirm allocation/i }).closest(".commit-bar");
+    expect(bar).not.toBeNull();
+    expect(within(bar as HTMLElement).getByText(/still needs? a target/i)).toBeInTheDocument();
   });
 
   it("allocates every kept die and reaches a resolved confirmation", async () => {

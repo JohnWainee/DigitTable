@@ -269,14 +269,16 @@ export function ComposeStep2({
         </details>
       </div>
 
-      <button
-        type="button"
-        className="primary-action"
-        disabled={!canDeclare}
-        onClick={handleDeclare}
-      >
-        Declare action
-      </button>
+      <div className="commit-bar">
+        <button
+          type="button"
+          className="primary-action"
+          disabled={!canDeclare}
+          onClick={handleDeclare}
+        >
+          Declare action
+        </button>
+      </div>
       {character.downed && <p role="alert">You&rsquo;re down. A teammate must rescue you.</p>}
       {character.retired && <p role="alert">Your story is told.</p>}
       {actedThisRound && !character.downed && !character.retired && (

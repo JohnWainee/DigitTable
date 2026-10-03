@@ -182,3 +182,27 @@ describe("two-device smoke scene advance", () => {
     expect(advance.slice(0, use)).toMatch(/querySelector\("#scene-reason"\)/);
   });
 });
+
+describe("ui-audit.mjs commit-bar coverage", () => {
+  it("audits the compose and allocation bars at every viewport, and again under a real 200% browser text size", () => {
+    expect(audit).toContain('await auditCommitBar(player, "compose")');
+    expect(audit).toContain('await auditCommitBar(player, "allocation")');
+    const fn = audit.slice(audit.indexOf("async function auditCommitBar"));
+    expect(fn).toContain("for (const vp of VIEWPORTS)");
+    // A CSS font-size override on <html> cannot move the stylesheet's `rem` media gate; Chrome's own default
+    // font size does, so the large-text case launches the browser with it.
+    expect(audit).toContain("--blink-settings=defaultFontSize=");
+    expect(audit).toContain('arg("text-scale"');
+    expect(fn).toContain("32 * r.rootFontPx");
+  });
+
+  it("judges reachability, the short-viewport fallback, the size cap and keyboard focus clearance", () => {
+    const fn = audit.slice(audit.indexOf("async function auditCommitBar"));
+    // The gate mirrors the stylesheet's `@media (min-height: 32rem)`.
+    expect(fn).toContain('r.position !== "static"');
+    expect(fn).toContain('r.position !== "sticky"');
+    expect(fn).toContain("r.cardTop.bar.height > r.innerHeight * 0.5");
+    expect(fn).toContain("last option is covered by the bar");
+    expect(fn).toContain("is covered with the card");
+  });
+});

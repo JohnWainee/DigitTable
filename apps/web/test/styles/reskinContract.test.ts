@@ -450,4 +450,35 @@ describe("reskin stylesheet contract", () => {
       expect(fetched.every((u) => u.startsWith("data:image/svg+xml"))).toBe(true);
     });
   });
+  describe("commit bar (long pickers keep their primary button in reach)", () => {
+    const gated = mediaBlock("(min-height: 32rem)");
+
+    it("pins the bar with position: sticky, never fixed, so it cannot fight the on-screen keyboard", () => {
+      expect(gated).toMatch(/\.commit-bar\s*\{[^}]*position:\s*sticky/);
+      expect(gated).toMatch(/\.commit-bar\s*\{[^}]*bottom:\s*0/);
+      expect(css).not.toMatch(/\.commit-bar\s*\{[^}]*position:\s*fixed/);
+    });
+
+    it("only pins it on viewports tall enough to keep the picker visible (landscape and large text fall back to in-flow)", () => {
+      // The base rule, before the media block, is an ordinary flex column with no `position` at all.
+      const base = css.slice(
+        css.indexOf(".commit-bar {"),
+        css.indexOf("@media (min-height: 32rem)"),
+      );
+      expect(base).toMatch(/flex-direction:\s*column/);
+      expect(base).not.toMatch(/position:/);
+      expect(css.indexOf("@media (min-height: 32rem)")).toBeGreaterThan(
+        css.indexOf(".commit-bar {"),
+      );
+    });
+
+    it("pads the home-indicator inset and paints an opaque background so options never show through", () => {
+      expect(gated).toMatch(/\.commit-bar\s*\{[^}]*env\(safe-area-inset-bottom/);
+      expect(gated).toMatch(/\.commit-bar\s*\{[^}]*background:\s*var\(--ink-1\)/);
+    });
+
+    it("keeps a keyboard-focused option clear of the bar (WCAG 2.4.11 Focus Not Obscured)", () => {
+      expect(gated).toMatch(/\.step \.gear-option\s*\{[^}]*scroll-margin-block-end:\s*9rem/);
+    });
+  });
 });
