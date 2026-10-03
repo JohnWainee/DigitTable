@@ -1,0 +1,89 @@
+1790995431273 TIP dismissing 'Close'
+1790995475170 MARK P1-sheet-open-portrait
+1790995475305 SHOT P1-sheet-portrait-open
+1790995481273 TIP keyboard intro Continue
+1790995486776 KB P1-portrait-keyboard: exists=true frame=(0.0, 583.0, 402.0, 233.0)
+1790995486958 KB-BTN P1-portrait-keyboard: 'Emoji' (8.47726568115926, 805.6989567998571, 68.0852958475086, 68.73516393505099)
+1790995487094 KB-BTN P1-portrait-keyboard: 'Dictate' (325.43743847133214, 805.3656234665237, 68.08529584750863, 68.7351639350511)
+1790995487234 KB-BTN P1-portrait-keyboard: 'shift' (4.666666666666657, 698.0, 51.333333333333336, 54.0)
+1790995487374 KB-BTN P1-portrait-keyboard: 'return' (300.66666666666663, 752.0, 99.00000000000006, 54.0)
+1790995487518 KB-BTN P1-portrait-keyboard: 'Previous' (21.000000000000014, 486.0, 40.00000000000001, 38.0)
+1790995487660 KB-BTN P1-portrait-keyboard: 'Next' (75.00000000000001, 486.0, 40.0, 38.0)
+1790995487812 KB-BTN P1-portrait-keyboard: 'Done' (341.0, 486.0, 40.0, 38.0)
+1790995488448 FRAME reason (P1-portrait-keyboard): exists=true frame=(18.0, 282.0, 366.0, 49.0) hittable=true screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0
+1790995488597 FRAME apply (P1-portrait-keyboard): exists=true frame=(18.0, 360.0, 177.0, 67.0) hittable=true screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0
+1790995488746 FRAME cancel (P1-portrait-keyboard): exists=true frame=(207.0, 360.0, 177.0, 67.0) hittable=true screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0
+1790995488746 MARK P1-portrait-keyboard-up
+1790995488842 SHOT P1-sheet-portrait-keyboard
+1790995493697 MARK P2-landscape-rotated-while-open
+1790995493726 KB P2-landscape-rotated: exists=true frame=(75.0, 238.0, 724.0, 162.0)
+1790995493942 KB-BTN P2-landscape-rotated: 'Dictate' (-3.1007874015747916, 797.4374384713321, 68.73516393505099, 68.08529584750863)
+1790995494074 KB-BTN P2-landscape-rotated: 'shift' (77.0, 313.66666666666663, 94.0, 35.0)
+1790995494205 KB-BTN P2-landscape-rotated: 'return' (654.6666666666666, 348.66666666666663, 144.33333333333337, 35.33333333333337)
+1790995494335 KB-BTN P2-landscape-rotated: 'Previous' (135.99999999999997, 144.0, 38.0, 36.0)
+1790995494465 KB-BTN P2-landscape-rotated: 'Next' (189.99999999999997, 144.0, 38.0, 36.0)
+1790995494597 KB-BTN P2-landscape-rotated: 'Done' (700.0, 144.0, 38.0, 36.0)
+1790995495154 FRAME reason (P2): exists=true frame=(135.0, 22.0, 604.0, 49.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995495291 FRAME apply (P2): exists=true frame=(135.0, 64.0, 296.0, 67.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995495432 FRAME cancel (P2): exists=true frame=(443.0, 64.0, 296.0, 67.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995495473 VALUE reason after rotate -> 'ios keyboard check'
+1790995495561 SHOT P2-sheet-landscape-keyboard-rotated
+1790995497659 FRAME apply after drag 1 (P2): exists=true frame=(135.0, 64.0, 296.0, 67.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995497805 FRAME cancel after drag 1 (P2): exists=true frame=(443.0, 64.0, 296.0, 67.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995499917 FRAME apply after drag 2 (P2): exists=true frame=(135.0, 64.0, 296.0, 67.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995500079 FRAME cancel after drag 2 (P2): exists=true frame=(443.0, 64.0, 296.0, 67.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995502174 FRAME apply after drag 3 (P2): exists=true frame=(135.0, 64.0, 296.0, 67.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995502316 FRAME cancel after drag 3 (P2): exists=true frame=(443.0, 64.0, 296.0, 67.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995502316 MARK P2-after-drag
+1790995502412 SHOT P2-sheet-landscape-keyboard-after-drag
+1790995502453 KEYBOARD hide via 'Done'
+1790995505041 MARK P3-landscape-after-hide-keyboard
+1790995505110 KB P3-landscape-after-hide: exists=false frame=-
+1790995505246 KB-BTN P3-landscape-after-hide: 'APPLY CORRECTION' (135.0, 308.0, 296.0, 67.0)
+1790995505359 KB-BTN P3-landscape-after-hide: 'CANCEL' (443.0, 308.0, 296.0, 67.0)
+1790995505820 FRAME apply (P3): exists=true frame=(135.0, 308.0, 296.0, 67.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=-1.0
+1790995505940 FRAME cancel (P3): exists=true frame=(443.0, 308.0, 296.0, 67.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=-1.0
+1790995506034 SHOT P3-sheet-landscape-no-keyboard
+1790995508728 MARK P4-landscape-keyboard-fresh
+1790995508767 KB P4-landscape-fresh: exists=true frame=(75.0, 238.0, 724.0, 162.0)
+1790995508976 KB-BTN P4-landscape-fresh: 'Dictate' (-3.1007874015747916, 797.4374384713321, 68.73516393505099, 68.08529584750863)
+1790995509107 KB-BTN P4-landscape-fresh: 'shift' (77.0, 313.6666666666667, 94.0, 35.0)
+1790995509240 KB-BTN P4-landscape-fresh: 'return' (654.6666666666666, 348.66666666666663, 144.33333333333337, 35.33333333333337)
+1790995509382 KB-BTN P4-landscape-fresh: 'Previous' (135.99999999999997, 140.0, 38.0, 36.0)
+1790995509528 KB-BTN P4-landscape-fresh: 'Next' (189.99999999999997, 140.0, 38.0, 36.0)
+1790995509668 KB-BTN P4-landscape-fresh: 'Done' (700.0, 140.0, 38.0, 36.0)
+1790995510226 FRAME reason (P4): exists=true frame=(135.0, 28.0, 604.0, 50.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995510368 FRAME apply (P4): exists=true frame=(135.0, 80.0, 296.0, 69.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995510507 FRAME cancel (P4): exists=true frame=(443.0, 80.0, 296.0, 69.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995510599 SHOT P4-sheet-landscape-keyboard-fresh
+1790995512717 FRAME apply after drag 1 (P4): exists=true frame=(135.0, 80.0, 296.0, 69.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995512859 FRAME cancel after drag 1 (P4): exists=true frame=(443.0, 80.0, 296.0, 69.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995514957 FRAME apply after drag 2 (P4): exists=true frame=(135.0, 80.0, 296.0, 69.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995515101 FRAME cancel after drag 2 (P4): exists=true frame=(443.0, 80.0, 296.0, 69.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995517198 FRAME apply after drag 3 (P4): exists=true frame=(135.0, 80.0, 296.0, 69.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995517341 FRAME cancel after drag 3 (P4): exists=true frame=(443.0, 80.0, 296.0, 69.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995517341 MARK P4-after-drag
+1790995517430 SHOT P4-sheet-landscape-keyboard-after-drag
+1790995517475 TOUCH cancel hittable with keyboard up in landscape: true
+1790995520219 TOUCH sheet closed by tapping Cancel with keyboard up: true
+1790995520457 KEYBOARD no hide button found (P4-end); buttons listed above
+1790995523549 MARK P5-back-to-portrait
+1790995523693 SHOT P5-sheet-portrait-after
+1790995527016 sheet closed: true
+1790995527140 SHOT P5-sheet-closed
+1790995553613 MARK P6-sheet-open-landscape-first
+1790995553749 SHOT P6-sheet-landscape-open
+1790995563969 KB P6-landscape-first-keyboard: exists=true frame=(75.0, 238.0, 724.0, 162.0)
+1790995564175 KB-BTN P6-landscape-first-keyboard: 'Dictate' (-3.1007874015747916, 797.4374384713321, 68.73516393505099, 68.08529584750863)
+1790995564305 KB-BTN P6-landscape-first-keyboard: 'shift' (77.0, 313.6666666666667, 94.0, 35.0)
+1790995564433 KB-BTN P6-landscape-first-keyboard: 'return' (654.6666666666666, 348.66666666666663, 144.33333333333337, 35.33333333333337)
+1790995564565 KB-BTN P6-landscape-first-keyboard: 'Previous' (135.99999999999997, 140.0, 38.0, 36.0)
+1790995564696 KB-BTN P6-landscape-first-keyboard: 'Next' (189.99999999999997, 140.0, 38.0, 36.0)
+1790995564831 KB-BTN P6-landscape-first-keyboard: 'Done' (700.0, 140.0, 38.0, 36.0)
+1790995565401 FRAME reason (P6-landscape-first-keyboard): exists=true frame=(135.0, 28.0, 604.0, 50.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995565549 FRAME apply (P6-landscape-first-keyboard): exists=true frame=(135.0, 80.0, 296.0, 50.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995565699 FRAME cancel (P6-landscape-first-keyboard): exists=true frame=(443.0, 80.0, 296.0, 50.0) hittable=true screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0
+1790995565699 MARK P6-landscape-first-keyboard-up
+1790995565790 SHOT P6-sheet-landscape-first-keyboard
+1790995565829 KEYBOARD hide via 'Done'
+1790995572101 sheet2 closed: true

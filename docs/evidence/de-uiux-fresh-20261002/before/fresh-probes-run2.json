@@ -1,0 +1,1039 @@
+{
+  "base": "http://127.0.0.1:14174",
+  "startedAt": "2026-10-03T00:47:41.957Z",
+  "env": {
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+    "rootFontPx": 16,
+    "dpr": 1
+  },
+  "probes": {
+    "focusSweepCompose": [
+      {
+        "label": "player compose phone",
+        "stops": 10,
+        "noIndicator": [],
+        "offscreen": [],
+        "notFullyInView": []
+      }
+    ],
+    "clippedCompose200": [
+      {
+        "label": "player compose",
+        "viewport": "phone-small",
+        "clipped": []
+      },
+      {
+        "label": "player compose",
+        "viewport": "phone",
+        "clipped": []
+      },
+      {
+        "label": "player compose",
+        "viewport": "phone-landscape",
+        "clipped": []
+      },
+      {
+        "label": "player compose why-open",
+        "viewport": "phone-small",
+        "clipped": []
+      },
+      {
+        "label": "player compose why-open",
+        "viewport": "phone",
+        "clipped": []
+      },
+      {
+        "label": "player compose why-open",
+        "viewport": "phone-landscape",
+        "clipped": []
+      }
+    ],
+    "forcedColorsCompose": [
+      {
+        "label": "player-compose-phone",
+        "forcedActive": true,
+        "controls": 19,
+        "issues": [],
+        "canvas": "rgb(255, 255, 255)",
+        "checkboxStateChange": [
+          {
+            "type": "radio",
+            "id": "stat",
+            "differs": true,
+            "checked": {
+              "checked": true,
+              "bg": "rgba(5, 0, 73, 0.8)",
+              "border": "rgba(5, 0, 73, 0.8)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            "unchecked": {
+              "checked": false,
+              "bg": "rgb(255, 255, 255)",
+              "border": "rgb(0, 0, 0)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+            }
+          },
+          {
+            "type": "radio",
+            "id": "stat",
+            "differs": true,
+            "checked": {
+              "checked": true,
+              "bg": "rgba(5, 0, 73, 0.8)",
+              "border": "rgba(5, 0, 73, 0.8)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            "unchecked": {
+              "checked": false,
+              "bg": "rgb(255, 255, 255)",
+              "border": "rgb(0, 0, 0)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+            }
+          },
+          {
+            "type": "radio",
+            "id": "stat",
+            "differs": true,
+            "checked": {
+              "checked": true,
+              "bg": "rgba(5, 0, 73, 0.8)",
+              "border": "rgba(5, 0, 73, 0.8)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            "unchecked": {
+              "checked": false,
+              "bg": "rgb(255, 255, 255)",
+              "border": "rgb(0, 0, 0)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+            }
+          },
+          {
+            "type": "radio",
+            "id": "stat",
+            "differs": true,
+            "checked": {
+              "checked": true,
+              "bg": "rgba(5, 0, 73, 0.8)",
+              "border": "rgba(5, 0, 73, 0.8)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            "unchecked": {
+              "checked": false,
+              "bg": "rgb(255, 255, 255)",
+              "border": "rgb(0, 0, 0)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+            }
+          },
+          {
+            "type": "radio",
+            "id": "stat",
+            "differs": true,
+            "checked": {
+              "checked": true,
+              "bg": "rgba(5, 0, 73, 0.8)",
+              "border": "rgba(5, 0, 73, 0.8)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            "unchecked": {
+              "checked": false,
+              "bg": "rgb(255, 255, 255)",
+              "border": "rgb(0, 0, 0)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+            }
+          },
+          {
+            "type": "radio",
+            "id": "stat",
+            "differs": true,
+            "checked": {
+              "checked": true,
+              "bg": "rgba(5, 0, 73, 0.8)",
+              "border": "rgba(5, 0, 73, 0.8)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            "unchecked": {
+              "checked": false,
+              "bg": "rgb(255, 255, 255)",
+              "border": "rgb(0, 0, 0)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+            }
+          }
+        ],
+        "screenshot": "forced-player-compose-phone.jpg"
+      },
+      {
+        "label": "player-compose-why-phone",
+        "forcedActive": true,
+        "controls": 19,
+        "issues": [],
+        "canvas": "rgb(255, 255, 255)",
+        "checkboxStateChange": [
+          {
+            "type": "radio",
+            "id": "stat",
+            "differs": true,
+            "checked": {
+              "checked": true,
+              "bg": "rgba(5, 0, 73, 0.8)",
+              "border": "rgba(5, 0, 73, 0.8)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            "unchecked": {
+              "checked": false,
+              "bg": "rgb(255, 255, 255)",
+              "border": "rgb(0, 0, 0)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+            }
+          },
+          {
+            "type": "radio",
+            "id": "stat",
+            "differs": true,
+            "checked": {
+              "checked": true,
+              "bg": "rgba(5, 0, 73, 0.8)",
+              "border": "rgba(5, 0, 73, 0.8)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            "unchecked": {
+              "checked": false,
+              "bg": "rgb(255, 255, 255)",
+              "border": "rgb(0, 0, 0)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+            }
+          },
+          {
+            "type": "radio",
+            "id": "stat",
+            "differs": true,
+            "checked": {
+              "checked": true,
+              "bg": "rgba(5, 0, 73, 0.8)",
+              "border": "rgba(5, 0, 73, 0.8)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            "unchecked": {
+              "checked": false,
+              "bg": "rgb(255, 255, 255)",
+              "border": "rgb(0, 0, 0)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+            }
+          },
+          {
+            "type": "radio",
+            "id": "stat",
+            "differs": true,
+            "checked": {
+              "checked": true,
+              "bg": "rgba(5, 0, 73, 0.8)",
+              "border": "rgba(5, 0, 73, 0.8)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            "unchecked": {
+              "checked": false,
+              "bg": "rgb(255, 255, 255)",
+              "border": "rgb(0, 0, 0)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+            }
+          },
+          {
+            "type": "radio",
+            "id": "stat",
+            "differs": true,
+            "checked": {
+              "checked": true,
+              "bg": "rgba(5, 0, 73, 0.8)",
+              "border": "rgba(5, 0, 73, 0.8)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            "unchecked": {
+              "checked": false,
+              "bg": "rgb(255, 255, 255)",
+              "border": "rgb(0, 0, 0)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+            }
+          },
+          {
+            "type": "radio",
+            "id": "stat",
+            "differs": true,
+            "checked": {
+              "checked": true,
+              "bg": "rgba(5, 0, 73, 0.8)",
+              "border": "rgba(5, 0, 73, 0.8)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+            },
+            "unchecked": {
+              "checked": false,
+              "bg": "rgb(255, 255, 255)",
+              "border": "rgb(0, 0, 0)",
+              "borderStyle": "solid",
+              "afterBg": "rgb(255, 255, 255)",
+              "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+            }
+          }
+        ],
+        "screenshot": "forced-player-compose-why-phone.jpg"
+      }
+    ],
+    "selectTruncation": {
+      "phone-small": [
+        {
+          "id": "scene-select",
+          "availablePx": 161,
+          "options": 4,
+          "truncatedCount": 3,
+          "longest": "The Forecourt of the Gare des Ombres",
+          "ambiguous": [],
+          "selectedText": "The Abandoned Métro Platform",
+          "selectedTruncated": true
+        },
+        {
+          "id": "edit-target",
+          "availablePx": 161,
+          "options": 4,
+          "truncatedCount": 3,
+          "longest": "Objective: Get clear of the wreckage and into the streets",
+          "ambiguous": [
+            [
+              "Threat: Station Patrol A",
+              "Threat: Station Patrol B"
+            ]
+          ],
+          "selectedText": "Choose one…",
+          "selectedTruncated": false
+        },
+        {
+          "id": "grant-character",
+          "availablePx": 161,
+          "options": 6,
+          "truncatedCount": 0,
+          "longest": "Cosgrave",
+          "ambiguous": [],
+          "selectedText": "Iryna",
+          "selectedTruncated": false
+        },
+        {
+          "id": "advance-character",
+          "availablePx": 161,
+          "options": 6,
+          "truncatedCount": 0,
+          "longest": "Cosgrave",
+          "ambiguous": [],
+          "selectedText": "Iryna",
+          "selectedTruncated": false
+        },
+        {
+          "id": "advance-select",
+          "availablePx": 161,
+          "options": 3,
+          "truncatedCount": 1,
+          "longest": "Mantle of the Fell Beast",
+          "ambiguous": [],
+          "selectedText": "Hell's Ravenous Fire",
+          "selectedTruncated": false
+        },
+        {
+          "id": "reassign-character",
+          "availablePx": 161,
+          "options": 6,
+          "truncatedCount": 0,
+          "longest": "Cosgrave",
+          "ambiguous": [],
+          "selectedText": "Iryna",
+          "selectedTruncated": false
+        }
+      ],
+      "phone": [
+        {
+          "id": "scene-select",
+          "availablePx": 215,
+          "options": 4,
+          "truncatedCount": 2,
+          "longest": "The Forecourt of the Gare des Ombres",
+          "ambiguous": [],
+          "selectedText": "The Abandoned Métro Platform",
+          "selectedTruncated": true
+        },
+        {
+          "id": "edit-target",
+          "availablePx": 215,
+          "options": 4,
+          "truncatedCount": 1,
+          "longest": "Objective: Get clear of the wreckage and into the streets",
+          "ambiguous": [],
+          "selectedText": "Choose one…",
+          "selectedTruncated": false
+        },
+        {
+          "id": "grant-character",
+          "availablePx": 215,
+          "options": 6,
+          "truncatedCount": 0,
+          "longest": "Cosgrave",
+          "ambiguous": [],
+          "selectedText": "Iryna",
+          "selectedTruncated": false
+        },
+        {
+          "id": "advance-character",
+          "availablePx": 215,
+          "options": 6,
+          "truncatedCount": 0,
+          "longest": "Cosgrave",
+          "ambiguous": [],
+          "selectedText": "Iryna",
+          "selectedTruncated": false
+        },
+        {
+          "id": "advance-select",
+          "availablePx": 215,
+          "options": 3,
+          "truncatedCount": 0,
+          "longest": "Mantle of the Fell Beast",
+          "ambiguous": [],
+          "selectedText": "Hell's Ravenous Fire",
+          "selectedTruncated": false
+        },
+        {
+          "id": "reassign-character",
+          "availablePx": 215,
+          "options": 6,
+          "truncatedCount": 0,
+          "longest": "Cosgrave",
+          "ambiguous": [],
+          "selectedText": "Iryna",
+          "selectedTruncated": false
+        }
+      ],
+      "phone-landscape": [
+        {
+          "id": "scene-select",
+          "availablePx": 652,
+          "options": 4,
+          "truncatedCount": 0,
+          "longest": "The Forecourt of the Gare des Ombres",
+          "ambiguous": [],
+          "selectedText": "The Abandoned Métro Platform",
+          "selectedTruncated": false
+        },
+        {
+          "id": "edit-target",
+          "availablePx": 652,
+          "options": 4,
+          "truncatedCount": 0,
+          "longest": "Objective: Get clear of the wreckage and into the streets",
+          "ambiguous": [],
+          "selectedText": "Choose one…",
+          "selectedTruncated": false
+        },
+        {
+          "id": "grant-character",
+          "availablePx": 652,
+          "options": 6,
+          "truncatedCount": 0,
+          "longest": "Cosgrave",
+          "ambiguous": [],
+          "selectedText": "Iryna",
+          "selectedTruncated": false
+        },
+        {
+          "id": "advance-character",
+          "availablePx": 652,
+          "options": 6,
+          "truncatedCount": 0,
+          "longest": "Cosgrave",
+          "ambiguous": [],
+          "selectedText": "Iryna",
+          "selectedTruncated": false
+        },
+        {
+          "id": "advance-select",
+          "availablePx": 652,
+          "options": 3,
+          "truncatedCount": 0,
+          "longest": "Mantle of the Fell Beast",
+          "ambiguous": [],
+          "selectedText": "Hell's Ravenous Fire",
+          "selectedTruncated": false
+        },
+        {
+          "id": "reassign-character",
+          "availablePx": 652,
+          "options": 6,
+          "truncatedCount": 0,
+          "longest": "Cosgrave",
+          "ambiguous": [],
+          "selectedText": "Iryna",
+          "selectedTruncated": false
+        }
+      ],
+      "tablet": [
+        {
+          "id": "scene-select",
+          "availablePx": 608,
+          "options": 4,
+          "truncatedCount": 0,
+          "longest": "The Forecourt of the Gare des Ombres",
+          "ambiguous": [],
+          "selectedText": "The Abandoned Métro Platform",
+          "selectedTruncated": false
+        },
+        {
+          "id": "edit-target",
+          "availablePx": 608,
+          "options": 4,
+          "truncatedCount": 0,
+          "longest": "Objective: Get clear of the wreckage and into the streets",
+          "ambiguous": [],
+          "selectedText": "Choose one…",
+          "selectedTruncated": false
+        },
+        {
+          "id": "grant-character",
+          "availablePx": 608,
+          "options": 6,
+          "truncatedCount": 0,
+          "longest": "Cosgrave",
+          "ambiguous": [],
+          "selectedText": "Iryna",
+          "selectedTruncated": false
+        },
+        {
+          "id": "advance-character",
+          "availablePx": 608,
+          "options": 6,
+          "truncatedCount": 0,
+          "longest": "Cosgrave",
+          "ambiguous": [],
+          "selectedText": "Iryna",
+          "selectedTruncated": false
+        },
+        {
+          "id": "advance-select",
+          "availablePx": 608,
+          "options": 3,
+          "truncatedCount": 0,
+          "longest": "Mantle of the Fell Beast",
+          "ambiguous": [],
+          "selectedText": "Hell's Ravenous Fire",
+          "selectedTruncated": false
+        },
+        {
+          "id": "reassign-character",
+          "availablePx": 608,
+          "options": 6,
+          "truncatedCount": 0,
+          "longest": "Cosgrave",
+          "ambiguous": [],
+          "selectedText": "Iryna",
+          "selectedTruncated": false
+        }
+      ]
+    },
+    "feedbackVisibility": [
+      {
+        "viewport": "phone",
+        "scenario": "end-round-with-open-roll",
+        "button": {
+          "top": 381.671875,
+          "bottom": 429.671875,
+          "scrollY": 656,
+          "docTop": 1037.671875,
+          "docH": 5405
+        },
+        "alert": true,
+        "text": "Resolve or void: roll-1",
+        "top": -542.15625,
+        "bottom": -497.375,
+        "scrollY": 725,
+        "ih": 812,
+        "docH": 5474,
+        "fullyInViewport": false,
+        "partlyInViewport": false,
+        "docTop": 182.84375,
+        "distanceButtonToAlertPx": 855
+      },
+      {
+        "viewport": "phone-small",
+        "scenario": "end-round-with-open-roll",
+        "button": {
+          "top": 259.84375,
+          "bottom": 307.84375,
+          "scrollY": 883,
+          "docTop": 1142.84375,
+          "docH": 5734
+        },
+        "alert": true,
+        "text": "Resolve or void: roll-1",
+        "top": -733.59375,
+        "bottom": -688.8125,
+        "scrollY": 952,
+        "ih": 568,
+        "docH": 5803,
+        "fullyInViewport": false,
+        "partlyInViewport": false,
+        "docTop": 218.40625,
+        "distanceButtonToAlertPx": 924
+      },
+      {
+        "viewport": "phone-landscape",
+        "scenario": "end-round-with-open-roll",
+        "button": {
+          "top": 163.59375,
+          "bottom": 211.59375,
+          "scrollY": 732,
+          "docTop": 895.59375,
+          "docH": 4801
+        },
+        "alert": true,
+        "text": "Resolve or void: roll-1",
+        "top": -591.40625,
+        "bottom": -546.625,
+        "scrollY": 801,
+        "ih": 375,
+        "docH": 4870,
+        "fullyInViewport": false,
+        "partlyInViewport": false,
+        "docTop": 209.59375,
+        "distanceButtonToAlertPx": 686
+      },
+      {
+        "viewport": "tablet",
+        "scenario": "end-round-with-open-roll",
+        "button": {
+          "top": 487.59375,
+          "bottom": 535.59375,
+          "scrollY": 408,
+          "docTop": 895.59375,
+          "docH": 4801
+        },
+        "alert": true,
+        "text": "Resolve or void: roll-1",
+        "top": -266.40625,
+        "bottom": -221.625,
+        "scrollY": 476,
+        "ih": 1024,
+        "docH": 4870,
+        "fullyInViewport": false,
+        "partlyInViewport": false,
+        "docTop": 209.59375,
+        "distanceButtonToAlertPx": 686
+      },
+      {
+        "viewport": "desktop",
+        "scenario": "end-round-with-open-roll",
+        "button": {
+          "top": 376.203125,
+          "bottom": 424.203125,
+          "scrollY": 613,
+          "docTop": 989.203125,
+          "docH": 3029
+        },
+        "alert": true,
+        "text": "Resolve or void: roll-1",
+        "top": -472.40625,
+        "bottom": -427.625,
+        "scrollY": 682,
+        "ih": 800,
+        "docH": 3029,
+        "fullyInViewport": false,
+        "partlyInViewport": false,
+        "docTop": 209.59375,
+        "distanceButtonToAlertPx": 780
+      }
+    ],
+    "focusSweep": [
+      {
+        "label": "anon #/",
+        "stops": 3,
+        "noIndicator": [],
+        "offscreen": [],
+        "notFullyInView": []
+      },
+      {
+        "label": "anon #/join",
+        "stops": 5,
+        "noIndicator": [],
+        "offscreen": [],
+        "notFullyInView": []
+      },
+      {
+        "label": "anon #/create",
+        "stops": 4,
+        "noIndicator": [],
+        "offscreen": [],
+        "notFullyInView": []
+      },
+      {
+        "label": "anon #/table",
+        "stops": 3,
+        "noIndicator": [],
+        "offscreen": [],
+        "notFullyInView": []
+      },
+      {
+        "label": "player compose phone",
+        "stops": 1,
+        "noIndicator": [],
+        "offscreen": [],
+        "notFullyInView": []
+      },
+      {
+        "label": "gm console phone",
+        "stops": 30,
+        "noIndicator": [],
+        "offscreen": [],
+        "notFullyInView": []
+      }
+    ],
+    "clippedContent200": [
+      {
+        "label": "(states scanned)",
+        "count": 27
+      }
+    ],
+    "clippedContentDefault": [
+      {
+        "label": "(states scanned)",
+        "count": 27
+      }
+    ],
+    "forcedColors": {
+      "states": [
+        {
+          "label": "anon-join-phone",
+          "forcedActive": true,
+          "controls": 5,
+          "issues": [],
+          "canvas": "rgb(255, 255, 255)",
+          "checkboxStateChange": [],
+          "screenshot": "forced-anon-join-phone.jpg"
+        },
+        {
+          "label": "anon-create-phone",
+          "forcedActive": true,
+          "controls": 4,
+          "issues": [],
+          "canvas": "rgb(255, 255, 255)",
+          "checkboxStateChange": [],
+          "screenshot": "forced-anon-create-phone.jpg"
+        },
+        {
+          "label": "player-declared-phone",
+          "forcedActive": true,
+          "controls": 1,
+          "issues": [],
+          "canvas": "rgb(255, 255, 255)",
+          "checkboxStateChange": [],
+          "screenshot": "forced-player-declared-phone.jpg"
+        },
+        {
+          "label": "gm-console-desktop",
+          "forcedActive": true,
+          "controls": 37,
+          "issues": [],
+          "canvas": "rgb(255, 255, 255)",
+          "checkboxStateChange": [
+            {
+              "type": "checkbox",
+              "id": "",
+              "differs": true,
+              "checked": {
+                "checked": true,
+                "bg": "rgba(55, 0, 110, 0.8)",
+                "border": "rgba(55, 0, 110, 0.8)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+              },
+              "unchecked": {
+                "checked": false,
+                "bg": "rgb(255, 255, 255)",
+                "border": "rgb(0, 0, 0)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+              }
+            },
+            {
+              "type": "checkbox",
+              "id": "",
+              "differs": true,
+              "checked": {
+                "checked": true,
+                "bg": "rgba(55, 0, 110, 0.8)",
+                "border": "rgba(55, 0, 110, 0.8)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+              },
+              "unchecked": {
+                "checked": false,
+                "bg": "rgb(255, 255, 255)",
+                "border": "rgb(0, 0, 0)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+              }
+            }
+          ],
+          "screenshot": "forced-gm-console-desktop.jpg"
+        },
+        {
+          "label": "gm-sheet-phone",
+          "forcedActive": true,
+          "controls": 21,
+          "issues": [],
+          "canvas": "rgb(255, 255, 255)",
+          "checkboxStateChange": [
+            {
+              "type": "checkbox",
+              "id": "",
+              "differs": true,
+              "checked": {
+                "checked": true,
+                "bg": "rgba(5, 0, 73, 0.8)",
+                "border": "rgba(5, 0, 73, 0.8)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+              },
+              "unchecked": {
+                "checked": false,
+                "bg": "rgb(255, 255, 255)",
+                "border": "rgb(0, 0, 0)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+              }
+            },
+            {
+              "type": "checkbox",
+              "id": "",
+              "differs": true,
+              "checked": {
+                "checked": true,
+                "bg": "rgba(5, 0, 73, 0.8)",
+                "border": "rgba(5, 0, 73, 0.8)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+              },
+              "unchecked": {
+                "checked": false,
+                "bg": "rgb(255, 255, 255)",
+                "border": "rgb(0, 0, 0)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+              }
+            },
+            {
+              "type": "checkbox",
+              "id": "",
+              "differs": true,
+              "checked": {
+                "checked": true,
+                "bg": "rgba(5, 0, 73, 0.8)",
+                "border": "rgba(5, 0, 73, 0.8)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+              },
+              "unchecked": {
+                "checked": false,
+                "bg": "rgb(255, 255, 255)",
+                "border": "rgb(0, 0, 0)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+              }
+            },
+            {
+              "type": "checkbox",
+              "id": "",
+              "differs": true,
+              "checked": {
+                "checked": true,
+                "bg": "rgba(5, 0, 73, 0.8)",
+                "border": "rgba(5, 0, 73, 0.8)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+              },
+              "unchecked": {
+                "checked": false,
+                "bg": "rgb(255, 255, 255)",
+                "border": "rgb(0, 0, 0)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+              }
+            },
+            {
+              "type": "checkbox",
+              "id": "",
+              "differs": true,
+              "checked": {
+                "checked": true,
+                "bg": "rgba(5, 0, 73, 0.8)",
+                "border": "rgba(5, 0, 73, 0.8)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+              },
+              "unchecked": {
+                "checked": false,
+                "bg": "rgb(255, 255, 255)",
+                "border": "rgb(0, 0, 0)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+              }
+            },
+            {
+              "type": "checkbox",
+              "id": "",
+              "differs": true,
+              "checked": {
+                "checked": true,
+                "bg": "rgba(5, 0, 73, 0.8)",
+                "border": "rgba(5, 0, 73, 0.8)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(1, 0, 0, 1, 0, 0)"
+              },
+              "unchecked": {
+                "checked": false,
+                "bg": "rgb(255, 255, 255)",
+                "border": "rgb(0, 0, 0)",
+                "borderStyle": "solid",
+                "afterBg": "rgb(255, 255, 255)",
+                "afterTransform": "matrix(0, 0, 0, 0, 0, 0)"
+              }
+            }
+          ],
+          "screenshot": "forced-gm-sheet-phone.jpg"
+        }
+      ],
+      "focusInSheet": {
+        "tag": "BUTTON",
+        "text": "−",
+        "outline": "solid 3px rgba(5, 0, 73, 0.8)",
+        "boxShadow": "none",
+        "focusVisible": true
+      }
+    },
+    "allocationStates": {
+      "focus": {
+        "label": "player allocation phone",
+        "stops": 2,
+        "noIndicator": [],
+        "offscreen": [],
+        "notFullyInView": []
+      },
+      "clipped": [
+        {
+          "label": "player allocation",
+          "viewport": "phone-small",
+          "clipped": []
+        },
+        {
+          "label": "player allocation",
+          "viewport": "phone",
+          "clipped": []
+        },
+        {
+          "label": "player allocation",
+          "viewport": "phone-landscape",
+          "clipped": []
+        }
+      ],
+      "forced": {
+        "label": "player-allocation-phone",
+        "forcedActive": true,
+        "controls": 2,
+        "issues": [],
+        "canvas": "rgb(255, 255, 255)",
+        "checkboxStateChange": [],
+        "screenshot": "forced-player-allocation-phone.jpg"
+      },
+      "forcedAssigned": {
+        "label": "player-allocation-assigned-phone",
+        "forcedActive": true,
+        "controls": 2,
+        "issues": [],
+        "canvas": "rgb(255, 255, 255)",
+        "checkboxStateChange": [],
+        "screenshot": "forced-player-allocation-assigned-phone.jpg"
+      }
+    }
+  },
+  "errors": [],
+  "console": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  },
+  "finishedAt": "2026-10-03T00:48:41.773Z"
+}

@@ -1,0 +1,270 @@
+{
+  "base": "http://127.0.0.1:14174",
+  "startedAt": "2026-10-03T03:09:21.736Z",
+  "env": {
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+    "rootFontPx": 16,
+    "dpr": 1
+  },
+  "probes": {
+    "feedbackVisibility": [
+      {
+        "viewport": "phone",
+        "scenario": "end-round-with-open-roll",
+        "button": {
+          "top": 381.671875,
+          "bottom": 429.671875,
+          "scrollY": 656,
+          "docTop": 1037.671875,
+          "docH": 5405
+        },
+        "alert": true,
+        "text": "Resolve or void: roll-1",
+        "top": 11.84375,
+        "bottom": 56.625,
+        "scrollY": 171,
+        "ih": 812,
+        "docH": 5474,
+        "fullyInViewport": true,
+        "partlyInViewport": true,
+        "docTop": 182.84375,
+        "distanceButtonToAlertPx": 855,
+        "pressedControlAfter": {
+          "top": 935.5,
+          "bottom": 983.5,
+          "height": 48,
+          "visiblePx": 0,
+          "underStickyBannerPx": 0,
+          "hasFocus": true,
+          "scrollY": 171,
+          "ih": 812
+        }
+      },
+      {
+        "viewport": "phone-small",
+        "scenario": "end-round-with-open-roll",
+        "button": {
+          "top": 259.84375,
+          "bottom": 307.84375,
+          "scrollY": 883,
+          "docTop": 1142.84375,
+          "docH": 5734
+        },
+        "alert": true,
+        "text": "Resolve or void: roll-1",
+        "top": 12.40625,
+        "bottom": 57.1875,
+        "scrollY": 206,
+        "ih": 568,
+        "docH": 5803,
+        "fullyInViewport": true,
+        "partlyInViewport": true,
+        "docTop": 218.40625,
+        "distanceButtonToAlertPx": 924,
+        "pressedControlAfter": {
+          "top": 1005.6,
+          "bottom": 1053.6,
+          "height": 48,
+          "visiblePx": 0,
+          "underStickyBannerPx": 0,
+          "hasFocus": true,
+          "scrollY": 206,
+          "ih": 568
+        }
+      },
+      {
+        "viewport": "phone-landscape",
+        "scenario": "end-round-with-open-roll",
+        "button": {
+          "top": 163.59375,
+          "bottom": 211.59375,
+          "scrollY": 732,
+          "docTop": 895.59375,
+          "docH": 4801
+        },
+        "alert": true,
+        "text": "Resolve or void: roll-1",
+        "top": 11.59375,
+        "bottom": 56.375,
+        "scrollY": 198,
+        "ih": 375,
+        "docH": 4870,
+        "fullyInViewport": true,
+        "partlyInViewport": true,
+        "docTop": 209.59375,
+        "distanceButtonToAlertPx": 686,
+        "pressedControlAfter": {
+          "top": 766.4,
+          "bottom": 814.4,
+          "height": 48,
+          "visiblePx": 0,
+          "underStickyBannerPx": 0,
+          "hasFocus": true,
+          "scrollY": 198,
+          "ih": 375
+        }
+      },
+      {
+        "viewport": "tablet",
+        "scenario": "end-round-with-open-roll",
+        "button": {
+          "top": 487.59375,
+          "bottom": 535.59375,
+          "scrollY": 408,
+          "docTop": 895.59375,
+          "docH": 4801
+        },
+        "alert": true,
+        "text": "Resolve or void: roll-1",
+        "top": 11.59375,
+        "bottom": 56.375,
+        "scrollY": 198,
+        "ih": 1024,
+        "docH": 4870,
+        "fullyInViewport": true,
+        "partlyInViewport": true,
+        "docTop": 209.59375,
+        "distanceButtonToAlertPx": 686,
+        "pressedControlAfter": {
+          "top": 766.4,
+          "bottom": 814.4,
+          "height": 48,
+          "visiblePx": 48,
+          "underStickyBannerPx": 0,
+          "hasFocus": true,
+          "scrollY": 198,
+          "ih": 1024
+        }
+      },
+      {
+        "viewport": "desktop",
+        "scenario": "end-round-with-open-roll",
+        "button": {
+          "top": 376.203125,
+          "bottom": 424.203125,
+          "scrollY": 613,
+          "docTop": 989.203125,
+          "docH": 3029
+        },
+        "alert": true,
+        "text": "Resolve or void: roll-1",
+        "top": 11.59375,
+        "bottom": 56.375,
+        "scrollY": 198,
+        "ih": 800,
+        "docH": 3029,
+        "fullyInViewport": true,
+        "partlyInViewport": true,
+        "docTop": 209.59375,
+        "distanceButtonToAlertPx": 780,
+        "pressedControlAfter": {
+          "top": 860,
+          "bottom": 908,
+          "height": 48,
+          "visiblePx": 0,
+          "underStickyBannerPx": 0,
+          "hasFocus": true,
+          "scrollY": 198,
+          "ih": 800
+        }
+      }
+    ],
+    "feedbackObstruction": [
+      {
+        "viewport": "phone",
+        "atRest": {
+          "position": "static",
+          "top": 12,
+          "bottom": 57,
+          "height": 45,
+          "innerH": 812,
+          "scrollY": 171
+        },
+        "afterScroll700": {
+          "position": "static",
+          "top": -688,
+          "bottom": -643,
+          "height": 45,
+          "innerH": 812,
+          "scrollY": 871
+        },
+        "bannerShareOfViewport": "6%",
+        "staysOnScreenWhileScrolling": false,
+        "shiftTabStopsChecked": 1,
+        "stopsOverlappingTheMessage": 0,
+        "stopsEntirelyUnderTheMessage": 0,
+        "examples": []
+      },
+      {
+        "viewport": "phone-landscape",
+        "atRest": {
+          "position": "static",
+          "top": 12,
+          "bottom": 56,
+          "height": 45,
+          "innerH": 375,
+          "scrollY": 198
+        },
+        "afterScroll700": {
+          "position": "static",
+          "top": -688,
+          "bottom": -644,
+          "height": 45,
+          "innerH": 375,
+          "scrollY": 898
+        },
+        "bannerShareOfViewport": "12%",
+        "staysOnScreenWhileScrolling": false,
+        "shiftTabStopsChecked": 25,
+        "stopsOverlappingTheMessage": 0,
+        "stopsEntirelyUnderTheMessage": 0,
+        "examples": []
+      },
+      {
+        "viewport": "desktop",
+        "atRest": {
+          "position": "static",
+          "top": 12,
+          "bottom": 56,
+          "height": 45,
+          "innerH": 800,
+          "scrollY": 198
+        },
+        "afterScroll700": {
+          "position": "static",
+          "top": -688,
+          "bottom": -644,
+          "height": 45,
+          "innerH": 800,
+          "scrollY": 898
+        },
+        "bannerShareOfViewport": "6%",
+        "staysOnScreenWhileScrolling": false,
+        "shiftTabStopsChecked": 1,
+        "stopsOverlappingTheMessage": 0,
+        "stopsEntirelyUnderTheMessage": 0,
+        "examples": []
+      }
+    ]
+  },
+  "errors": [],
+  "console": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  },
+  "finishedAt": "2026-10-03T03:09:42.119Z"
+}
