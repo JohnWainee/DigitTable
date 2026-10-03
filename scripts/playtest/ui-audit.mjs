@@ -90,6 +90,7 @@ const report = {
   states: [],
   modal: [],
   keyboard: [],
+  docks: [],
   validation: [],
   reducedMotion: null,
   routes: [],
@@ -989,6 +990,139 @@ async function auditKeyboardFocus(device, state) {
   await applyViewport(device, original);
 }
 
+// ---------- action dock: the sticky commit row of a long decision form ----------
+
+/**
+ * In the page. For each visible `.action-dock` it records the dock's geometry and then, for every
+ * control of its panel, focuses it from the top of the page and checks it is neither outside the
+ * visible viewport nor covered by the dock (WCAG 2.2 SC 2.4.11 Focus Not Obscured), which is the
+ * failure a pinned bar can introduce. `mid` is a scroll position that shows the dock stuck over the
+ * middle of its panel, used by the caller for the viewport-only screenshot.
+ */
+const DOCK_AUDIT = `(async () => {
+  const visible = (el) => { const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return r.width > 0 && r.height > 0 && cs.visibility !== "hidden" && cs.display !== "none" && !el.closest("[inert]"); };
+  const describe = (el) => el.tagName.toLowerCase() + (el.id ? "#" + el.id : "") + " " + (el.textContent || el.getAttribute("aria-label") || "").trim().slice(0, 28);
+  const docks = [...document.querySelectorAll(".action-dock")].filter(visible);
+  if (docks.length === 0) return null;
+  const out = [];
+  for (const dock of docks) {
+    const panel = dock.parentElement;
+    const cs = getComputedStyle(dock);
+    const sticky = cs.position === "sticky";
+    const entry = { status: (dock.querySelector(".action-dock-status")?.textContent || "").trim(), sticky, innerHeight, dockHeight: Math.round(dock.getBoundingClientRect().height), problems: [], controls: 0 };
+    // Under 20rem of height the stylesheet deliberately returns the dock to the page flow.
+    const shortViewport = innerHeight < 20 * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16);
+    if (!sticky && !shortViewport) entry.problems.push("dock is not pinned (position " + cs.position + ") at a " + innerHeight + "px viewport");
+    if (sticky && dock.getBoundingClientRect().height > innerHeight * 0.45 + 1) entry.problems.push("dock is " + entry.dockHeight + "px of a " + innerHeight + "px viewport (cap is 45%)");
+    // Every button names its status line, and that line carries visible text.
+    for (const button of dock.querySelectorAll("button.primary-action")) {
+      const status = document.getElementById(button.getAttribute("aria-describedby") || "");
+      if (!status || !status.textContent.trim()) entry.problems.push("primary button has no visible described-by status");
+    }
+    // Pinned: while any of the panel is on screen, the whole dock is on screen.
+    const panelBox = () => { const r = panel.getBoundingClientRect(); return { top: r.top + scrollY, height: r.height }; };
+    const pb = panelBox();
+    const maxScroll = document.documentElement.scrollHeight - innerHeight;
+    const positions = [0, Math.max(0, pb.top - innerHeight * 0.3), Math.max(0, Math.min(maxScroll, pb.top + pb.height * 0.4)), maxScroll];
+    entry.mid = Math.round(Math.max(0, Math.min(maxScroll, pb.top + pb.height * 0.4)));
+    if (sticky) {
+      for (const y of positions) {
+        scrollTo(0, y);
+        await new Promise((r) => setTimeout(r, 60));
+        const pr = panel.getBoundingClientRect();
+        const dr = dock.getBoundingClientRect();
+        // Pinned while the panel reaches below the bar; once its bottom edge scrolls up the dock leaves with it.
+        // (A sticky dock is clamped a little below its panel's top edge, hence the slack.)
+        const panelOnScreen = pr.top < innerHeight - dr.height - 40 && pr.bottom > dr.height + 4;
+        if (panelOnScreen && (dr.bottom > innerHeight + 1 || dr.top < -1)) entry.problems.push("dock not fully on screen at scrollY " + Math.round(y) + " (" + Math.round(dr.top) + ".." + Math.round(dr.bottom) + " of " + innerHeight + ")");
+      }
+    }
+    const controls = [...panel.querySelectorAll('input, select, textarea, button, summary, [role="spinbutton"]')]
+      // A disabled control cannot take focus, so there is nothing to keep clear of the dock.
+      .filter((el) => visible(el) && !el.disabled && !dock.contains(el) && !el.closest("[hidden]"))
+      .slice(0, 60);
+    for (const el of controls) {
+      const box = el.matches('input[type="checkbox"], input[type="radio"]') ? (el.closest("label") || el) : el;
+      // Start with the control just below the bottom edge, as it is when keyboard focus walks down a
+      // long list, so the browser has to scroll it into view (and must leave room for the dock).
+      scrollTo(0, 0);
+      const top = box.getBoundingClientRect().top;
+      scrollTo(0, Math.max(0, top - innerHeight + 4));
+      const startY = scrollY;
+      el.focus({ preventScroll: false });
+      await new Promise((r) => setTimeout(r, 40));
+      const r = box.getBoundingClientRect();
+      const vw = document.documentElement.clientWidth;
+      const dr = dock.getBoundingClientRect();
+      entry.controls += 1;
+      const where = " (" + Math.round(r.top) + ".." + Math.round(r.bottom) + " of " + innerHeight + ", dock from " + Math.round(dr.top) + ")";
+      // The part of the control that is on screen and not under the dock.
+      const clearBottom = Math.min(innerHeight, dock.contains(el) || getComputedStyle(dock).position !== "sticky" ? innerHeight : dr.top);
+      const clear = Math.max(0, Math.min(r.bottom, clearBottom) - Math.max(r.top, 0));
+      const scrolled = Math.abs(scrollY - startY) > 1;
+      // Scrolled by the browser to reveal it: it must now be fully clear. Already partly in view, so
+      // not scrolled: it must not be hidden (WCAG 2.2 SC 2.4.11 forbids hiding it entirely).
+      const needed = scrolled || r.top >= innerHeight - 1 ? r.height : Math.min(24, r.height);
+      if (r.left < -0.5 || r.right > vw + 0.5) entry.problems.push(describe(el) + " is outside the viewport when focused" + where);
+      else if (clear + 0.5 < needed) entry.problems.push(describe(el) + " is covered by the dock when focused" + where);
+    }
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+    scrollTo(0, 0);
+    out.push(entry);
+  }
+  return out;
+})()`;
+
+/**
+ * At every viewport: the dock stays on screen while its panel is, never exceeds 45% of the visible
+ * height, explains its primary button, and never hides a keyboard-focused control. Takes a
+ * viewport-only (not full-page) capture scrolled to the middle of the panel, because that is the
+ * view a person actually has: the full-page captures cannot show a pinned element.
+ */
+// The dock's row/column switch sits at 34rem and two long buttons can wrap between about 540 and 720px,
+// a band none of the standard viewports lands in (a desktop at 150% zoom, a foldable, a small tablet).
+const DOCK_VIEWPORTS = [
+  ...VIEWPORTS,
+  { name: "tablet-narrow", width: 600, height: 900, mobile: true },
+];
+
+async function auditActionDock(device, state) {
+  if (MODAL_ONLY) return;
+  const original = device.vp;
+  let sawDock = false;
+  for (const vp of DOCK_VIEWPORTS) {
+    await applyViewport(device, vp);
+    await sleep(250);
+    const results = await ev(device, DOCK_AUDIT);
+    const scope = `${device.name}/${state}-dock@${vp.name}`;
+    if (!results) continue;
+    sawDock = true;
+    report.docks.push({ scope, results });
+    for (const result of results) {
+      for (const problem of result.problems) fail(scope, problem);
+      // (A random roll can keep no dice: nothing to assign, so the panel has no control but the dock.)
+      if (result.controls === 0 && !/no dice to assign/i.test(result.status))
+        fail(scope, "no panel controls were exercised");
+    }
+    if (SHOTS) {
+      await ev(device, `scrollTo(0, ${results[0].mid})`);
+      await sleep(250);
+      const { data } = await device.cdp.send(
+        "Page.captureScreenshot",
+        { format: "jpeg", quality: 70 },
+        device.sessionId,
+      );
+      writeFileSync(
+        join(OUT, `dock-${device.name}-${state}-${vp.name}.jpg`),
+        Buffer.from(data, "base64"),
+      );
+      await ev(device, `scrollTo(0, 0)`);
+    }
+  }
+  if (!sawDock) fail(`${device.name}/${state}-dock`, "no .action-dock was found to audit");
+  await applyViewport(device, original);
+}
+
 // ---------- forms: inline validation instead of the browser's own bubbles ----------
 
 /**
@@ -1338,6 +1472,7 @@ async function main() {
       "compose",
     );
     await captureState(player, "compose");
+    await auditActionDock(player, "compose");
 
     // Disclosure: "Why?" opened.
     await ev(player, `document.querySelector("details summary").click()`);
@@ -1375,6 +1510,7 @@ async function main() {
     await captureState(player, "declared", { axeViewports: ["phone"] });
     await waitFor(gm, `${textMatch("button", "/^Roll it$/")}`, 30000, "Roll it");
     await captureState(gm, "console-pending");
+    await auditActionDock(gm, "console-pending");
 
     await auditModal(gm);
     await auditReducedMotion(gm);
@@ -1384,11 +1520,13 @@ async function main() {
     await clickText(gm, "button", /^Roll it$/);
     await waitFor(player, `document.body.textContent.includes("Your roll")`, 30000, "allocation");
     await captureState(player, "allocation");
+    await auditActionDock(player, "allocation");
     await ev(
       player,
       `document.querySelectorAll("fieldset.allocation-die-group").forEach(g => g.querySelector("input[type=radio]")?.click())`,
     );
     await captureState(player, "allocation-assigned", { axeViewports: ["phone"] });
+    await auditActionDock(player, "allocation-assigned");
     await clickText(player, "button", /^Confirm allocation$/);
     await waitFor(
       player,
@@ -1398,6 +1536,7 @@ async function main() {
     );
     if (await ev(player, `document.body.textContent.includes("Choose an injury")`)) {
       await captureState(player, "injury-choice", { axeViewports: ["phone"] });
+      await auditActionDock(player, "injury-choice");
       await ev(player, `document.querySelector("input[type=radio]").click()`);
       await clickText(player, "button", /confirm|choose|apply/i);
       await waitFor(player, `document.body.textContent.includes("Resolved")`, 30000, "resolved");
@@ -1469,6 +1608,10 @@ async function main() {
           .map((v) => `${s.surface}/${s.state}@${s.viewport}: ${v.id}`),
       ),
       keyboardFocusChecks: report.keyboard.reduce((n, k) => n + k.controls, 0),
+      dockFocusChecks: report.docks.reduce(
+        (n, d) => n + d.results.reduce((m, r) => m + r.controls, 0),
+        0,
+      ),
       validationScenarios: report.validation.length,
       sheetCases: report.modal.filter((m) => m.rosterIndex !== undefined).length,
       failures: report.failures.length,

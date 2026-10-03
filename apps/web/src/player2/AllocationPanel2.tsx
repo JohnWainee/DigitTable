@@ -8,6 +8,7 @@ import {
   type RollViewFull,
 } from "@digitable/template-eat-the-reich";
 import type { AllocationOption, ViewerProjection } from "@digitable/contracts";
+import { ActionDock } from "../shared/ActionDock.js";
 import { Icon } from "../shared/Icon.js";
 
 export interface AllocationPanel2Props {
@@ -73,6 +74,11 @@ export function AllocationPanel2({
     );
   }
 
+  function assignedLabel(die: KeptDie): string | undefined {
+    const id = assignments[die.faceIndex];
+    return id === undefined ? undefined : options.find((option) => option.id === id)?.label;
+  }
+
   function handleConfirm(): void {
     if (unassignedCount !== 0) return;
     const allocations = keptDice.map((die) => ({
@@ -111,16 +117,17 @@ export function AllocationPanel2({
           {roll.attackSuccessesRolled === 1 ? "" : "es"}.
         </p>
       )}
-      <p>
-        {unassignedCount} of {keptDice.length} {keptDice.length === 1 ? "die" : "dice"} still{" "}
-        {unassignedCount === 1 ? "needs" : "need"} a target.
-      </p>
 
       <div className="allocation-list">
         {keptDice.map((die) => (
           <fieldset key={die.faceIndex} className="allocation-die-group">
             <legend>
               Die: {die.face} ({die.result})
+              {/* The chosen target stays visible with its die however far the option list scrolls. */}
+              {" — "}
+              <span className="die-target" data-assigned={assignedLabel(die) ? "true" : "false"}>
+                {assignedLabel(die) ?? "choose a target"}
+              </span>
             </legend>
             <div className="gear-list">
               {optionsForDie(die).map((option) => (
@@ -141,15 +148,30 @@ export function AllocationPanel2({
         ))}
       </div>
 
-      <button
-        type="button"
-        className="primary-action"
-        disabled={unassignedCount !== 0}
-        onClick={handleConfirm}
-      >
-        Confirm allocation
-      </button>
       {character.downed && <p role="alert">You&rsquo;re down. A teammate must rescue you.</p>}
+
+      <ActionDock
+        statusId="allocation-dock-status"
+        status={
+          keptDice.length === 0
+            ? "No dice to assign."
+            : unassignedCount === 0
+              ? keptDice.length === 1
+                ? "Target chosen."
+                : "Every die has a target."
+              : `${unassignedCount} of ${keptDice.length} ${keptDice.length === 1 ? "die" : "dice"} still ${unassignedCount === 1 ? "needs" : "need"} a target.`
+        }
+      >
+        <button
+          type="button"
+          className="primary-action"
+          aria-describedby="allocation-dock-status"
+          disabled={unassignedCount !== 0}
+          onClick={handleConfirm}
+        >
+          Confirm allocation
+        </button>
+      </ActionDock>
     </section>
   );
 }

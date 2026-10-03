@@ -156,12 +156,68 @@ describe("Player dashboard (C02/C06)", () => {
     await reviewAsGm(currentRoomId(), gmMemberId);
     expect(await screen.findByRole("heading", { name: /your roll/i })).toBeInTheDocument();
     // The status line agrees in number with the count it states ("1 of 4 dice still needs a target").
+    // (A random roll can keep no dice at all; the dock then says there is nothing to assign.)
+    if (screen.queryByText("No dice to assign.")) return;
     const status = screen.getByText(/still needs? a target/i).textContent.trim();
     const parts = /^(\d+) of (\d+) (die|dice) still (needs?) a target\.$/.exec(status);
     expect(parts, status).not.toBeNull();
     const [, remaining, total, noun, verb] = parts!;
     expect(verb).toBe(remaining === "1" ? "needs" : "need");
     expect(noun).toBe(total === "1" ? "die" : "dice");
+  });
+
+  it("pins the declare action to a dock that states the pool and explains a disabled button", async () => {
+    const user = userEvent.setup();
+    await reachDashboardAsRook(user);
+    await screen.findByRole("heading", { name: /choose an action/i });
+
+    const declare = screen.getByRole("button", { name: /declare action/i });
+    const dock = declare.closest(".action-dock") as HTMLElement;
+    expect(dock).not.toBeNull();
+    // The dock is the last thing in the panel, and the pool total is its visible status.
+    expect(dock.parentElement?.lastElementChild).toBe(dock);
+    expect(within(dock).getByText(/^pool:/i)).toBeVisible();
+    expect(declare).toHaveAccessibleDescription(/pool: \d+ dice?/i);
+    expect(declare).toBeEnabled();
+  });
+
+  it("keeps every die's chosen target visible beside the die and counts down in the dock", async () => {
+    const user = userEvent.setup();
+    const { gmMemberId } = await reachDashboardAsRook(user);
+    await screen.findByRole("heading", { name: /choose an action/i });
+    await user.click(screen.getByRole("button", { name: /declare action/i }));
+    await screen.findByRole("heading", { name: /^declared$/i });
+    await reviewAsGm(currentRoomId(), gmMemberId);
+    await screen.findByRole("heading", { name: /your roll/i });
+
+    const confirm = screen.getByRole("button", { name: /confirm allocation/i });
+    const dock = confirm.closest(".action-dock") as HTMLElement;
+    const groups = screen.queryAllByRole("group").filter((g) => g.matches(".allocation-die-group"));
+    if (groups.length === 0) {
+      // A roll can keep no dice (the draw is random): there is nothing to assign, so nothing blocks Confirm.
+      expect(within(dock).getByText("No dice to assign.")).toBeVisible();
+      expect(confirm).toBeEnabled();
+      return;
+    }
+    expect(confirm).toBeDisabled();
+    // A disabled button says why, in text a sighted and a screen-reader user can both reach.
+    expect(confirm).toHaveAccessibleDescription(/still needs? a target/i);
+    expect(within(dock).getByText(/still needs? a target/i)).toBeVisible();
+
+    for (const group of groups) {
+      expect(within(group).getByText("choose a target")).toBeVisible();
+    }
+    const first = groups[0]!;
+    await user.click(within(first).getByRole("radio", { name: /^feed$/i }));
+    // The chosen target now reads beside its die, and the unchosen dice still prompt.
+    expect(first.querySelector("legend .die-target")).toHaveTextContent(/^feed$/i);
+    expect(first.querySelector("legend .die-target")).toHaveAttribute("data-assigned", "true");
+
+    for (const group of groups.slice(1)) {
+      await user.click(within(group).getByRole("radio", { name: /^feed$/i }));
+    }
+    expect(confirm).toBeEnabled();
+    expect(within(dock).getByText(/target chosen\.|has a target\./i)).toBeVisible();
   });
 
   it("allocates every kept die and reaches a resolved confirmation", async () => {
@@ -189,6 +245,27 @@ describe("Player dashboard (C02/C06)", () => {
 
     expect(await screen.findByRole("heading", { name: /^resolved$/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /back to scene/i })).toBeInTheDocument();
+  });
+
+  it("explains in the dock why Declare is unavailable once the character has acted this round", async () => {
+    const user = userEvent.setup();
+    const { gmMemberId } = await reachDashboardAsRook(user);
+    await screen.findByRole("heading", { name: /choose an action/i });
+    await user.click(screen.getByRole("button", { name: /declare action/i }));
+    await screen.findByRole("heading", { name: /^declared$/i });
+    await reviewAsGm(currentRoomId(), gmMemberId);
+    await screen.findByRole("heading", { name: /your roll/i });
+    for (const group of screen.queryAllByRole("group")) {
+      const feed = within(group).queryByRole("radio", { name: /^feed$/i });
+      if (feed) await user.click(feed);
+    }
+    await user.click(screen.getByRole("button", { name: /confirm allocation/i }));
+    await screen.findByRole("heading", { name: /^resolved$/i });
+    await user.click(screen.getByRole("button", { name: /back to scene/i }));
+
+    const declare = await screen.findByRole("button", { name: /declare action/i });
+    expect(declare).toBeDisabled();
+    expect(declare).toHaveAccessibleDescription(/you've acted this round/i);
   });
 
   it("allocates entirely by keyboard (radio selection + Enter to confirm), no pointer input", async () => {

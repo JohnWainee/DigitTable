@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { CharacterFullSheet } from "@digitable/template-eat-the-reich";
+import { ActionDock } from "../shared/ActionDock.js";
 import { Icon } from "../shared/Icon.js";
 
 export interface ChooseInjuryPanel2Props {
@@ -41,6 +42,8 @@ export function ChooseInjuryPanel2({
       : (eligible[0]?.id ?? null),
   );
 
+  const chosenLabel = eligible.find((category) => category.id === categoryId)?.label;
+
   return (
     <section className="step" aria-labelledby="injury-choice-heading">
       <h2 id="injury-choice-heading">
@@ -71,19 +74,27 @@ export function ChooseInjuryPanel2({
           ))}
         </fieldset>
       )}
-      <button
-        type="button"
-        className="primary-action"
-        disabled={!categoryId}
-        onClick={() => categoryId && onChoose(categoryId)}
+      <ActionDock
+        statusId="injury-dock-status"
+        status={
+          chosenLabel ? `Marking: ${chosenLabel}.` : "Choose the injury category that takes it."
+        }
       >
-        Confirm
-      </button>
-      {onUseHat && usableHat ? (
-        <button type="button" className="secondary-action" onClick={() => onUseHat(usableHat.id)}>
-          Destroy Cowboy hat to ignore this result
+        <button
+          type="button"
+          className="primary-action"
+          aria-describedby="injury-dock-status"
+          disabled={!categoryId}
+          onClick={() => categoryId && onChoose(categoryId)}
+        >
+          Confirm
         </button>
-      ) : null}
+        {onUseHat && usableHat ? (
+          <button type="button" className="secondary-action" onClick={() => onUseHat(usableHat.id)}>
+            Destroy Cowboy hat to ignore this result
+          </button>
+        ) : null}
+      </ActionDock>
     </section>
   );
 }

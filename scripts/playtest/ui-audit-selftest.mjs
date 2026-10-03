@@ -26,6 +26,7 @@ function expression(name) {
 
 const CONTROL_AUDIT = expression("CONTROL_AUDIT");
 const KEYBOARD_FOCUS_AUDIT = expression("KEYBOARD_FOCUS_AUDIT");
+const DOCK_AUDIT = expression("DOCK_AUDIT");
 
 const args = process.argv.slice(2);
 const portIndex = args.indexOf("--port");
@@ -210,6 +211,110 @@ console.log(
 );
 if (!(coveredReport.length === 1 && coveredReport[0].control === "input#b"))
   failures.push("keyboard-covered");
+
+// ---- DOCK_AUDIT (viewport is 468px tall) ----
+const rows = Array.from(
+  { length: 14 },
+  (_, i) =>
+    `<label style="display:flex;align-items:center;height:48px"><input type="checkbox"> Row ${i}</label>`,
+).join("");
+const dockPage = (dockStyle, { describedBy = true, extra = "", scrollPadding = true } = {}) =>
+  `${scrollPadding ? "<style>html{scroll-padding-bottom:110px}</style>" : ""}<div class="step" style="padding:16px">${rows}<div class="action-dock" style="${dockStyle}"><p id="s">Pool: 4 dice</p><button class="primary-action" ${describedBy ? 'aria-describedby="s"' : ""} style="height:48px">Go</button></div></div>${extra}`;
+const dockProblems = async (name, html) => {
+  const result = await page(html, DOCK_AUDIT);
+  return result === null ? ["no dock found"] : result.flatMap((entry) => entry.problems);
+};
+function expectDock(name, problems, fragment) {
+  const ok = fragment === null ? problems.length === 0 : problems.some((p) => p.includes(fragment));
+  console.log(
+    `${ok ? "ok  " : "FAIL"} dock audit, ${name}: ${fragment === null ? "reports nothing" : `reports "${fragment}"`}${!ok && problems.length ? " (got " + problems.join("; ") + ")" : ""}`,
+  );
+  if (!ok) failures.push("dock-" + name);
+}
+const stickyDock =
+  "position:sticky;bottom:0;background:#000;color:#fff;height:90px;margin:0 -16px -16px;padding:8px 16px;box-sizing:border-box";
+expectDock(
+  "a sticky dock over a long panel",
+  await dockProblems("good", dockPage(stickyDock)),
+  null,
+);
+expectDock(
+  "a sticky dock WITHOUT scroll-padding hides a control the browser scrolls to",
+  await dockProblems("no-padding", dockPage(stickyDock, { scrollPadding: false })),
+  "covered by the dock when focused",
+);
+expectDock(
+  "a dock that is not pinned",
+  await dockProblems("unpinned", dockPage("position:relative;height:90px")),
+  "dock is not pinned",
+);
+expectDock(
+  "a dock taller than 45% of the viewport",
+  await dockProblems("tall", dockPage(stickyDock.replace("height:90px", "height:300px"))),
+  "cap is 45%",
+);
+expectDock(
+  "a primary button with no status",
+  await dockProblems("undescribed", dockPage(stickyDock, { describedBy: false })),
+  "no visible described-by status",
+);
+
+// ---- the REAL stylesheet: the dock at the 540-720px band, with two long buttons ----
+// Rendered from apps/web/src/styles.css itself (not a copy), because the defect was in that CSS: at this
+// width the actions were `flex: none`, crushed the status to a one-character column and overflowed.
+const realCss = readFileSync(join(here, "../../apps/web/src/styles.css"), "utf8");
+async function dockLayoutAt(width, rootFontPx = 16) {
+  await send(
+    "Emulation.setDeviceMetricsOverride",
+    { width, height: 900, deviceScaleFactor: 1, mobile: false },
+    sessionId,
+  );
+  const rowsHtml = Array.from(
+    { length: 8 },
+    (_, i) => `<label class="gear-option"><input type="radio" name="c"> Category ${i}</label>`,
+  ).join("");
+  const result = await page(
+    `<style>${realCss}</style><style>html{font-size:${rootFontPx}px}</style><main class="player-screen"><section class="step"><h2>Choose an injury</h2>${rowsHtml}<div class="action-dock"><p id="s" class="action-dock-status">Marking: Light injuries.</p><div class="action-dock-actions"><button class="primary-action">Confirm</button><button class="secondary-action">Destroy Cowboy hat to ignore this result</button></div></div></section></main>`,
+    `(() => {
+      const dock = document.querySelector(".action-dock");
+      const status = document.querySelector(".action-dock-status");
+      return {
+        statusWidth: Math.round(status.getBoundingClientRect().width),
+        dockHeight: Math.round(dock.getBoundingClientRect().height),
+        dockOverflowX: dock.scrollWidth - dock.clientWidth,
+        pageOverflowX: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        innerHeight,
+      };
+    })()`,
+  );
+  return result;
+}
+// 320 and 360 are the phone column; the 32px root is "200% text" (rem-sized padding and type double).
+for (const [width, font] of [
+  [320, 16],
+  [360, 16],
+  [320, 32],
+  [540, 16],
+  [600, 16],
+  [700, 16],
+  [800, 16],
+]) {
+  const layout = await dockLayoutAt(width, font);
+  const ok =
+    layout.statusWidth >= 120 &&
+    layout.dockHeight <= layout.innerHeight * 0.45 + 1 &&
+    layout.dockOverflowX <= 1 &&
+    layout.pageOverflowX <= 1;
+  console.log(
+    `${ok ? "ok  " : "FAIL"} real stylesheet, dock at ${width}px / ${font}px text with two long buttons: ${JSON.stringify(layout)}`,
+  );
+  if (!ok) failures.push(`dock-layout-${width}-${font}`);
+}
+await send(
+  "Emulation.setDeviceMetricsOverride",
+  { width: 375, height: 468, deviceScaleFactor: 1, mobile: true },
+  sessionId,
+);
 
 chrome.kill();
 if (failures.length) {

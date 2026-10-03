@@ -98,6 +98,33 @@ describe("ui-audit.mjs pop-out, picker and form coverage", () => {
     expect(audit).toContain('await auditKeyboardFocus(gm, "console-scene-loaded")');
   });
 
+  it("audits the sticky action dock on every long decision form, and fails if none is found", () => {
+    expect(audit).toContain("DOCK_AUDIT");
+    // Pinned on screen, within its height cap, explaining its button, and never covering a focused control.
+    for (const rule of [
+      "dock not fully on screen",
+      "is covered by the dock when focused",
+      "is outside the viewport when focused",
+      "primary button has no visible described-by status",
+      "no .action-dock was found to audit",
+    ]) {
+      expect(audit, rule).toContain(rule);
+    }
+    for (const call of [
+      'await auditActionDock(player, "compose")',
+      'await auditActionDock(player, "allocation")',
+      'await auditActionDock(player, "allocation-assigned")',
+      'await auditActionDock(gm, "console-pending")',
+    ]) {
+      expect(audit, call).toContain(call);
+    }
+    // The 540-720px band where two long buttons wrap is exercised too.
+    expect(audit).toContain('name: "tablet-narrow", width: 600');
+    expect(audit).toContain("for (const vp of DOCK_VIEWPORTS)");
+    // A viewport-only capture, because a full-page capture cannot show a pinned element.
+    expect(audit).toContain("dock-${device.name}-${state}-${vp.name}.jpg");
+  });
+
   it("submits each of the four signed-out forms invalid and expects the app's own inline errors", () => {
     for (const form of ["create-form", "join-form", "table-join-form", "recover-form"]) {
       expect(audit, form).toContain(`"${form}": {`);

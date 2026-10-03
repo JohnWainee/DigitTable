@@ -95,4 +95,20 @@ describe("Cowboy hat action on the injury choice", () => {
     expect(hat).toHaveClass("secondary-action");
     expect(hat.closest("label")).toBeNull();
   });
+
+  it("sits in the dock beside Confirm, and Confirm is described by the category it will mark", () => {
+    const chuck = ORIGINAL_ROSTER.find((c) =>
+      c.items.some((i) => i.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"),
+    ) as CharacterFullSheet;
+    render(
+      <ChooseInjuryPanel2 character={chuck} mode="downed" onChoose={vi.fn()} onUseHat={vi.fn()} />,
+    );
+    const confirm = screen.getByRole("button", { name: /^confirm$/i });
+    const dock = confirm.closest(".action-dock") as HTMLElement;
+    expect(dock).not.toBeNull();
+    expect(dock).toContainElement(screen.getByRole("button", { name: /destroy cowboy hat/i }));
+    // A category is preselected, so the status names it; the button never lacks a description.
+    expect(confirm).toBeEnabled();
+    expect(confirm).toHaveAccessibleDescription(/^marking: .+\.$/i);
+  });
 });

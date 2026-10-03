@@ -513,4 +513,129 @@ describe("reskin stylesheet contract", () => {
       }
     });
   });
+  describe("action dock (sticky commit row)", () => {
+    const dock = (): string[] => rulesFor(/^\.action-dock$/);
+
+    it("pins to the bottom of the visible viewport inside its panel, above everything it scrolls past", () => {
+      expect(declaration(dock(), "position")).toContain("sticky");
+      expect(declaration(dock(), "bottom")).toContain("0");
+      expect(Number(declaration(dock(), "z-index")[0])).toBeGreaterThan(0);
+      // It must stay below the pop-out sheet (z-index 100).
+      expect(Number(declaration(dock(), "z-index")[0])).toBeLessThan(100);
+      // An opaque surface: text scrolling underneath it must never show through.
+      expect(declaration(dock(), "background")).toEqual(["var(--ink-0)"]);
+    });
+
+    it("clears the home indicator and caps its height with a vh base and a dvh override", () => {
+      expect(declaration(dock(), "padding").join(" ")).toContain("env(safe-area-inset-bottom");
+      // (The short-viewport rule later lifts the cap with `none`.)
+      expect(declaration(dock(), "max-height").slice(0, 2)).toEqual(["45vh", "45dvh"]);
+      expect(css).toMatch(
+        /@supports \(height: 100dvh\)\s*\{\s*\.action-dock\s*\{\s*max-height:\s*45dvh/,
+      );
+      // The vh base precedes the dvh override (a later base would win).
+      expect(css.indexOf("max-height: 45vh")).toBeLessThan(css.indexOf("max-height: 45dvh"));
+      expect(declaration(dock(), "overflow-y")).toEqual(["auto"]);
+      expect(declaration(dock(), "overscroll-behavior")).toEqual(["contain"]);
+    });
+
+    it("keeps a focused control clear of the dock (WCAG 2.2 SC 2.4.11) and gives the room back when short", () => {
+      const rule = rulesFor(/^html:has\(\.action-dock\)$/);
+      expect(declaration(rule, "scroll-padding-bottom")[0]).toContain("var(--action-dock-height");
+      // Under 20rem of height a pinned bar would leave almost no page: it falls back into the flow.
+      const short = mediaBlock("(max-height: 20rem)");
+      expect(short).toMatch(/\.action-dock\s*\{[^}]*position:\s*static/);
+      expect(short).toMatch(/scroll-padding-bottom:\s*0/);
+    });
+
+    it("bleeds to its panel's own edges, with the card's smaller padding declared where it differs", () => {
+      const margin = declaration(dock(), "margin").join(" ");
+      expect(margin).toContain("var(--dock-bleed-x, 1rem)");
+      expect(margin).toContain("var(--dock-bleed-b, 1.25rem)");
+      // .step pads 1rem / 1.25rem, so the defaults match it; the GM card pads 0.85rem all round.
+      expect(declaration(rulesFor(/\.pending-action-card/), "padding")).toContain("0.85rem");
+      const card = rulesFor(/^\.pending-action-card$/).join(" ");
+      expect(card).toContain("--dock-bleed-x: 0.85rem");
+      expect(card).toContain("--dock-bleed-b: 0.85rem");
+    });
+
+    it("stacks status over a full-width, wrapping action row below 34rem (phones)", () => {
+      expect(declaration(dock(), "flex-direction")[0]).toBe("column");
+      const actions = rulesFor(/^\.action-dock-actions$/);
+      expect(declaration(actions, "display")).toEqual(["flex"]);
+      expect(declaration(actions, "flex-wrap")).toEqual(["wrap"]);
+      const button = rulesFor(/^\.action-dock-actions > button$/);
+      // A 12rem basis that may shrink to nothing: two buttons share a row only when they fit.
+      expect(declaration(button, "flex")[0]).toBe("1 1 12rem");
+      expect(declaration(button, "min-width")[0]).toBe("0");
+    });
+
+    it("wraps instead of squeezing: two long buttons at 540-720px never crush the status", () => {
+      const row = mediaBlock("(min-width: 34rem)");
+      expect(row).toMatch(/\.action-dock\s*\{[^}]*flex-wrap:\s*wrap/);
+      expect(row).toMatch(/\.action-dock-status\s*\{[^}]*flex:\s*1 1 10rem/);
+      expect(row).toMatch(/\.action-dock-actions\s*\{[^}]*flex:\s*0 1 auto/);
+      expect(row).not.toMatch(/flex:\s*none/);
+    });
+
+    it("marks a die's chosen target with its own legend colour (text carries the state too)", () => {
+      expect(
+        declaration(rulesFor(/^\.allocation-die-group:has\(:checked\) > legend$/), "background"),
+      ).toEqual(["var(--volt)"]);
+      expect(contrast("ink-0", "volt")).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it("renders status and actions legibly: AA text on the ink surface, one row once there is room", () => {
+      expect(contrast("ink-0", "acid")).toBeGreaterThanOrEqual(4.5);
+      expect(contrast("ink-0", "paper")).toBeGreaterThanOrEqual(4.5);
+      expect(declaration(rulesFor(/^\.action-dock-status$/), "color")).toEqual(["var(--paper)"]);
+      expect(declaration(rulesFor(/^\.action-dock-status strong$/), "color")).toEqual([
+        "var(--acid)",
+      ]);
+      expect(mediaBlock("(min-width: 34rem)")).toMatch(/flex-direction:\s*row/);
+      // A wrapped, flexible action row: a long second button never forces horizontal overflow.
+      expect(declaration(rulesFor(/^\.action-dock-actions$/), "flex-wrap")).toEqual(["wrap"]);
+    });
+
+    it("is the commit row of every long decision form, and only presentational markup", () => {
+      const root = join(here, "../../src");
+      for (const file of [
+        "player2/ComposeStep2.tsx",
+        "player2/AllocationPanel2.tsx",
+        "player2/ChooseInjuryPanel2.tsx",
+        "gm2/PendingActionsPanel.tsx",
+      ]) {
+        const source = readFileSync(join(root, file), "utf8");
+        expect(source, file).toContain("<ActionDock");
+        // The primary button of each form names the dock's status as its description.
+        expect(source, file).toMatch(
+          /aria-describedby=(?:"(?:compose|allocation|injury)-dock-status"|\{`pending-\$\{roll\.rollId\}-dock-status`\})/,
+        );
+      }
+    });
+  });
+
+  describe("pop-outs, menus and option lists", () => {
+    it("has no anchored popover, menu or custom listbox: choices are native selects, inline lists or the sheet", () => {
+      // A dropdown anchored to a trigger can clip off a narrow screen, hide behind the on-screen
+      // keyboard, or trap a touch user. Native <select> hands the popup to the OS; everything else
+      // here is an inline control or the SheetDialog bottom sheet. Introducing an anchored popover
+      // pattern needs a recorded design decision, not a drive-by.
+      const offenders: string[] = [];
+      for (const file of sourceFiles(join(here, "../../src"))) {
+        const source = readFileSync(file, "utf8");
+        for (const pattern of [
+          /\bpopover\b/,
+          /aria-haspopup/,
+          /role=["'](?:menu|menubar|listbox|combobox|tooltip)["']/,
+          /<datalist\b/,
+          /\bposition:\s*absolute[^;]*;[^}]*\bz-index/,
+        ]) {
+          if (pattern.test(source)) offenders.push(`${file}: ${pattern}`);
+        }
+      }
+      expect(offenders).toEqual([]);
+      expect(css).not.toMatch(/\[popover\]|:popover-open|anchor-name|position-anchor/);
+    });
+  });
 });

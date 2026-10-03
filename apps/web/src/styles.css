@@ -793,6 +793,139 @@ details ul {
   font-size: 1.05rem;
 }
 
+/* ---------- Action dock (the commit row of a long decision form) ----------
+   The last child of a panel. It sticks to the bottom of the visible viewport while any of its panel is
+   on screen, so "Declare action" / "Confirm allocation" and a live status stay reachable however long
+   the stat, item and target lists are on a phone. It bleeds to the panel's edges (--dock-bleed-*) so
+   it reads as the panel's own footer, sits above the home indicator (safe-area padding), is capped at
+   45% of the visible height with its own scroll (large text), and drops back into the page flow when
+   the viewport is too short for a pinned bar. useActionDockInset publishes its height as
+   --action-dock-height so a keyboard-focused control is scrolled clear of it (WCAG 2.2 SC 2.4.11). */
+
+.action-dock {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0.25rem calc(var(--dock-bleed-x, 1rem) * -1) calc(var(--dock-bleed-b, 1.25rem) * -1);
+  padding: 0.75rem 1rem calc(0.85rem + env(safe-area-inset-bottom, 0px));
+  background: var(--ink-0);
+  border-top: 4px solid var(--role-accent, var(--acid));
+  box-shadow: 0 -0.9rem 1.1rem -0.6rem rgba(0, 0, 0, 0.85);
+  max-height: 45vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+@supports (height: 100dvh) {
+  .action-dock {
+    max-height: 45dvh;
+  }
+}
+
+.pending-action-card {
+  --dock-bleed-x: 0.85rem;
+  --dock-bleed-b: 0.85rem;
+}
+
+.action-dock-status {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  color: var(--paper);
+  overflow-wrap: anywhere;
+}
+
+.action-dock-status strong {
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  font-weight: 700;
+  font-synthesis-weight: none;
+  letter-spacing: 0.02em;
+  color: var(--acid);
+}
+
+.action-dock-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.action-dock-actions > button {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+/* Scroll-into-view (keyboard focus, find-in-page) leaves room for the dock. */
+html:has(.action-dock) {
+  scroll-padding-bottom: calc(var(--action-dock-height, 8rem) + 0.75rem);
+}
+
+/* Wide enough for one row: the status on the left, the actions on the right. The row wraps rather
+   than squeezes: with two long buttons (Confirm plus "Destroy Cowboy hat...") at 540-720px the actions
+   drop under the status instead of crushing it to a one-character column. */
+@media (min-width: 34rem) {
+  .action-dock {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem 1rem;
+  }
+
+  .action-dock-status {
+    flex: 1 1 10rem;
+    min-width: 0;
+  }
+
+  .action-dock-actions {
+    flex: 0 1 auto;
+    min-width: 0;
+    margin-left: auto;
+  }
+
+  .action-dock-actions > button {
+    flex: 0 1 auto;
+  }
+}
+
+/* A short viewport (landscape phone, browser zoom): a smaller bar, then none. */
+@media (max-height: 30rem) {
+  .action-dock {
+    gap: 0.35rem;
+    padding-top: 0.4rem;
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-height: 20rem) {
+  .action-dock {
+    position: static;
+    max-height: none;
+    box-shadow: none;
+  }
+
+  html:has(.action-dock) {
+    scroll-padding-bottom: 0;
+  }
+}
+
+/* The chosen target of a die, beside the die, so it stays visible however far its option list runs. */
+.die-target {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.allocation-die-group:has(:checked) > legend {
+  background: var(--volt);
+}
+
 /* ---------- Status, alerts, banners ---------- */
 
 .connection-status {

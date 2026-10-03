@@ -8,6 +8,7 @@ import {
 } from "@digitable/template-eat-the-reich";
 import type { ViewerProjection } from "@digitable/contracts";
 import type { EatTheReichView } from "@digitable/template-eat-the-reich";
+import { ActionDock } from "../shared/ActionDock.js";
 import { Icon, STAT_ICON_NAMES, STAT_LABELS } from "../shared/Icon.js";
 
 export interface ComposeStep2Props {
@@ -93,6 +94,13 @@ export function ComposeStep2({
   const estimatedTotal = basePool.total + abilityDice + claimedBonusDice;
 
   const canDeclare = !character.downed && !character.retired && !actedThisRound;
+  const blockedReason = character.downed
+    ? "you're down"
+    : character.retired
+      ? "your story is told"
+      : actedThisRound
+        ? "you've acted this round"
+        : null;
 
   function handleDeclare(): void {
     onDeclare({
@@ -251,10 +259,7 @@ export function ComposeStep2({
       </fieldset>
 
       <div className="pool-summary">
-        <p>
-          Pool: <strong>{estimatedTotal}</strong> {estimatedTotal === 1 ? "die" : "dice"} (needs 4+
-          on a d6; 6 is a critical)
-        </p>
+        <p className="form-hint">A d6 needs 4+ to succeed; a 6 is a critical.</p>
         <details>
           <summary>Why?</summary>
           <ul>
@@ -269,19 +274,31 @@ export function ComposeStep2({
         </details>
       </div>
 
-      <button
-        type="button"
-        className="primary-action"
-        disabled={!canDeclare}
-        onClick={handleDeclare}
-      >
-        Declare action
-      </button>
       {character.downed && <p role="alert">You&rsquo;re down. A teammate must rescue you.</p>}
       {character.retired && <p role="alert">Your story is told.</p>}
       {actedThisRound && !character.downed && !character.retired && (
         <p role="alert">You&rsquo;ve acted this round. Wait for the GM to end the round.</p>
       )}
+
+      <ActionDock
+        statusId="compose-dock-status"
+        status={
+          <>
+            Pool: <strong>{estimatedTotal}</strong> {estimatedTotal === 1 ? "die" : "dice"}
+            {blockedReason ? ` — ${blockedReason}` : ""}
+          </>
+        }
+      >
+        <button
+          type="button"
+          className="primary-action"
+          aria-describedby="compose-dock-status"
+          disabled={!canDeclare}
+          onClick={handleDeclare}
+        >
+          Declare action
+        </button>
+      </ActionDock>
     </section>
   );
 }
