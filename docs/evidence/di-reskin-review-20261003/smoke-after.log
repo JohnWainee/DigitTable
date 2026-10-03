@@ -1,0 +1,21 @@
+(node:23505) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS landing renders on every device
+PASS GM creates a session and receives the one-time codes
+PASS GM loads the opening scene
+PASS GM console fits a phone width with the opening scene loaded
+PASS player joins on a phone-sized device with plain-http crypto limits
+PASS player claims the first available character
+PASS table display connects with the separate table code
+PASS GM sees the claimed character (cross-device propagation)
+PASS player declares an action and the GM sees it pending
+PASS GM rolls; player allocates every die and confirms
+PASS player continues; table shows the roll outcome state
+PASS GM pauses; player and table both reflect it; GM resumes
+PASS GM ends the round, advances the scene with a reason; devices follow
+PASS every device layout has no horizontal overflow at 375/768/1024/1280/1920
+PASS page title, GM invite copy, and unauthorized-seat guidance
+PASS landing Resume goes straight to the claimed dashboard with one h1
+PASS player reload restores the seat and dashboard without re-joining
+ALL STEPS PASSED
+exit 0

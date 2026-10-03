@@ -451,6 +451,16 @@ When pausing or finishing a material unit:
 
 ## Integrated verification and next action
 
+### 2026-10-03: independent review and completion pass on the zine candidate (`sonnet-di/reskin-review-20261003`)
+
+- **Base:** `origin/sonnet-dh/reskin-uiux-20261003` (`261f28b`) plus three CSS fixes and three contract tests. No merge, deploy, or cloud change.
+- **Findings and fixes** (full record: `docs/reviews/2026-10-03-di-reskin-zine-v2-independent-review.md`): (1) the photocopy streak texture, invisible to axe, lowered `--mute` hint text to about 2.4–2.9:1 in its brightest streaks (peak alpha measured in Chrome); opacity `.5` to `.1`, with a test that composites the peak streak over the riot glow and demands >= 4.5:1; (2) the texture is dropped under `prefers-contrast: more`; (3) the pink second landing button rule is `:not(:disabled)` so a disabled state can never be recoloured. Design caveat left for John: the Director accent is the same red as errors (errors keep text prefix, `aria-invalid`, and `role=alert`).
+- **Browser evidence** (isolated emulator stack on remapped ports 19099/18080/15001, web 14174, own Chrome debug ports; the peer lane's 9099/8080/9000 emulators were left untouched): `ui-audit.mjs`, 288 states across phone 320/375/390/412, phone landscape, tablet, desktop, table, plus 23 pop-out sheet cases (keyboard, safe-area, pinch-zoom, 200% text, reduced motion): candidate as found **3,336 controls**, and final **3,256 controls** (varies with the random roll), both with zero control, overflow, or hard axe findings; the known `page-has-heading-one` note on the missing-room route remains. `two-device-smoke.mjs --reload`: 17/17 on the candidate and on the final bundle. Evidence and sample before/after captures: `docs/evidence/di-reskin-review-20261003/`. Before/after captures look near-identical by design (the streaks are now subtle).
+- **Gates:** `npm run check` — 767 passed, 11 todo (764 baseline + 3 new); `npm run build` passed (chunk-size warning only).
+- **Not run:** `npm run test:emulator`. Another lane owns the default ports 9099/8080/9000; I did not stop it. Rerun when those ports are free. The Functions/rules suites are unaffected by this CSS-only change, but that is not evidence.
+- **Test-harness note:** to run against a remapped stack, the app must be built with the `VITE_FIREBASE_*` demo variables set; without them it silently runs in "local fixture" mode and the audit fails at player admission.
+- **Still required before merge or deployment:** physical iOS/Android and assistive-technology rehearsal (`docs/PLAYTEST_TWO_DEVICE.md`); headless Chrome cannot reproduce iOS visual-viewport keyboard behaviour.
+
 ### 2026-10-03: recovered blocked Sonnet reskin-session work (`sonnet-dh/reskin-uiux-20261003`)
 
 - **Outcome:** the prior `digitable-reskin-uiux-finish-20261003` Sonnet session was blocked, not complete. It left a small uncommitted visual/audit extension: role-coded punk panel accents, an inert forced-colors-safe photocopy texture, two common modern phone viewports (390 × 844 and 412 × 915) in the browser-audit matrix, and regression contracts for both.

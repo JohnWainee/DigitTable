@@ -467,6 +467,38 @@ describe("reskin stylesheet contract", () => {
       expect(mediaBlock("(forced-colors: active)")).toMatch(/body::before\s*\{\s*display:\s*none/);
     });
 
+    it("keeps the dimmest body text legible on the brightest photocopy streak", () => {
+      // axe measures contrast against the flat ink, so it cannot see the texture. Measured in Chrome
+      // (canvas read-back of the SVG): the streak's peak alpha is 0.683 x its opacity attribute (0.34
+      // at the original 0.5). Composite that white over the page's brightest base and demand the dimmest text colour
+      // that sits directly on the page (--mute) still clears AA there.
+      const url = declaration(rulesFor(/^body::before$/), "background-image").join("");
+      const opacity = Number(/opacity='([.\d]+)'\/%3E%3C\/svg%3E/.exec(url)?.[1]);
+      expect(opacity).toBeGreaterThan(0);
+      const alpha = 0.683 * opacity;
+      const channels = (hex: string): number[] =>
+        [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+      // The worst base under the streak is the body's riot glow at its peak (rgba(255,51,72,.2) over
+      // --ink-0); the halftone dots and grain are far fainter and sparse.
+      const riot = channels(token("riot"));
+      const base = channels(token("ink-0")).map((v, i) => v * 0.8 + riot[i]! * 0.2);
+      const streak = base.map((v) => Math.round(v * (1 - alpha) + 255 * alpha));
+      const hex = `#${streak.map((v) => v.toString(16).padStart(2, "0")).join("")}`;
+      const lum = luminance(hex);
+      const mute = luminance(token("mute"));
+      expect((mute + 0.05) / (lum + 0.05)).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it("drops the photocopy texture for visitors who ask for more contrast", () => {
+      expect(mediaBlock("(prefers-contrast: more)")).toMatch(/body::before\s*\{\s*display:\s*none/);
+    });
+
+    it("never recolours a disabled landing button", () => {
+      expect(css).toMatch(
+        /\.landing-actions--primary > \.primary-action:nth-child\(2\):not\(:disabled\)\s*\{/,
+      );
+    });
+
     it("decorates panels with backgrounds only (no positioned pseudo-element that columns could split)", () => {
       const zine = css.slice(css.indexOf(".landing-screen {\n  --role-accent"));
       expect(zine).not.toMatch(/::after\s*\{[^}]*position:\s*absolute/);
