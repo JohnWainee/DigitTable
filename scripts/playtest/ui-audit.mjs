@@ -56,8 +56,16 @@ const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (f
 // `--text-scale 200` launches Chrome with its default font size scaled (a real browser text-size setting: it
 // moves both the root font size AND the `rem` basis of media queries, which a CSS font-size override on
 // <html> does not) and runs only the commit-bar audit, the one check whose layout depends on that basis.
-const TEXT_SCALE = Number(arg("text-scale", "100")) / 100;
-const COMMIT_BAR_ONLY = args.includes("--text-scale");
+const TEXT_SCALE_ARG = args.find((a) => a === "--text-scale" || a.startsWith("--text-scale="));
+const TEXT_SCALE = TEXT_SCALE_ARG
+  ? Number(TEXT_SCALE_ARG.includes("=") ? TEXT_SCALE_ARG.split("=")[1] : arg("text-scale", "")) /
+    100
+  : 1;
+if (!(TEXT_SCALE >= 1 && TEXT_SCALE <= 4)) {
+  console.error("--text-scale takes a percentage from 100 to 400, e.g. --text-scale 200");
+  process.exit(2);
+}
+const COMMIT_BAR_ONLY = TEXT_SCALE_ARG !== undefined;
 const SKIP_SWEEP = MODAL_ONLY || COMMIT_BAR_ONLY;
 const CHROME =
   process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
@@ -1038,7 +1046,7 @@ const COMMIT_BAR_AUDIT = `(() => {
     ...card.querySelectorAll("summary"),
     ...[...card.querySelectorAll("button")].filter((b) => !bar.contains(b)).slice(-1),
   ].filter(Boolean);
-  const focus = candidates.map((el) => {
+  const focusProbe = () => candidates.map((el) => {
     window.scrollTo(0, 0);
     window.scrollTo(0, window.scrollY + el.getBoundingClientRect().top - (innerHeight - 8));
     el.focus();
@@ -1047,6 +1055,25 @@ const COMMIT_BAR_AUDIT = `(() => {
     el.blur();
     return { control: describe(el), bottom: r.bottom, barTop: b.top, clear: !sticky || r.bottom <= b.top + 1 };
   });
+  const focus = focusProbe();
+  // The bar grows when it carries a reason (downed / retired / acted). The live flow never reaches those states,
+  // so a long alert is inserted for the probe (and removed again): the controls must still clear the taller bar,
+  // and the bar must still leave at least half the screen.
+  const alertEl = document.createElement("p");
+  alertEl.setAttribute("role", "alert");
+  alertEl.textContent = "You have acted this round. Wait for the GM to end the round. You have acted this round. Wait for the GM.";
+  bar.prepend(alertEl);
+  const focusWithAlert = focusProbe();
+  const barWithAlertHeight = bar.getBoundingClientRect().height;
+  alertEl.remove();
+  // Focusing the bar's own button must not scroll the page (a scroll margin on it would push the option above it under the bar).
+  window.scrollTo(0, 0);
+  card.scrollIntoView({ block: "start" });
+  window.scrollBy(0, Math.max(0, card.getBoundingClientRect().height - innerHeight) / 2);
+  const beforeY = window.scrollY;
+  button.focus();
+  const barButtonScrolled = Math.abs(window.scrollY - beforeY);
+  button.blur();
   window.scrollTo(0, 0);
   return {
     found: true,
@@ -1054,7 +1081,7 @@ const COMMIT_BAR_AUDIT = `(() => {
     rootFontPx: parseFloat(getComputedStyle(document.documentElement).fontSize),
     innerHeight, innerWidth,
     cardHeight: card.getBoundingClientRect().height,
-    cardTop, cardMiddle, pageEnd, focus,
+    cardTop, cardMiddle, pageEnd, focus, focusWithAlert, barWithAlertHeight, barButtonScrolled,
     overflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     // When the page is wider than the screen, name the widest elements so the report points at the cause.
     offenders: document.documentElement.scrollWidth - document.documentElement.clientWidth > 1
@@ -1105,8 +1132,8 @@ async function auditCommitBar(device, state) {
     if (r.cardTop.button.height < 44) fail(scope, `button is ${r.cardTop.button.height}px tall`);
     if (r.overflowPx > 1) {
       // 320px at 200% text is the already-recorded geometry limit of the rem-padded panels (identical on
-      // the pre-commit-bar build: 47px compose, 11px allocation). Recorded, not gating, as for the sheet.
-      if (vp.width <= 320 && TEXT_SCALE >= 2)
+      // the pre-commit-bar build: 47px compose, 11px allocation; anything over 50px still fails). Recorded, not gating, as for the sheet.
+      if (vp.width <= 320 && TEXT_SCALE >= 2 && r.overflowPx <= 50)
         console.log(`INFO ${scope}: horizontal overflow ${r.overflowPx}px (recorded, not gating)`);
       else fail(scope, `horizontal overflow ${r.overflowPx}px`);
     }
@@ -1129,6 +1156,18 @@ async function auditCommitBar(device, state) {
       fail(scope, "button is off screen once scrolled to the end of the page");
     for (const f of r.focus.filter((entry) => !entry.clear))
       fail(scope, `${f.control} is covered by the bar when it takes keyboard focus`);
+    for (const f of r.focusWithAlert.filter((entry) => !entry.clear))
+      fail(
+        scope,
+        `${f.control} is covered by the bar (with a reason showing) when it takes keyboard focus`,
+      );
+    if (gated && r.barWithAlertHeight > r.innerHeight * 0.5)
+      fail(
+        scope,
+        `bar with a reason takes ${Math.round(r.barWithAlertHeight)}px of ${r.innerHeight}px`,
+      );
+    if (gated && r.barButtonScrolled > 1)
+      fail(scope, `focusing the bar's own button scrolled the page ${r.barButtonScrolled}px`);
   }
   await applyViewport(device, original);
 }

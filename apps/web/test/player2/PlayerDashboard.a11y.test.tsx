@@ -198,6 +198,16 @@ describe("Player dashboard (C02/C06)", () => {
 
     expect(await screen.findByRole("heading", { name: /^resolved$/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /back to scene/i })).toBeInTheDocument();
+
+    // After acting, the reason Declare is disabled sits inside the commit bar beside the button, not below it.
+    await user.click(screen.getByRole("button", { name: /back to scene/i }));
+    const acted = await screen.findByText(/you.ve acted this round/i);
+    expect(acted.closest(".commit-bar")).not.toBeNull();
+    expect(
+      within(acted.closest(".commit-bar") as HTMLElement).getByRole("button", {
+        name: /declare action/i,
+      }),
+    ).toBeDisabled();
   });
 
   it("allocates entirely by keyboard (radio selection + Enter to confirm), no pointer input", async () => {

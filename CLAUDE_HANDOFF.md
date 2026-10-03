@@ -3,7 +3,7 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-19 by Codex after the sourcebook-roster implementation and independent review
+- **Last updated:** 2026-10-02 by Sonnet `dg` (commit bar; see "Integrated verification and next action"). Earlier: 2026-09-19 by Codex, sourcebook roster
 
 ## Mission
 
@@ -450,6 +450,16 @@ When pausing or finishing a material unit:
 4. Do not call a non-trivial change complete until independently reviewed.
 
 ## Integrated verification and next action
+
+### 2026-10-02: sticky commit bar on the long player pickers (`sonnet-dg-reskin-orchestrated-20261002`)
+
+- **Base:** verified `492bf27`. No deployment, merge, or cloud change; all runs on local `demo-digitable-dg` emulators (remapped ports, so a peer lane's stack was untouched).
+- **Gap:** earlier audits proved every control was reachable and sized, not that a long picker's primary button stays near the option being chosen. On a phone the compose card is about 1,650 px and the allocation card about 1,330 px, with Declare / Confirm at the very bottom.
+- **Change (`apps/web` only):** `.commit-bar` (`position: sticky`, gated by `@media (min-height: 32rem)`) holds Declare, or the dice count plus Confirm, together with the downed/retired/acted reason. Focused controls scroll clear of it (`scroll-margin-block-end: 16rem`, not on the bar's own buttons). `ui-audit.mjs` gained a commit-bar audit at all six viewports, a worst-case injected-reason probe, a bar-button-focus probe, and `--text-scale=<percent>` (launches Chrome with a real default font size). No engine, contracts, template, Functions, rules, authorization or projection change.
+- **Checks:** `npm run check` 759 passed, 11 todo (baseline 753). `npm run build` passed. Emulators: 18 rules, 86 Functions, 4 web. `ui-audit.mjs`: 216 states, 2,550 controls, 0 control/overflow/hard-axe findings, 12 commit-bar cases, 0 failures; `--text-scale=200` passed (the 47 / 11 px overflow at 320 px is identical on the baseline and recorded, not gating). Smoke `--reload` 17/17. Four mutation runs each failed the audit as intended. One transient `npm run check` run showed 40 find-timeouts under machine load and did not reproduce in four reruns.
+- **Review:** two fresh independent passes, all findings dispositioned, in `docs/reviews/2026-10-02-dg-commit-bar-independent-review.md`; the second pass found a real 196 px focus-scroll jump on the bar's own buttons, fixed and now guarded. Evidence in `docs/evidence/dg-commit-bar-20261002/`.
+- **Not covered:** physical iOS/Android, Safari, screen readers, Windows High Contrast. The injury-choice panel is still not reached by the live-dice audit.
+- **Next action:** physical iOS/Android and assistive-technology rehearsal per `docs/PLAYTEST_TWO_DEVICE.md`; John decides merge and redeploy.
 
 ### 2026-10-02: reskin verification on the mobile pop-out candidate (`sonnet-df/reskin-verification-20261002`)
 

@@ -213,9 +213,13 @@ describe("ui-audit.mjs commit-bar coverage", () => {
     // Focus is probed from a PARTLY visible position: a far-off control is centred by the browser, which
     // would pass whatever scroll-margin the stylesheet declares.
     expect(audit).toContain("(innerHeight - 8)");
+    // ...with a reason showing (the bar is taller then) and with the bar's own button, which must not scroll.
+    expect(fn).toContain("with a reason showing");
+    expect(fn).toContain("focusing the bar's own button scrolled the page");
+    expect(audit).toContain("--text-scale takes a percentage");
     expect(audit).toContain('card.querySelectorAll("summary")');
     // The 320px + 200% text overflow predates the bar (identical on the earlier build): recorded, not gating.
-    expect(fn).toContain("vp.width <= 320 && TEXT_SCALE >= 2");
+    expect(fn).toContain("vp.width <= 320 && TEXT_SCALE >= 2 && r.overflowPx <= 50");
     expect(fn).toContain("is covered with the card");
   });
 });

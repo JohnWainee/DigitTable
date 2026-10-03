@@ -1,7 +1,7 @@
 {
   "label": "dg-final",
   "base": "http://127.0.0.1:4191",
-  "startedAt": "2026-10-03T02:39:02.016Z",
+  "startedAt": "2026-10-03T03:04:04.367Z",
   "states": [
     {
       "surface": "anon",
@@ -1330,7 +1330,7 @@
       "state": "allocation",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 10,
+      "controls": 15,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-small.jpg"
@@ -1340,7 +1340,7 @@
       "state": "allocation",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 10,
+      "controls": 15,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone.jpg",
@@ -1351,7 +1351,7 @@
       "state": "allocation",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 10,
+      "controls": 15,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-landscape.jpg"
@@ -1361,7 +1361,7 @@
       "state": "allocation",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 10,
+      "controls": 15,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-tablet.jpg",
@@ -1372,7 +1372,7 @@
       "state": "allocation",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 10,
+      "controls": 15,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-desktop.jpg",
@@ -1383,7 +1383,7 @@
       "state": "allocation",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 10,
+      "controls": 15,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-table.jpg"
@@ -1393,7 +1393,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 10,
+      "controls": 15,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-small.jpg"
@@ -1403,7 +1403,7 @@
       "state": "allocation-assigned",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 10,
+      "controls": 15,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone.jpg",
@@ -1414,7 +1414,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 10,
+      "controls": 15,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-landscape.jpg"
@@ -1424,7 +1424,7 @@
       "state": "allocation-assigned",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 10,
+      "controls": 15,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-tablet.jpg"
@@ -1434,7 +1434,7 @@
       "state": "allocation-assigned",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 10,
+      "controls": 15,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-desktop.jpg"
@@ -1444,7 +1444,7 @@
       "state": "allocation-assigned",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 10,
+      "controls": 15,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-table.jpg"
@@ -3032,7 +3032,7 @@
       },
       "notes": [],
       "scaleBefore": 1,
-      "scaleAfter": 2,
+      "scaleAfter": 2.000000238418579,
       "informationalChecks": []
     },
     {
@@ -7362,23 +7362,45 @@
       "focus": [
         {
           "control": "input[checkbox]",
-          "bottom": 423.890625,
-          "barTop": 494,
+          "bottom": 311.890625,
+          "barTop": 484.671875,
           "clear": true
         },
         {
           "control": "summary",
-          "bottom": 423.671875,
-          "barTop": 441.671875,
+          "bottom": 413.671875,
+          "barTop": 431.671875,
           "clear": true
         },
         {
           "control": "button[button]",
-          "bottom": 423.828125,
+          "bottom": 311.828125,
           "barTop": 494,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[checkbox]",
+          "bottom": 311.890625,
+          "barTop": 369.21875,
+          "clear": true
+        },
+        {
+          "control": "summary",
+          "bottom": 311.671875,
+          "barTop": 329.671875,
+          "clear": true
+        },
+        {
+          "control": "button[button]",
+          "bottom": 311.828125,
+          "barTop": 369.21875,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 198.78125,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -7465,23 +7487,45 @@
       "focus": [
         {
           "control": "input[checkbox]",
-          "bottom": 667.921875,
-          "barTop": 738,
+          "bottom": 555.921875,
+          "barTop": 728.703125,
           "clear": true
         },
         {
           "control": "summary",
-          "bottom": 667.703125,
-          "barTop": 685.703125,
+          "bottom": 657.703125,
+          "barTop": 675.703125,
           "clear": true
         },
         {
           "control": "button[button]",
-          "bottom": 668.453125,
+          "bottom": 556.453125,
           "barTop": 738,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[checkbox]",
+          "bottom": 555.921875,
+          "barTop": 637.21875,
+          "clear": true
+        },
+        {
+          "control": "summary",
+          "bottom": 557.703125,
+          "barTop": 575.703125,
+          "clear": true
+        },
+        {
+          "control": "button[button]",
+          "bottom": 556.453125,
+          "barTop": 637.21875,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 174.78125,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -7585,6 +7629,28 @@
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[checkbox]",
+          "bottom": 375.21875,
+          "barTop": 522.8125,
+          "clear": true
+        },
+        {
+          "control": "summary",
+          "bottom": 374.8125,
+          "barTop": 392.8125,
+          "clear": true
+        },
+        {
+          "control": "button[button]",
+          "bottom": 375.109375,
+          "barTop": 899.8125,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 124.78125,
+      "barButtonScrolled": 603,
       "overflowPx": 0,
       "offenders": []
     },
@@ -7671,23 +7737,45 @@
       "focus": [
         {
           "control": "input[checkbox]",
-          "bottom": 880.21875,
-          "barTop": 950,
+          "bottom": 768.21875,
+          "barTop": 915.8125,
           "clear": true
         },
         {
           "control": "summary",
-          "bottom": 879.8125,
-          "barTop": 897.8125,
+          "bottom": 869.8125,
+          "barTop": 887.8125,
           "clear": true
         },
         {
           "control": "button[button]",
-          "bottom": 880.109375,
+          "bottom": 768.109375,
           "barTop": 950,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[checkbox]",
+          "bottom": 768.21875,
+          "barTop": 873.21875,
+          "clear": true
+        },
+        {
+          "control": "summary",
+          "bottom": 792.8125,
+          "barTop": 810.8125,
+          "clear": true
+        },
+        {
+          "control": "button[button]",
+          "bottom": 768.109375,
+          "barTop": 873.21875,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 150.78125,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -7774,23 +7862,45 @@
       "focus": [
         {
           "control": "input[checkbox]",
-          "bottom": 656.21875,
-          "barTop": 726,
+          "bottom": 544.21875,
+          "barTop": 691.8125,
           "clear": true
         },
         {
           "control": "summary",
-          "bottom": 655.8125,
-          "barTop": 673.8125,
+          "bottom": 645.8125,
+          "barTop": 663.8125,
           "clear": true
         },
         {
           "control": "button[button]",
-          "bottom": 656.109375,
+          "bottom": 544.109375,
           "barTop": 726,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[checkbox]",
+          "bottom": 544.21875,
+          "barTop": 649.21875,
+          "clear": true
+        },
+        {
+          "control": "summary",
+          "bottom": 568.8125,
+          "barTop": 586.8125,
+          "clear": true
+        },
+        {
+          "control": "button[button]",
+          "bottom": 544.109375,
+          "barTop": 649.21875,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 150.78125,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -7877,23 +7987,45 @@
       "focus": [
         {
           "control": "input[checkbox]",
-          "bottom": 936.21875,
-          "barTop": 1006,
+          "bottom": 824.21875,
+          "barTop": 971.8125,
           "clear": true
         },
         {
           "control": "summary",
-          "bottom": 935.8125,
-          "barTop": 953.8125,
+          "bottom": 925.8125,
+          "barTop": 943.8125,
           "clear": true
         },
         {
           "control": "button[button]",
-          "bottom": 936.109375,
+          "bottom": 824.109375,
           "barTop": 1006,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[checkbox]",
+          "bottom": 824.21875,
+          "barTop": 929.21875,
+          "clear": true
+        },
+        {
+          "control": "summary",
+          "bottom": 848.8125,
+          "barTop": 866.8125,
+          "clear": true
+        },
+        {
+          "control": "button[button]",
+          "bottom": 824.109375,
+          "barTop": 929.21875,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 150.78125,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -7904,7 +8036,7 @@
       "rootFontPx": 16,
       "innerHeight": 568,
       "innerWidth": 320,
-      "cardHeight": 1073.84375,
+      "cardHeight": 1450.171875,
       "cardTop": {
         "button": {
           "top": 508,
@@ -7922,10 +8054,10 @@
         },
         "card": {
           "top": -0.21875,
-          "bottom": 1073.625,
+          "bottom": 1449.953125,
           "left": 16,
           "right": 304,
-          "height": 1073.84375
+          "height": 1450.171875
         },
         "covered": false
       },
@@ -7945,46 +8077,56 @@
           "height": 106
         },
         "card": {
-          "top": -253.21875,
-          "bottom": 820.625,
+          "top": -441.21875,
+          "bottom": 1008.953125,
           "left": 16,
           "right": 304,
-          "height": 1073.84375
+          "height": 1450.171875
         },
         "covered": false
       },
       "pageEnd": {
         "button": {
-          "top": 445.625,
-          "bottom": 493.625,
+          "top": 445.953125,
+          "bottom": 493.953125,
           "left": 34,
           "right": 286,
           "height": 48
         },
         "bar": {
-          "top": 399.625,
-          "bottom": 505.625,
+          "top": 399.953125,
+          "bottom": 505.953125,
           "left": 18,
           "right": 302,
           "height": 106
         },
         "card": {
-          "top": -546.21875,
-          "bottom": 527.625,
+          "top": -922.21875,
+          "bottom": 527.953125,
           "left": 16,
           "right": 304,
-          "height": 1073.84375
+          "height": 1450.171875
         },
         "covered": false
       },
       "focus": [
         {
           "control": "input[radio]",
-          "bottom": 424.21875,
-          "barTop": 462,
+          "bottom": 357.546875,
+          "barTop": 399.953125,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[radio]",
+          "bottom": 311.546875,
+          "barTop": 337.21875,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 230.78125,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -7995,7 +8137,7 @@
       "rootFontPx": 16,
       "innerHeight": 812,
       "innerWidth": 375,
-      "cardHeight": 917.0625,
+      "cardHeight": 1330.1875,
       "cardTop": {
         "button": {
           "top": 752,
@@ -8013,10 +8155,10 @@
         },
         "card": {
           "top": 0.421875,
-          "bottom": 917.484375,
+          "bottom": 1330.609375,
           "left": 16,
           "right": 359,
-          "height": 917.0625
+          "height": 1330.1875
         },
         "covered": false
       },
@@ -8036,46 +8178,56 @@
           "height": 106
         },
         "card": {
-          "top": -52.578125,
-          "bottom": 864.484375,
+          "top": -258.578125,
+          "bottom": 1071.609375,
           "left": 16,
           "right": 359,
-          "height": 917.0625
+          "height": 1330.1875
         },
         "covered": false
       },
       "pageEnd": {
         "button": {
-          "top": 690.484375,
-          "bottom": 738.484375,
+          "top": 689.609375,
+          "bottom": 737.609375,
           "left": 34,
           "right": 341,
           "height": 48
         },
         "bar": {
-          "top": 644.484375,
-          "bottom": 750.484375,
+          "top": 643.609375,
+          "bottom": 749.609375,
           "left": 18,
           "right": 357,
           "height": 106
         },
         "card": {
-          "top": -144.578125,
-          "bottom": 772.484375,
+          "top": -558.578125,
+          "bottom": 771.609375,
           "left": 16,
           "right": 359,
-          "height": 917.0625
+          "height": 1330.1875
         },
         "covered": false
       },
       "focus": [
         {
           "control": "input[radio]",
-          "bottom": 668.078125,
-          "barTop": 706,
+          "bottom": 601.203125,
+          "barTop": 643.609375,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[radio]",
+          "bottom": 556.203125,
+          "barTop": 598.609375,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 206.78125,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -8086,87 +8238,97 @@
       "rootFontPx": 16,
       "innerHeight": 375,
       "innerWidth": 812,
-      "cardHeight": 878.3125,
+      "cardHeight": 1223.46875,
       "cardTop": {
         "button": {
-          "top": 808.734375,
-          "bottom": 856.734375,
+          "top": 1153.890625,
+          "bottom": 1201.890625,
           "left": 72,
           "right": 740,
           "height": 48
         },
         "bar": {
-          "top": 776.734375,
-          "bottom": 856.734375,
+          "top": 1121.890625,
+          "bottom": 1201.890625,
           "left": 72,
           "right": 740,
           "height": 80
         },
         "card": {
           "top": 0.421875,
-          "bottom": 878.734375,
+          "bottom": 1223.890625,
           "left": 54,
           "right": 758,
-          "height": 878.3125
+          "height": 1223.46875
         },
         "covered": true
       },
       "cardMiddle": {
         "button": {
-          "top": 556.734375,
-          "bottom": 604.734375,
+          "top": 729.890625,
+          "bottom": 777.890625,
           "left": 72,
           "right": 740,
           "height": 48
         },
         "bar": {
-          "top": 524.734375,
-          "bottom": 604.734375,
+          "top": 697.890625,
+          "bottom": 777.890625,
           "left": 72,
           "right": 740,
           "height": 80
         },
         "card": {
-          "top": -251.578125,
-          "bottom": 626.734375,
+          "top": -423.578125,
+          "bottom": 799.890625,
           "left": 54,
           "right": 758,
-          "height": 878.3125
+          "height": 1223.46875
         },
         "covered": true
       },
       "pageEnd": {
         "button": {
-          "top": 264.734375,
-          "bottom": 312.734375,
+          "top": 264.890625,
+          "bottom": 312.890625,
           "left": 72,
           "right": 740,
           "height": 48
         },
         "bar": {
-          "top": 232.734375,
-          "bottom": 312.734375,
+          "top": 232.890625,
+          "bottom": 312.890625,
           "left": 72,
           "right": 740,
           "height": 80
         },
         "card": {
-          "top": -543.578125,
-          "bottom": 334.734375,
+          "top": -888.578125,
+          "bottom": 334.890625,
           "left": 54,
           "right": 758,
-          "height": 878.3125
+          "height": 1223.46875
         },
         "covered": false
       },
       "focus": [
         {
           "control": "input[radio]",
-          "bottom": 375.328125,
-          "barTop": 417.734375,
+          "bottom": 375.484375,
+          "barTop": 417.890625,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[radio]",
+          "bottom": 375.484375,
+          "barTop": 417.890625,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 156.78125,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -8177,87 +8339,97 @@
       "rootFontPx": 16,
       "innerHeight": 1024,
       "innerWidth": 768,
-      "cardHeight": 904.3125,
+      "cardHeight": 1249.46875,
       "cardTop": {
         "button": {
-          "top": 901.734375,
-          "bottom": 949.734375,
+          "top": 964,
+          "bottom": 1012,
           "left": 50,
           "right": 718,
           "height": 48
         },
         "bar": {
-          "top": 855.734375,
-          "bottom": 961.734375,
+          "top": 918,
+          "bottom": 1024,
           "left": 34,
           "right": 734,
           "height": 106
         },
         "card": {
-          "top": 79.421875,
-          "bottom": 983.734375,
+          "top": 0.421875,
+          "bottom": 1249.890625,
           "left": 32,
           "right": 736,
-          "height": 904.3125
+          "height": 1249.46875
         },
         "covered": false
       },
       "cardMiddle": {
         "button": {
-          "top": 901.734375,
-          "bottom": 949.734375,
+          "top": 964,
+          "bottom": 1012,
           "left": 50,
           "right": 718,
           "height": 48
         },
         "bar": {
-          "top": 855.734375,
-          "bottom": 961.734375,
+          "top": 918,
+          "bottom": 1024,
           "left": 34,
           "right": 734,
           "height": 106
         },
         "card": {
-          "top": 79.421875,
-          "bottom": 983.734375,
+          "top": -112.578125,
+          "bottom": 1136.890625,
           "left": 32,
           "right": 736,
-          "height": 904.3125
+          "height": 1249.46875
         },
         "covered": false
       },
       "pageEnd": {
         "button": {
-          "top": 901.734375,
-          "bottom": 949.734375,
+          "top": 901.890625,
+          "bottom": 949.890625,
           "left": 50,
           "right": 718,
           "height": 48
         },
         "bar": {
-          "top": 855.734375,
-          "bottom": 961.734375,
+          "top": 855.890625,
+          "bottom": 961.890625,
           "left": 34,
           "right": 734,
           "height": 106
         },
         "card": {
-          "top": 79.421875,
-          "bottom": 983.734375,
+          "top": -265.578125,
+          "bottom": 983.890625,
           "left": 32,
           "right": 736,
-          "height": 904.3125
+          "height": 1249.46875
         },
         "covered": false
       },
       "focus": [
         {
           "control": "input[radio]",
-          "bottom": 880.328125,
-          "barTop": 918,
+          "bottom": 813.484375,
+          "barTop": 855.890625,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[radio]",
+          "bottom": 768.484375,
+          "barTop": 810.890625,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 182.78125,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -8268,7 +8440,7 @@
       "rootFontPx": 16,
       "innerHeight": 800,
       "innerWidth": 1280,
-      "cardHeight": 904.3125,
+      "cardHeight": 1249.46875,
       "cardTop": {
         "button": {
           "top": 740,
@@ -8286,10 +8458,10 @@
         },
         "card": {
           "top": 0.421875,
-          "bottom": 904.734375,
+          "bottom": 1249.890625,
           "left": 280.5,
           "right": 984.5,
-          "height": 904.3125
+          "height": 1249.46875
         },
         "covered": false
       },
@@ -8309,46 +8481,56 @@
           "height": 106
         },
         "card": {
-          "top": -51.578125,
-          "bottom": 852.734375,
+          "top": -224.578125,
+          "bottom": 1024.890625,
           "left": 280.5,
           "right": 984.5,
-          "height": 904.3125
+          "height": 1249.46875
         },
         "covered": false
       },
       "pageEnd": {
         "button": {
-          "top": 677.734375,
-          "bottom": 725.734375,
+          "top": 677.890625,
+          "bottom": 725.890625,
           "left": 298.5,
           "right": 966.5,
           "height": 48
         },
         "bar": {
-          "top": 631.734375,
-          "bottom": 737.734375,
+          "top": 631.890625,
+          "bottom": 737.890625,
           "left": 282.5,
           "right": 982.5,
           "height": 106
         },
         "card": {
-          "top": -144.578125,
-          "bottom": 759.734375,
+          "top": -489.578125,
+          "bottom": 759.890625,
           "left": 280.5,
           "right": 984.5,
-          "height": 904.3125
+          "height": 1249.46875
         },
         "covered": false
       },
       "focus": [
         {
           "control": "input[radio]",
-          "bottom": 656.328125,
-          "barTop": 694,
+          "bottom": 589.484375,
+          "barTop": 631.890625,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[radio]",
+          "bottom": 544.484375,
+          "barTop": 586.890625,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 182.78125,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -8359,87 +8541,97 @@
       "rootFontPx": 16,
       "innerHeight": 1080,
       "innerWidth": 1920,
-      "cardHeight": 904.3125,
+      "cardHeight": 1249.46875,
       "cardTop": {
         "button": {
-          "top": 957.734375,
-          "bottom": 1005.734375,
+          "top": 1020,
+          "bottom": 1068,
           "left": 618.5,
           "right": 1286.5,
           "height": 48
         },
         "bar": {
-          "top": 911.734375,
-          "bottom": 1017.734375,
+          "top": 974,
+          "bottom": 1080,
           "left": 602.5,
           "right": 1302.5,
           "height": 106
         },
         "card": {
-          "top": 135.421875,
-          "bottom": 1039.734375,
+          "top": 0.421875,
+          "bottom": 1249.890625,
           "left": 600.5,
           "right": 1304.5,
-          "height": 904.3125
+          "height": 1249.46875
         },
         "covered": false
       },
       "cardMiddle": {
         "button": {
-          "top": 957.734375,
-          "bottom": 1005.734375,
+          "top": 1020,
+          "bottom": 1068,
           "left": 618.5,
           "right": 1286.5,
           "height": 48
         },
         "bar": {
-          "top": 911.734375,
-          "bottom": 1017.734375,
+          "top": 974,
+          "bottom": 1080,
           "left": 602.5,
           "right": 1302.5,
           "height": 106
         },
         "card": {
-          "top": 135.421875,
-          "bottom": 1039.734375,
+          "top": -84.578125,
+          "bottom": 1164.890625,
           "left": 600.5,
           "right": 1304.5,
-          "height": 904.3125
+          "height": 1249.46875
         },
         "covered": false
       },
       "pageEnd": {
         "button": {
-          "top": 957.734375,
-          "bottom": 1005.734375,
+          "top": 957.890625,
+          "bottom": 1005.890625,
           "left": 618.5,
           "right": 1286.5,
           "height": 48
         },
         "bar": {
-          "top": 911.734375,
-          "bottom": 1017.734375,
+          "top": 911.890625,
+          "bottom": 1017.890625,
           "left": 602.5,
           "right": 1302.5,
           "height": 106
         },
         "card": {
-          "top": 135.421875,
-          "bottom": 1039.734375,
+          "top": -209.578125,
+          "bottom": 1039.890625,
           "left": 600.5,
           "right": 1304.5,
-          "height": 904.3125
+          "height": 1249.46875
         },
         "covered": false
       },
       "focus": [
         {
           "control": "input[radio]",
-          "bottom": 936.328125,
-          "barTop": 974,
+          "bottom": 869.484375,
+          "barTop": 911.890625,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[radio]",
+          "bottom": 824.484375,
+          "barTop": 866.890625,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 182.78125,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     }
@@ -8904,11 +9096,11 @@
       "failedRequests": []
     }
   },
-  "finishedAt": "2026-10-03T02:46:59.058Z",
+  "finishedAt": "2026-10-03T03:12:00.136Z",
   "ok": true,
   "summary": {
     "states": 216,
-    "controlsAudited": 2490,
+    "controlsAudited": 2550,
     "controlIssues": 0,
     "overflowStates": 0,
     "axeHardViolations": 0,

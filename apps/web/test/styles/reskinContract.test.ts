@@ -479,8 +479,11 @@ describe("reskin stylesheet contract", () => {
 
     it("keeps keyboard-focused controls clear of the bar (WCAG 2.4.11), on the focused element rather than its label", () => {
       expect(gated).toMatch(
-        /\.step :is\(input, summary, button, select, textarea\)\s*\{[^}]*scroll-margin-block-end:\s*9rem/,
+        /\.step :is\(input, summary, button, select, textarea\)\s*\{[^}]*scroll-margin-block-end:\s*16rem/,
       );
+      // ...but not on the bar's own buttons, which are already pinned: focusing one must not scroll the page.
+      expect(gated).toMatch(/\.commit-bar button\s*\{[^}]*scroll-margin-block-end:\s*0/);
+      expect(gated.indexOf(".commit-bar button")).toBeGreaterThan(gated.indexOf(".step :is("));
       expect(gated).not.toMatch(/\.gear-option\s*\{[^}]*scroll-margin/);
     });
   });

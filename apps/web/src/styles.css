@@ -1412,7 +1412,13 @@ details ul {
      belongs on the element that takes focus (the radio/checkbox, the "Why?" summary, a row's own button),
      not on its label. */
   .step :is(input, summary, button, select, textarea) {
-    scroll-margin-block-end: 9rem;
+    scroll-margin-block-end: 16rem;
+  }
+
+  /* The bar's own buttons are already pinned on screen: a margin there would scroll the page down when one takes
+     focus and push the option just above it under the bar. */
+  .commit-bar button {
+    scroll-margin-block-end: 0;
   }
 }
 

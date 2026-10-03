@@ -1,7 +1,7 @@
 {
   "label": "dg-final200",
   "base": "http://127.0.0.1:4191",
-  "startedAt": "2026-10-03T02:47:25.654Z",
+  "startedAt": "2026-10-03T03:12:00.230Z",
   "states": [],
   "modal": [],
   "keyboard": [],
@@ -106,6 +106,28 @@
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[checkbox]",
+          "bottom": 650,
+          "barTop": 1119.546875,
+          "clear": true
+        },
+        {
+          "control": "summary",
+          "bottom": 649.546875,
+          "barTop": 683.546875,
+          "clear": true
+        },
+        {
+          "control": "button[button]",
+          "bottom": 776.96875,
+          "barTop": 3022.546875,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 1084.25,
+      "barButtonScrolled": 2771,
       "overflowPx": 47,
       "offenders": []
     },
@@ -209,6 +231,28 @@
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[checkbox]",
+          "bottom": 812.328125,
+          "barTop": 1281.875,
+          "clear": true
+        },
+        {
+          "control": "summary",
+          "bottom": 811.875,
+          "barTop": 845.875,
+          "clear": true
+        },
+        {
+          "control": "button[button]",
+          "bottom": 812.03125,
+          "barTop": 2812.875,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 667.3125,
+      "barButtonScrolled": 2286,
       "overflowPx": 0,
       "offenders": []
     },
@@ -312,6 +356,28 @@
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[checkbox]",
+          "bottom": 374.640625,
+          "barTop": 663.828125,
+          "clear": true
+        },
+        {
+          "control": "summary",
+          "bottom": 374.828125,
+          "barTop": 408.828125,
+          "clear": true
+        },
+        {
+          "control": "button[button]",
+          "bottom": 374.59375,
+          "barTop": 1486.828125,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 297.59375,
+      "barButtonScrolled": 1431,
       "overflowPx": 0,
       "offenders": []
     },
@@ -398,23 +464,45 @@
       "focus": [
         {
           "control": "input[checkbox]",
-          "bottom": 735.765625,
-          "barTop": 878,
+          "bottom": 511.765625,
+          "barTop": 851.34375,
           "clear": true
         },
         {
           "control": "summary",
-          "bottom": 736.34375,
-          "barTop": 770.34375,
+          "bottom": 722.34375,
+          "barTop": 756.34375,
           "clear": true
         },
         {
           "control": "button[button]",
-          "bottom": 735.71875,
+          "bottom": 511.71875,
           "barTop": 878,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[checkbox]",
+          "bottom": 511.765625,
+          "barTop": 676.40625,
+          "clear": true
+        },
+        {
+          "control": "summary",
+          "bottom": 520.34375,
+          "barTop": 554.34375,
+          "clear": true
+        },
+        {
+          "control": "button[button]",
+          "bottom": 511.71875,
+          "barTop": 676.40625,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 347.59375,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -518,6 +606,28 @@
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[checkbox]",
+          "bottom": 800.421875,
+          "barTop": 1089.609375,
+          "clear": true
+        },
+        {
+          "control": "summary",
+          "bottom": 799.609375,
+          "barTop": 833.609375,
+          "clear": true
+        },
+        {
+          "control": "button[button]",
+          "bottom": 800.125,
+          "barTop": 1835.609375,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 249.59375,
+      "barButtonScrolled": 1168,
       "overflowPx": 0,
       "offenders": []
     },
@@ -604,23 +714,45 @@
       "focus": [
         {
           "control": "input[checkbox]",
-          "bottom": 792.421875,
-          "barTop": 934,
+          "bottom": 568.421875,
+          "barTop": 857.609375,
           "clear": true
         },
         {
           "control": "summary",
-          "bottom": 791.609375,
-          "barTop": 825.609375,
+          "bottom": 777.609375,
+          "barTop": 811.609375,
           "clear": true
         },
         {
           "control": "button[button]",
-          "bottom": 792.125,
+          "bottom": 568.125,
           "barTop": 934,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[checkbox]",
+          "bottom": 568.421875,
+          "barTop": 780.40625,
+          "clear": true
+        },
+        {
+          "control": "summary",
+          "bottom": 624.609375,
+          "barTop": 658.609375,
+          "clear": true
+        },
+        {
+          "control": "button[button]",
+          "bottom": 568.125,
+          "barTop": 780.40625,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 299.59375,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -631,87 +763,97 @@
       "rootFontPx": 32,
       "innerHeight": 588,
       "innerWidth": 331,
-      "cardHeight": 3356.59375,
+      "cardHeight": 2197.984375,
       "cardTop": {
         "button": {
-          "top": 3103.515625,
-          "bottom": 3314.171875,
+          "top": 1944.90625,
+          "bottom": 2155.5625,
           "left": 66,
           "right": 254,
           "height": 210.65625
         },
         "bar": {
-          "top": 2943.515625,
-          "bottom": 3314.171875,
+          "top": 1784.90625,
+          "bottom": 2155.5625,
           "left": 66,
           "right": 254,
           "height": 370.65625
         },
         "card": {
           "top": -0.421875,
-          "bottom": 3356.171875,
+          "bottom": 2197.5625,
           "left": 32,
           "right": 288,
-          "height": 3356.59375
+          "height": 2197.984375
         },
         "covered": true
       },
       "cardMiddle": {
         "button": {
-          "top": 1719.515625,
-          "bottom": 1930.171875,
+          "top": 1139.90625,
+          "bottom": 1350.5625,
           "left": 66,
           "right": 254,
           "height": 210.65625
         },
         "bar": {
-          "top": 1559.515625,
-          "bottom": 1930.171875,
+          "top": 979.90625,
+          "bottom": 1350.5625,
           "left": 66,
           "right": 254,
           "height": 370.65625
         },
         "card": {
-          "top": -1384.421875,
-          "bottom": 1972.171875,
+          "top": -805.421875,
+          "bottom": 1392.5625,
           "left": 32,
           "right": 288,
-          "height": 3356.59375
+          "height": 2197.984375
         },
         "covered": true
       },
       "pageEnd": {
         "button": {
-          "top": 255.515625,
-          "bottom": 466.171875,
+          "top": 254.90625,
+          "bottom": 465.5625,
           "left": 66,
           "right": 254,
           "height": 210.65625
         },
         "bar": {
-          "top": 95.515625,
-          "bottom": 466.171875,
+          "top": 94.90625,
+          "bottom": 465.5625,
           "left": 66,
           "right": 254,
           "height": 370.65625
         },
         "card": {
-          "top": -2848.421875,
-          "bottom": 508.171875,
+          "top": -1690.421875,
+          "bottom": 507.5625,
           "left": 32,
           "right": 288,
-          "height": 3356.59375
+          "height": 2197.984375
         },
         "covered": false
       },
       "focus": [
         {
           "control": "input[radio]",
-          "bottom": 587.71875,
-          "barTop": 670.515625,
+          "bottom": 588.109375,
+          "barTop": 670.90625,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[radio]",
+          "bottom": 588.109375,
+          "barTop": 670.90625,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 1244.25,
+      "barButtonScrolled": 0,
       "overflowPx": 11,
       "offenders": []
     },
@@ -722,87 +864,97 @@
       "rootFontPx": 32,
       "innerHeight": 812,
       "innerWidth": 375,
-      "cardHeight": 3089.78125,
+      "cardHeight": 2032.734375,
       "cardTop": {
         "button": {
-          "top": 2877.78125,
-          "bottom": 3047.96875,
+          "top": 1820.734375,
+          "bottom": 1990.921875,
           "left": 66,
           "right": 309,
           "height": 170.1875
         },
         "bar": {
-          "top": 2765.78125,
-          "bottom": 3047.96875,
+          "top": 1708.734375,
+          "bottom": 1990.921875,
           "left": 66,
           "right": 309,
           "height": 282.1875
         },
         "card": {
           "top": 0.1875,
-          "bottom": 3089.96875,
+          "bottom": 2032.921875,
           "left": 32,
           "right": 343,
-          "height": 3089.78125
+          "height": 2032.734375
         },
         "covered": true
       },
       "cardMiddle": {
         "button": {
-          "top": 1738.78125,
-          "bottom": 1908.96875,
+          "top": 1210.734375,
+          "bottom": 1380.921875,
           "left": 66,
           "right": 309,
           "height": 170.1875
         },
         "bar": {
-          "top": 1626.78125,
-          "bottom": 1908.96875,
+          "top": 1098.734375,
+          "bottom": 1380.921875,
           "left": 66,
           "right": 309,
           "height": 282.1875
         },
         "card": {
-          "top": -1138.8125,
-          "bottom": 1950.96875,
+          "top": -609.8125,
+          "bottom": 1422.921875,
           "left": 32,
           "right": 343,
-          "height": 3089.78125
+          "height": 2032.734375
         },
         "covered": true
       },
       "pageEnd": {
         "button": {
-          "top": 519.78125,
-          "bottom": 689.96875,
+          "top": 519.734375,
+          "bottom": 689.921875,
           "left": 66,
           "right": 309,
           "height": 170.1875
         },
         "bar": {
-          "top": 407.78125,
-          "bottom": 689.96875,
+          "top": 407.734375,
+          "bottom": 689.921875,
           "left": 66,
           "right": 309,
           "height": 282.1875
         },
         "card": {
-          "top": -2357.8125,
-          "bottom": 731.96875,
+          "top": -1300.8125,
+          "bottom": 731.921875,
           "left": 32,
           "right": 343,
-          "height": 3089.78125
+          "height": 2032.734375
         },
         "covered": false
       },
       "focus": [
         {
           "control": "input[radio]",
-          "bottom": 811.984375,
-          "barTop": 894.78125,
+          "bottom": 811.9375,
+          "barTop": 894.734375,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[radio]",
+          "bottom": 811.9375,
+          "barTop": 894.734375,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 819.78125,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -813,87 +965,97 @@
       "rootFontPx": 32,
       "innerHeight": 375,
       "innerWidth": 812,
-      "cardHeight": 1879,
+      "cardHeight": 1289.046875,
       "cardTop": {
         "button": {
-          "top": 1740.78125,
-          "bottom": 1836.78125,
+          "top": 1150.828125,
+          "bottom": 1246.828125,
           "left": 66,
           "right": 746,
           "height": 96
         },
         "bar": {
-          "top": 1676.78125,
-          "bottom": 1836.78125,
+          "top": 1086.828125,
+          "bottom": 1246.828125,
           "left": 66,
           "right": 746,
           "height": 160
         },
         "card": {
           "top": -0.21875,
-          "bottom": 1878.78125,
+          "bottom": 1288.828125,
           "left": 32,
           "right": 780,
-          "height": 1879
+          "height": 1289.046875
         },
         "covered": true
       },
       "cardMiddle": {
         "button": {
-          "top": 988.78125,
-          "bottom": 1084.78125,
+          "top": 693.828125,
+          "bottom": 789.828125,
           "left": 66,
           "right": 746,
           "height": 96
         },
         "bar": {
-          "top": 924.78125,
-          "bottom": 1084.78125,
+          "top": 629.828125,
+          "bottom": 789.828125,
           "left": 66,
           "right": 746,
           "height": 160
         },
         "card": {
-          "top": -752.21875,
-          "bottom": 1126.78125,
+          "top": -457.21875,
+          "bottom": 831.828125,
           "left": 32,
           "right": 780,
-          "height": 1879
+          "height": 1289.046875
         },
         "covered": true
       },
       "pageEnd": {
         "button": {
-          "top": 156.78125,
-          "bottom": 252.78125,
+          "top": 156.828125,
+          "bottom": 252.828125,
           "left": 66,
           "right": 746,
           "height": 96
         },
         "bar": {
-          "top": 92.78125,
-          "bottom": 252.78125,
+          "top": 92.828125,
+          "bottom": 252.828125,
           "left": 66,
           "right": 746,
           "height": 160
         },
         "card": {
-          "top": -1584.21875,
-          "bottom": 294.78125,
+          "top": -994.21875,
+          "bottom": 294.828125,
           "left": 32,
           "right": 780,
-          "height": 1879
+          "height": 1289.046875
         },
         "covered": false
       },
       "focus": [
         {
           "control": "input[radio]",
-          "bottom": 374.984375,
-          "barTop": 457.78125,
+          "bottom": 375.03125,
+          "barTop": 457.828125,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[radio]",
+          "bottom": 375.03125,
+          "barTop": 457.828125,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 361.59375,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -904,7 +1066,7 @@
       "rootFontPx": 32,
       "innerHeight": 1024,
       "innerWidth": 768,
-      "cardHeight": 1928.28125,
+      "cardHeight": 1338.328125,
       "cardTop": {
         "button": {
           "top": 904,
@@ -922,10 +1084,10 @@
         },
         "card": {
           "top": -0.375,
-          "bottom": 1927.90625,
+          "bottom": 1337.953125,
           "left": 32,
           "right": 736,
-          "height": 1928.28125
+          "height": 1338.328125
         },
         "covered": false
       },
@@ -945,46 +1107,56 @@
           "height": 210
         },
         "card": {
-          "top": -452.375,
-          "bottom": 1475.90625,
+          "top": -157.375,
+          "bottom": 1180.953125,
           "left": 32,
           "right": 736,
-          "height": 1928.28125
+          "height": 1338.328125
         },
         "covered": false
       },
       "pageEnd": {
         "button": {
-          "top": 781.90625,
-          "bottom": 877.90625,
+          "top": 781.953125,
+          "bottom": 877.953125,
           "left": 66,
           "right": 702,
           "height": 96
         },
         "bar": {
-          "top": 691.90625,
-          "bottom": 901.90625,
+          "top": 691.953125,
+          "bottom": 901.953125,
           "left": 34,
           "right": 734,
           "height": 210
         },
         "card": {
-          "top": -984.375,
-          "bottom": 943.90625,
+          "top": -394.375,
+          "bottom": 943.953125,
           "left": 32,
           "right": 736,
-          "height": 1928.28125
+          "height": 1338.328125
         },
         "covered": false
       },
       "focus": [
         {
           "control": "input[radio]",
-          "bottom": 736.109375,
-          "barTop": 814,
+          "bottom": 609.15625,
+          "barTop": 691.953125,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[radio]",
+          "bottom": 512.15625,
+          "barTop": 594.953125,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 411.59375,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -995,87 +1167,97 @@
       "rootFontPx": 32,
       "innerHeight": 800,
       "innerWidth": 1280,
-      "cardHeight": 1860.71875,
+      "cardHeight": 1172.359375,
       "cardTop": {
         "button": {
-          "top": 1722.34375,
-          "bottom": 1818.34375,
+          "top": 1033.984375,
+          "bottom": 1129.984375,
           "left": 66,
           "right": 1199,
           "height": 96
         },
         "bar": {
-          "top": 1658.34375,
-          "bottom": 1818.34375,
+          "top": 969.984375,
+          "bottom": 1129.984375,
           "left": 66,
           "right": 1199,
           "height": 160
         },
         "card": {
           "top": -0.375,
-          "bottom": 1860.34375,
+          "bottom": 1171.984375,
           "left": 32,
           "right": 1233,
-          "height": 1860.71875
+          "height": 1172.359375
         },
         "covered": true
       },
       "cardMiddle": {
         "button": {
-          "top": 1192.34375,
-          "bottom": 1288.34375,
+          "top": 847.984375,
+          "bottom": 943.984375,
           "left": 66,
           "right": 1199,
           "height": 96
         },
         "bar": {
-          "top": 1128.34375,
-          "bottom": 1288.34375,
+          "top": 783.984375,
+          "bottom": 943.984375,
           "left": 66,
           "right": 1199,
           "height": 160
         },
         "card": {
-          "top": -530.375,
-          "bottom": 1330.34375,
+          "top": -186.375,
+          "bottom": 985.984375,
           "left": 32,
           "right": 1233,
-          "height": 1860.71875
+          "height": 1172.359375
         },
         "covered": true
       },
       "pageEnd": {
         "button": {
-          "top": 582.34375,
-          "bottom": 678.34375,
+          "top": 581.984375,
+          "bottom": 677.984375,
           "left": 66,
           "right": 1199,
           "height": 96
         },
         "bar": {
-          "top": 518.34375,
-          "bottom": 678.34375,
+          "top": 517.984375,
+          "bottom": 677.984375,
           "left": 66,
           "right": 1199,
           "height": 160
         },
         "card": {
-          "top": -1140.375,
-          "bottom": 720.34375,
+          "top": -452.375,
+          "bottom": 719.984375,
           "left": 32,
           "right": 1233,
-          "height": 1860.71875
+          "height": 1172.359375
         },
         "covered": false
       },
       "focus": [
         {
           "control": "input[radio]",
-          "bottom": 799.546875,
-          "barTop": 882.34375,
+          "bottom": 800.1875,
+          "barTop": 882.984375,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[radio]",
+          "bottom": 800.1875,
+          "barTop": 882.984375,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 313.59375,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     },
@@ -1086,7 +1268,7 @@
       "rootFontPx": 32,
       "innerHeight": 1080,
       "innerWidth": 1920,
-      "cardHeight": 1910.71875,
+      "cardHeight": 1222.359375,
       "cardTop": {
         "button": {
           "top": 960,
@@ -1104,10 +1286,10 @@
         },
         "card": {
           "top": -0.375,
-          "bottom": 1910.34375,
+          "bottom": 1221.984375,
           "left": 248.5,
           "right": 1656.5,
-          "height": 1910.71875
+          "height": 1222.359375
         },
         "covered": false
       },
@@ -1127,46 +1309,56 @@
           "height": 210
         },
         "card": {
-          "top": -415.375,
-          "bottom": 1495.34375,
+          "top": -71.375,
+          "bottom": 1150.984375,
           "left": 248.5,
           "right": 1656.5,
-          "height": 1910.71875
+          "height": 1222.359375
         },
         "covered": false
       },
       "pageEnd": {
         "button": {
-          "top": 838.34375,
-          "bottom": 934.34375,
+          "top": 837.984375,
+          "bottom": 933.984375,
           "left": 282.5,
           "right": 1622.5,
           "height": 96
         },
         "bar": {
-          "top": 748.34375,
-          "bottom": 958.34375,
+          "top": 747.984375,
+          "bottom": 957.984375,
           "left": 250.5,
           "right": 1654.5,
           "height": 210
         },
         "card": {
-          "top": -910.375,
-          "bottom": 1000.34375,
+          "top": -222.375,
+          "bottom": 999.984375,
           "left": 248.5,
           "right": 1656.5,
-          "height": 1910.71875
+          "height": 1222.359375
         },
         "covered": false
       },
       "focus": [
         {
           "control": "input[radio]",
-          "bottom": 791.546875,
-          "barTop": 870,
+          "bottom": 665.1875,
+          "barTop": 747.984375,
           "clear": true
         }
       ],
+      "focusWithAlert": [
+        {
+          "control": "input[radio]",
+          "bottom": 568.1875,
+          "barTop": 650.984375,
+          "clear": true
+        }
+      ],
+      "barWithAlertHeight": 363.59375,
+      "barButtonScrolled": 0,
       "overflowPx": 0,
       "offenders": []
     }
@@ -1193,7 +1385,7 @@
       "failedRequests": []
     }
   },
-  "finishedAt": "2026-10-03T02:47:44.071Z",
+  "finishedAt": "2026-10-03T03:12:18.730Z",
   "ok": true,
   "summary": {
     "states": 0,
