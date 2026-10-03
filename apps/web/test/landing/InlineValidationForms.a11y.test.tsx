@@ -118,6 +118,29 @@ describe("inline form validation (no native bubbles)", () => {
       expect(await screen.findByRole("heading", { name: /write these down/i })).toBeInTheDocument();
     });
 
+    it("announces a second failed submit again: the alert is a fresh node, not the one already mounted", async () => {
+      const user = userEvent.setup();
+      renderApp("#/create");
+      await submit(user);
+      const first = screen.getByRole("alert");
+      await submit(user);
+      const second = screen.getByRole("alert");
+      expect(second).not.toBe(first);
+      expect(first.isConnected).toBe(false);
+    });
+
+    it("requires a visible display name but, like the browser's `required`, lets a whitespace passphrase through to the server", async () => {
+      const user = userEvent.setup();
+      renderApp("#/create");
+      await user.type(field(/session name/i), "Rooftop Drop");
+      await user.type(field(/^passphrase$/i), "    ");
+      await user.type(field(/your display name/i), "   ");
+      await submit(user);
+      expectInvalid(field(/your display name/i), /display name is required/i);
+      expectValid(field(/^passphrase$/i));
+      expectValid(field(/session name/i));
+    });
+
     it("has no axe violations while errors are shown", async () => {
       const user = userEvent.setup();
       renderApp("#/create");
@@ -127,6 +150,12 @@ describe("inline form validation (no native bubbles)", () => {
   });
 
   describe("join session", () => {
+    it("no longer carries the native `pattern` attribute (Chrome rejected its `[A-Za-z0-9-]+` under the v flag)", () => {
+      renderApp("#/join");
+      expect(document.querySelector("[pattern]")).toBeNull();
+      expect(document.querySelector("form")).toHaveAttribute("novalidate");
+    });
+
     it("rejects characters outside letters, digits and dashes in the room code, inline", async () => {
       const user = userEvent.setup();
       renderApp("#/join");

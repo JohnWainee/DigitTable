@@ -111,7 +111,7 @@ export function JoinTableScreen(): JSX.Element {
             />
             <FieldError id="table-code" message={validation.errors["table-code"]} />
           </div>
-          <FormErrorSummary show={validation.failed} />
+          <FormErrorSummary show={validation.failed} attempt={validation.attempts} />
           <button type="submit" className="primary-action" disabled={request.status === "pending"}>
             {request.status === "pending" ? "Connecting…" : "Connect display"}
           </button>

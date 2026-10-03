@@ -165,11 +165,21 @@ async function openDevice(cdp, name, vp) {
       device.consoleErrors.push(
         message.params.args.map((a) => a.value ?? a.description ?? "").join(" "),
       );
+    } else if (
+      message.method === "Log.entryAdded" &&
+      message.params.entry.level === "error" &&
+      message.params.entry.source !== "network"
+    ) {
+      // Messages the browser itself raised (e.g. an invalid `pattern` attribute), which the page's own
+      // console.error never sees.
+      device.consoleErrors.push(
+        `[browser ${message.params.entry.source}] ${message.params.entry.text}`,
+      );
     } else if (message.method === "Network.loadingFailed" && !message.params.canceled) {
       device.failedRequests.push(message.params.errorText);
     }
   });
-  for (const domain of ["Page", "Runtime", "Network"])
+  for (const domain of ["Page", "Runtime", "Network", "Log"])
     await cdp.send(`${domain}.enable`, {}, sessionId);
   await applyViewport(device, vp);
   devices.push(device);
@@ -431,6 +441,7 @@ const MODAL_GEOMETRY = `(() => {
     apply: box(apply),
     cancel: box(cancel),
     reason: box(reason),
+    bodyRect: box(body),
     heading: box(dialog.querySelector('h2')),
     compact: dialog.parentElement.hasAttribute('data-compact'),
     sheetScroll: { scrollHeight: dialog.scrollHeight, clientHeight: dialog.clientHeight, overflowY: cs.overflowY },
@@ -443,6 +454,27 @@ const MODAL_GEOMETRY = `(() => {
     activeIsInside: dialog.contains(document.activeElement),
   };
 })()`;
+
+/** The overlap of two boxes (zero-size if they miss each other). */
+function intersect(a, b) {
+  const left = Math.max(a.left, b.left);
+  const top = Math.max(a.top, b.top);
+  return {
+    left,
+    top,
+    right: Math.max(left, Math.min(a.right, b.right)),
+    bottom: Math.max(top, Math.min(a.bottom, b.bottom)),
+  };
+}
+
+/**
+ * What of the sheet is actually on screen: the viewport frame clipped to the sheet's own scrollport (its
+ * body when header and footer are pinned, the whole sheet when it is compact). A control can sit inside the
+ * viewport yet be clipped by the sheet that contains it, so "inside the viewport" alone proves nothing.
+ */
+function visibleRegion(geo, frame) {
+  return intersect(frame, geo.compact ? geo.dialog : geo.bodyRect);
+}
 
 function within(box, frame, tolerance = 1) {
   return (
@@ -541,7 +573,7 @@ async function auditSheetCase(gm, vp, index = 0) {
       compact: kb.compact,
       checks: {
         dialogInsideViewport: within(kb.dialog, kbFrame),
-        focusedFieldVisible: within(kb.reason, kbFrame),
+        focusedFieldVisible: within(kb.reason, visibleRegion(kb, kbFrame)),
         noPageOverflow: kb.pageOverflowPx <= 1,
       },
     };
@@ -558,10 +590,14 @@ async function auditSheetCase(gm, vp, index = 0) {
       );
       const bottom = await ev(gm, MODAL_GEOMETRY);
       record.keyboard.checks.actionsReachableByScrollingSheet =
-        within(bottom.apply, kbFrame) && within(bottom.cancel, kbFrame);
+        within(bottom.apply, intersect(kbFrame, bottom.dialog)) &&
+        within(bottom.cancel, intersect(kbFrame, bottom.dialog));
       await ev(gm, `document.querySelector('[role="dialog"]').scrollTop = 0`);
       const top = await ev(gm, MODAL_GEOMETRY);
-      record.keyboard.checks.titleReachableByScrollingSheet = within(top.heading, kbFrame);
+      record.keyboard.checks.titleReachableByScrollingSheet = within(
+        top.heading,
+        intersect(kbFrame, top.dialog),
+      );
     } else {
       record.keyboard.checks.actionsVisible =
         within(kb.apply, kbFrame) && within(kb.cancel, kbFrame);
@@ -779,37 +815,49 @@ async function auditModal(gm) {
   // phone with the software keyboard up leaves roughly 70-140px of visible height. A pinned title and
   // action row alone need more than that, so the sheet must switch to scrolling as one page (compact)
   // and keep the typed-in field in view, with the title and actions reachable by scrolling the sheet.
-  for (const vp of [
-    { name: "phone-667x375", width: 667, height: 375, mobile: true },
-    byName["phone-landscape"],
-  ]) {
-    await scenario(`tight-keyboard-${vp.name}`, vp, async (record) => {
-      await openCorrection(gm);
-      await ev(gm, `document.querySelector("#correction-reason").focus()`);
-      const shrunk = { ...vp, height: 90 };
-      await applyViewport(gm, shrunk);
-      await sleep(500);
-      const frame = frameOf(shrunk);
-      const geo = await ev(gm, MODAL_GEOMETRY);
-      record.geometry = geo;
-      record.checks.compactModeEngaged = geo.compact === true;
-      record.checks.dialogInsideViewport = within(geo.dialog, frame);
-      record.checks.focusedFieldVisible = within(geo.reason, frame);
-      record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
-      await ev(
-        gm,
-        `(() => { const s = document.querySelector('[role="dialog"]'); s.scrollTop = s.scrollHeight; })()`,
-      );
-      const bottom = await ev(gm, MODAL_GEOMETRY);
-      record.checks.actionsReachableByScrollingSheet =
-        within(bottom.apply, frame) && within(bottom.cancel, frame);
-      await ev(gm, `document.querySelector('[role="dialog"]').scrollTop = 0`);
-      const top = await ev(gm, MODAL_GEOMETRY);
-      record.checks.titleReachableByScrollingSheet = within(top.heading, frame);
-      record.screenshot = await screenshot(gm, `gm-correction-tight-keyboard-${vp.name}.jpg`, {
-        fullPage: false,
+  // 90px is the middle of what iOS left; 70 and 60 are its low end (a reviewer measured the field clipped
+  // 36/48px at 70px when compact mode still carried the wide-viewport bottom padding).
+  for (const visibleHeight of [90, 70, 60]) {
+    for (const vp of [
+      { name: "phone-667x375", width: 667, height: 375, mobile: true },
+      byName["phone-landscape"],
+    ]) {
+      await scenario(`tight-keyboard-${vp.name}-${visibleHeight}px`, vp, async (record) => {
+        await openCorrection(gm);
+        await ev(gm, `document.querySelector("#correction-reason").focus()`);
+        const shrunk = { ...vp, height: visibleHeight };
+        await applyViewport(gm, shrunk);
+        await sleep(500);
+        const frame = frameOf(shrunk);
+        const geo = await ev(gm, MODAL_GEOMETRY);
+        record.geometry = geo;
+        const region = visibleRegion(geo, frame);
+        record.checks.compactModeEngaged = geo.compact === true;
+        record.checks.dialogInsideViewport = within(geo.dialog, frame);
+        // The field must be fully inside what the sheet shows, not merely inside the viewport.
+        record.checks.focusedFieldVisibleInSheet = within(geo.reason, region);
+        record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+        await ev(
+          gm,
+          `(() => { const s = document.querySelector('[role="dialog"]'); s.scrollTop = s.scrollHeight; })()`,
+        );
+        const bottom = await ev(gm, MODAL_GEOMETRY);
+        record.checks.actionsReachableByScrollingSheet =
+          within(bottom.apply, intersect(frame, bottom.dialog)) &&
+          within(bottom.cancel, intersect(frame, bottom.dialog));
+        await ev(gm, `document.querySelector('[role="dialog"]').scrollTop = 0`);
+        const top = await ev(gm, MODAL_GEOMETRY);
+        record.checks.titleReachableByScrollingSheet = within(
+          top.heading,
+          intersect(frame, top.dialog),
+        );
+        if (visibleHeight === 90) {
+          record.screenshot = await screenshot(gm, `gm-correction-tight-keyboard-${vp.name}.jpg`, {
+            fullPage: false,
+          });
+        }
       });
-    });
+    }
   }
   await applyViewport(gm, byName["desktop"]);
 }
@@ -1055,8 +1103,13 @@ async function joinAndClaim(device, codes, displayName) {
  * screen is audited at every viewport, then the GM's correction sheet is audited for each of them.
  */
 async function rosterSweep(cdp, gm, table, codes) {
+  // As many more players as there are characters left to claim (the GM holds one seat, the room caps at 8).
+  const total = await ev(gm, `document.querySelectorAll(".roster-panel-list li button").length`);
+  const names = ["Bea", "Cy", "Dee", "Eli", "Fay", "Gus", "Hal"];
+  const extra = Math.min(total - 1, names.length);
+  if (total < 2) fail("roster-sweep", `GM roster lists ${total} characters, expected at least 2`);
   const players = [];
-  for (const [i, name] of ["Bea", "Cy", "Dee", "Eli", "Fay"].entries()) {
+  for (const [i, name] of names.slice(0, extra).entries()) {
     const device = await openDevice(cdp, `player${i + 2}`, byName["phone"]);
     await joinAndClaim(device, codes, name);
     await captureState(device, "compose", { axeViewports: ["phone-small", "phone"] });
@@ -1064,15 +1117,13 @@ async function rosterSweep(cdp, gm, table, codes) {
   }
   await waitFor(
     gm,
-    `/Characters claimed: 6\\//.test(document.body.textContent)`,
+    `/Characters claimed: ${1 + extra}\\//.test(document.body.textContent)`,
     30000,
-    "all six claimed",
+    "every character claimed",
   );
   await captureState(gm, "console-full-roster", { axeViewports: ["phone"] });
   await captureState(table, "full-party", { axeViewports: ["phone"] });
-  const count = await ev(gm, `document.querySelectorAll(".roster-panel-list li button").length`);
-  if (count < 6) fail("roster-sweep", `GM roster lists ${count} characters, expected at least 6`);
-  for (let index = 1; index < count; index += 1) {
+  for (let index = 1; index < total; index += 1) {
     for (const vp of [byName["phone-small"], byName["phone"], byName["phone-landscape"]]) {
       await auditSheetCase(gm, vp, index);
     }
@@ -1284,7 +1335,7 @@ async function main() {
     );
     await captureState(gm, "console-scene-loaded");
     await auditKeyboardFocus(gm, "console-scene-loaded");
-    // A native select ellipsises its closed value: pick the longest-labelled target so the audit can
+    // A native select ellipsises its closed value: pick a Threat target (the last matching option) so the audit can
     // prove the full text is echoed beside it, then put it back.
     await setSelect(gm, "#edit-target", /^threat:/);
     await captureState(gm, "console-edit-target", { axeViewports: ["phone"] });

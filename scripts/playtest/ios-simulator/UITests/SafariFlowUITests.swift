@@ -191,10 +191,12 @@ final class SafariFlowUITests: XCTestCase {
         XCTAssertTrue(correct.waitForExistence(timeout: 10), "Correct button")
         scrollTo(correct)
         correct.tap()
-        let heading = containing("Correct ")
+        // The <h2> itself (a static text), not the dialog container whose label also starts with "Correct ".
+        let heading = web.descendants(matching: .staticText).matching(NSPredicate(format: "label CONTAINS[c] 'Correct '")).firstMatch
         XCTAssertTrue(heading.waitForExistence(timeout: 10), "sheet heading")
         sleep(1)
         shot("sheet-open")
+        XCTAssertLessThan(heading.frame.height, 120, "the heading element is the title, not the dialog container: \(heading.frame)")
         let apply = el("Apply correction", .button)
         let cancel = el("Cancel", .button)
         report("sheet apply (no keyboard)", apply)

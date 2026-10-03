@@ -26,7 +26,7 @@ import {
 const CREATE_RULES: readonly FieldRule[] = [
   { id: "session-name", label: "Session name", required: true },
   { id: "passphrase", label: "Passphrase", required: true, minLength: 4 },
-  { id: "creator-display-name", label: "Your display name", required: true },
+  { id: "creator-display-name", label: "Your display name", required: true, visible: true },
 ];
 
 /** docs/ETR_SESSION_FLOW.md section 3: `/create` — Create session (GM). */
@@ -139,7 +139,7 @@ export function CreateSessionScreen(): JSX.Element {
           <p>
             Template: <strong>Eat the Reich</strong> (fixed for this session)
           </p>
-          <FormErrorSummary show={validation.failed} />
+          <FormErrorSummary show={validation.failed} attempt={validation.attempts} />
           <button type="submit" className="primary-action" disabled={request.status === "pending"}>
             {request.status === "pending" ? "Creating…" : "Create session"}
           </button>

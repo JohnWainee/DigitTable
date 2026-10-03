@@ -7,22 +7,39 @@
 #
 #   scripts/playtest/ios-simulator/run.sh [--base URL] [--out DIR] ["iPhone 17 Pro" "iPad mini (A17 Pro)" ...]
 #
-# Needs Xcode with iOS Simulator runtimes, and the app + emulators already running, e.g. the emulator
-# build served by `scripts/playtest/lan-up.sh` (http://127.0.0.1:4173) or any `vite preview` of a build
-# made with VITE_FIREBASE_USE_EMULATOR=true. Nothing is installed on a device; no credentials are used.
+# Needs Xcode with iOS Simulator runtimes, and the app + emulators already running on this Mac's loopback:
+# the Firebase emulators (auth, firestore, functions) plus a `vite preview` of a build made with
+# VITE_FIREBASE_USE_EMULATOR=true (see README.md; a Simulator reaches the Mac at 127.0.0.1). Do not use
+# scripts/playtest/lan-up.sh for this: it binds the unauthenticated emulators to every interface.
+# Nothing is installed on a device; no credentials are used. Refuses a non-loopback --base unless
+# --allow-remote is given, because the flows create rooms.
 set -euo pipefail
 cd "$(dirname "$0")"
 
 BASE="${DIGITABLE_BASE:-http://127.0.0.1:4173}"
 OUT="${DIGITABLE_OUT:-/private/tmp/digitable-ios-playtest}"
 DEVICES=()
+ALLOW_REMOTE=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --base) BASE="$2"; shift 2 ;;
     --out) OUT="$2"; shift 2 ;;
+    --allow-remote) ALLOW_REMOTE=1; shift ;;
     *) DEVICES+=("$1"); shift ;;
   esac
 done
+
+# The flows create real rooms with a fixed passphrase. Against the local emulators that is nothing; against
+# a deployed project it is data in a real database, so a non-loopback base needs an explicit opt-in.
+case "$BASE" in
+  http://127.0.0.1:*|http://localhost:*|http://\[::1\]:*) ;;
+  *)
+    if [ "$ALLOW_REMOTE" -ne 1 ]; then
+      echo "Refusing non-loopback base $BASE (it would create rooms there). Pass --allow-remote to override." >&2
+      exit 1
+    fi
+    ;;
+esac
 [ ${#DEVICES[@]} -eq 0 ] && DEVICES=("iPhone 17 Pro")
 
 if ! curl -fs -o /dev/null "$BASE/"; then
@@ -56,7 +73,12 @@ for device in "${DEVICES[@]}"; do
   runtime="${found#* }"
   tag="$(echo "$device" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9\n' '-' | sed 's/--*/-/g; s/^-//; s/-$//')"
   echo "== $device on $runtime ($udid) -> $OUT/$tag"
-  xcrun simctl boot "$udid" 2>/dev/null || true
+  # Shut it down afterwards only if this script booted it.
+  booted_here=0
+  if ! xcrun simctl list devices booted | grep -q "$udid"; then
+    xcrun simctl boot "$udid" 2>/dev/null || true
+    booted_here=1
+  fi
   xcrun simctl bootstatus "$udid" >/dev/null 2>&1
   if TEST_RUNNER_DIGITABLE_BASE="$BASE" TEST_RUNNER_DIGITABLE_OUT="$OUT/$tag" TEST_RUNNER_DIGITABLE_TAG="$tag" \
     xcodebuild test -project IosPlaytest.xcodeproj -scheme IosPlaytest \
@@ -67,5 +89,6 @@ for device in "${DEVICES[@]}"; do
     echo "   FAILED (see $OUT/$tag-xcodebuild.log)"
     STATUS=1
   fi
+  [ "$booted_here" -eq 1 ] && xcrun simctl shutdown "$udid" 2>/dev/null || true
 done
 exit $STATUS

@@ -76,6 +76,39 @@ function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
+/**
+ * Every `<button ...>` opening tag in a JSX source, found by scanning to the tag's real closing `>`:
+ * `{...}` attribute expressions (an arrow function contains `=>`) and quoted strings are skipped over, so a
+ * `className` written after an inline handler still belongs to the tag it is in. (A bare
+ * `/<button\b[^>]*?>/` stops at the `>` of `=>` and mis-reads such a tag.)
+ */
+function buttonTags(source: string): { readonly tag: string; readonly index: number }[] {
+  const found: { tag: string; index: number }[] = [];
+  for (const start of source.matchAll(/<button\b/g)) {
+    const from = start.index;
+    let depth = 0;
+    let quote: string | null = null;
+    let end = source.length - 1;
+    for (let i = from + "<button".length; i < source.length; i += 1) {
+      const ch = source[i]!;
+      if (quote !== null) {
+        if (ch === quote && source[i - 1] !== "\\") quote = null;
+      } else if (ch === '"' || ch === "'" || (ch === "`" && depth > 0)) {
+        quote = ch;
+      } else if (ch === "{") {
+        depth += 1;
+      } else if (ch === "}") {
+        depth -= 1;
+      } else if (ch === ">" && depth === 0) {
+        end = i;
+        break;
+      }
+    }
+    found.push({ tag: source.slice(from, end + 1), index: from });
+  }
+  return found;
+}
+
 function sourceFiles(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
     const path = join(dir, name);
@@ -104,10 +137,10 @@ describe("reskin stylesheet contract", () => {
       const uncovered: string[] = [];
       for (const file of sourceFiles(join(here, "../../src"))) {
         const source = readFileSync(file, "utf8");
-        for (const match of source.matchAll(
-          /<button\b[^>]*?className=(?:"([^"]*)"|\{`([^`]*)`\})/gs,
-        )) {
-          for (const token of (match[1] ?? match[2] ?? "").split(/\s+/).filter(Boolean)) {
+        for (const { tag } of buttonTags(source)) {
+          const className = /className=(?:"([^"]*)"|\{`([^`]*)`\})/.exec(tag);
+          if (className === null) continue;
+          for (const token of (className[1] ?? className[2] ?? "").split(/\s+/).filter(Boolean)) {
             if (!covered.has(token)) uncovered.push(`${file.split("/src/")[1]}: ${token}`);
           }
         }
@@ -129,11 +162,11 @@ describe("reskin stylesheet contract", () => {
       for (const file of sourceFiles(join(here, "../../src"))) {
         const source = readFileSync(file, "utf8");
         const name = file.split("/src/")[1]!;
-        for (const match of source.matchAll(/<button\b[^>]*?>/gs)) {
-          if (/className=/.test(match[0])) continue;
+        for (const { tag, index } of buttonTags(source)) {
+          if (/className=/.test(tag)) continue;
           found[name] = (found[name] ?? 0) + 1;
           // Each must sit inside a stepper row: `.stepper-controls` opens shortly before it.
-          const before = source.slice(Math.max(0, match.index - 700), match.index);
+          const before = source.slice(Math.max(0, index - 700), index);
           expect(before, `${name}: a class-less <button> outside .stepper-controls`).toContain(
             "stepper-controls",
           );
@@ -144,9 +177,14 @@ describe("reskin stylesheet contract", () => {
 
     it("styles a gear row's own action button and the select echo, and flags invalid fields", () => {
       expect(rulesFor(/^\.gear-item$/).join("")).toMatch(/flex-direction:\s*column/);
+      // Its own left margin must fit inside the row (a bare 100% would overflow the row by the margin).
       expect(declaration(rulesFor(/^\.gear-item > \.secondary-action$/), "max-width")).toEqual([
-        "100%",
+        "calc(100% - 0.65rem)",
       ]);
+      expect(rulesFor(/^\.scene-director-detail$/).join("")).toMatch(/flex-direction:\s*column/);
+      expect(
+        declaration(rulesFor(/^\.scene-director-detail h3:not\(:first-child\)$/), "margin-top"),
+      ).toEqual(["0.5rem"]);
       expect(rulesFor(/^\.select-echo$/).join("")).toMatch(/overflow-wrap:\s*anywhere/);
       // Invalid inputs change weight as well as hue (colour is never the only channel). The selector must
       // out-specify the base `input:not([type=checkbox]):not([type=radio])` rule or the border stays grey
@@ -158,6 +196,21 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(invalid, "border-width")).toEqual(["3px"]);
       expect(declaration(invalid, "border-color")).toEqual(["var(--riot)"]);
       expect(rulesFor(/^\.field-error::before$/).join("")).toContain('content: "Error: "');
+      // Equal specificity with the :focus-visible border rule: the invalid rule must come after both it
+      // and the base input rule, or the focused invalid field loses its red border (a vitest-invisible
+      // slip that only a computed-style check in a browser would otherwise catch).
+      const at = (needle: string): number => {
+        const found = css.indexOf(needle);
+        expect(found, needle).toBeGreaterThanOrEqual(0);
+        return found;
+      };
+      const invalidAt = at('[type="radio"])[aria-invalid="true"]');
+      expect(
+        at('input:not([type="checkbox"]):not([type="radio"]),\nselect,\ntextarea {'),
+      ).toBeLessThan(invalidAt);
+      expect(at('input:not([type="checkbox"]):not([type="radio"]):focus-visible')).toBeLessThan(
+        invalidAt,
+      );
     });
 
     it("keeps the read-only stepper value (role=spinbutton, focusable) at the tap size too", () => {
@@ -219,6 +272,11 @@ describe("reskin stylesheet contract", () => {
     it("makes the whole sheet scroll as one page when too little height is visible (data-compact)", () => {
       // Landscape phone + on-screen keyboard leaves ~70-140px in real iOS Safari: a pinned header and
       // action row cannot fit, so nothing may be pinned or clipped.
+      // The wide-viewport rule pads the backdrop 1.5rem on every side; compact must take that dead band
+      // back (it left the focused field 36/48px visible at 70px) and keep only the device insets.
+      const backdrop = rulesFor(/^\.sheet-backdrop\[data-compact\]$/);
+      expect(declaration(backdrop, "padding-bottom")).toEqual(["env(safe-area-inset-bottom, 0px)"]);
+      expect(declaration(backdrop, "padding-top")[0]).toContain("env(safe-area-inset-top");
       const sheet = rulesFor(/^\.sheet-backdrop\[data-compact\] \.sheet$/);
       expect(declaration(sheet, "overflow-y")).toEqual(["auto"]);
       expect(declaration(sheet, "overscroll-behavior")).toEqual(["contain"]);
@@ -228,6 +286,9 @@ describe("reskin stylesheet contract", () => {
       const footer = rulesFor(/^\.sheet-backdrop\[data-compact\] \.sheet-footer$/);
       expect(declaration(footer, "max-height")).toEqual(["none"]);
       expect(declaration(footer, "overflow")).toEqual(["visible"]);
+      // Tight padding, so a 48px action button can fit the ~54px a 60px-high sheet shows.
+      expect(declaration(footer, "padding-top")).toEqual(["0.25rem"]);
+      expect(declaration(footer, "padding-bottom")[0]).toContain("env(safe-area-inset-bottom");
     });
 
     it("clears device notches on the sides and top, and the home indicator at the bottom", () => {

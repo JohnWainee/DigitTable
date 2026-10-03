@@ -10,20 +10,33 @@ const rules: readonly FieldRule[] = [
     pattern: /^[a-z]+$/,
     patternMessage: "Note must be lower-case letters.",
   },
+  { id: "name", label: "Display name", required: true, visible: true },
 ];
 
 describe("validateFields", () => {
   it("accepts a complete, well-formed set of values", () => {
-    expect(validateFields({ code: "AB-12", pass: "wolf", note: "" }, rules)).toEqual({});
+    expect(validateFields({ code: "AB-12", pass: "wolf", note: "", name: "Ada" }, rules)).toEqual(
+      {},
+    );
   });
 
-  it("requires a value, and treats whitespace alone as empty (the browser's `required` did not)", () => {
-    expect(validateFields({ code: "", pass: "wolfbane" }, rules)).toEqual({
+  it("requires a value exactly like the HTML `required` it replaces: empty fails, whitespace is a value", () => {
+    expect(validateFields({ code: "", pass: "wolfbane", name: "Ada" }, rules)).toEqual({
       code: "Room code is required.",
     });
-    expect(validateFields({ code: "   ", pass: "wolfbane" }, rules)).toEqual({
-      code: "Room code is required.",
+    // The browser accepted a whitespace-only value, and so does the server for codes and passphrases
+    // (a legacy room's passphrase may be all spaces), so the inline rule must not be stricter.
+    expect(validateFields({ code: "A", pass: "    ", name: "Ada" }, rules)).toEqual({});
+  });
+
+  it("additionally requires a visible character where the server does (display names)", () => {
+    expect(validateFields({ code: "A", pass: "wolfbane", name: "   " }, rules)).toEqual({
+      name: "Display name is required.",
     });
+    expect(validateFields({ code: "A", pass: "wolfbane", name: "" }, rules).name).toBe(
+      "Display name is required.",
+    );
+    expect(validateFields({ code: "A", pass: "wolfbane", name: " A " }, rules)).toEqual({});
   });
 
   it("enforces the minimum length with the same off-by-one the browser applies", () => {

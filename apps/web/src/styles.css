@@ -533,8 +533,9 @@ textarea:focus-visible {
 
 /* Inline validation (landing/inlineValidation.tsx): the app's own error, in the page, instead of the
    browser's transient bubble. The first selector repeats the base input rule's :not() chain so it
-   out-specifies it (a bare input[aria-invalid] would lose and the border would stay grey). Colour is never the only channel: the message and the "Error:" lead-in
-   carry it, the border changes weight as well as hue. */
+   out-specifies it (a bare input[aria-invalid] would lose and the border would stay grey). It must also
+   stay AFTER the base and :focus-visible rules (equal specificity there). Colour is never the only
+   channel: the message and the "Error:" lead-in carry it, and the border changes weight as well as hue. */
 input:not([type="checkbox"]):not([type="radio"])[aria-invalid="true"],
 select[aria-invalid="true"],
 textarea[aria-invalid="true"] {
@@ -719,7 +720,7 @@ input[type="radio"]:disabled {
 }
 
 .gear-item > .secondary-action {
-  max-width: 100%;
+  max-width: calc(100% - 0.65rem); /* its own left margin must fit inside the row too */
   margin: 0 0 4px 0.65rem; /* the 4px hard shadow hangs below the button */
 }
 
@@ -1445,8 +1446,9 @@ details ul {
    keyboard, pinch-zoom or dynamic browser chrome makes it differ from the
    layout viewport; otherwise the 100dvh fallback applies), the sheet never
    exceeds it, and only the body scrolls, so the title and the action row stay
-   on screen and reachable. Safe-area insets keep it clear of notches, rounded
-   corners and the home indicator. */
+   on screen and reachable (unless so little height is visible that the whole
+   sheet scrolls instead: see the data-compact rules below). Safe-area insets
+   keep it clear of notches, rounded corners and the home indicator. */
 
 .sheet-backdrop {
   position: fixed;
@@ -1560,6 +1562,15 @@ details ul {
    action row alone need more than that, which clipped the buttons and pushed the title out of view. The
    whole sheet scrolls as one page instead; nothing is pinned, nothing is clipped, and the focused field
    is scrolled into view by the sheet itself. */
+.sheet-backdrop[data-compact] {
+  /* Take back the dead band too: the wide-viewport rule below gives the backdrop 1.5rem on every side, and
+     at 60-90px visible that left a 24px strip under a sheet that was already too short to show the
+     focused field (reviewer measurement: field 36/48px visible at 70px). Only the notch/home-indicator
+     insets are kept. */
+  padding-top: max(env(safe-area-inset-top, 0px), 0.25rem);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 .sheet-backdrop[data-compact] .sheet {
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -1573,6 +1584,15 @@ details ul {
 .sheet-backdrop[data-compact] .sheet-footer {
   max-height: none;
   overflow: visible;
+  /* Every pixel counts here: a 48px action button plus the roomy default padding does not fit in the ~54px
+     the sheet shows at 60px visible. */
+  padding-top: 0.25rem;
+  padding-bottom: calc(0.25rem + env(safe-area-inset-bottom, 0px));
+}
+
+.sheet-backdrop[data-compact] .sheet-header {
+  padding-top: 0.25rem;
+  padding-bottom: 0.35rem;
 }
 
 /* Wide: a centred card with room around it instead of an edge-attached sheet. */

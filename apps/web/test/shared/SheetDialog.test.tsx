@@ -552,6 +552,9 @@ describe("SheetDialog", () => {
         // 15rem at the default 16px root is 240px: just under is compact, just over is not.
         act(() => viewport.set({ height: 239 }));
         expect(backdrop).toHaveAttribute("data-compact");
+        // Exactly 15rem is not compact: the comparison is strict.
+        act(() => viewport.set({ height: 240 }));
+        expect(backdrop).not.toHaveAttribute("data-compact");
         act(() => viewport.set({ height: 241 }));
         expect(backdrop).not.toHaveAttribute("data-compact");
 

@@ -13,16 +13,24 @@ NVDA and Windows High Contrast remain unperformed here.
 
 ## Run
 
-1. Serve an emulator-mode build and the emulators, e.g. `scripts/playtest/lan-up.sh` (serves
-   `http://127.0.0.1:4173`; a Simulator reaches the Mac's loopback at the same address), or run the
-   emulators and a `vite preview` of a build made with `VITE_FIREBASE_USE_EMULATOR=true` (see
-   `docs/PLAYTEST_TWO_DEVICE.md`).
+1. On this Mac's loopback, run the Firebase emulators and serve an emulator-mode build:
+   `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npx firebase emulators:start --only auth,firestore,functions --project demo-digitable`
+   (after `npm run build --workspace @digitable/functions`), and, from `apps/web`, `VITE_FIREBASE_API_KEY=demo-key
+   VITE_FIREBASE_AUTH_DOMAIN=demo-digitable.firebaseapp.com VITE_FIREBASE_PROJECT_ID=demo-digitable
+   VITE_FIREBASE_APP_ID=1:000000000000:web:demo VITE_FIREBASE_USE_EMULATOR=true npx vite build --outDir /tmp/digitable-web`
+   then `npx vite preview --outDir /tmp/digitable-web --port 4173`. A Simulator reaches the Mac at
+   `127.0.0.1`. Do not use `lan-up.sh` for this: it binds the unauthenticated emulators to every interface.
 2. `scripts/playtest/ios-simulator/run.sh [--base URL] [--out DIR] ["iPhone 17 Pro" "iPhone 17e" "iPad mini (A17 Pro)"]`
+   (the default base is `http://127.0.0.1:4173`; a non-loopback base is refused unless `--allow-remote`,
+   because the flows create rooms).
 
 Needs Xcode and at least one iOS Simulator runtime. Nothing is installed on a device, no credentials or
-Firebase project are involved (the emulator project id is the fake `demo-digitable`). Output (default
-`/private/tmp/digitable-ios-playtest/<device>/`): PNG screenshots, a `.log` of every measured element
-frame against the keyboard's frame, and `<device>-xcodebuild.log`. iOS screenshots of a rotated device
+Firebase project are involved (the emulator project id is the fake `demo-digitable`). The Simulator must
+show its **software** keyboard (the tests assert it appears): that is the default for a headless boot; if
+the Simulator app has "Connect Hardware Keyboard" on, turn it off (I/O > Keyboard). Simulators the script
+booted are shut down afterwards. Output (default `/private/tmp/digitable-ios-playtest/`):
+`<device>/` holds PNG screenshots and a `.log` of every measured element frame against the keyboard's
+frame; `<device>-xcodebuild.log` sits beside that directory. iOS screenshots of a rotated device
 are written in the device's native (portrait) orientation; rotate with `sips -r 270 file.png`.
 
 ## What it checks
@@ -33,8 +41,11 @@ are written in the device's native (portrait) orientation; rotate with `sips -r 
   yields the pattern message.
 - **Correction sheet:** create a session, load the opening scene, open a character's Correct sheet.
   Portrait with the keyboard up: the reason field, Apply, Cancel and the title are all above the
-  keyboard. Landscape with the keyboard up: the sheet is in compact mode (it scrolls as one page); the
-  reason field is above the keyboard. Landscape without the keyboard: captured.
+  keyboard and the field does not overlap the action row. Landscape with the keyboard up: the reason
+  field is above the keyboard and does not overlap the action row; Apply and Cancel are only recorded,
+  because in that state the sheet scrolls as one page (compact mode, which XCUITest cannot observe; it is
+  asserted by the Chrome tight-keyboard scenarios in `ui-audit.mjs`). Landscape without the keyboard:
+  captured.
 - **Native `<select>`:** the scene select is tapped and the OS picker captured (the OS draws it, so the
   page cannot clip it).
 

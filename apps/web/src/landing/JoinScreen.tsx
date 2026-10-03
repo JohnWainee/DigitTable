@@ -27,6 +27,9 @@ import {
 
 type JoinMode = "join" | "recover";
 
+// The rule lives here only. The HTML `pattern` attribute is deliberately not used: Chrome compiles it with
+// the `v` flag, where a trailing `-` in a class is a syntax error, so the browser never enforced it and
+// logged "Pattern attribute value ... is not a valid regular expression" instead.
 const ROOM_CODE_PATTERN = /^[A-Za-z0-9-]+$/;
 const ROOM_CODE_MESSAGE = "Room code can only use letters, numbers and dashes.";
 
@@ -39,7 +42,7 @@ const JOIN_RULES: readonly FieldRule[] = [
     patternMessage: ROOM_CODE_MESSAGE,
   },
   { id: "join-passphrase", label: "Passphrase", required: true },
-  { id: "join-display-name", label: "Your display name", required: true },
+  { id: "join-display-name", label: "Your display name", required: true, visible: true },
 ];
 
 const RECOVER_RULES: readonly FieldRule[] = [
@@ -51,7 +54,7 @@ const RECOVER_RULES: readonly FieldRule[] = [
     patternMessage: ROOM_CODE_MESSAGE,
   },
   { id: "recovery-code", label: "Recovery code", required: true },
-  { id: "recover-display-name", label: "Your display name", required: true },
+  { id: "recover-display-name", label: "Your display name", required: true, visible: true },
 ];
 
 /** docs/ETR_SESSION_FLOW.md section 4.2: `/join` — Player join by code + passphrase. */
@@ -165,7 +168,6 @@ export function JoinScreen(): JSX.Element {
                 autoCapitalize="characters"
                 autoCorrect="off"
                 spellCheck={false}
-                pattern="[A-Za-z0-9-]+"
                 value={recoveryRoomCode}
                 onChange={(event) => setRecoveryRoomCode(event.target.value)}
                 {...recoverValidation.field("recover-room-code")}
@@ -207,7 +209,10 @@ export function JoinScreen(): JSX.Element {
                 message={recoverValidation.errors["recover-display-name"]}
               />
             </div>
-            <FormErrorSummary show={recoverValidation.failed} />
+            <FormErrorSummary
+              show={recoverValidation.failed}
+              attempt={recoverValidation.attempts}
+            />
             <button
               type="submit"
               className="primary-action"
@@ -284,7 +289,6 @@ export function JoinScreen(): JSX.Element {
               autoCapitalize="characters"
               autoCorrect="off"
               spellCheck={false}
-              pattern="[A-Za-z0-9-]+"
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value)}
               {...joinValidation.field("room-code")}
@@ -323,7 +327,7 @@ export function JoinScreen(): JSX.Element {
               message={joinValidation.errors["join-display-name"]}
             />
           </div>
-          <FormErrorSummary show={joinValidation.failed} />
+          <FormErrorSummary show={joinValidation.failed} attempt={joinValidation.attempts} />
           <button type="submit" className="primary-action" disabled={request.status === "pending"}>
             {request.status === "pending" ? "Joining…" : "Join session"}
           </button>

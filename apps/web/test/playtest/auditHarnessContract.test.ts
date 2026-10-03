@@ -132,10 +132,31 @@ describe("ui-audit.mjs pop-out, picker and form coverage", () => {
     expect(audit).toContain("hasAttribute('data-compact')");
   });
 
-  it("reproduces the iOS landscape-with-keyboard height (about 90px) and demands the compact sheet there", () => {
-    expect(audit).toContain("tight-keyboard-${vp.name}");
-    expect(audit).toContain("height: 90");
+  it("reproduces the iOS landscape-with-keyboard heights (60, 70 and 90px) and demands the compact sheet there", () => {
+    expect(audit).toContain("tight-keyboard-${vp.name}-${visibleHeight}px");
+    expect(audit).toMatch(/for \(const visibleHeight of \[90, 70, 60\]\)/);
     expect(audit).toContain("compactModeEngaged");
+  });
+
+  it("judges visibility against the sheet's own scrollport, not just the viewport", () => {
+    // A control inside the viewport can still be clipped by the sheet that contains it (the wide-viewport
+    // padding once left the focused field 36/48px visible at 70px while every viewport check passed).
+    expect(audit).toContain("function visibleRegion(geo, frame)");
+    expect(audit).toContain("focusedFieldVisibleInSheet");
+    expect(audit).toContain("bodyRect: box(body)");
+    expect(audit).toContain("intersect(frame, bottom.dialog)");
+  });
+
+  it("collects the browser's own console errors, not just the page's", () => {
+    // e.g. Chrome's "Pattern attribute value ... is not a valid regular expression" is raised by the
+    // browser and never passes through console.error.
+    expect(audit).toContain('"Log"');
+    expect(audit).toContain('"Log.entryAdded"');
+  });
+
+  it("sizes the roster sweep from the live roster, not a hard-coded count", () => {
+    expect(audit).toContain("const extra = Math.min(total - 1, names.length)");
+    expect(audit).not.toMatch(/Characters claimed: 6/);
   });
 
   it("selects a long-labelled edit target so the select-echo check is not vacuous", () => {

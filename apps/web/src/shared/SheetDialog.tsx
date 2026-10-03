@@ -154,8 +154,9 @@ export function SheetDialog({
 
   // Keep the field being typed in above the on-screen keyboard: on focus, and
   // again when the visual viewport changes size (the keyboard finishes opening
-  // after the focus event). `block: "nearest"` scrolls only the sheet body,
-  // never the page, and is instant, so it needs no reduced-motion branch.
+  // after the focus event). `block: "nearest"` scrolls only the sheet's own
+  // scroll container (its body, or the whole sheet in compact mode), never the
+  // page, and is instant, so it needs no reduced-motion branch.
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return undefined;
