@@ -1729,6 +1729,163 @@ details ul {
   }
 }
 
+/* ---------- Zine v2: role-coded panels, hazard-tape headers, photocopy streaks ----------
+   A purely presentational layer over the rules above. Nothing here changes a size the tap/zoom/sheet
+   contract pins, and every decoration is a background or box-shadow (never an absolutely positioned
+   pseudo-element), so the multi-column GM and table layouts cannot fragment it. */
+
+/* Each surface gets its own accent: Director = riot red, Player = acid + pink, Table = cyan. */
+.landing-screen {
+  --role-accent: var(--acid);
+  --role-shadow: var(--riot-deep);
+}
+
+.gm-screen {
+  --role-accent: var(--riot);
+  --role-shadow: var(--riot-deep);
+}
+
+.player-screen {
+  --role-accent: var(--pink);
+  --role-shadow: #a3126b;
+}
+
+.table-screen {
+  --role-accent: var(--cyan);
+  --role-shadow: #0b7f90;
+}
+
+/* Photocopy streaks and a vignette, fixed behind all content (z-index -1 sits above the canvas
+   background and below every element), so text contrast is measured against the plain ink. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.003 .45' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.6 -.72'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)' opacity='.5'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.75));
+  background-size:
+    600px 600px,
+    100% 100%;
+}
+
+h1 {
+  text-shadow:
+    3px 3px 0 var(--riot),
+    6px 6px 0 var(--ink-0);
+}
+
+.landing-screen h1 {
+  font-size: clamp(2.75rem, 14vw, 5rem);
+  letter-spacing: 0.01em;
+}
+
+.gm-screen > h1,
+.table-screen > h1 {
+  padding-bottom: 0.35rem;
+  border-bottom: 0.4rem solid var(--role-accent);
+}
+
+/* Panels: a hazard-tape band along the top edge, role-coloured hard shadow. */
+.step,
+.scene-card,
+.landing-resume,
+.reveal-card,
+.invite-panel {
+  padding-top: 1.75rem;
+  background:
+    repeating-linear-gradient(
+        -45deg,
+        var(--role-accent, var(--acid)) 0 0.55rem,
+        var(--ink-0) 0.55rem 1.1rem
+      )
+      top / 100% 0.6rem no-repeat,
+    var(--grain),
+    linear-gradient(180deg, var(--ink-2), var(--ink-1)) padding-box;
+  background-size:
+    100% 0.6rem,
+    180px 180px,
+    auto;
+  box-shadow: 7px 7px 0 var(--role-shadow, var(--riot-deep));
+}
+
+.invite-panel,
+.reveal-card {
+  background-color: var(--ink-1);
+}
+
+/* Section headings become highlighter-marker labels. */
+.step h2,
+.scene-card h2,
+.reveal-card h2,
+.invite-panel h2,
+.landing-resume h2,
+.sheet-header h2,
+.gm-screen > section > h2,
+.gm-screen > aside > h2,
+.gm-screen > div > h2 {
+  align-self: flex-start;
+  max-width: 100%;
+  padding: 0.2rem 0.6rem 0.25rem;
+  border-left: 0;
+  background: var(--role-accent, var(--acid));
+  color: var(--ink-0);
+  transform: rotate(-0.8deg);
+  transform-origin: left center;
+}
+
+.sheet-header h2 {
+  width: fit-content;
+  --role-accent: var(--riot);
+}
+
+.player-screen .step h2,
+.player-screen .scene-card h2 {
+  background: var(--acid);
+}
+
+/* Lists of things (roster, pending actions, threats): a thick role-coloured spine. */
+.pending-action-card,
+.roster-panel-list li,
+.threat-list li,
+.roster-card {
+  border-left: 6px solid var(--role-accent, var(--acid));
+}
+
+/* Alternate the stamped fieldset labels so a long form reads as a stack of different stickers. */
+fieldset:nth-of-type(even) > legend {
+  background: var(--pink);
+  transform: rotate(1deg);
+}
+
+fieldset:nth-of-type(3n) > legend {
+  background: var(--acid);
+}
+
+/* Buttons: a second, offset shadow layer reads as a misregistered print. */
+.primary-action {
+  box-shadow:
+    4px 4px 0 var(--riot),
+    8px 8px 0 var(--ink-0);
+}
+
+.landing-actions--primary > .primary-action:nth-child(2) {
+  background: var(--pink);
+}
+
+.table-screen .scene-card,
+.table-screen .step {
+  border-color: var(--cyan);
+}
+
+@media (forced-colors: active) {
+  body::before {
+    display: none;
+  }
+}
+
 /* ---------- Reduced motion ---------- */
 
 /* Entrance motion exists only when the visitor has not asked for less. */

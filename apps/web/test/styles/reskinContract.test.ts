@@ -450,4 +450,35 @@ describe("reskin stylesheet contract", () => {
       expect(fetched.every((u) => u.startsWith("data:image/svg+xml"))).toBe(true);
     });
   });
+
+  describe("zine v2 layer", () => {
+    it("keeps the heading highlighter legible: ink text on every role accent it can fill with", () => {
+      for (const accent of ["riot", "pink", "cyan", "acid"]) {
+        expect(contrast("ink-0", accent), accent).toBeGreaterThanOrEqual(4.5);
+      }
+      expect(declaration(rulesFor(/^\.step h2,/), "color")).toEqual(["var(--ink-0)"]);
+    });
+
+    it("draws the photocopy texture behind all content, inert, and drops it in forced-colors", () => {
+      const rule = rulesFor(/^body::before$/);
+      expect(declaration(rule, "z-index")).toEqual(["-1"]);
+      expect(declaration(rule, "pointer-events")).toEqual(["none"]);
+      expect(declaration(rule, "position")).toEqual(["fixed"]);
+      expect(mediaBlock("(forced-colors: active)")).toMatch(/body::before\s*\{\s*display:\s*none/);
+    });
+
+    it("decorates panels with backgrounds only (no positioned pseudo-element that columns could split)", () => {
+      const zine = css.slice(css.indexOf(".landing-screen {\n  --role-accent"));
+      expect(zine).not.toMatch(/::after\s*\{[^}]*position:\s*absolute/);
+      expect(declaration(rulesFor(/^\.step,/), "background").join("")).toContain(
+        "repeating-linear-gradient",
+      );
+    });
+
+    it("gives each surface its own accent", () => {
+      for (const surface of ["landing", "gm", "player", "table"]) {
+        expect(rulesFor(new RegExp(`^\\.${surface}-screen$`)).join("")).toContain("--role-accent");
+      }
+    });
+  });
 });

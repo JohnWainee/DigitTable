@@ -451,6 +451,12 @@ When pausing or finishing a material unit:
 
 ## Integrated verification and next action
 
+### 2026-10-03: recovered blocked Sonnet reskin-session work (`sonnet-dh/reskin-uiux-20261003`)
+
+- **Outcome:** the prior `digitable-reskin-uiux-finish-20261003` Sonnet session was blocked, not complete. It left a small uncommitted visual/audit extension: role-coded punk panel accents, an inert forced-colors-safe photocopy texture, two common modern phone viewports (390 × 844 and 412 × 915) in the browser-audit matrix, and regression contracts for both.
+- **Checks:** `npm run check` passed (**764 active tests, 11 todo**); `npm run build` passed (the pre-existing Vite chunk-size warning only); `git diff --check` passed. `npm run test:emulator` could not start because another active lane owns the fixed local Auth/Firestore/RTDB ports 9099/8080/9000. Do not treat that as emulator evidence or release readiness; rerun it only after those ports are released, without stopping another lane.
+- **Next action:** commit and push this recovered, non-deployed candidate, then have a fresh isolated reviewer validate the visual changes and run the full emulator/browser evidence matrix. Physical iOS/Android and assistive-technology rehearsal still remain required before merge or deployment.
+
 ### 2026-10-02: reskin verification on the mobile pop-out candidate (`sonnet-df/reskin-verification-20261002`)
 
 - **Base:** committed `2c5fe8e`. No deployment, merge, or cloud change. An earlier staging-playthrough session was blocked by port contention and never finished; only committed evidence was used.

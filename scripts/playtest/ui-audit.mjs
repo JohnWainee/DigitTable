@@ -74,6 +74,8 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const VIEWPORTS = [
   { name: "phone-small", width: 320, height: 568, mobile: true },
   { name: "phone", width: 375, height: 812, mobile: true },
+  { name: "phone-390", width: 390, height: 844, mobile: true },
+  { name: "phone-412", width: 412, height: 915, mobile: true },
   { name: "phone-landscape", width: 812, height: 375, mobile: true },
   { name: "tablet", width: 768, height: 1024, mobile: true },
   { name: "desktop", width: 1280, height: 800, mobile: false },
@@ -646,6 +648,8 @@ async function auditModal(gm) {
   const cases = [
     { name: "phone-small", ...byName["phone-small"] },
     { name: "phone", ...byName["phone"] },
+    { name: "phone-390", ...byName["phone-390"] },
+    { name: "phone-412", ...byName["phone-412"] },
     { name: "phone-landscape", ...byName["phone-landscape"] },
     { name: "phone-667x375", width: 667, height: 375, mobile: true },
     { name: "tablet", ...byName["tablet"] },

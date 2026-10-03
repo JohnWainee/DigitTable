@@ -182,3 +182,17 @@ describe("two-device smoke scene advance", () => {
     expect(advance.slice(0, use)).toMatch(/querySelector\("#scene-reason"\)/);
   });
 });
+
+describe("ui-audit viewport matrix", () => {
+  it.each(["phone-small", "phone-390", "phone-412", "tablet", "desktop", "table"])(
+    "sweeps the %s viewport",
+    (name) => {
+      expect(audit).toContain(`name: "${name}"`);
+    },
+  );
+
+  it("opens the correction sheet at the 390 and 412 px phones too", () => {
+    expect(audit).toMatch(/name: "phone-390", \.\.\.byName\["phone-390"\]/);
+    expect(audit).toMatch(/name: "phone-412", \.\.\.byName\["phone-412"\]/);
+  });
+});
