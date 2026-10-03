@@ -1,0 +1,16 @@
+{
+  "states": 288,
+  "controlsAudited": 3192,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "axeHardViolations": 0,
+  "axeBestPractice": [
+    "anon/route-claim-no-such-room@phone: page-has-heading-one"
+  ],
+  "keyboardFocusChecks": 87,
+  "dockFocusChecks": 153,
+  "validationScenarios": 8,
+  "sheetCases": 23,
+  "failures": 0
+}
+UI AUDIT PASSED

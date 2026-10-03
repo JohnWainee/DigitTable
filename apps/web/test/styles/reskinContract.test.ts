@@ -252,6 +252,42 @@ describe("reskin stylesheet contract", () => {
     });
   });
 
+  describe("page height under dynamic browser chrome", () => {
+    it("never sizes the page from 100vh alone, which over-scrolls one-screen pages on a phone", () => {
+      // 100vh is the toolbars-collapsed viewport: taller than the visible one at load, so the landing
+      // and join pages (one screen of content) scrolled by the toolbar height. svh is the
+      // toolbars-showing viewport. The svh form sits behind @supports (an engine without it keeps
+      // the vh base) and after the base rule so it wins.
+      const heights = declaration(rulesFor(/^body$/), "min-height");
+      expect(heights).toEqual(["100vh", "100svh"]);
+      expect(css).toMatch(/@supports \(height: 100svh\)\s*\{\s*body\s*\{\s*min-height:\s*100svh/);
+      expect(css.indexOf("min-height: 100vh")).toBeLessThan(css.indexOf("min-height: 100svh"));
+    });
+
+    it("leaves no other viewport-height sizing beyond the known sheet, dock and body rules", () => {
+      // Pins every vh-family token by property and value, so a new `height: 100vh`, `calc(100vh - x)`
+      // or `max-height: 45vh` elsewhere fails here instead of reintroducing the same defect.
+      const declarations = css.replace(/@supports\s*\([^)]*\)/g, "");
+      const used = [
+        ...declarations.matchAll(
+          /([a-z-]+)\s*:\s*([^;{}]*\b\d+(?:\.\d+)?[sdl]?v(?:h|min|max)\b[^;{}]*)/g,
+        ),
+      ].map((m) => `${m[1]}: ${m[2]!.trim()}`);
+      expect(used.sort()).toEqual(
+        [
+          "height: var(--vv-height, 100dvh)",
+          "height: var(--vv-height, 100vh)",
+          "max-height: 45dvh",
+          "max-height: 45vh",
+          "max-height: calc(var(--vv-height, 100dvh) * 0.4)",
+          "max-height: calc(var(--vv-height, 100vh) * 0.4)",
+          "min-height: 100svh",
+          "min-height: 100vh",
+        ].sort(),
+      );
+    });
+  });
+
   describe("pop-out sheet", () => {
     it("sizes the backdrop from the visual viewport, with a vh base and dvh only behind @supports", () => {
       const backdrop = rulesFor(/^\.sheet-backdrop$/);

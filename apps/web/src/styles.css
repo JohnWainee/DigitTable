@@ -91,6 +91,9 @@ html.sheet-open {
 
 body {
   margin: 0;
+  /* Fallback only: on a phone 100vh is the viewport with the browser toolbars collapsed, taller than
+     what is visible at load, so even a one-screen page (landing, join) would scroll by the toolbar
+     height. The svh override below is the viewport with the toolbars showing and never over-scrolls. */
   min-height: 100vh;
   background-color: var(--ink-0);
   background-image:
@@ -108,6 +111,12 @@ body {
   font-size: 1rem;
   line-height: 1.5;
   overflow-wrap: break-word;
+}
+
+@supports (height: 100svh) {
+  body {
+    min-height: 100svh;
+  }
 }
 
 ::selection {
