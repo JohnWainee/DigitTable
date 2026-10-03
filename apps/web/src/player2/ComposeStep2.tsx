@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type SyntheticEvent } from "react";
 import {
   eatTheReichTemplate,
   STATS,
@@ -25,6 +25,17 @@ function highestStatIndex(character: CharacterFullSheet): number {
     if (character.stats[STATS[i]!] > character.stats[STATS[best]!]) best = i;
   }
   return best;
+}
+
+/**
+ * Opening "Why?" grows the page under the pinned dock, which would leave the new list behind it. Bring
+ * the opened list into view; `scroll-padding-bottom` (the dock's measured height) keeps it clear.
+ */
+function revealOpenedDetails(event: SyntheticEvent<HTMLDetailsElement>): void {
+  const details = event.currentTarget;
+  if (details.open && typeof details.scrollIntoView === "function") {
+    details.scrollIntoView({ block: "nearest" });
+  }
 }
 
 /** docs/ETR_SESSION_FLOW.md section 6.1: stat / items / abilities / bonus claims / engaged threats, derived from the real `self` sheet (C06). */
@@ -260,7 +271,7 @@ export function ComposeStep2({
 
       <div className="pool-summary">
         <p className="form-hint">A d6 needs 4+ to succeed; a 6 is a critical.</p>
-        <details>
+        <details onToggle={revealOpenedDetails}>
           <summary>Why?</summary>
           <ul>
             {basePool.components.map((component, i) => (

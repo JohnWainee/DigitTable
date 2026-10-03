@@ -15,6 +15,7 @@ function publishInset(): void {
  * `html:has(.action-dock)` in `styles.css` as `scroll-padding-bottom`), so a control focused by
  * keyboard is scrolled clear of the pinned bar instead of landing behind it. The height changes with
  * the status text, large text sizes and the viewport width, hence an observer rather than a constant.
+ * It also marks the dock `data-clipped` while its content overflows the height cap.
  * A no-op where `ResizeObserver` is absent (jsdom, very old engines): the stylesheet's fallback applies.
  */
 function useActionDockInset(ref: RefObject<HTMLElement | null>): void {
@@ -24,8 +25,15 @@ function useActionDockInset(ref: RefObject<HTMLElement | null>): void {
     const observer = new ResizeObserver(() => {
       dockHeights.set(element, element.getBoundingClientRect().height);
       publishInset();
+      // Large text on a small phone can make the content taller than the dock's height cap. The
+      // dock then scrolls internally and, with the status first, the buttons are what falls below
+      // the fold. `data-clipped` lets the stylesheet put the actions first in that state only.
+      // Order does not change the content height, so this cannot flip back and forth.
+      element.toggleAttribute("data-clipped", element.scrollHeight > element.clientHeight + 1);
     });
     observer.observe(element);
+    // The cap stops the dock itself resizing when its content grows, so watch the content too.
+    for (const child of Array.from(element.children)) observer.observe(child);
     return () => {
       observer.disconnect();
       dockHeights.delete(element);

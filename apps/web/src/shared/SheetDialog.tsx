@@ -124,6 +124,9 @@ export function SheetDialog({
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent): void {
       if (event.key === "Escape") {
+        // Escape that cancels an IME conversion (keyCode 229 on browsers that omit isComposing) must
+        // not discard the sheet and the edits in it.
+        if (event.isComposing || event.keyCode === 229) return;
         onClose();
         return;
       }

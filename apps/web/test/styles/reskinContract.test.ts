@@ -536,7 +536,17 @@ describe("reskin stylesheet contract", () => {
       // The vh base precedes the dvh override (a later base would win).
       expect(css.indexOf("max-height: 45vh")).toBeLessThan(css.indexOf("max-height: 45dvh"));
       expect(declaration(dock(), "overflow-y")).toEqual(["auto"]);
-      expect(declaration(dock(), "overscroll-behavior")).toEqual(["contain"]);
+      // No scroll trap: when the dock is scrolled to its end a touch-drag on it still moves the page.
+      expect(declaration(dock(), "overscroll-behavior")).toEqual([]);
+    });
+
+    it("puts the actions first only while the dock overflows its cap, and restores the row layout when wide", () => {
+      expect(
+        declaration(rulesFor(/^\.action-dock\[data-clipped\] > \.action-dock-actions$/), "order"),
+      ).toEqual(["-1", "0"]);
+      // The reset sits inside the min-width media block, after the base rule.
+      const reset = css.lastIndexOf(".action-dock[data-clipped] > .action-dock-actions");
+      expect(reset).toBeGreaterThan(css.indexOf("@media (min-width: 34rem)"));
     });
 
     it("keeps a focused control clear of the dock (WCAG 2.2 SC 2.4.11) and gives the room back when short", () => {
@@ -555,8 +565,11 @@ describe("reskin stylesheet contract", () => {
       // .step pads 1rem / 1.25rem, so the defaults match it; the GM card pads 0.85rem all round.
       expect(declaration(rulesFor(/\.pending-action-card/), "padding")).toContain("0.85rem");
       const card = rulesFor(/^\.pending-action-card$/).join(" ");
-      expect(card).toContain("--dock-bleed-x: 0.85rem");
-      expect(card).toContain("--dock-bleed-b: 0.85rem");
+      expect(card).toContain("--dock-bleed-x: var(--pending-pad)");
+      expect(card).toContain("--dock-bleed-b: var(--pending-pad)");
+      // The card pads by the same capped amount the dock bleeds by, in px so 200% text cannot inflate it.
+      expect(card).toContain("--pending-pad: min(0.85rem, 12px)");
+      expect(card).toContain("padding: var(--pending-pad)");
     });
 
     it("stacks status over a full-width, wrapping action row below 34rem (phones)", () => {

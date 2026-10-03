@@ -263,10 +263,11 @@ expectDock(
 // Rendered from apps/web/src/styles.css itself (not a copy), because the defect was in that CSS: at this
 // width the actions were `flex: none`, crushed the status to a one-character column and overflowed.
 const realCss = readFileSync(join(here, "../../apps/web/src/styles.css"), "utf8");
-async function dockLayoutAt(width, rootFontPx = 16) {
+const APPLY_CLIPPED = true;
+async function dockLayoutAt(width, rootFontPx = 16, height = 900) {
   await send(
     "Emulation.setDeviceMetricsOverride",
-    { width, height: 900, deviceScaleFactor: 1, mobile: false },
+    { width, height, deviceScaleFactor: 1, mobile: false },
     sessionId,
   );
   const rowsHtml = Array.from(
@@ -278,7 +279,13 @@ async function dockLayoutAt(width, rootFontPx = 16) {
     `(() => {
       const dock = document.querySelector(".action-dock");
       const status = document.querySelector(".action-dock-status");
+      // What useActionDockInset does in the app: mark the dock while its content overflows the cap.
+      if (${APPLY_CLIPPED}) dock.toggleAttribute("data-clipped", dock.scrollHeight > dock.clientHeight + 1);
+      const box = dock.getBoundingClientRect();
+      const primary = document.querySelector(".primary-action").getBoundingClientRect();
       return {
+        clipped: dock.hasAttribute("data-clipped"),
+        primaryVisible: primary.top >= box.top - 1 && primary.bottom <= box.bottom + 1,
         statusWidth: Math.round(status.getBoundingClientRect().width),
         dockHeight: Math.round(dock.getBoundingClientRect().height),
         dockOverflowX: dock.scrollWidth - dock.clientWidth,
@@ -290,25 +297,29 @@ async function dockLayoutAt(width, rootFontPx = 16) {
   return result;
 }
 // 320 and 360 are the phone column; the 32px root is "200% text" (rem-sized padding and type double).
-for (const [width, font] of [
+for (const [width, font, height] of [
   [320, 16],
   [360, 16],
   [320, 32],
+  [320, 32, 568],
+  [375, 24, 667],
   [540, 16],
   [600, 16],
   [700, 16],
   [800, 16],
 ]) {
-  const layout = await dockLayoutAt(width, font);
+  const layout = await dockLayoutAt(width, font, height);
   const ok =
     layout.statusWidth >= 120 &&
     layout.dockHeight <= layout.innerHeight * 0.45 + 1 &&
     layout.dockOverflowX <= 1 &&
-    layout.pageOverflowX <= 1;
+    layout.pageOverflowX <= 1 &&
+    // The primary action is visible without scrolling the dock, even when the content overflows its cap.
+    layout.primaryVisible;
   console.log(
-    `${ok ? "ok  " : "FAIL"} real stylesheet, dock at ${width}px / ${font}px text with two long buttons: ${JSON.stringify(layout)}`,
+    `${ok ? "ok  " : "FAIL"} real stylesheet, dock at ${width}px / ${font}px text, ${height ?? 900}px tall, with two long buttons: ${JSON.stringify(layout)}`,
   );
-  if (!ok) failures.push(`dock-layout-${width}-${font}`);
+  if (!ok) failures.push(`dock-layout-${width}-${font}-${height ?? 900}`);
 }
 await send(
   "Emulation.setDeviceMetricsOverride",

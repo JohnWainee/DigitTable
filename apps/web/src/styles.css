@@ -816,7 +816,6 @@ details ul {
   box-shadow: 0 -0.9rem 1.1rem -0.6rem rgba(0, 0, 0, 0.85);
   max-height: 45vh;
   overflow-y: auto;
-  overscroll-behavior: contain;
 }
 
 @supports (height: 100dvh) {
@@ -825,9 +824,25 @@ details ul {
   }
 }
 
+/* The GM review card sits three panels deep (screen, panel, card, fieldset, option). Inline padding there
+   is capped in px: it is rem-sized elsewhere, and at 200% text on a 320px phone five nested rem paddings
+   left a check-box row under 70px and pushed the whole page wider (the case ui-audit.mjs used to record
+   as non-gating). The dock bleeds by exactly the card's padding. */
 .pending-action-card {
-  --dock-bleed-x: 0.85rem;
-  --dock-bleed-b: 0.85rem;
+  --pending-pad: min(0.85rem, 12px);
+  --dock-bleed-x: var(--pending-pad);
+  --dock-bleed-b: var(--pending-pad);
+  padding: var(--pending-pad);
+}
+
+.pending-action-card fieldset {
+  padding-inline: min(0.85rem, 10px);
+}
+
+.pending-action-card .gear-option {
+  gap: min(0.85rem, 12px);
+  padding-inline: min(0.65rem, 8px);
+  overflow-wrap: anywhere;
 }
 
 .action-dock-status {
@@ -862,6 +877,12 @@ details ul {
   min-width: 0;
 }
 
+/* Content taller than the height cap (200% text on a small phone): the dock scrolls inside itself, so
+   the buttons come first and are never what is left below the fold. Set by useActionDockInset. */
+.action-dock[data-clipped] > .action-dock-actions {
+  order: -1;
+}
+
 /* Scroll-into-view (keyboard focus, find-in-page) leaves room for the dock. */
 html:has(.action-dock) {
   scroll-padding-bottom: calc(var(--action-dock-height, 8rem) + 0.75rem);
@@ -888,6 +909,10 @@ html:has(.action-dock) {
     flex: 0 1 auto;
     min-width: 0;
     margin-left: auto;
+  }
+
+  .action-dock[data-clipped] > .action-dock-actions {
+    order: 0;
   }
 
   .action-dock-actions > button {

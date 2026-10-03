@@ -779,16 +779,13 @@ async function auditModal(gm) {
   }
 
   // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150% and
-  // 375px at 200% are gating. 320px at 200% is recorded but NOT gating: at that size the (unchanged,
-  // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
-  // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
-  // the handoff.
+  // 200%, and 375px at 200%, all gate. (320px at 200% used to be recorded as non-gating because the
+  // GM review card's nested rem padding left a check-box row under 70px and widened the page; the card's
+  // inline padding is now capped in px, see `.pending-action-card` in styles.css.)
   for (const [vp, px, informationalChecks] of [
     [byName["phone-small"], 24, []],
     [byName["phone"], 32, []],
-    // Only the two geometry checks the console's overflow can break are non-gating here; the sheet's own
-    // bodyKeepsRoom / actionsReachable / reasonReachable still gate.
-    [byName["phone-small"], 32, ["dialogInsideViewport", "noPageOverflow"]],
+    [byName["phone-small"], 32, []],
   ]) {
     await scenario(
       `text-${px === 24 ? "150" : "200"}-${vp.name}`,

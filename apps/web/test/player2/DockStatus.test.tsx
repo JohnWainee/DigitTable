@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import {
@@ -47,6 +47,38 @@ describe("Compose dock status when the character cannot act", () => {
       expect(declare).toHaveAccessibleDescription(reason);
     });
   }
+});
+
+describe("Compose 'Why?' disclosure under the pinned dock", () => {
+  it("scrolls the opened list into view, and does nothing when it is closed again", async () => {
+    const scrollIntoView = vi.fn();
+    // jsdom has no scrollIntoView; install one for this test only.
+    Object.defineProperty(HTMLElement.prototype, "scrollIntoView", {
+      value: scrollIntoView,
+      configurable: true,
+      writable: true,
+    });
+    try {
+      render(
+        <ComposeStep2
+          projection={projectionFor(base)}
+          character={base}
+          threats={[]}
+          onDeclare={vi.fn()}
+          onUseUtilityItem={vi.fn()}
+        />,
+      );
+      const user = userEvent.setup();
+      await user.click(screen.getByText("Why?"));
+      await waitFor(() => expect(scrollIntoView).toHaveBeenCalledTimes(1));
+      expect(scrollIntoView).toHaveBeenCalledWith({ block: "nearest" });
+      await user.click(screen.getByText("Why?"));
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    } finally {
+      Reflect.deleteProperty(HTMLElement.prototype, "scrollIntoView");
+    }
+  });
 });
 
 describe("Allocation dock status", () => {

@@ -142,6 +142,18 @@ describe("SheetDialog", () => {
     expect(trigger).toHaveFocus();
   });
 
+  it("ignores the Escape that cancels an IME composition, so edits are not discarded", () => {
+    const onClose = vi.fn();
+    render(<Harness onClose={onClose} />);
+    fireEvent.click(screen.getByRole("button", { name: /open sheet/i }));
+    fireEvent.keyDown(document, { key: "Escape", isComposing: true });
+    fireEvent.keyDown(document, { key: "Escape", keyCode: 229 });
+    expect(onClose).not.toHaveBeenCalled();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   it("traps Tab and Shift+Tab inside the dialog, including select controls", async () => {
     const user = userEvent.setup();
     render(<Harness />);

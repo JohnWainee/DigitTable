@@ -120,6 +120,34 @@ describe("ActionDock", () => {
     }
   });
 
+  it("marks itself data-clipped only while its content overflows the height cap, and watches its content", () => {
+    const heights = new Map<Element, number>();
+    const observer = installResizeObserver(heights);
+    try {
+      const { container } = render(
+        <ActionDock statusId="s" status="ok">
+          <button type="button">Go</button>
+        </ActionDock>,
+      );
+      const dock = container.querySelector<HTMLElement>(".action-dock")!;
+      const measure = (scrollHeight: number, clientHeight: number): void => {
+        Object.defineProperty(dock, "scrollHeight", { value: scrollHeight, configurable: true });
+        Object.defineProperty(dock, "clientHeight", { value: clientHeight, configurable: true });
+        observer.fire();
+      };
+      measure(120, 120);
+      expect(dock).not.toHaveAttribute("data-clipped");
+      measure(121, 120); // sub-pixel rounding is not overflow
+      expect(dock).not.toHaveAttribute("data-clipped");
+      measure(828, 256);
+      expect(dock).toHaveAttribute("data-clipped");
+      measure(200, 256);
+      expect(dock).not.toHaveAttribute("data-clipped");
+    } finally {
+      observer.restore();
+    }
+  });
+
   it("renders without ResizeObserver (jsdom, very old engines) and sets nothing", () => {
     expect(typeof ResizeObserver).toBe("undefined");
     render(
