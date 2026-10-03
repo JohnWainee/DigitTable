@@ -951,6 +951,19 @@ html:has(.action-dock) {
   }
 }
 
+/* The same fallback for the VISUAL viewport, which no media query can see: pinch-zoomed in (the pinned
+   bar would sit below what is on screen, or cover a large share of it) or shorter than 20rem because an
+   on-screen keyboard or browser chrome took the rest. Set by useDockPinning in ActionDock.tsx. */
+.action-dock[data-unpinned] {
+  position: static;
+  max-height: none;
+  box-shadow: none;
+}
+
+html:has(.action-dock[data-unpinned]) {
+  scroll-padding-bottom: 0;
+}
+
 /* The chosen target of a die, beside the die, so it stays visible however far its option list runs. */
 .die-target {
   font-weight: 700;

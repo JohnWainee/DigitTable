@@ -324,6 +324,39 @@ for (const [width, font, height, gm] of [
   );
   if (!ok) failures.push(`dock-layout-${width}-${font}-${height ?? 900}${gm ? "-gm" : ""}`);
 }
+// ---- the REAL stylesheet: a pinch-zoomed or short visual viewport releases the pinned dock ----
+// The hook (ActionDock.tsx useDockPinning) sets data-unpinned; this proves what the CSS does with it.
+// Without the attribute the dock stays sticky (and at 3x it covered 44% of the magnified view).
+async function dockPinState(unpinned) {
+  await send(
+    "Emulation.setDeviceMetricsOverride",
+    { width: 390, height: 844, deviceScaleFactor: 1, mobile: true },
+    sessionId,
+  );
+  const rows = Array.from(
+    { length: 40 },
+    (_, i) => `<label class="gear-option"><input type="checkbox"> Row ${i}</label>`,
+  ).join("");
+  return page(
+    `<style>${realCss}</style><main class="player-screen"><section class="step"><h2>Compose</h2>${rows}<div class="action-dock"${unpinned ? " data-unpinned" : ""}><p id="s" class="action-dock-status">Pool: 4 dice</p><div class="action-dock-actions"><button class="primary-action">Declare</button></div></div></section></main>`,
+    `(() => { const d = document.querySelector(".action-dock"); const cs = getComputedStyle(d); return { position: cs.position, maxHeight: cs.maxHeight, shadow: cs.boxShadow, pad: getComputedStyle(document.documentElement).scrollPaddingBottom }; })()`,
+  );
+}
+{
+  const pinned = await dockPinState(false);
+  const released = await dockPinState(true);
+  const ok =
+    pinned.position === "sticky" &&
+    released.position === "static" &&
+    released.maxHeight === "none" &&
+    released.shadow === "none" &&
+    released.pad === "0px" &&
+    pinned.pad !== "0px";
+  console.log(
+    `${ok ? "ok  " : "FAIL"} real stylesheet, data-unpinned releases the dock: ${JSON.stringify({ pinned, released })}`,
+  );
+  if (!ok) failures.push("dock-unpinned-css");
+}
 await send(
   "Emulation.setDeviceMetricsOverride",
   { width: 375, height: 468, deviceScaleFactor: 1, mobile: true },

@@ -1,7 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import { axe } from "jest-axe";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ActionDock } from "../../src/shared/ActionDock.js";
+import {
+  ActionDock,
+  UNPIN_ABOVE_SCALE,
+  UNPIN_BELOW_PX,
+  shouldUnpinDock,
+} from "../../src/shared/ActionDock.js";
 
 /**
  * The sticky commit row (apps/web/src/shared/ActionDock.tsx). Sticking, safe-area padding, the height
@@ -166,5 +171,111 @@ describe("ActionDock", () => {
       </ActionDock>,
     );
     expect(document.documentElement.style.getPropertyValue("--action-dock-height")).toBe("");
+  });
+});
+
+describe("shouldUnpinDock", () => {
+  const base = { scale: 1, visualHeight: 800, layoutHeight: 800 };
+
+  it("keeps the dock pinned at normal zoom with a tall visible area", () => {
+    expect(shouldUnpinDock(base)).toBe(false);
+  });
+
+  it("unpins once pinch-zoomed past rounding noise, not before", () => {
+    expect(shouldUnpinDock({ ...base, scale: UNPIN_ABOVE_SCALE })).toBe(false);
+    expect(shouldUnpinDock({ ...base, scale: 1.06 })).toBe(true);
+    expect(shouldUnpinDock({ ...base, scale: 3 })).toBe(true);
+  });
+
+  it("unpins when the visible height (the smaller of visual and layout) is under 320px (the 20rem media query's basis)", () => {
+    const limit = UNPIN_BELOW_PX;
+    expect(shouldUnpinDock({ ...base, visualHeight: limit })).toBe(false);
+    expect(shouldUnpinDock({ ...base, visualHeight: limit - 1 })).toBe(true);
+    // iOS keyboard: only the visual viewport shrinks. Chrome Android: both do.
+    expect(shouldUnpinDock({ ...base, visualHeight: 250 })).toBe(true);
+    expect(shouldUnpinDock({ ...base, layoutHeight: 250 })).toBe(true);
+  });
+
+  it("does not depend on text size: a 568px phone at 200% text stays pinned (the capped, scrolling dock)", () => {
+    expect(shouldUnpinDock({ ...base, visualHeight: 568, layoutHeight: 568 })).toBe(false);
+  });
+});
+
+describe("ActionDock pinning follows the visual viewport", () => {
+  type Listener = () => void;
+  function installVisualViewport(initial: { scale: number; height: number }): {
+    readonly set: (next: { scale?: number; height?: number }) => void;
+    readonly listeners: () => number;
+    readonly types: () => string[];
+    readonly restore: () => void;
+  } {
+    const listeners = new Set<Listener>();
+    const registered: string[] = [];
+    const viewport = {
+      scale: initial.scale,
+      height: initial.height,
+      addEventListener: (type: string, listener: Listener) => {
+        registered.push(type);
+        listeners.add(listener);
+      },
+      removeEventListener: (_type: string, listener: Listener) => listeners.delete(listener),
+    };
+    Object.defineProperty(window, "visualViewport", { value: viewport, configurable: true });
+    const innerHeight = Object.getOwnPropertyDescriptor(window, "innerHeight");
+    Object.defineProperty(window, "innerHeight", { value: 800, configurable: true });
+    return {
+      types: () => registered,
+      set: (next) => {
+        Object.assign(viewport, next);
+        for (const listener of listeners) listener();
+      },
+      listeners: () => listeners.size,
+      restore: () => {
+        Reflect.deleteProperty(window, "visualViewport");
+        if (innerHeight) Object.defineProperty(window, "innerHeight", innerHeight);
+      },
+    };
+  }
+
+  it("toggles data-unpinned on zoom and on a short visible area, and detaches on unmount", () => {
+    const vv = installVisualViewport({ scale: 1, height: 800 });
+    try {
+      const { container, unmount } = render(
+        <ActionDock statusId="s" status="ok">
+          <button type="button">Go</button>
+        </ActionDock>,
+      );
+      const dock = container.querySelector<HTMLElement>(".action-dock")!;
+      expect(dock).not.toHaveAttribute("data-unpinned");
+      vv.set({ scale: 2 });
+      expect(dock).toHaveAttribute("data-unpinned");
+      vv.set({ scale: 1 });
+      expect(dock).not.toHaveAttribute("data-unpinned");
+      vv.set({ height: 280 }); // keyboard or browser chrome took the rest
+      expect(dock).toHaveAttribute("data-unpinned");
+      vv.set({ height: 800 });
+      expect(dock).not.toHaveAttribute("data-unpinned");
+      expect(vv.listeners()).toBe(1);
+      // Zoom (pinch) and keyboard both fire `resize`; `scroll` is only panning and must not matter.
+      expect(vv.types()).toEqual(["resize"]);
+      unmount();
+      expect(vv.listeners()).toBe(0);
+    } finally {
+      vv.restore();
+    }
+  });
+
+  it("starts unpinned when mounted already zoomed", () => {
+    const vv = installVisualViewport({ scale: 2.5, height: 800 });
+    try {
+      const { container } = render(
+        <ActionDock statusId="s" status="ok">
+          <button type="button">Go</button>
+        </ActionDock>,
+      );
+      expect(container.querySelector(".action-dock")).toHaveAttribute("data-unpinned");
+    } finally {
+      vv.restore();
+    }
   });
 });

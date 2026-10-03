@@ -82,14 +82,16 @@ describe("Compose 'Why?' disclosure under the pinned dock", () => {
 });
 
 describe("Allocation dock status", () => {
-  function roll(keptDice: readonly { faceIndex: number; face: number; result: string }[]) {
+  function roll(
+    keptDice: readonly { faceIndex: number; face: number; result: string }[],
+  ): Parameters<typeof AllocationPanel2>[0]["roll"] {
     return {
       rollId: "roll-1",
       status: "awaiting_allocation",
       keptDice,
       playerFaces: keptDice.map((die) => die.face),
       attackSuccessesRolled: 0,
-    } as never;
+    } as unknown as Parameters<typeof AllocationPanel2>[0]["roll"];
   }
 
   it("says there is nothing to assign when the roll kept no dice, and lets the player confirm", () => {

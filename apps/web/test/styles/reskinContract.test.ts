@@ -540,6 +540,27 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(dock(), "overscroll-behavior")).toEqual([]);
     });
 
+    it("drops the pinned bar for a zoomed or short VISUAL viewport, which no media query can see", () => {
+      const unpinned = rulesFor(/^\.action-dock\[data-unpinned\]$/);
+      expect(declaration(unpinned, "position")).toEqual(["static"]);
+      expect(declaration(unpinned, "max-height")).toEqual(["none"]);
+      expect(declaration(unpinned, "box-shadow")).toEqual(["none"]);
+      // Must come after the base rule and its dvh override, or the cap and sticky would win again.
+      expect(css.indexOf(".action-dock[data-unpinned] {")).toBeGreaterThan(
+        css.indexOf("max-height: 45dvh"),
+      );
+      // No scroll-padding for a bar that no longer overlays the page, and it out-specifies the base rule.
+      expect(
+        declaration(
+          rulesFor(/^html:has\(\.action-dock\[data-unpinned\]\)$/),
+          "scroll-padding-bottom",
+        ),
+      ).toEqual(["0"]);
+      expect(css.indexOf("html:has(.action-dock[data-unpinned])")).toBeGreaterThan(
+        css.indexOf("html:has(.action-dock) {"),
+      );
+    });
+
     it("puts the actions first only while the dock overflows its cap, and restores the row layout when wide", () => {
       expect(
         declaration(rulesFor(/^\.action-dock\[data-clipped\] > \.action-dock-actions$/), "order"),

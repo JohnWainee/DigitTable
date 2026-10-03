@@ -42,6 +42,55 @@ function useActionDockInset(ref: RefObject<HTMLElement | null>): void {
   }, [ref]);
 }
 
+/**
+ * Below this visible height (CSS px) a pinned bar leaves too little page: see `.action-dock[data-unpinned]`.
+ * Deliberately NOT scaled by the root font size: it mirrors `@media (max-height: 20rem)`, where rem is the
+ * browser's initial 16px. Scaling it would unpin the dock for every phone at 200% text, which is exactly
+ * where the capped, internally scrolled dock (`data-clipped`) is meant to stay pinned.
+ */
+export const UNPIN_BELOW_PX = 320;
+/** Pinch-zoom beyond this scale unpins the dock (1 plus the engines' rounding noise). */
+export const UNPIN_ABOVE_SCALE = 1.05;
+
+/**
+ * Whether the dock must leave the pinned position for the viewport the person is actually looking at.
+ * `position: sticky` follows the *layout* viewport, which is not what a pinch-zoomed or keyboard-covered
+ * visual viewport shows: at 2x the pinned bar sits wholly below the visible area (the action is out of
+ * reach until panned to), and at 3x it covers 44% of what is magnified. Pure, so it is unit-tested.
+ */
+export function shouldUnpinDock(input: {
+  readonly scale: number;
+  readonly visualHeight: number;
+  readonly layoutHeight: number;
+}): boolean {
+  const visibleHeight = Math.min(input.visualHeight, input.layoutHeight);
+  return input.scale > UNPIN_ABOVE_SCALE || visibleHeight < UNPIN_BELOW_PX;
+}
+
+/** Mirrors `shouldUnpinDock` onto `data-unpinned` while the visual viewport is zoomed or short. A no-op without `visualViewport`. */
+function useDockPinning(ref: RefObject<HTMLElement | null>): void {
+  useLayoutEffect(() => {
+    const element = ref.current;
+    const visual = window.visualViewport;
+    if (!element || !visual) return undefined;
+    const target: HTMLElement = element;
+    const viewport: VisualViewport = visual;
+    function apply(): void {
+      target.toggleAttribute(
+        "data-unpinned",
+        shouldUnpinDock({
+          scale: viewport.scale,
+          visualHeight: viewport.height,
+          layoutHeight: window.innerHeight,
+        }),
+      );
+    }
+    apply();
+    viewport.addEventListener("resize", apply);
+    return () => viewport.removeEventListener("resize", apply);
+  }, [ref]);
+}
+
 export interface ActionDockProps {
   /** `id` of the status line; give the dock's primary button `aria-describedby` this so a disabled button explains itself. */
   readonly statusId: string;
@@ -70,6 +119,7 @@ export interface ActionDockProps {
 export function ActionDock({ statusId, status, children }: ActionDockProps): JSX.Element {
   const ref = useRef<HTMLDivElement>(null);
   useActionDockInset(ref);
+  useDockPinning(ref);
   return (
     <div className="action-dock" ref={ref}>
       <p id={statusId} className="action-dock-status">

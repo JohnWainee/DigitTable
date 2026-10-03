@@ -91,6 +91,7 @@ const report = {
   modal: [],
   keyboard: [],
   docks: [],
+  dockPinch: [],
   validation: [],
   reducedMotion: null,
   routes: [],
@@ -1117,7 +1118,60 @@ async function auditActionDock(device, state) {
     }
   }
   if (!sawDock) fail(`${device.name}/${state}-dock`, "no .action-dock was found to audit");
+  if (sawDock) await auditDockPinch(device, state);
   await applyViewport(device, original);
+}
+
+/**
+ * The pinned bar follows the layout viewport, which is not what a pinch-zoomed person sees: at 2x it
+ * sat wholly below the visible area (the action out of reach until panned to), at 3x it covered 44% of
+ * it. While zoomed, the dock must be released into the page flow (`data-unpinned`, position static, no
+ * cap) and pin again at 1x. Uses the real hook through a real visual-viewport scale change.
+ */
+async function auditDockPinch(device, state) {
+  await applyViewport(device, byName["phone"]);
+  const scope = `${device.name}/${state}-dock-pinch`;
+  const probe = `(() => { const d = document.querySelector(".action-dock"); if (!d) return null; const cs = getComputedStyle(d); return { unpinned: d.hasAttribute("data-unpinned"), position: cs.position, maxHeight: cs.maxHeight, scale: visualViewport ? visualViewport.scale : 1 }; })()`;
+  const record = { scope, steps: [] };
+  try {
+    for (const [scale, expectPinned] of [
+      [1, true],
+      [2, false],
+      [3, false],
+      [1, true],
+    ]) {
+      await device.cdp.send(
+        "Emulation.setPageScaleFactor",
+        { pageScaleFactor: scale },
+        device.sessionId,
+      );
+      await sleep(350);
+      const got = await ev(device, probe);
+      record.steps.push({ scale, expectPinned, got });
+      if (!got) return fail(scope, "dock disappeared while zooming");
+      if (Math.abs(got.scale - scale) > 0.05)
+        return fail(scope, `page scale ${scale} was not applied (got ${got.scale})`);
+      const pinned = got.position === "sticky" && !got.unpinned;
+      if (pinned !== expectPinned)
+        fail(
+          scope,
+          `at ${scale}x the dock is ${pinned ? "still pinned" : "unpinned"} (position ${got.position}, data-unpinned ${got.unpinned}); expected ${expectPinned ? "pinned" : "released into the flow"}`,
+        );
+      if (!expectPinned && got.maxHeight !== "none")
+        fail(scope, `unpinned dock keeps its height cap (${got.maxHeight})`);
+    }
+  } finally {
+    try {
+      await device.cdp.send(
+        "Emulation.setPageScaleFactor",
+        { pageScaleFactor: 1 },
+        device.sessionId,
+      );
+    } catch {
+      /* not applied */
+    }
+  }
+  report.dockPinch.push(record);
 }
 
 // ---------- forms: inline validation instead of the browser's own bubbles ----------
@@ -1609,6 +1663,7 @@ async function main() {
         (n, d) => n + d.results.reduce((m, r) => m + r.controls, 0),
         0,
       ),
+      dockPinchScenarios: report.dockPinch.length,
       validationScenarios: report.validation.length,
       sheetCases: report.modal.filter((m) => m.rosterIndex !== undefined).length,
       failures: report.failures.length,

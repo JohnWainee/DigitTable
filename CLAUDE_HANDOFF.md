@@ -16,7 +16,7 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
 - **Playable staging candidate is online:** Firebase Hosting, Firestore/RTDB rules, and the five `us-west1` callable Functions (`createRoom`, `admitMember`, `claimSeat`, `submitRoomCommand`, `recoverSeat`) are deployed to project `powerglove-1cd23`. Cloud Run invoker bindings were explicitly verified/repaired to permit unauthenticated transport to the callable boundary; every operation still requires and validates Firebase Auth inside the callable pipeline.
 - **Sourcebook roster is production-ready in source:** all six supplied character sheets replace the placeholder roster while preserving stable character IDs for saved-room compatibility. Cigarettes and Cowboy Hat have player-facing marked-use mechanics, and Corpse Eater uses the printed any-1 trigger. Complete roster snapshot coverage and focused mechanics tests protect the source fields.
 - **Live release verification passes:** on 2026-09-19, `two-device-smoke.mjs --reload` again passed all 17 GM/player/table steps against staging: create, isolated player/table admission, claim, opposed action, pause/resume, scene advance, role guidance, direct resume, reload recovery, original-art loading, zero console/request errors, and no horizontal overflow at 375/768/1024/1280/1920 px. Temporary report/screenshots: `/private/tmp/digitable-hourly-staging-20260919/`. The deeper `ui-audit.mjs` run audited 150 states and 1,344 controls with zero control issues, overflow states, hard axe violations, or failures. One best-practice heading warning remains on the intentional nonexistent-room route; the documented 320 px + 200% text geometry limit remains non-gating.
-- **Latest unmerged increment:** `sonnet-dk/reskin-orchestrated-20261003` adds the sticky action dock plus the pass-2 pop-out fixes (see the two 2026-10-03 dock entries under "Integrated verification and next action"); John decides merge and redeploy after a physical-device pass.
+- **Latest unmerged increment:** `sonnet-dq/reskin-fresh-20261003` adds the zoom/short-viewport dock release on top of `sonnet-dk/reskin-orchestrated-20261003`, which adds the sticky action dock plus the pass-2 pop-out fixes (see the two 2026-10-03 dock entries under "Integrated verification and next action"); John decides merge and redeploy after a physical-device pass.
 - **Next action:** Rerun the live GM/player/table smoke against <https://digitable.signal-bleed.com>, then have John conduct the complete flow on two physical devices. Do not promote to a separate production Firebase project without explicit direction.
 
 ## Claude takeover checkpoint
@@ -451,6 +451,14 @@ When pausing or finishing a material unit:
 4. Do not call a non-trivial change complete until independently reviewed.
 
 ## Integrated verification and next action
+
+### 2026-10-03: dock follows the visual viewport (`sonnet-dq/reskin-fresh-20261003`)
+
+- **Base:** reviewed `888e5e1`. Presentation only (`apps/web`, `scripts/playtest`, docs); no authority, privacy, projection, engine, Firebase or asset change. Not merged, not deployed.
+- **Gap found:** the sticky dock follows the layout viewport, so when pinch-zoomed it sat 422px below the visible area at 2x and covered 44% of the magnified view at 3x. `ActionDock` now sets `data-unpinned` (static, uncapped) while `visualViewport.scale > 1.05` or the visible height is under 320px (the `20rem` media query's basis; deliberately not text-size scaled), and re-pins at 1x.
+- **Pop-out audit:** native selects, `<details>`, `SheetDialog`, inline allocation pickers: no further defects.
+- **Evidence:** `npm run check` 803 passed, 11 todo, lint clean; build passed; `ui-audit.mjs` 288 states / 3,400 controls / 0 failures incl. 4 new dock-pinch scenarios; selftest passed; smoke 17/17; emulator suites 18 + 86 + 4 (remapped ports, clone); staging `--routes-only` passed (staging predates the dock). Record: `docs/evidence/dq-visual-viewport-dock-20261003/`, review `docs/reviews/2026-10-03-dq-dock-visual-viewport-independent-review.md` (approve with fixes, all applied; the full audit predates the 320px threshold fix, see the review caveat).
+- **Still open:** physical iOS/Android (iOS keyboard shrinking only the visual viewport, real two-finger pinch on WebKit, thumb reach, VoiceOver/TalkBack, trackpad pinch). Headless Chrome emulates pinch with `Emulation.setPageScaleFactor` only.
 
 ### 2026-10-03: sticky action dock for the long decision forms (`sonnet-dk/reskin-orchestrated-20261003`)
 
