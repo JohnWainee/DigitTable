@@ -231,6 +231,15 @@ async function shot(device, label) {
   return file;
 }
 
+// Codes the run learns (room, table and recovery codes). A failure message can quote page text that contains
+// them, so everything that leaves the process (report.json, the console) goes through scrub().
+const secrets = new Set();
+const scrub = (text) => {
+  let out = String(text);
+  for (const secret of secrets) if (secret.length >= 4) out = out.split(secret).join("[redacted]");
+  return out;
+};
+
 async function step(name, fn) {
   const startedAt = Date.now();
   try {
@@ -242,10 +251,12 @@ async function step(name, fn) {
     for (const device of allDevices) {
       try {
         context[device.name] = {
-          alerts: await ev(
-            device,
-            `[...document.querySelectorAll('[role=alert], .error-message')].map(e => e.textContent.trim())`,
-          ),
+          alerts: (
+            await ev(
+              device,
+              `[...document.querySelectorAll('[role=alert], .error-message')].map(e => e.textContent.trim())`,
+            )
+          ).map(scrub),
           screenshot: await shot(device, "FAILED"),
         };
       } catch {
@@ -256,10 +267,10 @@ async function step(name, fn) {
       name,
       ok: false,
       ms: Date.now() - startedAt,
-      error: String(error.message),
+      error: scrub(error.message),
       context,
     });
-    console.log(`FAIL ${name}: ${error.message}`);
+    console.log(`FAIL ${name}: ${scrub(error.message)}`);
     throw error;
   }
 }
@@ -380,6 +391,7 @@ async function main() {
         `[...document.querySelectorAll(".reveal-card dt")].map(dt => [dt.textContent.trim(), dt.nextElementSibling.textContent.trim()])`,
       );
       for (const [key, value] of pairs) codes[key] = value;
+      for (const value of Object.values(codes)) secrets.add(value);
       if (!codes["Room code"] || !codes["Table code"]) throw new Error("missing codes");
       await shot(gm, "secrets-reveal");
       await ev(gm, `document.querySelector("#wrote-down").click()`);
@@ -391,7 +403,8 @@ async function main() {
         30000,
         "director console",
       );
-      return { roomCode: codes["Room code"] };
+      // Report the SHAPE only: a committed report must not carry a working room code (the passphrase is in this file).
+      return { roomCodeShape: codes["Room code"].replace(/[A-Z0-9]/g, "X") };
     });
 
     await step("GM loads the opening scene", async () => {
@@ -427,6 +440,7 @@ async function main() {
         player,
         `document.querySelector(".reveal-code").textContent.trim()`,
       );
+      secrets.add(codes.playerRecovery);
       await shot(player, "join-reveal");
       await clickText(player, "button", /wrote it down/);
       await waitFor(player, `document.querySelector(".roster-grid")`, 30000, "roster grid");
@@ -672,7 +686,7 @@ async function main() {
         { consoleErrors: d.consoleErrors, failedRequests: d.failedRequests },
       ]),
     );
-    writeFileSync(join(OUT, "report.json"), JSON.stringify(report, null, 2) + "\n");
+    writeFileSync(join(OUT, "report.json"), scrub(JSON.stringify(report, null, 2)) + "\n");
     try {
       cdp?.ws.close();
     } catch {
