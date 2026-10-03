@@ -61,6 +61,20 @@ what you personally saw; write what happened for anything that did not go as des
 - [ ] Screen reader (VoiceOver) announces state changes without moving focus (optional)
 - [ ] Reduced motion setting on: no distracting animation
 
+## E2. Mobile pop-outs, keyboard and forms (physical devices; OWED, not performed)
+
+Headless Chrome and the iOS Simulator (`scripts/playtest/ios-simulator/`) do not replace these. Record the
+device, OS, browser and assistive technology next to each item.
+
+- [ ] iPhone Safari, portrait: GM correction sheet; tap the Reason field. Title, field, Apply and Cancel are all above the keyboard
+- [ ] iPhone Safari, landscape, keyboard up: the sheet scrolls as one page, nothing is clipped, the typed-in field stays in view; the keyboard's Done restores the pinned title and actions
+- [ ] Android Chrome (portrait and landscape): the same two checks
+- [ ] Native pickers (Scene, Edit target, Advance, Character): the OS list opens, shows full option text, and the chosen value is repeated in full under the control
+- [ ] Join / Create / Recover / Table forms: an invalid submit shows the app's own error under the field (no browser bubble), focus lands in the first invalid field, the keyboard stays up and the error is readable above it
+- [ ] The inline errors are announced by VoiceOver (iOS/macOS) and TalkBack, and by NVDA with Chrome and Firefox; the sheet traps focus and restores it on close
+- [ ] Larger text (iOS Larger Text / Android font size) and browser zoom: no horizontal scroll, sheet still reachable
+- [ ] Windows High Contrast / forced colours: controls and the sheet keep visible boundaries
+
 ## F. Problems found
 
 | # | Severity (blocker / annoying / cosmetic) | Device | What happened | Screenshot |
