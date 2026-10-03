@@ -1,0 +1,168 @@
+{
+  "label": "dg-before200",
+  "base": "http://127.0.0.1:4192",
+  "startedAt": "2026-10-03T02:29:57.549Z",
+  "states": [],
+  "modal": [],
+  "keyboard": [],
+  "commitBar": [
+    {
+      "scope": "player/compose-commit-bar@phone-small-text200",
+      "found": false,
+      "innerHeight": 650,
+      "overflowPx": 47
+    },
+    {
+      "scope": "player/compose-commit-bar@phone-text200",
+      "found": false,
+      "innerHeight": 812,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/compose-commit-bar@phone-landscape-text200",
+      "found": false,
+      "innerHeight": 375,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/compose-commit-bar@tablet-text200",
+      "found": false,
+      "innerHeight": 1024,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/compose-commit-bar@desktop-text200",
+      "found": false,
+      "innerHeight": 800,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/compose-commit-bar@table-text200",
+      "found": false,
+      "innerHeight": 1080,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/allocation-commit-bar@phone-small-text200",
+      "found": false,
+      "innerHeight": 588,
+      "overflowPx": 11
+    },
+    {
+      "scope": "player/allocation-commit-bar@phone-text200",
+      "found": false,
+      "innerHeight": 812,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/allocation-commit-bar@phone-landscape-text200",
+      "found": false,
+      "innerHeight": 375,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/allocation-commit-bar@tablet-text200",
+      "found": false,
+      "innerHeight": 1024,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/allocation-commit-bar@desktop-text200",
+      "found": false,
+      "innerHeight": 800,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/allocation-commit-bar@table-text200",
+      "found": false,
+      "innerHeight": 1080,
+      "overflowPx": 0
+    }
+  ],
+  "validation": [],
+  "reducedMotion": null,
+  "routes": [],
+  "failures": [
+    {
+      "scope": "player/compose-commit-bar@phone-small-text200",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/compose-commit-bar@phone-text200",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/compose-commit-bar@phone-landscape-text200",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/compose-commit-bar@tablet-text200",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/compose-commit-bar@desktop-text200",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/compose-commit-bar@table-text200",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/allocation-commit-bar@phone-small-text200",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/allocation-commit-bar@phone-text200",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/allocation-commit-bar@phone-landscape-text200",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/allocation-commit-bar@tablet-text200",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/allocation-commit-bar@desktop-text200",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/allocation-commit-bar@table-text200",
+      "message": "no .commit-bar rendered"
+    }
+  ],
+  "console": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  },
+  "finishedAt": "2026-10-03T02:30:16.142Z",
+  "ok": false,
+  "summary": {
+    "states": 0,
+    "controlsAudited": 0,
+    "controlIssues": 0,
+    "overflowStates": 0,
+    "axeHardViolations": 0,
+    "axeBestPractice": [],
+    "keyboardFocusChecks": 0,
+    "commitBarCases": 12,
+    "validationScenarios": 0,
+    "sheetCases": 0,
+    "failures": 12
+  }
+}

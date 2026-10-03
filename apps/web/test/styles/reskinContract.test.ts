@@ -477,8 +477,11 @@ describe("reskin stylesheet contract", () => {
       expect(gated).toMatch(/\.commit-bar\s*\{[^}]*background:\s*var\(--ink-1\)/);
     });
 
-    it("keeps a keyboard-focused option clear of the bar (WCAG 2.4.11 Focus Not Obscured)", () => {
-      expect(gated).toMatch(/\.step \.gear-option\s*\{[^}]*scroll-margin-block-end:\s*9rem/);
+    it("keeps keyboard-focused controls clear of the bar (WCAG 2.4.11), on the focused element rather than its label", () => {
+      expect(gated).toMatch(
+        /\.step :is\(input, summary, button, select, textarea\)\s*\{[^}]*scroll-margin-block-end:\s*9rem/,
+      );
+      expect(gated).not.toMatch(/\.gear-option\s*\{[^}]*scroll-margin/);
     });
   });
 });

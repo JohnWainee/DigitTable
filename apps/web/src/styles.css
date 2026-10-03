@@ -1408,8 +1408,10 @@ details ul {
     border-top: 2px solid var(--acid);
   }
 
-  /* A focused option scrolls into view clear of the pinned bar (WCAG 2.4.11 Focus Not Obscured). */
-  .step .gear-option {
+  /* A focused control scrolls into view clear of the pinned bar (WCAG 2.4.11 Focus Not Obscured). The margin
+     belongs on the element that takes focus (the radio/checkbox, the "Why?" summary, a row's own button),
+     not on its label. */
+  .step :is(input, summary, button, select, textarea) {
     scroll-margin-block-end: 9rem;
   }
 }

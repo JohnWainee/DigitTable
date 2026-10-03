@@ -270,6 +270,11 @@ export function ComposeStep2({
       </div>
 
       <div className="commit-bar">
+        {character.downed && <p role="alert">You&rsquo;re down. A teammate must rescue you.</p>}
+        {character.retired && <p role="alert">Your story is told.</p>}
+        {actedThisRound && !character.downed && !character.retired && (
+          <p role="alert">You&rsquo;ve acted this round. Wait for the GM to end the round.</p>
+        )}
         <button
           type="button"
           className="primary-action"
@@ -279,11 +284,6 @@ export function ComposeStep2({
           Declare action
         </button>
       </div>
-      {character.downed && <p role="alert">You&rsquo;re down. A teammate must rescue you.</p>}
-      {character.retired && <p role="alert">Your story is told.</p>}
-      {actedThisRound && !character.downed && !character.retired && (
-        <p role="alert">You&rsquo;ve acted this round. Wait for the GM to end the round.</p>
-      )}
     </section>
   );
 }

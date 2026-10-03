@@ -140,6 +140,7 @@ export function AllocationPanel2({
       {/* The per-die lists make this panel several screens tall on a phone, so the running count and the
           confirm button share one bar that stays in reach (see `.commit-bar`). */}
       <div className="commit-bar">
+        {character.downed && <p role="alert">You&rsquo;re down. A teammate must rescue you.</p>}
         <p className="commit-status">
           {unassignedCount} of {keptDice.length} {keptDice.length === 1 ? "die" : "dice"} still{" "}
           {unassignedCount === 1 ? "needs" : "need"} a target.
@@ -153,7 +154,6 @@ export function AllocationPanel2({
           Confirm allocation
         </button>
       </div>
-      {character.downed && <p role="alert">You&rsquo;re down. A teammate must rescue you.</p>}
     </section>
   );
 }

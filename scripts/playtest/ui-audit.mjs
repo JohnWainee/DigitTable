@@ -1027,18 +1027,26 @@ const COMMIT_BAR_AUDIT = `(() => {
   const cardMiddle = probe();
   window.scrollTo(0, document.documentElement.scrollHeight);
   const pageEnd = probe();
-  // The very last option of the picker, focused by keyboard, must scroll clear of the bar.
-  const options = [...card.querySelectorAll(".gear-option input")];
-  const last = options[options.length - 1];
-  let focus = null;
-  if (last) {
+  // Controls that take keyboard focus near the bottom of the card (the last option, a "Why?" summary, a row's own
+  // button) must scroll clear of the bar. Each is first placed with its top edge just inside the bottom of the
+  // screen (so it is partly visible and the browser scrolls only the minimum, honouring scroll-margin, rather
+  // than centring it), then focused; afterwards its bottom edge must sit above the bar.
+  const describe = (el) => el.tagName.toLowerCase() + (el.id ? "#" + el.id : "") + (el.type ? "[" + el.type + "]" : "");
+  const inputs = [...card.querySelectorAll(".gear-option input")];
+  const candidates = [
+    inputs[inputs.length - 1],
+    ...card.querySelectorAll("summary"),
+    ...[...card.querySelectorAll("button")].filter((b) => !bar.contains(b)).slice(-1),
+  ].filter(Boolean);
+  const focus = candidates.map((el) => {
     window.scrollTo(0, 0);
-    last.focus();
-    const label = last.closest("label").getBoundingClientRect();
+    window.scrollTo(0, window.scrollY + el.getBoundingClientRect().top - (innerHeight - 8));
+    el.focus();
+    const r = el.getBoundingClientRect();
     const b = bar.getBoundingClientRect();
-    focus = { labelTop: label.top, labelBottom: label.bottom, barTop: b.top, clear: !sticky || label.bottom <= b.top + 1 };
-    last.blur();
-  }
+    el.blur();
+    return { control: describe(el), bottom: r.bottom, barTop: b.top, clear: !sticky || r.bottom <= b.top + 1 };
+  });
   window.scrollTo(0, 0);
   return {
     found: true,
@@ -1098,7 +1106,7 @@ async function auditCommitBar(device, state) {
     if (r.overflowPx > 1) {
       // 320px at 200% text is the already-recorded geometry limit of the rem-padded panels (identical on
       // the pre-commit-bar build: 47px compose, 11px allocation). Recorded, not gating, as for the sheet.
-      if (r.innerWidth <= 320 && TEXT_SCALE >= 2)
+      if (vp.width <= 320 && TEXT_SCALE >= 2)
         console.log(`INFO ${scope}: horizontal overflow ${r.overflowPx}px (recorded, not gating)`);
       else fail(scope, `horizontal overflow ${r.overflowPx}px`);
     }
@@ -1119,8 +1127,8 @@ async function auditCommitBar(device, state) {
     }
     if (r.pageEnd.button.top < 0 || r.pageEnd.button.bottom > r.innerHeight)
       fail(scope, "button is off screen once scrolled to the end of the page");
-    if (r.focus && !r.focus.clear)
-      fail(scope, "the last option is covered by the bar when it takes keyboard focus");
+    for (const f of r.focus.filter((entry) => !entry.clear))
+      fail(scope, `${f.control} is covered by the bar when it takes keyboard focus`);
   }
   await applyViewport(device, original);
 }

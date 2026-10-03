@@ -183,11 +183,18 @@ describe("two-device smoke scene advance", () => {
   });
 });
 
+/** `auditCommitBar` only: from its declaration to the next top-level function. */
+function commitBarFunction(): string {
+  const start = audit.indexOf("async function auditCommitBar");
+  const end = audit.indexOf("\nasync function ", start + 1);
+  return audit.slice(start, end);
+}
+
 describe("ui-audit.mjs commit-bar coverage", () => {
   it("audits the compose and allocation bars at every viewport, and again under a real 200% browser text size", () => {
     expect(audit).toContain('await auditCommitBar(player, "compose")');
     expect(audit).toContain('await auditCommitBar(player, "allocation")');
-    const fn = audit.slice(audit.indexOf("async function auditCommitBar"));
+    const fn = commitBarFunction();
     expect(fn).toContain("for (const vp of VIEWPORTS)");
     // A CSS font-size override on <html> cannot move the stylesheet's `rem` media gate; Chrome's own default
     // font size does, so the large-text case launches the browser with it.
@@ -197,14 +204,18 @@ describe("ui-audit.mjs commit-bar coverage", () => {
   });
 
   it("judges reachability, the short-viewport fallback, the size cap and keyboard focus clearance", () => {
-    const fn = audit.slice(audit.indexOf("async function auditCommitBar"));
+    const fn = commitBarFunction();
     // The gate mirrors the stylesheet's `@media (min-height: 32rem)`.
     expect(fn).toContain('r.position !== "static"');
     expect(fn).toContain('r.position !== "sticky"');
     expect(fn).toContain("r.cardTop.bar.height > r.innerHeight * 0.5");
-    expect(fn).toContain("last option is covered by the bar");
+    expect(fn).toContain("is covered by the bar when it takes keyboard focus");
+    // Focus is probed from a PARTLY visible position: a far-off control is centred by the browser, which
+    // would pass whatever scroll-margin the stylesheet declares.
+    expect(audit).toContain("(innerHeight - 8)");
+    expect(audit).toContain('card.querySelectorAll("summary")');
     // The 320px + 200% text overflow predates the bar (identical on the earlier build): recorded, not gating.
-    expect(fn).toContain("r.innerWidth <= 320 && TEXT_SCALE >= 2");
+    expect(fn).toContain("vp.width <= 320 && TEXT_SCALE >= 2");
     expect(fn).toContain("is covered with the card");
   });
 });

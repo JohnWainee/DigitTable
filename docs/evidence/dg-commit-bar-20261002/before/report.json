@@ -1,0 +1,168 @@
+{
+  "label": "dg-before",
+  "base": "http://127.0.0.1:4192",
+  "startedAt": "2026-10-03T02:21:24.130Z",
+  "states": [],
+  "modal": [],
+  "keyboard": [],
+  "commitBar": [
+    {
+      "scope": "player/compose-commit-bar@phone-small",
+      "found": false,
+      "innerHeight": 568,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/compose-commit-bar@phone",
+      "found": false,
+      "innerHeight": 812,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/compose-commit-bar@phone-landscape",
+      "found": false,
+      "innerHeight": 375,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/compose-commit-bar@tablet",
+      "found": false,
+      "innerHeight": 1024,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/compose-commit-bar@desktop",
+      "found": false,
+      "innerHeight": 800,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/compose-commit-bar@table",
+      "found": false,
+      "innerHeight": 1080,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/allocation-commit-bar@phone-small",
+      "found": false,
+      "innerHeight": 568,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/allocation-commit-bar@phone",
+      "found": false,
+      "innerHeight": 812,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/allocation-commit-bar@phone-landscape",
+      "found": false,
+      "innerHeight": 375,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/allocation-commit-bar@tablet",
+      "found": false,
+      "innerHeight": 1024,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/allocation-commit-bar@desktop",
+      "found": false,
+      "innerHeight": 800,
+      "overflowPx": 0
+    },
+    {
+      "scope": "player/allocation-commit-bar@table",
+      "found": false,
+      "innerHeight": 1080,
+      "overflowPx": 0
+    }
+  ],
+  "validation": [],
+  "reducedMotion": null,
+  "routes": [],
+  "failures": [
+    {
+      "scope": "player/compose-commit-bar@phone-small",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/compose-commit-bar@phone",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/compose-commit-bar@phone-landscape",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/compose-commit-bar@tablet",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/compose-commit-bar@desktop",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/compose-commit-bar@table",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/allocation-commit-bar@phone-small",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/allocation-commit-bar@phone",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/allocation-commit-bar@phone-landscape",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/allocation-commit-bar@tablet",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/allocation-commit-bar@desktop",
+      "message": "no .commit-bar rendered"
+    },
+    {
+      "scope": "player/allocation-commit-bar@table",
+      "message": "no .commit-bar rendered"
+    }
+  ],
+  "console": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  },
+  "finishedAt": "2026-10-03T02:21:45.973Z",
+  "ok": false,
+  "summary": {
+    "states": 0,
+    "controlsAudited": 0,
+    "controlIssues": 0,
+    "overflowStates": 0,
+    "axeHardViolations": 0,
+    "axeBestPractice": [],
+    "keyboardFocusChecks": 0,
+    "commitBarCases": 12,
+    "validationScenarios": 0,
+    "sheetCases": 0,
+    "failures": 12
+  }
+}
