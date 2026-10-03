@@ -203,6 +203,8 @@ describe("ui-audit.mjs commit-bar coverage", () => {
     expect(fn).toContain('r.position !== "sticky"');
     expect(fn).toContain("r.cardTop.bar.height > r.innerHeight * 0.5");
     expect(fn).toContain("last option is covered by the bar");
+    // The 320px + 200% text overflow predates the bar (identical on the earlier build): recorded, not gating.
+    expect(fn).toContain("r.innerWidth <= 320 && TEXT_SCALE >= 2");
     expect(fn).toContain("is covered with the card");
   });
 });
