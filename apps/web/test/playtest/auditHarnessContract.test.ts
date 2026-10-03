@@ -173,3 +173,12 @@ describe("ui-audit.mjs pop-out, picker and form coverage", () => {
     expect(audit).toContain('"console-edit-target"');
   });
 });
+
+describe("two-device smoke scene advance", () => {
+  it("does not require the scene reason field, which a completed primary Objective removes", () => {
+    const advance = smoke.slice(smoke.indexOf("advances the scene with a reason"));
+    const use = advance.indexOf('setInput(gm, "#scene-reason"');
+    expect(use).toBeGreaterThan(-1);
+    expect(advance.slice(0, use)).toMatch(/querySelector\("#scene-reason"\)/);
+  });
+});

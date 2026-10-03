@@ -548,7 +548,11 @@ async function main() {
       await clickText(gm, "button", /^End round/);
       await waitFor(gm, `document.body.textContent.includes("round 2")`, 30000, "round 2");
       const before = await ev(table, `document.querySelector(".scene-card h2")?.textContent`);
-      await setInput(gm, "#scene-reason", "Playtest smoke: skipping ahead");
+      // The reason field only exists while the primary Objective is incomplete, and the opposed roll
+      // earlier in this run is random: a lucky roll completes it and the app correctly omits the field.
+      if (await ev(gm, `Boolean(document.querySelector("#scene-reason"))`)) {
+        await setInput(gm, "#scene-reason", "Playtest smoke: skipping ahead");
+      }
       await clickText(gm, "button", /^Advance scene$/);
       await waitFor(
         table,

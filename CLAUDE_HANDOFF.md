@@ -451,6 +451,14 @@ When pausing or finishing a material unit:
 
 ## Integrated verification and next action
 
+### 2026-10-02: reskin verification on the mobile pop-out candidate (`sonnet-df/reskin-verification-20261002`)
+
+- **Base:** committed `2c5fe8e`. No deployment, merge, or cloud change. An earlier staging-playthrough session was blocked by port contention and never finished; only committed evidence was used.
+- **Finding:** no product defect. One harness defect: `two-device-smoke.mjs` assumed `#scene-reason` always exists, but the app omits it once the primary Objective is complete, which the random opposed roll sometimes does (1 failure in 5 runs). Fixed (conditional set) with a contract test.
+- **Checks:** `npm run check` 753 passed, 11 todo. `npm run build` passed. Emulators: 18 rules, 86 Functions, 4 web passed. `ui-audit.mjs`: 216 states, 2,562 controls, zero control, overflow, or hard axe findings. Smoke: 6 of 6 `--reload` runs passed after the repair.
+- **Review:** approved, in `docs/reviews/2026-10-02-df-reskin-verification-review.md`. Evidence in `docs/evidence/df-reskin-verification-20261002/`.
+- **Next action:** physical iOS/Android and assistive-technology rehearsal per `docs/PLAYTEST_TWO_DEVICE.md`; John decides merge and redeploy.
+
 ### 2026-10-02: mobile code-entry and browser-audit hardening — candidate ready for integration review
 
 - **Branch:** `sonnet-cz/reskin-uiux-polish-20261002`, from `origin/main` at `b599abd`; no deployment or merge.
