@@ -31,15 +31,12 @@ done
 
 # The flows create real rooms with a fixed passphrase. Against the local emulators that is nothing; against
 # a deployed project it is data in a real database, so a non-loopback base needs an explicit opt-in.
-case "$BASE" in
-  http://127.0.0.1:*|http://localhost:*|http://\[::1\]:*) ;;
-  *)
-    if [ "$ALLOW_REMOTE" -ne 1 ]; then
-      echo "Refusing non-loopback base $BASE (it would create rooms there). Pass --allow-remote to override." >&2
-      exit 1
-    fi
-    ;;
-esac
+# A strict match (not a glob): "http://localhost:80@evil.example" must not pass as loopback.
+LOOPBACK='^http://(127\.0\.0\.1|localhost|\[::1\]):[0-9]+(/[^@]*)?$'
+if ! [[ "$BASE" =~ $LOOPBACK ]] && [ "$ALLOW_REMOTE" -ne 1 ]; then
+  echo "Refusing non-loopback base $BASE (it would create rooms there). Pass --allow-remote to override." >&2
+  exit 1
+fi
 [ ${#DEVICES[@]} -eq 0 ] && DEVICES=("iPhone 17 Pro")
 
 if ! curl -fs -o /dev/null "$BASE/"; then
@@ -63,6 +60,12 @@ print(udid, runtime.rsplit(".", 1)[-1])' "$1"
 }
 
 STATUS=0
+BOOTED_HERE=()
+# Shut down only the simulators this script booted, including on Ctrl-C.
+cleanup() {
+  for u in ${BOOTED_HERE[@]+"${BOOTED_HERE[@]}"}; do xcrun simctl shutdown "$u" 2>/dev/null || true; done
+}
+trap cleanup EXIT INT TERM
 for device in "${DEVICES[@]}"; do
   if ! found="$(udid_for "$device")"; then
     echo "No available simulator named \"$device\" (xcrun simctl list devices available)." >&2
@@ -73,11 +76,9 @@ for device in "${DEVICES[@]}"; do
   runtime="${found#* }"
   tag="$(echo "$device" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9\n' '-' | sed 's/--*/-/g; s/^-//; s/-$//')"
   echo "== $device on $runtime ($udid) -> $OUT/$tag"
-  # Shut it down afterwards only if this script booted it.
-  booted_here=0
   if ! xcrun simctl list devices booted | grep -q "$udid"; then
     xcrun simctl boot "$udid" 2>/dev/null || true
-    booted_here=1
+    BOOTED_HERE+=("$udid")
   fi
   xcrun simctl bootstatus "$udid" >/dev/null 2>&1
   if TEST_RUNNER_DIGITABLE_BASE="$BASE" TEST_RUNNER_DIGITABLE_OUT="$OUT/$tag" TEST_RUNNER_DIGITABLE_TAG="$tag" \
@@ -89,6 +90,5 @@ for device in "${DEVICES[@]}"; do
     echo "   FAILED (see $OUT/$tag-xcodebuild.log)"
     STATUS=1
   fi
-  [ "$booted_here" -eq 1 ] && xcrun simctl shutdown "$udid" 2>/dev/null || true
 done
 exit $STATUS

@@ -1565,10 +1565,12 @@ details ul {
 .sheet-backdrop[data-compact] {
   /* Take back the dead band too: the wide-viewport rule below gives the backdrop 1.5rem on every side, and
      at 60-90px visible that left a 24px strip under a sheet that was already too short to show the
-     focused field (reviewer measurement: field 36/48px visible at 70px). Only the notch/home-indicator
-     insets are kept. */
+     focused field (reviewer measurement: field 36/48px visible at 70px). Only the notch inset (top) and,
+     through the footer, the home-indicator inset are kept. */
   padding-top: max(env(safe-area-inset-top, 0px), 0.25rem);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  /* The footer's own bottom padding already carries the home-indicator inset; adding it here as well
+     counted it twice (reviewer: field 33/48px visible at 60px with a 21px inset). */
+  padding-bottom: 0;
 }
 
 .sheet-backdrop[data-compact] .sheet {

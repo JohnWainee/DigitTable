@@ -275,8 +275,15 @@ describe("reskin stylesheet contract", () => {
       // The wide-viewport rule pads the backdrop 1.5rem on every side; compact must take that dead band
       // back (it left the focused field 36/48px visible at 70px) and keep only the device insets.
       const backdrop = rulesFor(/^\.sheet-backdrop\[data-compact\]$/);
-      expect(declaration(backdrop, "padding-bottom")).toEqual(["env(safe-area-inset-bottom, 0px)"]);
-      expect(declaration(backdrop, "padding-top")[0]).toContain("env(safe-area-inset-top");
+      // The footer carries the bottom inset already (asserted below): adding it on the backdrop as well
+      // counted it twice and clipped the focused field at 60-70px with a real inset.
+      expect(declaration(backdrop, "padding-bottom")).toEqual(["0"]);
+      expect(declaration(backdrop, "padding-top")).toEqual([
+        "max(env(safe-area-inset-top, 0px), 0.25rem)",
+      ]);
+      const header = rulesFor(/^\.sheet-backdrop\[data-compact\] \.sheet-header$/);
+      expect(declaration(header, "padding-top")).toEqual(["0.25rem"]);
+      expect(declaration(header, "padding-bottom")).toEqual(["0.35rem"]);
       const sheet = rulesFor(/^\.sheet-backdrop\[data-compact\] \.sheet$/);
       expect(declaration(sheet, "overflow-y")).toEqual(["auto"]);
       expect(declaration(sheet, "overscroll-behavior")).toEqual(["contain"]);

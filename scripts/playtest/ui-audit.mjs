@@ -486,6 +486,25 @@ function within(box, frame, tolerance = 1) {
   );
 }
 
+/** Where each correction-sheet control is found (evaluated in the page). */
+const SHEET_FIND = {
+  reason: `document.querySelector("#correction-reason")`,
+  apply: `[...document.querySelectorAll('[role="dialog"] button')].find(b => /apply correction/i.test(b.textContent))`,
+  cancel: `[...document.querySelectorAll('[role="dialog"] button')].find(b => /cancel/i.test(b.textContent))`,
+  heading: `document.querySelector('[role="dialog"] h2')`,
+};
+
+/**
+ * Scroll one control into view the way a person (or the browser's focus handling) would, then measure. A
+ * control is "reachable" if SOME scroll position shows it whole; asking for the bottom or top stop instead
+ * wrongly fails a sheet whose footer padding simply sits between the button and the end of the scroll.
+ */
+async function geometryRevealing(gm, key) {
+  await ev(gm, `${SHEET_FIND[key]}.scrollIntoView({ block: "nearest" })`);
+  await sleep(80);
+  return ev(gm, MODAL_GEOMETRY);
+}
+
 async function openCorrection(gm, index = 0) {
   // Roster-agnostic on purpose: the Nth listed character's Correct button. Matching a character
   // by name silently broke this audit when the sourcebook roster renamed the "rook" seat (the id
@@ -584,19 +603,15 @@ async function auditSheetCase(gm, vp, index = 0) {
       record.keyboard.checks.compactSheetScrolls =
         kb.sheetScroll.overflowY === "auto" &&
         kb.sheetScroll.scrollHeight > kb.sheetScroll.clientHeight;
-      await ev(
-        gm,
-        `(() => { const s = document.querySelector('[role="dialog"]'); s.scrollTop = s.scrollHeight; })()`,
-      );
-      const bottom = await ev(gm, MODAL_GEOMETRY);
+      const applyGeo = await geometryRevealing(gm, "apply");
+      const cancelGeo = await geometryRevealing(gm, "cancel");
       record.keyboard.checks.actionsReachableByScrollingSheet =
-        within(bottom.apply, intersect(kbFrame, bottom.dialog)) &&
-        within(bottom.cancel, intersect(kbFrame, bottom.dialog));
-      await ev(gm, `document.querySelector('[role="dialog"]').scrollTop = 0`);
-      const top = await ev(gm, MODAL_GEOMETRY);
+        within(applyGeo.apply, intersect(kbFrame, applyGeo.dialog)) &&
+        within(cancelGeo.cancel, intersect(kbFrame, cancelGeo.dialog));
+      const headingGeo = await geometryRevealing(gm, "heading");
       record.keyboard.checks.titleReachableByScrollingSheet = within(
-        top.heading,
-        intersect(kbFrame, top.dialog),
+        headingGeo.heading,
+        intersect(kbFrame, headingGeo.dialog),
       );
     } else {
       record.keyboard.checks.actionsVisible =
@@ -817,46 +832,55 @@ async function auditModal(gm) {
   // and keep the typed-in field in view, with the title and actions reachable by scrolling the sheet.
   // 90px is the middle of what iOS left; 70 and 60 are its low end (a reviewer measured the field clipped
   // 36/48px at 70px when compact mode still carried the wide-viewport bottom padding).
+  // Each height runs with no insets and with a landscape iPhone's (notch 47px left/right, home indicator 21px):
+  // the bottom inset is easy to count twice (once on the backdrop, once in the footer).
   for (const visibleHeight of [90, 70, 60]) {
-    for (const vp of [
-      { name: "phone-667x375", width: 667, height: 375, mobile: true },
-      byName["phone-landscape"],
-    ]) {
-      await scenario(`tight-keyboard-${vp.name}-${visibleHeight}px`, vp, async (record) => {
-        await openCorrection(gm);
-        await ev(gm, `document.querySelector("#correction-reason").focus()`);
-        const shrunk = { ...vp, height: visibleHeight };
-        await applyViewport(gm, shrunk);
-        await sleep(500);
-        const frame = frameOf(shrunk);
-        const geo = await ev(gm, MODAL_GEOMETRY);
-        record.geometry = geo;
-        const region = visibleRegion(geo, frame);
-        record.checks.compactModeEngaged = geo.compact === true;
-        record.checks.dialogInsideViewport = within(geo.dialog, frame);
-        // The field must be fully inside what the sheet shows, not merely inside the viewport.
-        record.checks.focusedFieldVisibleInSheet = within(geo.reason, region);
-        record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
-        await ev(
-          gm,
-          `(() => { const s = document.querySelector('[role="dialog"]'); s.scrollTop = s.scrollHeight; })()`,
-        );
-        const bottom = await ev(gm, MODAL_GEOMETRY);
-        record.checks.actionsReachableByScrollingSheet =
-          within(bottom.apply, intersect(frame, bottom.dialog)) &&
-          within(bottom.cancel, intersect(frame, bottom.dialog));
-        await ev(gm, `document.querySelector('[role="dialog"]').scrollTop = 0`);
-        const top = await ev(gm, MODAL_GEOMETRY);
-        record.checks.titleReachableByScrollingSheet = within(
-          top.heading,
-          intersect(frame, top.dialog),
-        );
-        if (visibleHeight === 90) {
-          record.screenshot = await screenshot(gm, `gm-correction-tight-keyboard-${vp.name}.jpg`, {
-            fullPage: false,
-          });
-        }
-      });
+    for (const insets of [false, true]) {
+      for (const vp of [
+        { name: "phone-667x375", width: 667, height: 375, mobile: true },
+        byName["phone-landscape"],
+      ]) {
+        const name = `tight-keyboard-${vp.name}-${visibleHeight}px${insets ? "-insets" : ""}`;
+        await scenario(name, vp, async (record) => {
+          if (insets) {
+            await gm.cdp.send(
+              "Emulation.setSafeAreaInsetsOverride",
+              { insets: { top: 0, left: 47, right: 47, bottom: 21 } },
+              gm.sessionId,
+            );
+          }
+          await openCorrection(gm);
+          await ev(gm, `document.querySelector("#correction-reason").focus()`);
+          const shrunk = { ...vp, height: visibleHeight };
+          await applyViewport(gm, shrunk);
+          await sleep(500);
+          const frame = frameOf(shrunk);
+          const geo = await ev(gm, MODAL_GEOMETRY);
+          record.geometry = geo;
+          record.checks.compactModeEngaged = geo.compact === true;
+          record.checks.dialogInsideViewport = within(geo.dialog, frame);
+          // The field must be fully inside what the sheet shows, not merely inside the viewport.
+          record.checks.focusedFieldVisibleInSheet = within(geo.reason, visibleRegion(geo, frame));
+          record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+          const applyGeo = await geometryRevealing(gm, "apply");
+          const cancelGeo = await geometryRevealing(gm, "cancel");
+          record.checks.actionsReachableByScrollingSheet =
+            within(applyGeo.apply, intersect(frame, applyGeo.dialog)) &&
+            within(cancelGeo.cancel, intersect(frame, cancelGeo.dialog));
+          const headingGeo = await geometryRevealing(gm, "heading");
+          record.checks.titleReachableByScrollingSheet = within(
+            headingGeo.heading,
+            intersect(frame, headingGeo.dialog),
+          );
+          if (visibleHeight === 90 && !insets) {
+            record.screenshot = await screenshot(
+              gm,
+              `gm-correction-tight-keyboard-${vp.name}.jpg`,
+              { fullPage: false },
+            );
+          }
+        });
+      }
     }
   }
   await applyViewport(gm, byName["desktop"]);

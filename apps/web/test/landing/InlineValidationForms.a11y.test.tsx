@@ -171,6 +171,18 @@ describe("inline form validation (no native bubbles)", () => {
       expect(screen.queryByRole("heading", { name: /your recovery code/i })).toBeNull();
     });
 
+    it("requires a visible display name here too (the server rejects a blank one), but lets whitespace through elsewhere", async () => {
+      const user = userEvent.setup();
+      renderApp("#/join");
+      await user.type(field(/room code/i), "ABCD-1234");
+      await user.type(field(/^passphrase$/i), "    ");
+      await user.type(field(/your display name/i), "   ");
+      await user.click(screen.getByRole("button", { name: /^join session$/i }));
+      expectInvalid(field(/your display name/i), /display name is required/i);
+      expectValid(field(/^passphrase$/i));
+      expectValid(field(/room code/i));
+    });
+
     it("flags all three empty fields and has no axe violations", async () => {
       const user = userEvent.setup();
       renderApp("#/join");
@@ -198,6 +210,19 @@ describe("inline form validation (no native bubbles)", () => {
       await user.type(field(/^room code$/i), "no good");
       expectInvalid(field(/^room code$/i), /letters, numbers and dashes/i);
       expect(await axe(document.body)).toHaveNoViolations();
+    });
+  });
+
+  describe("recover: the display name is local only", () => {
+    it("keeps the browser's semantics for it (empty fails, whitespace is a value), since the recover callable never sees it", async () => {
+      const user = userEvent.setup();
+      renderApp("#/join");
+      await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+      await user.type(field(/^room code$/i), "ABCD-1234");
+      await user.type(field(/recovery code/i), "CODE-1234");
+      await user.type(field(/your display name/i), "   ");
+      await user.click(screen.getByRole("button", { name: /^recover my seat$/i }));
+      expectValid(field(/your display name/i));
     });
   });
 

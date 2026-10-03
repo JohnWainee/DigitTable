@@ -92,7 +92,19 @@ describe("director console selects (live GM tools)", () => {
     expect(echoFor("edit-target")).toHaveTextContent(threat.textContent);
     expect(echoFor("edit-target")!.textContent).toMatch(/Threat: /);
 
+    // The kind prefix is what tells an Objective from a Threat of the same name.
+    const objective = [...target.options].find((o) => o.value.startsWith("objective:"))!;
+    await user.selectOptions(target, objective.value);
+    expect(echoFor("edit-target")).toHaveTextContent(objective.textContent);
+    expect(echoFor("edit-target")!.textContent).toMatch(/Objective: /);
+
     const advance = screen.getByRole<HTMLSelectElement>("combobox", { name: "Advance" });
+    expect(echoFor("advance-select")).toHaveTextContent(advance.selectedOptions[0]!.textContent);
+    expect(echoFor("advance-select")!.textContent).not.toMatch(/already unlocked/);
+
+    // The status suffix is part of what the closed select hides, so the echo carries it too.
+    await user.click(screen.getByRole("button", { name: /^unlock advance$/i }));
+    expect(echoFor("advance-select")!.textContent).toMatch(/\(already unlocked\)/);
     expect(echoFor("advance-select")).toHaveTextContent(advance.selectedOptions[0]!.textContent);
 
     expect(await axe(document.body)).toHaveNoViolations();

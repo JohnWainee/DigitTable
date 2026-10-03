@@ -54,7 +54,8 @@ const RECOVER_RULES: readonly FieldRule[] = [
     patternMessage: ROOM_CODE_MESSAGE,
   },
   { id: "recovery-code", label: "Recovery code", required: true },
-  { id: "recover-display-name", label: "Your display name", required: true, visible: true },
+  // Local only (the recover callable takes just the room and recovery codes): no server rule to mirror.
+  { id: "recover-display-name", label: "Your display name", required: true },
 ];
 
 /** docs/ETR_SESSION_FLOW.md section 4.2: `/join` — Player join by code + passphrase. */

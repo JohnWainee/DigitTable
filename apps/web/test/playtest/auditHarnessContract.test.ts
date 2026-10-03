@@ -144,7 +144,16 @@ describe("ui-audit.mjs pop-out, picker and form coverage", () => {
     expect(audit).toContain("function visibleRegion(geo, frame)");
     expect(audit).toContain("focusedFieldVisibleInSheet");
     expect(audit).toContain("bodyRect: box(body)");
-    expect(audit).toContain("intersect(frame, bottom.dialog)");
+    // Reachability is "some scroll position shows the control whole", not "the bottom stop does".
+    expect(audit).toContain("async function geometryRevealing(gm, key)");
+    expect(audit).toContain('scrollIntoView({ block: "nearest" })');
+    expect(audit).toContain("intersect(frame, applyGeo.dialog)");
+  });
+
+  it("runs the tight-keyboard cases with a landscape iPhone's safe-area insets too (the bottom inset was once counted twice)", () => {
+    expect(audit).toContain("Emulation.setSafeAreaInsetsOverride");
+    expect(audit).toMatch(/for \(const insets of \[false, true\]\)/);
+    expect(audit).toContain('"-insets"');
   });
 
   it("collects the browser's own console errors, not just the page's", () => {
