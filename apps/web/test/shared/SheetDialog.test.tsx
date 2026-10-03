@@ -225,6 +225,48 @@ describe("SheetDialog", () => {
     expect(scrollIntoView.mock.contexts[0]).toBe(group);
   });
 
+  it.each(["auto", "scroll", "overlay"])(
+    "measures the whole sheet, not the body, once the single-scroll layout makes the sheet the scroller (overflow-y: %s)",
+    async (overflowY) => {
+      const user = userEvent.setup();
+      render(
+        <SheetDialog titleId="single-title" title="Single" onClose={() => {}} footer={<span />}>
+          <div className="form-field">
+            <label htmlFor="single-note">Note</label>
+            <input id="single-note" type="text" />
+          </div>
+        </SheetDialog>,
+      );
+      const dialog = screen.getByRole("dialog");
+      const group = document.querySelector(".form-field") as HTMLElement;
+      const body = document.querySelector(".sheet-body") as HTMLElement;
+      // The stylesheet is not loaded in jsdom: set by hand what the `@container` block does to the sheet
+      // when only ~100px are visible (iOS landscape with the keyboard up). The body is then as tall as its
+      // content (it no longer scrolls), so only the SHEET's client height says how much room there is. Any
+      // scrollable overflow-y counts, not just `auto`. The numbers are the ones measured on iOS: a 73.6px
+      // label + field pair, 0.4rem (6.4px) of scroll padding each side, and a 94px client height at 98px.
+      dialog.style.overflowY = overflowY;
+      dialog.style.scrollPaddingTop = "6.4px";
+      dialog.style.scrollPaddingBottom = "6.4px";
+      group.getBoundingClientRect = () => ({ height: 73.6 }) as DOMRect;
+      Object.defineProperty(body, "clientHeight", { configurable: true, value: 900 });
+      Object.defineProperty(dialog, "clientHeight", { configurable: true, value: 80 });
+      scrollIntoView.mockClear();
+
+      // 73.6px of label + field plus 12.8px of padding cannot fit an 80px sheet: reveal the field alone,
+      // however tall the body is.
+      await user.click(screen.getByLabelText("Note"));
+      expect(scrollIntoView.mock.contexts[0]).toBe(screen.getByLabelText("Note"));
+
+      // The measured 94px (98px viewport) holds the pair with the padding to spare (86.4px).
+      Object.defineProperty(dialog, "clientHeight", { configurable: true, value: 94 });
+      scrollIntoView.mockClear();
+      await user.click(document.body);
+      await user.click(screen.getByLabelText("Note"));
+      expect(scrollIntoView.mock.contexts[0]).toBe(group);
+    },
+  );
+
   it("removes inert from the app BEFORE returning focus to the trigger (an inert node cannot take focus)", async () => {
     const user = userEvent.setup();
     const { container } = render(<Harness />);

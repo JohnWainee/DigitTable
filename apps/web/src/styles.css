@@ -795,6 +795,8 @@ details ul {
 
 [role="alert"],
 .error-message {
+  /* CommandAlert scrolls a rejection into view; leave it room instead of flush against the edge. */
+  scroll-margin-block: 0.75rem;
   padding: 0.65rem 0.85rem;
   color: var(--paper);
   font-weight: 600;
@@ -1408,6 +1410,11 @@ details ul {
      and actions off the visual viewport. The page behind cannot scroll (`html.sheet-open`) and
      `overscroll-behavior: contain` stops scroll chaining, so nothing needs restricting. */
   touch-action: auto;
+  /* The sheet reacts to the VISUAL viewport. On iOS the on-screen keyboard shrinks only that one (the
+     layout viewport, and so every media query, keeps its full height), and this box is exactly that
+     rectangle, which makes it the size container the single-scroll `@container` block below measures. */
+  container-name: sheet-viewport;
+  container-type: size;
 }
 
 /* `var(--vv-height, 100dvh)` must live behind @supports: a var() whose value is invalid on an
@@ -1571,6 +1578,38 @@ details ul {
   .sheet-footer {
     padding-top: 0.35rem;
     padding-bottom: calc(0.35rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Too little VISIBLE height to pin a title and an action row around a scrolling body. Measured on real
+   iOS 26.5 Mobile Safari (iPhone 17 Pro, landscape, keyboard up): 98px rotated with the keyboard open and
+   126px with it raised in landscape, leaving a 28-45px body, the field half under the title and the
+   Apply/Cancel labels cut off by the sheet's overflow clip; a 320px phone with the keyboard leaves ~220px.
+   Below 11rem (176px; it scales with text size) stop pinning and let the whole sheet scroll as one page:
+   the focused field is revealed with its label (SheetDialog), and the action row is simply the last thing
+   in the page instead of being clipped. 11rem is where pinning stops fitting: a compact title (28px), the
+   label + field (78px) and a one-row action row (61px) need ~177px, and above that the pinned layout keeps
+   its actions on screen, which is better than scrolling to them. A phone narrower than 22rem stacks its
+   two buttons into a ~120px action row, which the footer's 40% cap would hide behind its own scrollbar
+   below ~300px, so it switches below 20rem. The container is the visual viewport (see .sheet-backdrop),
+   which is the only place iOS reports the keyboard. */
+@container sheet-viewport ((max-height: 11rem) or ((max-width: 22rem) and (max-height: 20rem))) {
+  .sheet {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    /* A Tab-focused action scrolls in flush with the edge; leave room for its 3px ring + 3px offset. */
+    scroll-padding-block: 0.4rem;
+  }
+
+  .sheet-body {
+    flex: none;
+    overflow-y: visible;
+  }
+
+  .sheet-footer {
+    max-height: none;
+    overflow-y: visible;
   }
 }
 

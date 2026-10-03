@@ -20,11 +20,54 @@ const css = readFileSync(join(here, "../../src/styles.css"), "utf8").replace(
 const html = readFileSync(join(here, "../../index.html"), "utf8");
 const uiAudit = readFileSync(join(here, "../../../../scripts/playtest/ui-audit.mjs"), "utf8");
 
-/** All `selector { body }` rules at the top level or inside the named at-rule (or anywhere when omitted). */
+/** `source` without the `{ … }` block of every `atRule` (found by brace matching). */
+function withoutAtRule(source: string, atRule: string): string {
+  let out = source;
+  for (let start = out.indexOf(atRule); start >= 0; start = out.indexOf(atRule)) {
+    const open = out.indexOf("{", start);
+    let depth = 0;
+    let end = out.length;
+    for (let i = open; i < out.length; i += 1) {
+      if (out[i] === "{") depth += 1;
+      if (out[i] === "}") {
+        depth -= 1;
+        if (depth === 0) {
+          end = i + 1;
+          break;
+        }
+      }
+    }
+    out = out.slice(0, start) + out.slice(end);
+  }
+  return out;
+}
+
+// The default-layout rules, so a `@container` override of the same selector never reads as a duplicate.
+const cssOutsideContainers = withoutAtRule(css, "@container");
+
+/** The prelude and body of the first `@container <name> …` block, found by brace matching. */
+function containerRule(name: string): { query: string; body: string } {
+  const start = css.indexOf(`@container ${name}`);
+  if (start < 0) throw new Error(`no @container ${name}`);
+  const open = css.indexOf("{", start);
+  let depth = 0;
+  for (let i = open; i < css.length; i += 1) {
+    if (css[i] === "{") depth += 1;
+    if (css[i] === "}") {
+      depth -= 1;
+      if (depth === 0) {
+        return { query: css.slice(start, open).trim(), body: css.slice(open + 1, i) };
+      }
+    }
+  }
+  throw new Error("unbalanced braces");
+}
+
+/** All `selector { body }` rules at the top level or inside any at-rule except `@container`. */
 function rulesFor(selectorPattern: RegExp): string[] {
   const out: string[] = [];
   const re = /([^{}]+)\{([^{}]*)\}/g;
-  for (let match = re.exec(css); match; match = re.exec(css)) {
+  for (let match = re.exec(cssOutsideContainers); match; match = re.exec(cssOutsideContainers)) {
     const selector = match[1]!.trim();
     if (selectorPattern.test(selector)) out.push(match[2]!);
   }
@@ -135,6 +178,50 @@ describe("reskin stylesheet contract", () => {
     // The redemption types the code in lower case, exercising the server-bound normalisation.
     expect(uiAudit).toMatch(/codes\.playerRecovery\.toLowerCase\(\)/);
     expect(uiAudit.replace(/\s+/g, " ")).toContain('byName["phone-landscape"], byName["tablet"],');
+  });
+
+  it("keeps the real-browser keyboard gate at the visual-viewport heights real iOS leaves", () => {
+    // iOS 26.5 Mobile Safari (iPhone 17 Pro), landscape, soft keyboard: 98px (rotated with it open) and
+    // 126px (raised in landscape). The proportional 45% / 55% keyboard cases never go that low.
+    const source = uiAudit.replace(/\s+/g, " ");
+    for (const shrunk of ["[874, 98]", "[874, 126]", "[667, 100]", "[320, 220]", "[320, 280]"]) {
+      expect(source, shrunk).toContain(`shrunk: ${shrunk}, expect: "single-scroll"`);
+    }
+    // ...and a control that must stay pinned, so the gate cannot be satisfied by always collapsing.
+    expect(source).toContain('shrunk: [375, 447], expect: "pinned"');
+    expect(source).toContain('shrunk: [667, 190], expect: "pinned"');
+    for (const check of ["layoutIsExpected", "fieldAndLabelInsideScroller", "actionsReachable"]) {
+      expect(uiAudit, check).toContain(`record.checks.${check}`);
+    }
+  });
+
+  it("keeps a rejected command's alert inside the real-browser audit at every audited width", () => {
+    // The alert once rendered 270-730px above the viewport after pressing a control lower on the page.
+    const start = uiAudit.indexOf("async function auditCommandFeedback");
+    expect(start).toBeGreaterThan(-1);
+    const body = uiAudit.slice(start, uiAudit.indexOf("async function auditReducedMotion"));
+    for (const viewport of ["phone", "phone-small", "phone-landscape", "tablet", "desktop"]) {
+      expect(body, viewport).toContain(`byName["${viewport}"]`);
+    }
+    expect(body).toContain("alertFullyInViewport");
+    expect(body).toContain("/^End round/"); // the real ROUND_HAS_OPEN_ROLLS rejection
+    expect(body).toContain("Page.reload"); // a leftover alert must not be measured instead of the new one
+    expect(uiAudit.indexOf("await auditCommandFeedback(gm)")).toBeGreaterThan(
+      uiAudit.indexOf('await captureState(gm, "console-pending")'),
+    );
+  });
+
+  it("reports command rejections through CommandAlert on every long screen, never as a bare alert paragraph", () => {
+    // A bare <p role="alert"> near the top of these pages is out of sight when the control is far below.
+    for (const file of [
+      "gm2/GmDirectorScreen.tsx",
+      "landing/ClaimCharacterScreen.tsx",
+      "player2/PlayerDashboardScreen.tsx",
+    ]) {
+      const source = readFileSync(join(here, "../../src", file), "utf8");
+      expect(source, file).toContain("<CommandAlert");
+      expect(source, file).not.toContain('className="error-message"');
+    }
   });
 
   describe("touch targets and text-entry size", () => {
@@ -345,6 +432,40 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(rulesFor(/^\.sheet-backdrop$/), "align-items")).toContain("flex-end");
       const wide = mediaBlock("(min-width: 40.0625rem)");
       expect(wide).toMatch(/\.sheet-backdrop\s*\{[^}]*align-items:\s*center/);
+    });
+
+    it("is a size container over the visual viewport, the only box that sees an iOS keyboard", () => {
+      // iOS shrinks only the visual viewport for the keyboard, so no media query can react to it; the
+      // backdrop IS that rectangle (--vv-*), which makes it the container the single-scroll rule measures.
+      const backdrop = rulesFor(/^\.sheet-backdrop$/);
+      expect(declaration(backdrop, "container-type")).toEqual(["size"]);
+      expect(declaration(backdrop, "container-name")).toEqual(["sheet-viewport"]);
+    });
+
+    it("scrolls the whole sheet as one page when too little height is visible to pin a title and an action row", () => {
+      // Measured on real iOS 26.5 Mobile Safari, landscape, keyboard up: a 98px / 126px visual viewport, in
+      // which a pinned title + action row left a 28-45px body and cut the buttons off. 11rem (176px) is
+      // where pinning stops fitting label + field + a one-row action row, so above it the actions stay on
+      // screen. rem, so it scales with text size; the narrow branch covers a 320px phone whose two stacked
+      // buttons the pinned footer's 40% cap cannot show below ~300px.
+      // Exactly one container block (a second one could silently override the single-scroll rules), and the
+      // exact query, so a widened condition such as `or (min-width: 0)` cannot pass unnoticed.
+      expect(css.match(/@container\b/g) ?? []).toHaveLength(1);
+      const { query, body } = containerRule("sheet-viewport");
+      expect(query.replace(/\s+/g, " ")).toBe(
+        "@container sheet-viewport ((max-height: 11rem) or ((max-width: 22rem) and (max-height: 20rem)))",
+      );
+      expect(body).toMatch(/\.sheet\s*\{[^}]*overflow-y:\s*auto/);
+      // A Tab-focused action scrolls in flush with the edge: leave room for its focus ring.
+      expect(body).toMatch(/\.sheet\s*\{[^}]*scroll-padding-block:\s*0\.4rem/);
+      expect(body).toMatch(/\.sheet-body\s*\{[^}]*flex:\s*none[^}]*overflow-y:\s*visible/);
+      expect(body).toMatch(/\.sheet-footer\s*\{[^}]*max-height:\s*none[^}]*overflow-y:\s*visible/);
+      // The default layout still pins: the override lives only inside the container block.
+      expect(declaration(rulesFor(/^\.sheet$/), "overflow")).toContain("hidden");
+      expect(declaration(rulesFor(/^\.sheet-body$/), "overflow-y")).toEqual(["auto"]);
+      // The scroll padding that keeps a Tab-focused action's ring clear exists only in the single-scroll
+      // layout; the default pinned layout (and `reveal()`'s fit test for it) has none.
+      expect(declaration(rulesFor(/^\.sheet$/), "scroll-padding-block")).toEqual([]);
     });
 
     it("reclaims vertical room on short viewports (landscape phone / keyboard open)", () => {

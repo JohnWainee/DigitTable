@@ -14,6 +14,7 @@ import type {
   RollViewFull,
 } from "@digitable/template-eat-the-reich";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
+import { CommandAlert } from "../shared/CommandAlert.js";
 import { SceneCard } from "./SceneCard.js";
 import { PartyStrip } from "./PartyStrip.js";
 import { ComposeStep2 } from "./ComposeStep2.js";
@@ -282,11 +283,7 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
           Your action is awaiting confirmation. Reconnecting will check it automatically.
         </p>
       )}
-      {(error || lastError) && (
-        <p role="alert" className="error-message">
-          {error ?? lastError?.message}
-        </p>
-      )}
+      <CommandAlert error={error} failure={lastError} />
       {view.paused && (
         <p role="status" className="form-hint">
           Paused.

@@ -42,6 +42,16 @@ function isReachable(el: HTMLElement): boolean {
     : true;
 }
 
+/**
+ * Whether the sheet itself is the scrolling box (the single-scroll layout) rather than just its body. Any
+ * scrollable `overflow-y` counts, so a later stylesheet change to `scroll` or `overlay` cannot silently
+ * make `reveal()` measure the wrong element.
+ */
+function scrollsItself(sheet: HTMLElement): boolean {
+  const overflowY = getComputedStyle(sheet).overflowY;
+  return overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay";
+}
+
 /** Number of sheets currently mounted, so root scroll is unlocked only when the last one closes. */
 let openSheets = 0;
 
@@ -53,7 +63,10 @@ export interface SheetDialogProps {
   readonly titleId: string;
   readonly title: ReactNode;
   readonly onClose: () => void;
-  /** Sticky action row (primary and cancel buttons); always reachable without scrolling the body. */
+  /**
+   * Action row (primary and cancel buttons): pinned below the body, or the last thing in the page when too
+   * little height is visible and the whole sheet scrolls as one page (see the docblock below).
+   */
   readonly footer: ReactNode;
   readonly children: ReactNode;
 }
@@ -70,7 +83,11 @@ export interface SheetDialogProps {
  *   reader can reach the page behind it (`aria-modal` alone is only a hint).
  * - Sized from the *visual* viewport (`useVisualViewportBox`) so it never
  *   slides under an on-screen keyboard or off screen with dynamic browser
- *   chrome; the header and footer stay pinned while only the body scrolls.
+ *   chrome; the header and footer stay pinned while only the body scrolls,
+ *   except when little height is visible (below 11rem, or below 20rem on a
+ *   phone under 22rem wide: a landscape phone with the keyboard up, or large
+ *   text on a small phone), where the whole sheet scrolls as one page instead
+ *   (`@container sheet-viewport` in styles.css).
  * - Root scrolling is locked while it is open, and a focused text field (with its label) is
  *   scrolled back into view when the keyboard appears.
  * - Focus moves to the heading on open and returns to the trigger on close;
@@ -152,8 +169,9 @@ export function SheetDialog({
 
   // Keep the field being typed in above the on-screen keyboard: on focus, and
   // again when the visual viewport changes size (the keyboard finishes opening
-  // after the focus event). `block: "nearest"` scrolls only the sheet body,
-  // never the page, and is instant, so it needs no reduced-motion branch.
+  // after the focus event). `block: "nearest"` scrolls only the sheet's own
+  // scrolling box (the body, or the whole sheet in the single-scroll layout),
+  // never the page behind it, and is instant, so it needs no reduced-motion branch.
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return undefined;
@@ -167,18 +185,24 @@ export function SheetDialog({
         typeof active.scrollIntoView === "function" // absent in jsdom and very old engines
       ) {
         // Reveal the field together with its label (its `.form-field`) so the control's context stays
-        // visible, unless the pair is taller than the sheet body (short viewport, keyboard open): then
-        // the field alone, which is what must stay usable.
+        // visible, unless the pair is taller than the scrolling box (short viewport, keyboard open): then
+        // the field alone, which is what must stay usable. The scrolling box is the body, or the whole
+        // sheet when it is too short to pin a title and an action row (single-scroll layout: the
+        // `@container` block in styles.css, which makes `.sheet` itself `overflow-y: auto`).
         const group = active.closest<HTMLElement>(".form-field");
-        const body = root.querySelector<HTMLElement>(".sheet-body");
+        const scroller = scrollsItself(root)
+          ? root
+          : root.querySelector<HTMLElement>(".sheet-body");
         let target: HTMLElement = active;
-        if (group && body) {
-          // "nearest" scrolling keeps the body's scroll-padding clear, so that is not usable room.
-          const style = getComputedStyle(body);
+        if (group && scroller) {
+          // "nearest" scrolling keeps the scroller's scroll-padding clear, so that is not usable room.
+          const style = getComputedStyle(scroller);
           const padding =
             (Number.parseFloat(style.scrollPaddingTop) || 0) +
             (Number.parseFloat(style.scrollPaddingBottom) || 0);
-          if (group.getBoundingClientRect().height <= body.clientHeight - padding) target = group;
+          if (group.getBoundingClientRect().height <= scroller.clientHeight - padding) {
+            target = group;
+          }
         }
         target.scrollIntoView({ block: "nearest", inline: "nearest" });
       }

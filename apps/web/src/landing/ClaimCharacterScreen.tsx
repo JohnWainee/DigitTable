@@ -7,6 +7,7 @@ import { useRoomProjection } from "../session/useRoomProjection.js";
 import { STATS } from "@digitable/template-eat-the-reich";
 import { asCommandId } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
+import { CommandAlert } from "../shared/CommandAlert.js";
 import { PortraitImage } from "../shared/PortraitImage.js";
 import { newUuid } from "../shared/uuid.js";
 import { Icon, STAT_ICON_NAMES, STAT_LABELS } from "../shared/Icon.js";
@@ -85,11 +86,7 @@ export function ClaimCharacterScreen({ roomId }: ClaimCharacterScreenProps): JSX
           Your action is awaiting confirmation. Reconnecting will check it automatically.
         </p>
       )}
-      {(error || lastError) && (
-        <p role="alert" className="error-message">
-          {error ?? lastError?.message}
-        </p>
-      )}
+      <CommandAlert error={error} failure={lastError} />
 
       {roster === null ? (
         <p>Loading roster…</p>

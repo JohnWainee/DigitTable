@@ -1,7 +1,7 @@
-import { act, render, screen, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "../../src/App.js";
 import {
   readOwnershipRecord,
@@ -103,6 +103,10 @@ async function joinAndClaimRook(
 }
 
 describe("GM director console and table display (C03)", () => {
+  afterEach(() => {
+    Reflect.deleteProperty(Element.prototype, "scrollIntoView");
+  });
+
   beforeEach(() => {
     window.localStorage.clear();
     window.sessionStorage.clear();
@@ -163,6 +167,42 @@ describe("GM director console and table display (C03)", () => {
     const discardedCount =
       discarded.length > 0 ? within(discarded[0]!).queryAllByRole("listitem").length : 0;
     expect(keptCount + discardedCount).toBe(5);
+  });
+
+  it("scrolls a rejected GM command into view instead of leaving it above the control that was pressed", async () => {
+    // jsdom implements no scrollIntoView; the spy records what the alert asked for. Where it lands on
+    // screen is proved in a real browser by scripts/playtest/ui-audit.mjs ("command feedback").
+    const scrollIntoView = vi.fn();
+    Object.defineProperty(Element.prototype, "scrollIntoView", {
+      configurable: true,
+      writable: true,
+      value: scrollIntoView,
+    });
+    const user = userEvent.setup();
+    const { roomCode, roomId, gmOwnership } = await createSessionAsGm(user);
+    await joinAndClaimRook(user, roomCode);
+
+    await user.click(screen.getByRole("button", { name: /declare action/i }));
+    await screen.findByRole("heading", { name: /^declared$/i });
+
+    writeOwnershipRecord(gmOwnership);
+    goTo(`#/room/${roomId}/gm`);
+    await screen.findByRole("heading", { name: /pending actions/i });
+    scrollIntoView.mockClear();
+    // A real rejection: the round cannot end while the declared roll is still open.
+    await user.click(screen.getByRole("button", { name: /end round 1/i }));
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(/open rolls|resolve/i);
+    expect(scrollIntoView.mock.contexts).toContain(alert);
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: "nearest", inline: "nearest" });
+
+    // The screen clears its error before every send, so the SAME rejection pressed again is a fresh
+    // null -> message change and scrolls again (the person has scrolled back down to press it twice).
+    scrollIntoView.mockClear();
+    await user.click(screen.getByRole("button", { name: /end round 1/i }));
+    await waitFor(() => expect(scrollIntoView).toHaveBeenCalledTimes(1));
+    expect(scrollIntoView.mock.contexts[0]).toBe(await screen.findByRole("alert"));
   });
 
   it("lets the GM correct a character's Blood with a required reason", async () => {

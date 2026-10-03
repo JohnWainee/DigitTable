@@ -88,6 +88,7 @@ const report = {
   states: [],
   modal: [],
   reducedMotion: null,
+  feedback: [],
   routes: [],
   failures: [],
   console: {},
@@ -455,6 +456,91 @@ function within(box, frame, tolerance = 1) {
   );
 }
 
+/**
+ * Scroller-aware sheet geometry for the very short visible heights a real on-screen keyboard leaves. The
+ * sheet either pins its header and action row around a scrolling body ("pinned") or, when too little
+ * height is visible, scrolls as one page ("single-scroll", `@container sheet-viewport` in styles.css).
+ * Each action is scrolled into view on its own, because on a short, narrow sheet the two stacked
+ * buttons cannot both be on screen at once; what matters is that each one can be brought fully into view.
+ */
+const TIGHT_GEOMETRY = `(() => {
+  const dialog = document.querySelector('[role="dialog"]');
+  if (!dialog) return { open: false };
+  const box = (el) => { if (!el) return null; const r = el.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, width: r.width, height: r.height }; };
+  const sheetOverflowY = getComputedStyle(dialog).overflowY;
+  const singleScroll = sheetOverflowY === "auto" || sheetOverflowY === "scroll" || sheetOverflowY === "overlay";
+  const body = dialog.querySelector(".sheet-body");
+  const scroller = singleScroll ? dialog : body;
+  const buttons = [...dialog.querySelectorAll("button")];
+  const apply = buttons.find((b) => /apply correction/i.test(b.textContent));
+  const cancel = buttons.find((b) => /cancel/i.test(b.textContent));
+  const reason = dialog.querySelector("#correction-reason");
+  const label = dialog.querySelector('label[for="correction-reason"]');
+  const dialogBox = box(dialog);
+  const scrollerBox = box(scroller);
+  // The sheet has a 2px top border; its scrollable client area starts below it.
+  const client = singleScroll ? { top: scrollerBox.top + 2, bottom: scrollerBox.bottom, left: scrollerBox.left + 2, right: scrollerBox.right - 2 } : scrollerBox;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const inView = (b) => b.left >= -1 && b.right <= vw + 1 && b.top >= -1 && b.bottom <= vh + 1;
+  const inDialog = (b) => b.top >= dialogBox.top - 1 && b.bottom <= dialogBox.bottom + 1 && b.left >= dialogBox.left - 1 && b.right <= dialogBox.right + 1;
+  // Visible exactly where it is, with nothing scrolled: what a PINNED action row must guarantee.
+  const applyVisibleUnscrolled = inView(box(apply)) && inDialog(box(apply));
+  const cancelVisibleUnscrolled = inView(box(cancel)) && inDialog(box(cancel));
+  // Bring each action fully into view on its own (instant), then measure it.
+  const reach = (el) => { el.scrollIntoView({ block: "nearest", inline: "nearest" }); const b = box(el); return inView(b) && inDialog(b); };
+  const applyBefore = box(apply), cancelBefore = box(cancel);
+  const fieldRect = box(reason), labelRect = box(label);
+  const fieldAndLabelInsideScroller = fieldRect.top >= client.top - 1.5 && fieldRect.bottom <= client.bottom + 1.5 && labelRect.top >= client.top - 1.5 && labelRect.bottom <= client.bottom + 1.5;
+  const applyReachable = reach(apply);
+  const cancelReachable = reach(cancel);
+  return {
+    open: true, mode: singleScroll ? "single-scroll" : "pinned",
+    layout: { innerWidth: vw, innerHeight: vh },
+    dialog: dialogBox, scroller: scrollerBox, reason: fieldRect, label: labelRect,
+    // The boxes as the keyboard left them: measured before the reach() calls above scrolled each action into view.
+    apply: applyBefore, cancel: cancelBefore,
+    sheetClientHeight: dialog.clientHeight,
+    fieldAndLabelInsideScroller, applyVisibleUnscrolled, cancelVisibleUnscrolled, applyReachable, cancelReachable,
+    pageOverflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    rootLocked: document.documentElement.classList.contains("sheet-open") && getComputedStyle(document.documentElement).overflow === "hidden",
+  };
+})()`;
+
+/**
+ * Visible heights REAL on-screen keyboards leave, which the proportional keyboard cases above (45% / 55%
+ * of the screen) do not reach. iPhone 17 Pro on iOS 26.5 Mobile Safari, landscape, soft keyboard: the
+ * visual viewport was 98px with the keyboard open while rotating and 126px with it raised in landscape
+ * (measured in the iOS Simulator by scripts/playtest/ios-keyboard; the layout viewport stays full height
+ * there, so media queries never see it). Only those two heights were measured on a device; the others are
+ * derived from them and from the pinned layout's limits.
+ *
+ * Headless Chrome cannot shrink only the visual viewport. Shrinking the layout viewport to the same height
+ * exercises the same CSS for the LANDSCAPE cases (no --vv-* override: the sheet is sized by 100dvh, and the
+ * backdrop has no vertical padding there, so the container height equals the visible height). For the
+ * portrait cases iOS would also keep full-size chrome and a 1.5rem backdrop gap, so only the layout the
+ * stylesheet CHOOSES is the same, not every pixel. Every single-scroll case must keep the focused field
+ * with its label visible and both actions reachable; the pinned cases must keep them on screen as they
+ * stand. `expect` is the layout the stylesheet must choose.
+ */
+const TIGHT_KEYBOARD_CASES = [
+  { name: "ios-landscape-98", open: [874, 402], shrunk: [874, 98], expect: "single-scroll" },
+  { name: "ios-landscape-126", open: [874, 402], shrunk: [874, 126], expect: "single-scroll" },
+  { name: "se-landscape-100", open: [667, 375], shrunk: [667, 100], expect: "single-scroll" },
+  { name: "phone-small-220", open: [320, 568], shrunk: [320, 220], expect: "single-scroll" },
+  // A 320px phone stacks its two buttons, which the pinned footer cannot show below ~300px.
+  { name: "phone-small-280", open: [320, 568], shrunk: [320, 280], expect: "single-scroll" },
+  // Above every threshold the sheet keeps pinning its title and actions around the body: label + field +
+  // a one-row action row fit from ~177px, so 190px must NOT collapse (pinned shows everything at once).
+  { name: "se-landscape-190", open: [667, 375], shrunk: [667, 190], expect: "pinned" },
+  { name: "phone-portrait-447", open: [375, 812], shrunk: [375, 447], expect: "pinned" },
+];
+
+/** A pinned action row must be on screen as it stands; in the single-scroll layout each action must be scrollable into view. */
+const actionsOk = (geo) =>
+  geo.mode === "pinned"
+    ? geo.applyVisibleUnscrolled && geo.cancelVisibleUnscrolled
+    : geo.applyReachable && geo.cancelReachable;
+
 async function openCorrection(gm) {
   // The roster is content-owned and has changed since this audit was first written. Audit the
   // correction affordance itself rather than one fixture character, so the mobile sheet gate
@@ -534,24 +620,30 @@ async function auditModal(gm) {
       await applyViewport(gm, shrunk);
       await sleep(400);
       const kb = await ev(gm, MODAL_GEOMETRY);
+      // The picture first: TIGHT_GEOMETRY below scrolls each action into view, and the screenshot should show
+      // what the keyboard (and reveal()) left on screen.
+      const keyboardShot = await screenshot(gm, `gm-correction-keyboard-${vp.name}.jpg`, {
+        fullPage: false,
+      });
+      const kbTight = await ev(gm, TIGHT_GEOMETRY); // after kb: its reach() scrolls the actions into view
       const kbFrame = { left: 0, top: 0, right: shrunk.width, bottom: shrunk.height };
       record.keyboard = {
         size: `${shrunk.width}x${shrunk.height}`,
+        layout: kbTight.mode,
+        screenshot: keyboardShot,
         geometry: { reason: kb.reason, label: kb.reasonLabel, body: kb.bodyBox },
         checks: {
           dialogInsideViewport: within(kb.dialog, kbFrame),
           focusedFieldVisible: within(kb.reason, kbFrame),
-          // The sheet body clips its content, so a field can lie inside the viewport yet be cut off by
-          // the sheet's own title and action row. The field AND its label must fit the scrolling body.
-          fieldAndLabelInsideSheetBody:
-            within(kb.reason, kb.bodyBox, 1) && within(kb.reasonLabel, kb.bodyBox, 1),
-          actionsVisible: within(kb.apply, kbFrame) && within(kb.cancel, kbFrame),
+          // The scrolling box clips its content, so a field can lie inside the viewport yet be cut off by
+          // the sheet's own title and action row. The field AND its label must fit the scrolling box: the
+          // body when the header and actions are pinned, the whole sheet in the single-scroll layout.
+          fieldAndLabelInsideScroller: kbTight.fieldAndLabelInsideScroller,
+          // Pinned: on screen as they stand. Single-scroll: each one can be scrolled fully into view.
+          actionsReachable: actionsOk(kbTight),
           noPageOverflow: kb.pageOverflowPx <= 1,
         },
       };
-      record.keyboard.screenshot = await screenshot(gm, `gm-correction-keyboard-${vp.name}.jpg`, {
-        fullPage: false,
-      });
       await applyViewport(gm, vp);
     }
     for (const [k, v] of Object.entries(record.checks)) {
@@ -654,6 +746,43 @@ async function auditModal(gm) {
     record.checks.pinchZoomStillWorksWithSheetOpen = after > before * 1.2;
   });
 
+  for (const tight of TIGHT_KEYBOARD_CASES) {
+    const [openW, openH] = tight.open;
+    const [shrunkW, shrunkH] = tight.shrunk;
+    await scenario(
+      `tight-keyboard-${tight.name}`,
+      { name: `${openW}x${openH}`, width: openW, height: openH, mobile: true },
+      async (record) => {
+        await openCorrection(gm);
+        await ev(gm, `document.querySelector("#correction-reason").focus()`);
+        await applyViewport(gm, {
+          name: `${shrunkW}x${shrunkH}`,
+          width: shrunkW,
+          height: shrunkH,
+          mobile: true,
+        });
+        await sleep(450);
+        // The picture first: TIGHT_GEOMETRY scrolls each action into view, and the screenshot should show what
+        // the keyboard (and reveal()) left on screen.
+        record.screenshot = await screenshot(gm, `gm-correction-tight-${tight.name}.jpg`, {
+          fullPage: false,
+        });
+        const geo = await ev(gm, TIGHT_GEOMETRY);
+        record.geometry = geo;
+        record.size = `${shrunkW}x${shrunkH}`;
+        record.checks.layoutIsExpected = geo.mode === tight.expect;
+        record.checks.sheetInsideViewport = within(
+          geo.dialog,
+          frameOf({ width: shrunkW, height: shrunkH }),
+        );
+        record.checks.fieldAndLabelInsideScroller = geo.fieldAndLabelInsideScroller;
+        record.checks.actionsReachable = actionsOk(geo);
+        record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+        record.checks.rootScrollLocked = geo.rootLocked;
+      },
+    );
+  }
+
   for (const [name, vp, insets, expect] of [
     [
       "safe-area-landscape-constrained",
@@ -719,20 +848,19 @@ async function auditModal(gm) {
             `(() => { const w = document.documentElement.clientWidth; return [...document.querySelectorAll("body *")].filter(e => (e.getBoundingClientRect().right > w + 1 || e.scrollWidth > e.clientWidth + 1) && getComputedStyle(e).display !== "none").slice(0, 10).map(e => e.tagName.toLowerCase() + (e.className && typeof e.className === "string" ? "." + e.className.split(" ").join(".") : "") + " right=" + Math.round(e.getBoundingClientRect().right) + " sw=" + e.scrollWidth + "/" + e.clientWidth + " :: " + (e.textContent || "").trim().slice(0, 30)); })()`,
           );
         }
-        record.checks.bodyKeepsRoom = geo.body.clientHeight >= 96;
-        // The action row may scroll on its own at this size, but its buttons must be reachable.
-        await ev(
+        // Pinned: the body keeps room for a field. Single-scroll: the whole sheet is the scroller.
+        const textTight = await ev(gm, TIGHT_GEOMETRY);
+        record.layout = textTight.mode;
+        record.checks.bodyKeepsRoom =
+          textTight.mode === "single-scroll" || geo.body.clientHeight >= 96;
+        // The action row may scroll (its own box when pinned, the sheet when not) at this size, but both
+        // buttons must be reachable; so must the reason field.
+        record.checks.actionsReachable = textTight.applyReachable && textTight.cancelReachable;
+        const reason = await ev(
           gm,
-          `(() => { const f = document.querySelector(".sheet-footer"); f.scrollTop = f.scrollHeight; })()`,
+          `(() => { const r = document.querySelector("#correction-reason"); r.scrollIntoView({ block: "nearest" }); const b = r.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right }; })()`,
         );
-        const end = await ev(gm, MODAL_GEOMETRY);
-        record.checks.actionsReachable = within(end.apply, frame) && within(end.cancel, frame);
-        await ev(
-          gm,
-          `(() => { const b = document.querySelector(".sheet-body"); b.scrollTop = b.scrollHeight; })()`,
-        );
-        const bottom = await ev(gm, MODAL_GEOMETRY);
-        record.checks.reasonReachable = within(bottom.reason, frame);
+        record.checks.reasonReachable = within(reason, frame);
         record.textPx = px;
         record.screenshot = await screenshot(
           gm,
@@ -744,6 +872,83 @@ async function auditModal(gm) {
     );
   }
   await applyViewport(gm, byName["desktop"]);
+}
+
+// ---------- command feedback ----------
+
+/**
+ * A rejected command must reach the person who just pressed the control. The GM console is thousands of
+ * pixels tall on a phone (about 3000px even on a laptop) and renders the message near the top, so on its
+ * own the alert was measured 270-730px ABOVE the viewport after pressing "End round" while a roll was still
+ * open (a real server rejection) at every audited width: the tap looked ignored. The alert must end up fully
+ * on screen. The page is reloaded for each width so a leftover alert cannot be mistaken for the new one.
+ */
+async function auditCommandFeedback(gm) {
+  const original = gm.vp;
+  for (const vp of [
+    byName["phone"],
+    byName["phone-small"],
+    byName["phone-landscape"],
+    byName["tablet"],
+    byName["desktop"],
+  ]) {
+    await applyViewport(gm, vp);
+    // `Page.reload` returns before the new document commits, so a plain readyState/button wait could be
+    // satisfied by the OLD page. A marker set on the old document is gone once the new one has loaded.
+    await ev(gm, `window.__beforeReload = true`);
+    await gm.cdp.send("Page.reload", {}, gm.sessionId);
+    await waitFor(
+      gm,
+      `!window.__beforeReload && document.readyState === "complete"`,
+      20000,
+      "GM console reload",
+    );
+    const finder = textMatch("button", "/^End round/");
+    await waitFor(gm, finder, 30000, "End round button after reload");
+    await sleep(400);
+    // Reach the control the way a person does (scrolled to the middle of the screen), then press it.
+    const press = await ev(
+      gm,
+      `(() => { const el = ${finder}; el.scrollIntoView({ block: "center" }); const b = el.getBoundingClientRect(); const out = { buttonTopInPage: b.top + scrollY }; el.click(); return out; })()`,
+    );
+    // CommandAlert renders the rejection as a direct child of <main>; other alerts on the page (for example a
+    // pool-preview notice inside a panel) must not be mistaken for it.
+    const alertSelector = `main > [role="alert"].error-message`;
+    await waitFor(
+      gm,
+      `[...document.querySelectorAll(${JSON.stringify(alertSelector)})].some((e) => e.textContent.trim())`,
+      15000,
+      "the rejection alert",
+    );
+    await sleep(350);
+    const geo = await ev(
+      gm,
+      `(() => { const a = [...document.querySelectorAll(${JSON.stringify(alertSelector)})].find((e) => e.textContent.trim()); const b = a.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right, text: a.textContent.trim().slice(0, 80), innerHeight, innerWidth, scrollY, pageHeight: document.documentElement.scrollHeight }; })()`,
+    );
+    const entry = {
+      viewport: vp.name,
+      size: `${vp.width}x${vp.height}`,
+      buttonTopInPage: Math.round(press.buttonTopInPage),
+      pageHeight: geo.pageHeight,
+      alert: geo.text,
+      alertTop: Math.round(geo.top),
+      alertBottom: Math.round(geo.bottom),
+      scrollY: Math.round(geo.scrollY),
+      alertFullyInViewport:
+        geo.top >= -1 &&
+        geo.bottom <= geo.innerHeight + 1 &&
+        geo.left >= -1 &&
+        geo.right <= geo.innerWidth + 1,
+    };
+    report.feedback.push(entry);
+    if (!entry.alertFullyInViewport) {
+      fail(
+        `command-feedback@${vp.name}`,
+        `the rejection ("${geo.text}") is not fully on screen: top ${entry.alertTop}, bottom ${entry.alertBottom} of ${geo.innerHeight}`,
+      );
+    }
+  }
+  await applyViewport(gm, original);
 }
 
 async function auditReducedMotion(gm) {
@@ -935,6 +1140,7 @@ async function main() {
     await captureState(player, "declared", { axeViewports: ["phone"] });
     await waitFor(gm, `${textMatch("button", "/^Roll it$/")}`, 30000, "Roll it");
     await captureState(gm, "console-pending");
+    await auditCommandFeedback(gm);
 
     await auditModal(gm);
     await auditReducedMotion(gm);
