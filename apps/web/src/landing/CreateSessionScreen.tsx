@@ -16,6 +16,18 @@ import type { SessionRequestState } from "@digitable/contracts";
 import type { CreateRoomAccepted } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
 import { InvitePanel } from "../gm2/InvitePanel.js";
+import {
+  FieldError,
+  FormErrorSummary,
+  useInlineValidation,
+  type FieldRule,
+} from "./inlineValidation.js";
+
+const CREATE_RULES: readonly FieldRule[] = [
+  { id: "session-name", label: "Session name", required: true },
+  { id: "passphrase", label: "Passphrase", required: true, minLength: 4 },
+  { id: "creator-display-name", label: "Your display name", required: true, visible: true },
+];
 
 /** docs/ETR_SESSION_FLOW.md section 3: `/create` — Create session (GM). */
 export function CreateSessionScreen(): JSX.Element {
@@ -29,12 +41,18 @@ export function CreateSessionScreen(): JSX.Element {
   const [wroteDownSecrets, setWroteDownSecrets] = useState(false);
   const [readyAcknowledged, setReadyAcknowledged] = useState(false);
   const requestIdRef = useRef(getOrMintCreateRequestId());
+  const validation = useInlineValidation(CREATE_RULES, {
+    "session-name": sessionName,
+    passphrase,
+    "creator-display-name": creatorDisplayName,
+  });
 
   const accepted = request.status === "accepted" ? request.result : null;
 
   async function handleSubmit(event: React.FormEvent): Promise<void> {
     event.preventDefault();
     if (request.status === "pending") return; // double-click cannot mint a second request
+    if (!validation.check()) return;
     const requestId = requestIdRef.current;
     setRequest({ status: "pending", requestId });
     const result = await createRoom({ requestId, sessionName, passphrase, creatorDisplayName });
@@ -63,6 +81,7 @@ export function CreateSessionScreen(): JSX.Element {
       {!accepted && (
         <form
           className="session-form"
+          noValidate
           onSubmit={(event) => {
             void handleSubmit(event);
           }}
@@ -76,7 +95,9 @@ export function CreateSessionScreen(): JSX.Element {
               maxLength={60}
               value={sessionName}
               onChange={(e) => setSessionName(e.target.value)}
+              {...validation.field("session-name")}
             />
+            <FieldError id="session-name" message={validation.errors["session-name"]} />
           </div>
           <div className="form-field">
             <label htmlFor="passphrase">Passphrase</label>
@@ -86,11 +107,16 @@ export function CreateSessionScreen(): JSX.Element {
               required
               minLength={4}
               maxLength={128}
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               autoComplete="off"
               value={passphrase}
               onChange={(e) => setPassphrase(e.target.value)}
+              {...validation.field("passphrase", "passphrase-hint")}
             />
-            <p className="form-hint">
+            <FieldError id="passphrase" message={validation.errors["passphrase"]} />
+            <p id="passphrase-hint" className="form-hint">
               Share this with your players. It is never shown again after this screen.
             </p>
           </div>
@@ -103,11 +129,17 @@ export function CreateSessionScreen(): JSX.Element {
               maxLength={40}
               value={creatorDisplayName}
               onChange={(e) => setCreatorDisplayName(e.target.value)}
+              {...validation.field("creator-display-name")}
+            />
+            <FieldError
+              id="creator-display-name"
+              message={validation.errors["creator-display-name"]}
             />
           </div>
           <p>
             Template: <strong>Eat the Reich</strong> (fixed for this session)
           </p>
+          <FormErrorSummary show={validation.failed} attempt={validation.attempts} />
           <button type="submit" className="primary-action" disabled={request.status === "pending"}>
             {request.status === "pending" ? "Creating…" : "Create session"}
           </button>

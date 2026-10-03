@@ -21,3 +21,7 @@ content/private/
 
 # Vitest JSON reporter output (never committed; trips prettier --check otherwise).
 .vitest/
+
+# Xcode per-user state for the iOS Simulator harness.
+scripts/playtest/ios-simulator/**/xcuserdata/
+scripts/playtest/ios-simulator/**/*.xcuserstate

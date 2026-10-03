@@ -142,6 +142,18 @@ describe("SheetDialog", () => {
     expect(trigger).toHaveFocus();
   });
 
+  it("ignores the Escape that cancels an IME composition, so edits are not discarded", () => {
+    const onClose = vi.fn();
+    render(<Harness onClose={onClose} />);
+    fireEvent.click(screen.getByRole("button", { name: /open sheet/i }));
+    fireEvent.keyDown(document, { key: "Escape", isComposing: true });
+    fireEvent.keyDown(document, { key: "Escape", keyCode: 229 });
+    expect(onClose).not.toHaveBeenCalled();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   it("traps Tab and Shift+Tab inside the dialog, including select controls", async () => {
     const user = userEvent.setup();
     render(<Harness />);
@@ -533,6 +545,53 @@ describe("SheetDialog", () => {
 
       act(() => viewport.set({ height: 470 }));
       expect(scrollIntoView).toHaveBeenCalledWith({ block: "nearest", inline: "nearest" });
+    });
+
+    describe("compact mode (too little visible height for a pinned header and footer)", () => {
+      afterEach(() => {
+        document.documentElement.style.fontSize = "";
+      });
+
+      it("marks the backdrop compact under 15rem of visible height and clears it as the height returns", async () => {
+        // Landscape phone, on-screen keyboard up: real iOS Safari left roughly 70-140px.
+        const viewport = installViewport();
+        const backdrop = await openSheet();
+        expect(backdrop).not.toHaveAttribute("data-compact");
+
+        act(() => viewport.set({ height: 110 }));
+        expect(backdrop).toHaveAttribute("data-compact");
+
+        // 15rem at the default 16px root is 240px: just under is compact, just over is not.
+        act(() => viewport.set({ height: 239 }));
+        expect(backdrop).toHaveAttribute("data-compact");
+        // Exactly 15rem is not compact: the comparison is strict.
+        act(() => viewport.set({ height: 240 }));
+        expect(backdrop).not.toHaveAttribute("data-compact");
+        act(() => viewport.set({ height: 241 }));
+        expect(backdrop).not.toHaveAttribute("data-compact");
+
+        act(() => viewport.set({ height: 812 }));
+        expect(backdrop).not.toHaveAttribute("data-compact");
+      });
+
+      it("scales the threshold with the user's text size (rem, not px)", async () => {
+        document.documentElement.style.fontSize = "32px"; // 200% text: 15rem is 480px
+        const viewport = installViewport();
+        const backdrop = await openSheet();
+        act(() => viewport.set({ height: 470 }));
+        expect(backdrop).toHaveAttribute("data-compact");
+        act(() => viewport.set({ height: 490 }));
+        expect(backdrop).not.toHaveAttribute("data-compact");
+      });
+
+      it("uses the smaller of the visual and layout heights, so a layout viewport the keyboard shrinks (Chrome Android) is compact too", async () => {
+        const viewport = installViewport();
+        const backdrop = await openSheet();
+        expect(backdrop).not.toHaveAttribute("data-compact");
+        Object.defineProperty(window, "innerHeight", { configurable: true, value: 200 });
+        act(() => viewport.set({ height: 812 }));
+        expect(backdrop).toHaveAttribute("data-compact");
+      });
     });
 
     it("renders normally where the Visual Viewport API does not exist", async () => {

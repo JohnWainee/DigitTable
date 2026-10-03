@@ -10,6 +10,17 @@ import { joinRoom } from "../session/roomClient.js";
 import type { RoomAdmissionAccepted, SessionRequestState } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
 import { newUuid } from "../shared/uuid.js";
+import {
+  FieldError,
+  FormErrorSummary,
+  useInlineValidation,
+  type FieldRule,
+} from "./inlineValidation.js";
+
+const TABLE_RULES: readonly FieldRule[] = [
+  { id: "table-room-code", label: "Room code", required: true },
+  { id: "table-code", label: "Table code", required: true },
+];
 
 /**
  * docs/ETR_SESSION_FLOW.md section 4.4: `/table` — join a shared display.
@@ -29,6 +40,7 @@ export function JoinTableScreen(): JSX.Element {
   async function handleSubmit(event: React.FormEvent): Promise<void> {
     event.preventDefault();
     if (request.status === "pending") return;
+    if (!validation.check()) return;
     const requestId = newUuid();
     setRequest({ status: "pending", requestId });
     const result = await joinRoom({
@@ -46,6 +58,10 @@ export function JoinTableScreen(): JSX.Element {
     }
   }
 
+  const validation = useInlineValidation(TABLE_RULES, {
+    "table-room-code": roomCode,
+    "table-code": tableCode,
+  });
   const accepted = request.status === "accepted" ? request.result : null;
 
   return (
@@ -58,6 +74,7 @@ export function JoinTableScreen(): JSX.Element {
       {!accepted && (
         <form
           className="session-form"
+          noValidate
           onSubmit={(event) => {
             void handleSubmit(event);
           }}
@@ -68,9 +85,15 @@ export function JoinTableScreen(): JSX.Element {
               id="table-room-code"
               type="text"
               required
+              autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck={false}
+              autoComplete="off"
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value)}
+              {...validation.field("table-room-code")}
             />
+            <FieldError id="table-room-code" message={validation.errors["table-room-code"]} />
           </div>
           <div className="form-field">
             <label htmlFor="table-code">Table code</label>
@@ -78,10 +101,17 @@ export function JoinTableScreen(): JSX.Element {
               id="table-code"
               type="text"
               required
+              autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck={false}
+              autoComplete="off"
               value={tableCode}
               onChange={(e) => setTableCode(e.target.value)}
+              {...validation.field("table-code")}
             />
+            <FieldError id="table-code" message={validation.errors["table-code"]} />
           </div>
+          <FormErrorSummary show={validation.failed} attempt={validation.attempts} />
           <button type="submit" className="primary-action" disabled={request.status === "pending"}>
             {request.status === "pending" ? "Connecting…" : "Connect display"}
           </button>

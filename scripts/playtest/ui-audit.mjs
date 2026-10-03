@@ -74,6 +74,8 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const VIEWPORTS = [
   { name: "phone-small", width: 320, height: 568, mobile: true },
   { name: "phone", width: 375, height: 812, mobile: true },
+  { name: "phone-390", width: 390, height: 844, mobile: true },
+  { name: "phone-412", width: 412, height: 915, mobile: true },
   { name: "phone-landscape", width: 812, height: 375, mobile: true },
   { name: "tablet", width: 768, height: 1024, mobile: true },
   { name: "desktop", width: 1280, height: 800, mobile: false },
@@ -87,6 +89,9 @@ const report = {
   startedAt: new Date().toISOString(),
   states: [],
   modal: [],
+  keyboard: [],
+  docks: [],
+  validation: [],
   reducedMotion: null,
   routes: [],
   failures: [],
@@ -163,11 +168,21 @@ async function openDevice(cdp, name, vp) {
       device.consoleErrors.push(
         message.params.args.map((a) => a.value ?? a.description ?? "").join(" "),
       );
+    } else if (
+      message.method === "Log.entryAdded" &&
+      message.params.entry.level === "error" &&
+      message.params.entry.source !== "network"
+    ) {
+      // Messages the browser itself raised (e.g. an invalid `pattern` attribute), which the page's own
+      // console.error never sees.
+      device.consoleErrors.push(
+        `[browser ${message.params.entry.source}] ${message.params.entry.text}`,
+      );
     } else if (message.method === "Network.loadingFailed" && !message.params.canceled) {
       device.failedRequests.push(message.params.errorText);
     }
   });
-  for (const domain of ["Page", "Runtime", "Network"])
+  for (const domain of ["Page", "Runtime", "Network", "Log"])
     await cdp.send(`${domain}.enable`, {}, sessionId);
   await applyViewport(device, vp);
   devices.push(device);
@@ -297,6 +312,12 @@ const CONTROL_AUDIT = `(() => {
   const issues = [];
   let count = 0;
   const selector = 'button, a[href], select, textarea, input, summary, [role="spinbutton"], [role="button"]';
+  // Every <button> must carry a reskin class (or be a +/- stepper): a class-less one renders as the
+  // browser's own grey button, without the tap size, the type, or the focus treatment.
+  const STYLED_BUTTON = ".primary-action, .secondary-action, .link-button, .stepper-controls button";
+  // A control's label is wrapped into this many text lines; four or more means it was squeezed.
+  const lineCount = (el) => new Set([...(() => { const r = document.createRange(); r.selectNodeContents(el); return r.getClientRects(); })()].map(q => Math.round(q.top))).size;
+  const measure = document.createElement("canvas").getContext("2d");
   for (const el of document.querySelectorAll(selector)) {
     if (!visible(el) || el.closest("svg")) continue;
     count += 1;
@@ -308,7 +329,32 @@ const CONTROL_AUDIT = `(() => {
     if (Math.min(r.width, r.height) < 43.5) found.push("target " + Math.round(r.width) + "x" + Math.round(r.height));
     if (r.right > vw + 0.5 || r.left < -0.5) found.push("outside viewport (" + Math.round(r.left) + ".." + Math.round(r.right) + " of " + vw + ")");
     if (el.matches('input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), select, textarea') && parseFloat(cs.fontSize) < 16) found.push("font-size " + cs.fontSize);
+    // An interactive control inside a <label> that is not the label's own control: the label's tap
+    // area and accessible name swallow it (invalid HTML, and a squeezed target on a phone).
+    const label = el.closest("label");
+    if (label && label.control !== el && !el.matches("input[type=hidden]")) found.push("interactive control nested inside a <label>");
+    if (el.matches("button") && !el.matches(STYLED_BUTTON)) found.push("button without a reskin class (browser-default styling)");
+    if (el.matches("button") && !el.closest(".stepper-controls") && lineCount(el) >= 4) found.push("label squeezed onto " + lineCount(el) + " lines");
+    // A native select ellipsises its closed value. When the chosen option is wider than the control the
+    // decisive part of the label can be cut off, so the full text must be echoed visibly beside it.
+    if (el.matches("select") && el.selectedOptions[0]) {
+      const text = el.selectedOptions[0].textContent.trim();
+      measure.font = cs.fontStyle + " " + cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily;
+      const inner = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 2 * parseFloat(cs.borderLeftWidth);
+      if (measure.measureText(text).width > inner) {
+        const echo = el.id && document.querySelector('[data-select-echo-for="' + el.id + '"]');
+        if (!echo || !echo.textContent.includes(text) || !visible(echo)) found.push('selected option "' + text.slice(0, 40) + '" is truncated and not echoed in full');
+      }
+    }
     if (found.length) issues.push({ control: describe(el), problems: found });
+  }
+  // A form that leaves validation to the browser raises its unstyled, short-lived, keyboard-prone
+  // native bubble; the app renders its own inline errors instead (noValidate).
+  for (const form of document.querySelectorAll("form")) {
+    if (!visible(form)) continue;
+    if (!form.noValidate && form.querySelector("[required], [pattern], [minlength]")) {
+      issues.push({ control: "form" + (form.className ? "." + form.className.trim().split(/\\s+/).join(".") : ""), problems: ["relies on native validation bubbles (no noValidate)"] });
+    }
   }
   const de = document.documentElement;
   return { controls: count, overflowPx: de.scrollWidth - de.clientWidth, issues };
@@ -398,6 +444,10 @@ const MODAL_GEOMETRY = `(() => {
     apply: box(apply),
     cancel: box(cancel),
     reason: box(reason),
+    bodyRect: box(body),
+    heading: box(dialog.querySelector('h2')),
+    compact: dialog.parentElement.hasAttribute('data-compact'),
+    sheetScroll: { scrollHeight: dialog.scrollHeight, clientHeight: dialog.clientHeight, overflowY: cs.overflowY },
     body: { scrollHeight: body.scrollHeight, clientHeight: body.clientHeight, scrollTop: body.scrollTop, overflowY: getComputedStyle(body).overflowY },
     rootLocked: document.documentElement.classList.contains("sheet-open") && getComputedStyle(document.documentElement).overflow === "hidden",
     pageOverflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -407,6 +457,27 @@ const MODAL_GEOMETRY = `(() => {
     activeIsInside: dialog.contains(document.activeElement),
   };
 })()`;
+
+/** The overlap of two boxes (zero-size if they miss each other). */
+function intersect(a, b) {
+  const left = Math.max(a.left, b.left);
+  const top = Math.max(a.top, b.top);
+  return {
+    left,
+    top,
+    right: Math.max(left, Math.min(a.right, b.right)),
+    bottom: Math.max(top, Math.min(a.bottom, b.bottom)),
+  };
+}
+
+/**
+ * What of the sheet is actually on screen: the viewport frame clipped to the sheet's own scrollport (its
+ * body when header and footer are pinned, the whole sheet when it is compact). A control can sit inside the
+ * viewport yet be clipped by the sheet that contains it, so "inside the viewport" alone proves nothing.
+ */
+function visibleRegion(geo, frame) {
+  return intersect(frame, geo.compact ? geo.dialog : geo.bodyRect);
+}
 
 function within(box, frame, tolerance = 1) {
   return (
@@ -418,9 +489,34 @@ function within(box, frame, tolerance = 1) {
   );
 }
 
-async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+/** Where each correction-sheet control is found (evaluated in the page). */
+const SHEET_FIND = {
+  reason: `document.querySelector("#correction-reason")`,
+  apply: `[...document.querySelectorAll('[role="dialog"] button')].find(b => /apply correction/i.test(b.textContent))`,
+  cancel: `[...document.querySelectorAll('[role="dialog"] button')].find(b => /cancel/i.test(b.textContent))`,
+  heading: `document.querySelector('[role="dialog"] h2')`,
+};
+
+/**
+ * Scroll one control into view the way a person (or the browser's focus handling) would, then measure. A
+ * control is "reachable" if SOME scroll position shows it whole; asking for the bottom or top stop instead
+ * wrongly fails a sheet whose footer padding simply sits between the button and the end of the scroll.
+ */
+async function geometryRevealing(gm, key) {
+  await ev(gm, `${SHEET_FIND[key]}.scrollIntoView({ block: "nearest" })`);
+  await sleep(80);
+  return ev(gm, MODAL_GEOMETRY);
+}
+
+async function openCorrection(gm, index = 0) {
+  // Roster-agnostic on purpose: the Nth listed character's Correct button. Matching a character
+  // by name silently broke this audit when the sourcebook roster renamed the "rook" seat (the id
+  // stayed, the display name changed); apps/web/test/playtest/auditHarnessContract.test.ts guards it.
+  const finder =
+    index === 0
+      ? `document.querySelector(".roster-panel-list li button")`
+      : `document.querySelectorAll(".roster-panel-list li button")[${index}]`;
+  await waitFor(gm, finder, 20000, "a character's Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
@@ -437,93 +533,130 @@ async function closeCorrection(gm) {
   await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 10000, "dialog closed");
 }
 
+/**
+ * One viewport's checks of the correction sheet for the roster's `index`-th character: containment,
+ * actions reachable, root scroll lock, inert background, focus handling, an emulated on-screen keyboard
+ * with the reason field focused, then the focus-return/cleanup checks after closing. Characters differ
+ * in item and injury-box counts, so the sheet's length (and its scroll) differs per character.
+ */
+async function auditSheetCase(gm, vp, index = 0) {
+  await applyViewport(gm, vp);
+  await openCorrection(gm, index);
+  const record = {
+    viewport: vp.name,
+    size: `${vp.width}x${vp.height}`,
+    rosterIndex: index,
+    checks: {},
+  };
+  const tag = index === 0 ? vp.name : `${vp.name}#${index}`;
+  const geo = await ev(gm, MODAL_GEOMETRY);
+  record.geometry = geo;
+  const frame = { left: 0, top: 0, right: vp.width, bottom: vp.height };
+  record.checks.dialogInsideViewport = within(geo.dialog, frame);
+  record.checks.actionsVisibleWithoutScrolling =
+    within(geo.apply, frame) && within(geo.cancel, frame);
+  record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+  record.checks.actionTargets44 =
+    geo.apply?.height >= 43.5 && geo.cancel?.height >= 43.5 && geo.apply?.width >= 43.5;
+  // Scroll the sheet body to its end; the last control must then be reachable and visible.
+  if (geo.body.scrollHeight > geo.body.clientHeight) {
+    await ev(
+      gm,
+      `(() => { const b = document.querySelector('[role="dialog"] .sheet-body') || document.querySelector('[role="dialog"]'); b.scrollTop = b.scrollHeight; })()`,
+    );
+    await sleep(150);
+  }
+  const end = await ev(gm, MODAL_GEOMETRY);
+  record.checks.reasonReachableAfterScroll = within(end.reason, {
+    left: 0,
+    top: 0,
+    right: vp.width,
+    bottom: end.apply ? end.apply.top + 1 : vp.height,
+  });
+  record.checks.rootScrollLocked = geo.rootLocked;
+  record.checks.backgroundInert = geo.inertSiblings;
+  record.checks.focusInsideDialog = geo.activeIsInside;
+  record.screenshot = await screenshot(gm, `gm-correction-sheet-${tag}.jpg`, {
+    fullPage: false,
+  });
+
+  // Emulated on-screen keyboard: shrink the viewport (what Chrome Android's
+  // interactive-widget=resizes-content does) with the reason field focused.
+  if (vp.mobile) {
+    await ev(gm, `document.querySelector("#correction-reason").focus()`);
+    const keyboardHeight = Math.round(vp.height * 0.45);
+    const shrunk = { ...vp, height: vp.height - keyboardHeight };
+    await applyViewport(gm, shrunk);
+    await sleep(400);
+    const kb = await ev(gm, MODAL_GEOMETRY);
+    const kbFrame = { left: 0, top: 0, right: shrunk.width, bottom: shrunk.height };
+    record.keyboard = {
+      size: `${shrunk.width}x${shrunk.height}`,
+      compact: kb.compact,
+      checks: {
+        dialogInsideViewport: within(kb.dialog, kbFrame),
+        focusedFieldVisible: within(kb.reason, visibleRegion(kb, kbFrame)),
+        noPageOverflow: kb.pageOverflowPx <= 1,
+      },
+    };
+    if (kb.compact) {
+      // Too little visible height for a pinned title and action row (what real iOS Safari leaves on a
+      // landscape phone with the keyboard up): the WHOLE sheet scrolls, so the actions and the title
+      // are reached by scrolling the sheet itself, and must not be clipped when they get there.
+      record.keyboard.checks.compactSheetScrolls =
+        kb.sheetScroll.overflowY === "auto" &&
+        kb.sheetScroll.scrollHeight > kb.sheetScroll.clientHeight;
+      const applyGeo = await geometryRevealing(gm, "apply");
+      const cancelGeo = await geometryRevealing(gm, "cancel");
+      record.keyboard.checks.actionsReachableByScrollingSheet =
+        within(applyGeo.apply, intersect(kbFrame, applyGeo.dialog)) &&
+        within(cancelGeo.cancel, intersect(kbFrame, cancelGeo.dialog));
+      const headingGeo = await geometryRevealing(gm, "heading");
+      record.keyboard.checks.titleReachableByScrollingSheet = within(
+        headingGeo.heading,
+        intersect(kbFrame, headingGeo.dialog),
+      );
+    } else {
+      record.keyboard.checks.actionsVisible =
+        within(kb.apply, kbFrame) && within(kb.cancel, kbFrame);
+    }
+    record.keyboard.screenshot = await screenshot(gm, `gm-correction-keyboard-${tag}.jpg`, {
+      fullPage: false,
+    });
+    await applyViewport(gm, vp);
+  }
+  for (const [k, v] of Object.entries(record.checks)) {
+    if (!v) fail(`modal@${tag}`, `${k} failed`);
+  }
+  for (const [k, v] of Object.entries(record.keyboard?.checks ?? {})) {
+    if (!v) fail(`modal-keyboard@${tag}`, `${k} failed`);
+  }
+  report.modal.push(record);
+  await closeCorrection(gm);
+  // Focus must return to the trigger, and the background must no longer be inert.
+  const afterClose = await ev(
+    gm,
+    `({ focusOnTrigger: document.activeElement?.tagName === "BUTTON" && /correct/i.test(document.activeElement.textContent), anyInert: [...document.body.children].some(c => c.hasAttribute("inert")), rootLocked: document.documentElement.classList.contains("sheet-open") })`,
+  );
+  record.afterClose = afterClose;
+  if (!afterClose.focusOnTrigger) fail(`modal@${tag}`, "focus did not return to trigger");
+  if (afterClose.anyInert) fail(`modal@${tag}`, "background still inert after close");
+  if (afterClose.rootLocked) fail(`modal@${tag}`, "root scroll lock left on after close");
+}
+
 async function auditModal(gm) {
   await applyViewport(gm, byName["desktop"]);
   const cases = [
     { name: "phone-small", ...byName["phone-small"] },
     { name: "phone", ...byName["phone"] },
+    { name: "phone-390", ...byName["phone-390"] },
+    { name: "phone-412", ...byName["phone-412"] },
     { name: "phone-landscape", ...byName["phone-landscape"] },
     { name: "phone-667x375", width: 667, height: 375, mobile: true },
     { name: "tablet", ...byName["tablet"] },
     { name: "desktop", ...byName["desktop"] },
   ];
-  for (const vp of cases) {
-    await applyViewport(gm, vp);
-    await openCorrection(gm);
-    const record = { viewport: vp.name, size: `${vp.width}x${vp.height}`, checks: {} };
-    const geo = await ev(gm, MODAL_GEOMETRY);
-    record.geometry = geo;
-    const frame = { left: 0, top: 0, right: vp.width, bottom: vp.height };
-    record.checks.dialogInsideViewport = within(geo.dialog, frame);
-    record.checks.actionsVisibleWithoutScrolling =
-      within(geo.apply, frame) && within(geo.cancel, frame);
-    record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
-    record.checks.actionTargets44 =
-      geo.apply?.height >= 43.5 && geo.cancel?.height >= 43.5 && geo.apply?.width >= 43.5;
-    // Scroll the sheet body to its end; the last control must then be reachable and visible.
-    if (geo.body.scrollHeight > geo.body.clientHeight) {
-      await ev(
-        gm,
-        `(() => { const b = document.querySelector('[role="dialog"] .sheet-body') || document.querySelector('[role="dialog"]'); b.scrollTop = b.scrollHeight; })()`,
-      );
-      await sleep(150);
-    }
-    const end = await ev(gm, MODAL_GEOMETRY);
-    record.checks.reasonReachableAfterScroll = within(end.reason, {
-      left: 0,
-      top: 0,
-      right: vp.width,
-      bottom: end.apply ? end.apply.top + 1 : vp.height,
-    });
-    record.checks.rootScrollLocked = geo.rootLocked;
-    record.checks.backgroundInert = geo.inertSiblings;
-    record.checks.focusInsideDialog = geo.activeIsInside;
-    record.screenshot = await screenshot(gm, `gm-correction-sheet-${vp.name}.jpg`, {
-      fullPage: false,
-    });
-
-    // Emulated on-screen keyboard: shrink the viewport (what Chrome Android's
-    // interactive-widget=resizes-content does) with the reason field focused.
-    if (vp.mobile) {
-      await ev(gm, `document.querySelector("#correction-reason").focus()`);
-      const keyboardHeight = Math.round(vp.height * 0.45);
-      const shrunk = { ...vp, height: vp.height - keyboardHeight };
-      await applyViewport(gm, shrunk);
-      await sleep(400);
-      const kb = await ev(gm, MODAL_GEOMETRY);
-      const kbFrame = { left: 0, top: 0, right: shrunk.width, bottom: shrunk.height };
-      record.keyboard = {
-        size: `${shrunk.width}x${shrunk.height}`,
-        checks: {
-          dialogInsideViewport: within(kb.dialog, kbFrame),
-          focusedFieldVisible: within(kb.reason, kbFrame),
-          actionsVisible: within(kb.apply, kbFrame) && within(kb.cancel, kbFrame),
-          noPageOverflow: kb.pageOverflowPx <= 1,
-        },
-      };
-      record.keyboard.screenshot = await screenshot(gm, `gm-correction-keyboard-${vp.name}.jpg`, {
-        fullPage: false,
-      });
-      await applyViewport(gm, vp);
-    }
-    for (const [k, v] of Object.entries(record.checks)) {
-      if (!v) fail(`modal@${vp.name}`, `${k} failed`);
-    }
-    for (const [k, v] of Object.entries(record.keyboard?.checks ?? {})) {
-      if (!v) fail(`modal-keyboard@${vp.name}`, `${k} failed`);
-    }
-    report.modal.push(record);
-    await closeCorrection(gm);
-    // Focus must return to the trigger, and the background must no longer be inert.
-    const afterClose = await ev(
-      gm,
-      `({ focusOnTrigger: document.activeElement?.tagName === "BUTTON" && /correct/i.test(document.activeElement.textContent), anyInert: [...document.body.children].some(c => c.hasAttribute("inert")), rootLocked: document.documentElement.classList.contains("sheet-open") })`,
-    );
-    record.afterClose = afterClose;
-    if (!afterClose.focusOnTrigger) fail(`modal@${vp.name}`, "focus did not return to trigger");
-    if (afterClose.anyInert) fail(`modal@${vp.name}`, "background still inert after close");
-    if (afterClose.rootLocked) fail(`modal@${vp.name}`, "root scroll lock left on after close");
-  }
+  for (const vp of cases) await auditSheetCase(gm, vp, 0);
 
   // ---- Scenarios that layout-viewport resizing cannot reach. Each MUST execute at least one check;
   // an exception, or an emulation this Chrome cannot perform, is a FAILURE and never a silent skip. ----
@@ -646,16 +779,13 @@ async function auditModal(gm) {
   }
 
   // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150% and
-  // 375px at 200% are gating. 320px at 200% is recorded but NOT gating: at that size the (unchanged,
-  // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
-  // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
-  // the handoff.
+  // 200%, and 375px at 200%, all gate. (320px at 200% used to be recorded as non-gating because the
+  // GM review card's nested rem padding left a check-box row under 70px and widened the page; the card's
+  // inline padding is now capped in px, see `.pending-action-card` in styles.css.)
   for (const [vp, px, informationalChecks] of [
     [byName["phone-small"], 24, []],
     [byName["phone"], 32, []],
-    // Only the two geometry checks the console's overflow can break are non-gating here; the sheet's own
-    // bodyKeepsRoom / actionsReachable / reasonReachable still gate.
-    [byName["phone-small"], 32, ["dialogInsideViewport", "noPageOverflow"]],
+    [byName["phone-small"], 32, []],
   ]) {
     await scenario(
       `text-${px === 24 ? "150" : "200"}-${vp.name}`,
@@ -697,6 +827,63 @@ async function auditModal(gm) {
       },
       { informationalChecks },
     );
+  }
+  // The case real iOS Safari produced in the iOS Simulator (scripts/playtest/ios-simulator): a landscape
+  // phone with the software keyboard up leaves roughly 70-140px of visible height. A pinned title and
+  // action row alone need more than that, so the sheet must switch to scrolling as one page (compact)
+  // and keep the typed-in field in view, with the title and actions reachable by scrolling the sheet.
+  // 90px is the middle of what iOS left; 70 and 60 are its low end (a reviewer measured the field clipped
+  // 36/48px at 70px when compact mode still carried the wide-viewport bottom padding).
+  // Each height runs with no insets and with a landscape iPhone's (notch 47px left/right, home indicator 21px):
+  // the bottom inset is easy to count twice (once on the backdrop, once in the footer).
+  for (const visibleHeight of [90, 70, 60]) {
+    for (const insets of [false, true]) {
+      for (const vp of [
+        { name: "phone-667x375", width: 667, height: 375, mobile: true },
+        byName["phone-landscape"],
+      ]) {
+        const name = `tight-keyboard-${vp.name}-${visibleHeight}px${insets ? "-insets" : ""}`;
+        await scenario(name, vp, async (record) => {
+          if (insets) {
+            await gm.cdp.send(
+              "Emulation.setSafeAreaInsetsOverride",
+              { insets: { top: 0, left: 47, right: 47, bottom: 21 } },
+              gm.sessionId,
+            );
+          }
+          await openCorrection(gm);
+          await ev(gm, `document.querySelector("#correction-reason").focus()`);
+          const shrunk = { ...vp, height: visibleHeight };
+          await applyViewport(gm, shrunk);
+          await sleep(500);
+          const frame = frameOf(shrunk);
+          const geo = await ev(gm, MODAL_GEOMETRY);
+          record.geometry = geo;
+          record.checks.compactModeEngaged = geo.compact === true;
+          record.checks.dialogInsideViewport = within(geo.dialog, frame);
+          // The field must be fully inside what the sheet shows, not merely inside the viewport.
+          record.checks.focusedFieldVisibleInSheet = within(geo.reason, visibleRegion(geo, frame));
+          record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+          const applyGeo = await geometryRevealing(gm, "apply");
+          const cancelGeo = await geometryRevealing(gm, "cancel");
+          record.checks.actionsReachableByScrollingSheet =
+            within(applyGeo.apply, intersect(frame, applyGeo.dialog)) &&
+            within(cancelGeo.cancel, intersect(frame, cancelGeo.dialog));
+          const headingGeo = await geometryRevealing(gm, "heading");
+          record.checks.titleReachableByScrollingSheet = within(
+            headingGeo.heading,
+            intersect(frame, headingGeo.dialog),
+          );
+          if (visibleHeight === 90 && !insets) {
+            record.screenshot = await screenshot(
+              gm,
+              `gm-correction-tight-keyboard-${vp.name}.jpg`,
+              { fullPage: false },
+            );
+          }
+        });
+      }
+    }
   }
   await applyViewport(gm, byName["desktop"]);
 }
@@ -750,7 +937,422 @@ async function auditReducedMotion(gm) {
     fail("reduced-motion", "a transition longer than 50ms remains under reduce");
 }
 
+// ---------- on-screen keyboard: every text-entry control stays reachable ----------
+
+/**
+ * With the keyboard up, focusing each text-entry control must leave it inside the visible viewport
+ * AND not covered by anything (WCAG 2.2 SC 2.4.11 Focus Not Obscured). Runs in the page so the
+ * browser's own scroll-into-view-on-focus decides where the control ends up.
+ */
+const KEYBOARD_FOCUS_AUDIT = `(async () => {
+  const selector = 'input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), textarea, select';
+  const visible = (el) => { const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return r.width > 0 && r.height > 0 && cs.visibility !== "hidden" && cs.display !== "none" && !el.closest("[inert]"); };
+  const describe = (el) => el.tagName.toLowerCase() + (el.id ? "#" + el.id : "");
+  const results = [];
+  for (const el of [...document.querySelectorAll(selector)].filter(visible).slice(0, 40)) {
+    // Start from the top of the page and of any scrolled sheet body, so the browser must scroll to it.
+    window.scrollTo(0, 0);
+    document.querySelectorAll(".sheet-body").forEach((b) => { b.scrollTop = 0; });
+    el.focus();
+    await new Promise((resolve) => setTimeout(resolve, 80));
+    const r = el.getBoundingClientRect();
+    const vw = document.documentElement.clientWidth;
+    const inside = r.top >= -0.5 && r.bottom <= innerHeight + 0.5 && r.left >= -0.5 && r.right <= vw + 0.5;
+    const probeX = Math.min(Math.max(r.left + r.width / 2, 0), vw - 1);
+    const probeY = Math.min(Math.max(r.top + r.height / 2, 0), innerHeight - 1);
+    const hit = document.elementFromPoint(probeX, probeY);
+    results.push({ control: describe(el), inside, unobscured: hit === el || el.contains(hit), top: Math.round(r.top), bottom: Math.round(r.bottom), viewportHeight: innerHeight });
+  }
+  if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+  return results;
+})()`;
+
+async function auditKeyboardFocus(device, state) {
+  if (MODAL_ONLY) return;
+  const original = device.vp;
+  for (const vp of [byName["phone-small"], byName["phone"], byName["phone-landscape"]]) {
+    // An on-screen keyboard covers roughly 40% of a portrait phone and half of a landscape one.
+    const keyboard = Math.round(vp.height * (vp.width > vp.height ? 0.5 : 0.42));
+    await applyViewport(device, { ...vp, height: vp.height - keyboard });
+    const results = await ev(device, KEYBOARD_FOCUS_AUDIT);
+    const scope = `${device.name}/${state}-keyboard@${vp.name}`;
+    report.keyboard.push({ scope, controls: results.length, results });
+    if (results.length === 0) fail(scope, "no text-entry controls were exercised");
+    for (const result of results) {
+      if (!result.inside)
+        fail(scope, `${result.control} is outside the visible viewport when focused`);
+      if (!result.unobscured) fail(scope, `${result.control} is covered when focused`);
+    }
+  }
+  await applyViewport(device, original);
+}
+
+// ---------- action dock: the sticky commit row of a long decision form ----------
+
+/**
+ * In the page. For each visible `.action-dock` it records the dock's geometry and then, for every
+ * control of its panel, focuses it from the top of the page and checks it is neither outside the
+ * visible viewport nor covered by the dock (WCAG 2.2 SC 2.4.11 Focus Not Obscured), which is the
+ * failure a pinned bar can introduce. `mid` is a scroll position that shows the dock stuck over the
+ * middle of its panel, used by the caller for the viewport-only screenshot.
+ */
+const DOCK_AUDIT = `(async () => {
+  const visible = (el) => { const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return r.width > 0 && r.height > 0 && cs.visibility !== "hidden" && cs.display !== "none" && !el.closest("[inert]"); };
+  const describe = (el) => el.tagName.toLowerCase() + (el.id ? "#" + el.id : "") + " " + (el.textContent || el.getAttribute("aria-label") || "").trim().slice(0, 28);
+  const docks = [...document.querySelectorAll(".action-dock")].filter(visible);
+  if (docks.length === 0) return null;
+  const out = [];
+  for (const dock of docks) {
+    const panel = dock.parentElement;
+    const cs = getComputedStyle(dock);
+    const sticky = cs.position === "sticky";
+    const entry = { status: (dock.querySelector(".action-dock-status")?.textContent || "").trim(), sticky, innerHeight, dockHeight: Math.round(dock.getBoundingClientRect().height), problems: [], controls: 0 };
+    // Under 20rem of height the stylesheet deliberately returns the dock to the page flow.
+    const shortViewport = innerHeight < 20 * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16);
+    if (!sticky && !shortViewport) entry.problems.push("dock is not pinned (position " + cs.position + ") at a " + innerHeight + "px viewport");
+    if (sticky && dock.getBoundingClientRect().height > innerHeight * 0.45 + 1) entry.problems.push("dock is " + entry.dockHeight + "px of a " + innerHeight + "px viewport (cap is 45%)");
+    // Every button names its status line, and that line carries visible text.
+    for (const button of dock.querySelectorAll("button.primary-action")) {
+      const status = document.getElementById(button.getAttribute("aria-describedby") || "");
+      if (!status || !status.textContent.trim()) entry.problems.push("primary button has no visible described-by status");
+    }
+    // Pinned: while any of the panel is on screen, the whole dock is on screen.
+    const panelBox = () => { const r = panel.getBoundingClientRect(); return { top: r.top + scrollY, height: r.height }; };
+    const pb = panelBox();
+    const maxScroll = document.documentElement.scrollHeight - innerHeight;
+    const positions = [0, Math.max(0, pb.top - innerHeight * 0.3), Math.max(0, Math.min(maxScroll, pb.top + pb.height * 0.4)), maxScroll];
+    entry.mid = Math.round(Math.max(0, Math.min(maxScroll, pb.top + pb.height * 0.4)));
+    if (sticky) {
+      for (const y of positions) {
+        scrollTo(0, y);
+        await new Promise((r) => setTimeout(r, 60));
+        const pr = panel.getBoundingClientRect();
+        const dr = dock.getBoundingClientRect();
+        // Pinned while the panel reaches below the bar; once its bottom edge scrolls up the dock leaves with it.
+        // (A sticky dock is clamped a little below its panel's top edge, hence the slack.)
+        const panelOnScreen = pr.top < innerHeight - dr.height - 40 && pr.bottom > dr.height + 4;
+        if (panelOnScreen && (dr.bottom > innerHeight + 1 || dr.top < -1)) entry.problems.push("dock not fully on screen at scrollY " + Math.round(y) + " (" + Math.round(dr.top) + ".." + Math.round(dr.bottom) + " of " + innerHeight + ")");
+      }
+    }
+    const controls = [...panel.querySelectorAll('input, select, textarea, button, summary, [role="spinbutton"]')]
+      // A disabled control cannot take focus, so there is nothing to keep clear of the dock.
+      .filter((el) => visible(el) && !el.disabled && !dock.contains(el) && !el.closest("[hidden]"))
+      .slice(0, 60);
+    for (const el of controls) {
+      const box = el.matches('input[type="checkbox"], input[type="radio"]') ? (el.closest("label") || el) : el;
+      // Start with the control just below the bottom edge, as it is when keyboard focus walks down a
+      // long list, so the browser has to scroll it into view (and must leave room for the dock).
+      scrollTo(0, 0);
+      const top = box.getBoundingClientRect().top;
+      scrollTo(0, Math.max(0, top - innerHeight + 4));
+      const startY = scrollY;
+      el.focus({ preventScroll: false });
+      await new Promise((r) => setTimeout(r, 40));
+      const r = box.getBoundingClientRect();
+      const vw = document.documentElement.clientWidth;
+      const dr = dock.getBoundingClientRect();
+      entry.controls += 1;
+      const where = " (" + Math.round(r.top) + ".." + Math.round(r.bottom) + " of " + innerHeight + ", dock from " + Math.round(dr.top) + ")";
+      // The part of the control that is on screen and not under the dock.
+      const clearBottom = Math.min(innerHeight, dock.contains(el) || getComputedStyle(dock).position !== "sticky" ? innerHeight : dr.top);
+      const clear = Math.max(0, Math.min(r.bottom, clearBottom) - Math.max(r.top, 0));
+      const scrolled = Math.abs(scrollY - startY) > 1;
+      // Scrolled by the browser to reveal it: it must now be fully clear. Already partly in view, so
+      // not scrolled: it must not be hidden (WCAG 2.2 SC 2.4.11 forbids hiding it entirely).
+      const needed = scrolled || r.top >= innerHeight - 1 ? r.height : Math.min(24, r.height);
+      if (r.left < -0.5 || r.right > vw + 0.5) entry.problems.push(describe(el) + " is outside the viewport when focused" + where);
+      else if (clear + 0.5 < needed) entry.problems.push(describe(el) + " is covered by the dock when focused" + where);
+    }
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+    scrollTo(0, 0);
+    out.push(entry);
+  }
+  return out;
+})()`;
+
+/**
+ * At every viewport: the dock stays on screen while its panel is, never exceeds 45% of the visible
+ * height, explains its primary button, and never hides a keyboard-focused control. Takes a
+ * viewport-only (not full-page) capture scrolled to the middle of the panel, because that is the
+ * view a person actually has: the full-page captures cannot show a pinned element.
+ */
+// The dock's row/column switch sits at 34rem and two long buttons can wrap between about 540 and 720px,
+// a band none of the standard viewports lands in (a desktop at 150% zoom, a foldable, a small tablet).
+const DOCK_VIEWPORTS = [
+  ...VIEWPORTS,
+  { name: "tablet-narrow", width: 600, height: 900, mobile: true },
+];
+
+async function auditActionDock(device, state) {
+  if (MODAL_ONLY) return;
+  const original = device.vp;
+  let sawDock = false;
+  for (const vp of DOCK_VIEWPORTS) {
+    await applyViewport(device, vp);
+    await sleep(250);
+    const results = await ev(device, DOCK_AUDIT);
+    const scope = `${device.name}/${state}-dock@${vp.name}`;
+    if (!results) continue;
+    sawDock = true;
+    report.docks.push({ scope, results });
+    for (const result of results) {
+      for (const problem of result.problems) fail(scope, problem);
+      // (A random roll can keep no dice: nothing to assign, so the panel has no control but the dock.)
+      if (result.controls === 0 && !/no dice to assign/i.test(result.status))
+        fail(scope, "no panel controls were exercised");
+    }
+    if (SHOTS) {
+      await ev(device, `scrollTo(0, ${results[0].mid})`);
+      await sleep(250);
+      const { data } = await device.cdp.send(
+        "Page.captureScreenshot",
+        { format: "jpeg", quality: 70 },
+        device.sessionId,
+      );
+      writeFileSync(
+        join(OUT, `dock-${device.name}-${state}-${vp.name}.jpg`),
+        Buffer.from(data, "base64"),
+      );
+      await ev(device, `scrollTo(0, 0)`);
+    }
+  }
+  if (!sawDock) fail(`${device.name}/${state}-dock`, "no .action-dock was found to audit");
+  await applyViewport(device, original);
+}
+
+// ---------- forms: inline validation instead of the browser's own bubbles ----------
+
+/**
+ * Submits a signed-out form empty, then with exactly one invalid value, at two phone sizes. The app
+ * must raise its OWN errors in the page (not the browser's unstyled, transient bubble): every empty
+ * required field flagged `aria-invalid` and described by visible text, an alert next to the submit
+ * button, and focus moved to the first invalid field with that field inside the viewport.
+ */
+async function auditInlineValidation(device, config) {
+  if (MODAL_ONLY) return;
+  const original = device.vp;
+  for (const vp of [byName["phone-small"], byName["phone"]]) {
+    await applyViewport(device, vp);
+    const scope = `${device.name}/${config.name}-validation@${vp.name}`;
+    const probe = `(() => {
+      const el = (id) => document.getElementById(id);
+      const described = (input) => (input.getAttribute("aria-describedby") || "").split(/\\s+/).map((id) => el(id)).filter(Boolean).map((n) => n.textContent.trim()).join(" ").trim();
+      const form = document.querySelector("form");
+      const flagged = [...form.querySelectorAll('[aria-invalid="true"]')];
+      const active = document.activeElement;
+      const r = active.getBoundingClientRect();
+      return {
+        flagged: flagged.map((i) => {
+          const cs = getComputedStyle(i);
+          return { id: i.id, message: described(i), borderColor: cs.borderTopColor, borderWidth: parseFloat(cs.borderTopWidth) };
+        }),
+        riot: (() => { const probe = document.createElement("i"); probe.style.color = "var(--riot)"; document.body.append(probe); const color = getComputedStyle(probe).color; probe.remove(); return color; })(),
+        alerts: [...form.querySelectorAll('[role="alert"]')].filter((n) => n.textContent.trim()).length,
+        focusedId: active.id,
+        focusedInside: r.top >= -0.5 && r.bottom <= innerHeight + 0.5,
+        hash: location.hash,
+        overflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      };
+    })()`;
+    // 1. Everything empty.
+    for (const id of config.fields) await setInput(device, `#${id}`, "");
+    const hashBefore = await ev(device, `location.hash`);
+    await ev(
+      device,
+      `[...document.querySelectorAll("form button[type=submit]")].find(b => ${config.submit}.test(b.textContent.trim())).click()`,
+    );
+    await sleep(350);
+    const empty = await ev(device, probe);
+    const record = { scope, empty, hashBefore };
+    record.screenshot = await screenshot(
+      device,
+      `${device.name}-${config.name}-errors-${vp.name}.jpg`,
+      {
+        fullPage: false,
+      },
+    );
+    for (const id of config.required) {
+      const hit = empty.flagged.find((f) => f.id === id);
+      if (!hit) fail(scope, `empty #${id} is not marked aria-invalid`);
+      else if (hit.message.length < 4) fail(scope, `empty #${id} has no visible error text`);
+    }
+    // An invalid field must LOOK invalid: a heavier border in the error colour (computed, so a
+    // specificity slip that leaves the border grey is caught).
+    for (const f of empty.flagged) {
+      if (f.borderColor !== empty.riot || f.borderWidth < 3) {
+        fail(
+          scope,
+          `#${f.id} is flagged but its border is ${f.borderWidth}px ${f.borderColor}, not 3px ${empty.riot}`,
+        );
+      }
+    }
+    if (empty.alerts < 1) fail(scope, "no inline alert after an invalid submit");
+    if (empty.focusedId !== config.required[0]) {
+      fail(
+        scope,
+        `focus is on "${empty.focusedId}", not the first invalid field #${config.required[0]}`,
+      );
+    }
+    if (!empty.focusedInside) fail(scope, "first invalid field is outside the viewport");
+    if (empty.hash !== hashBefore) fail(scope, "an invalid submit navigated away");
+    if (empty.overflowPx > 1)
+      fail(scope, `horizontal overflow ${empty.overflowPx}px with errors shown`);
+    // 2. Valid everywhere except one field.
+    if (config.bad) {
+      for (const [id, value] of Object.entries(config.valid))
+        await setInput(device, `#${id}`, value);
+      await setInput(device, `#${config.bad[0]}`, config.bad[1]);
+      await ev(
+        device,
+        `[...document.querySelectorAll("form button[type=submit]")].find(b => ${config.submit}.test(b.textContent.trim())).click()`,
+      );
+      await sleep(350);
+      const one = await ev(device, probe);
+      record.oneInvalid = one;
+      if (one.flagged.length !== 1 || one.flagged[0].id !== config.bad[0]) {
+        fail(
+          scope,
+          `expected only #${config.bad[0]} flagged, got ${JSON.stringify(one.flagged.map((f) => f.id))}`,
+        );
+      }
+      if (one.flagged[0] && one.flagged[0].message.length < 4)
+        fail(scope, `#${config.bad[0]} has no visible error text`);
+      if (one.focusedId !== config.bad[0])
+        fail(scope, `focus is on "${one.focusedId}", not #${config.bad[0]}`);
+      // Fixing the value clears the flag as the person types.
+      await setInput(device, `#${config.bad[0]}`, config.valid[config.bad[0]]);
+      await sleep(250);
+      const cleared = await ev(device, probe);
+      record.cleared = cleared;
+      if (cleared.flagged.some((f) => f.id === config.bad[0])) {
+        fail(scope, `#${config.bad[0]} stays flagged after it is corrected`);
+      }
+    }
+    report.validation.push(record);
+  }
+  await applyViewport(device, original);
+}
+
+// ---------- the whole roster: every character's own compose screen and correction sheet ----------
+
+async function joinAndClaim(device, codes, displayName) {
+  await goto(device, "#/join");
+  await setInput(device, "#room-code", codes["Room code"]);
+  await setInput(device, "#join-passphrase", "audit-pass-1");
+  await setInput(device, "#join-display-name", displayName);
+  await clickText(device, "button", /^Join session$/);
+  await waitFor(device, `document.querySelector(".reveal-card")`, 30000, `${displayName} reveal`);
+  await clickText(device, "button", /wrote it down/);
+  await waitFor(device, `document.querySelector(".roster-grid")`, 30000, `${displayName} roster`);
+  // The first still-unclaimed character, so five more players walk the roster in order without
+  // this script ever naming a character.
+  await clickText(device, "button", /^Claim$/);
+  await clickText(device, "button", /Continue to your dashboard/);
+  await waitFor(
+    device,
+    `document.body.textContent.includes("Choose an action")`,
+    30000,
+    `${displayName} compose`,
+  );
+}
+
+/**
+ * Characters differ in items, abilities, utility actions and injury boxes, and the first character's
+ * screens are the only ones the main flow visits. Five more players claim the rest; each compose
+ * screen is audited at every viewport, then the GM's correction sheet is audited for each of them.
+ */
+async function rosterSweep(cdp, gm, table, codes) {
+  // As many more players as there are characters left to claim (the GM holds one seat, the room caps at 8).
+  const total = await ev(gm, `document.querySelectorAll(".roster-panel-list li button").length`);
+  const names = ["Bea", "Cy", "Dee", "Eli", "Fay", "Gus", "Hal"];
+  const extra = Math.min(total - 1, names.length);
+  if (total < 2) fail("roster-sweep", `GM roster lists ${total} characters, expected at least 2`);
+  const players = [];
+  for (const [i, name] of names.slice(0, extra).entries()) {
+    const device = await openDevice(cdp, `player${i + 2}`, byName["phone"]);
+    await joinAndClaim(device, codes, name);
+    await captureState(device, "compose", { axeViewports: ["phone-small", "phone"] });
+    players.push(device);
+  }
+  await waitFor(
+    gm,
+    `/Characters claimed: ${1 + extra}\\//.test(document.body.textContent)`,
+    30000,
+    "every character claimed",
+  );
+  await captureState(gm, "console-full-roster", { axeViewports: ["phone"] });
+  await captureState(table, "full-party", { axeViewports: ["phone"] });
+  for (let index = 1; index < total; index += 1) {
+    for (const vp of [byName["phone-small"], byName["phone"], byName["phone-landscape"]]) {
+      await auditSheetCase(gm, vp, index);
+    }
+  }
+  await applyViewport(gm, byName["desktop"]);
+  return players;
+}
+
+async function setSelect(device, selector, valuePattern) {
+  await waitFor(device, `document.querySelector(${JSON.stringify(selector)})`, 15000, selector);
+  const chosen = await ev(
+    device,
+    `(() => {
+      const el = document.querySelector(${JSON.stringify(selector)});
+      const option = [...el.options].reverse().find(o => ${valuePattern}.test(o.value));
+      if (!option) return null;
+      Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value").set.call(el, option.value);
+      el.dispatchEvent(new Event("change", { bubbles: true }));
+      return option.value;
+    })()`,
+  );
+  if (chosen === null) throw new Error(`${selector} has no option matching ${valuePattern}`);
+  await sleep(250);
+}
+
 // ---------- flow ----------
+
+/** Signed-out forms whose validation the app must render inline (see auditInlineValidation). */
+const VALIDATION = {
+  "create-form": {
+    name: "create",
+    fields: ["session-name", "passphrase", "creator-display-name"],
+    required: ["session-name", "passphrase", "creator-display-name"],
+    submit: "/^Create session$/",
+    valid: { "session-name": "Audit", passphrase: "audit-pass-1", "creator-display-name": "Ada" },
+    bad: ["passphrase", "abc"], // shorter than the 4-character minimum
+  },
+  "join-form": {
+    name: "join",
+    fields: ["room-code", "join-passphrase", "join-display-name"],
+    required: ["room-code", "join-passphrase", "join-display-name"],
+    submit: "/^Join session$/",
+    valid: {
+      "room-code": "ABCD-1234",
+      "join-passphrase": "audit-pass-1",
+      "join-display-name": "Ada",
+    },
+    bad: ["room-code", "bad code!"], // outside [A-Za-z0-9-]
+  },
+  "table-join-form": {
+    name: "table-join",
+    fields: ["table-room-code", "table-code"],
+    required: ["table-room-code", "table-code"],
+    submit: "/^Connect display$/",
+    valid: { "table-room-code": "ABCD-1234", "table-code": "ABCD" },
+    bad: null,
+  },
+  "recover-form": {
+    name: "recover",
+    fields: ["recover-room-code", "recovery-code", "recover-display-name"],
+    required: ["recover-room-code", "recovery-code", "recover-display-name"],
+    submit: "/^Recover my seat$/",
+    valid: {
+      "recover-room-code": "ABCD-1234",
+      "recovery-code": "ABCD-EFGH",
+      "recover-display-name": "Ada",
+    },
+    bad: ["recover-room-code", "bad code!"],
+  },
+};
 
 async function main() {
   const profile = mkdtempSync(join(tmpdir(), "digitable-ui-audit-"));
@@ -784,6 +1386,10 @@ async function main() {
     ]) {
       await goto(anon, path);
       await captureState(anon, name);
+      if (VALIDATION[name]) {
+        await auditKeyboardFocus(anon, name);
+        await auditInlineValidation(anon, VALIDATION[name]);
+      }
     }
     for (const path of [
       "#/claim/no-such-room",
@@ -796,6 +1402,25 @@ async function main() {
         axeViewports: ["phone"],
       });
     }
+
+    // Signed-out secret/recovery form: reachable from the join form, never visited by the sweep above.
+    await goto(anon, "#/join");
+    await clickText(anon, "button", /Recover your seat/);
+    await waitFor(anon, `document.querySelector("#recovery-code")`, 15000, "recovery form");
+    await captureState(anon, "recover-form");
+    await auditKeyboardFocus(anon, "recover-form");
+    await auditInlineValidation(anon, VALIDATION["recover-form"]);
+    await setInput(anon, "#recover-room-code", "NOPE-0000");
+    await setInput(anon, "#recovery-code", "not-a-real-recovery-code");
+    await setInput(anon, "#recover-display-name", "Ada");
+    await clickText(anon, "button", /^Recover my seat$/);
+    await waitFor(
+      anon,
+      `document.querySelector('[role="alert"].error-message')`,
+      30000,
+      "recovery rejection",
+    );
+    await captureState(anon, "recover-rejected", { axeViewports: ["phone"] });
 
     // GM creates the session.
     await goto(gm, "#/create");
@@ -828,6 +1453,10 @@ async function main() {
     await clickText(player, "button", /^Join session$/);
     await waitFor(player, `document.querySelector(".reveal-card")`, 30000, "player reveal");
     await captureState(player, "join-reveal");
+    codes.playerRecovery = await ev(
+      player,
+      `document.querySelector(".reveal-code").textContent.trim()`,
+    );
     await clickText(player, "button", /wrote it down/);
     await waitFor(player, `document.querySelector(".roster-grid")`, 30000, "roster");
     await captureState(player, "claim-roster");
@@ -840,6 +1469,7 @@ async function main() {
       "compose",
     );
     await captureState(player, "compose");
+    await auditActionDock(player, "compose");
 
     // Disclosure: "Why?" opened.
     await ev(player, `document.querySelector("details summary").click()`);
@@ -864,6 +1494,12 @@ async function main() {
       "claimed",
     );
     await captureState(gm, "console-scene-loaded");
+    await auditKeyboardFocus(gm, "console-scene-loaded");
+    // A native select ellipsises its closed value: pick a Threat target (the last matching option) so the audit can
+    // prove the full text is echoed beside it, then put it back.
+    await setSelect(gm, "#edit-target", /^threat:/);
+    await captureState(gm, "console-edit-target", { axeViewports: ["phone"] });
+    await setSelect(gm, "#edit-target", /^$/);
 
     // Player declares; GM sees pending.
     await clickText(player, "button", /^Declare action$/);
@@ -871,6 +1507,7 @@ async function main() {
     await captureState(player, "declared", { axeViewports: ["phone"] });
     await waitFor(gm, `${textMatch("button", "/^Roll it$/")}`, 30000, "Roll it");
     await captureState(gm, "console-pending");
+    await auditActionDock(gm, "console-pending");
 
     await auditModal(gm);
     await auditReducedMotion(gm);
@@ -880,11 +1517,13 @@ async function main() {
     await clickText(gm, "button", /^Roll it$/);
     await waitFor(player, `document.body.textContent.includes("Your roll")`, 30000, "allocation");
     await captureState(player, "allocation");
+    await auditActionDock(player, "allocation");
     await ev(
       player,
       `document.querySelectorAll("fieldset.allocation-die-group").forEach(g => g.querySelector("input[type=radio]")?.click())`,
     );
     await captureState(player, "allocation-assigned", { axeViewports: ["phone"] });
+    await auditActionDock(player, "allocation-assigned");
     await clickText(player, "button", /^Confirm allocation$/);
     await waitFor(
       player,
@@ -894,6 +1533,7 @@ async function main() {
     );
     if (await ev(player, `document.body.textContent.includes("Choose an injury")`)) {
       await captureState(player, "injury-choice", { axeViewports: ["phone"] });
+      await auditActionDock(player, "injury-choice");
       await ev(player, `document.querySelector("input[type=radio]").click()`);
       await clickText(player, "button", /confirm|choose|apply/i);
       await waitFor(player, `document.body.textContent.includes("Resolved")`, 30000, "resolved");
@@ -920,6 +1560,23 @@ async function main() {
     );
     await captureState(table, "next-scene");
     await captureState(gm, "console-next-scene");
+    await rosterSweep(cdp, gm, table, codes);
+
+    // Last on purpose: redeeming the player's recovery code rebinds the seat to the anon device and
+    // revokes the player device's binding, so nothing that needs that device may run after this.
+    // The anon page is still on #/join in recover mode; a same-hash navigation would keep that
+    // component state, so leave the route first to get a fresh join form.
+    await goto(anon, "#/");
+    await goto(anon, "#/join");
+    await clickText(anon, "button", /Recover your seat/);
+    await setInput(anon, "#recover-room-code", codes["Room code"]);
+    // Typed the way a phone keyboard or a paste can deliver it (lower-cased, padded): proves the
+    // client-side normalisation end to end against the real callable, not just in jsdom.
+    await setInput(anon, "#recovery-code", ` ${codes.playerRecovery.toLowerCase()} `);
+    await setInput(anon, "#recover-display-name", "Ada");
+    await clickText(anon, "button", /^Recover my seat$/);
+    await waitFor(anon, `document.querySelector(".reveal-card")`, 30000, "recovery reveal");
+    await captureState(anon, "recover-reveal");
   } catch (error) {
     fail("flow", String(error.message));
   } finally {
@@ -947,6 +1604,13 @@ async function main() {
           .filter((v) => !isHardAxe(v))
           .map((v) => `${s.surface}/${s.state}@${s.viewport}: ${v.id}`),
       ),
+      keyboardFocusChecks: report.keyboard.reduce((n, k) => n + k.controls, 0),
+      dockFocusChecks: report.docks.reduce(
+        (n, d) => n + d.results.reduce((m, r) => m + r.controls, 0),
+        0,
+      ),
+      validationScenarios: report.validation.length,
+      sheetCases: report.modal.filter((m) => m.rosterIndex !== undefined).length,
       failures: report.failures.length,
     };
     writeFileSync(join(OUT, "report.json"), JSON.stringify(report, null, 2) + "\n");

@@ -1,0 +1,20 @@
+{
+ "label": "before",
+ "base": "local build, isolated emulator stack",
+ "summary": {
+  "states": 288,
+  "controlsAudited": 3272,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "axeHardViolations": 0,
+  "axeBestPractice": [
+   "anon/route-claim-no-such-room@phone: page-has-heading-one"
+  ],
+  "keyboardFocusChecks": 87,
+  "validationScenarios": 8,
+  "sheetCases": 23,
+  "failures": 0
+ },
+ "failures": [],
+ "docks": []
+}

@@ -1,0 +1,526 @@
+{
+ "label": "after",
+ "base": "local build, isolated emulator stack",
+ "summary": {
+  "states": 288,
+  "controlsAudited": 3336,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "axeHardViolations": 0,
+  "axeBestPractice": [
+   "anon/route-claim-no-such-room@phone: page-has-heading-one"
+  ],
+  "keyboardFocusChecks": 87,
+  "dockFocusChecks": 315,
+  "validationScenarios": 8,
+  "sheetCases": 23,
+  "failures": 0
+ },
+ "failures": [],
+ "docks": [
+  {
+   "scope": "player/compose-dock@phone-small",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 568,
+     "dockHeight": 123,
+     "problems": [],
+     "controls": 15,
+     "mid": 1725
+    }
+   ]
+  },
+  {
+   "scope": "player/compose-dock@phone",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 812,
+     "dockHeight": 123,
+     "problems": [],
+     "controls": 15,
+     "mid": 1595
+    }
+   ]
+  },
+  {
+   "scope": "player/compose-dock@phone-390",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 844,
+     "dockHeight": 123,
+     "problems": [],
+     "controls": 15,
+     "mid": 1583
+    }
+   ]
+  },
+  {
+   "scope": "player/compose-dock@phone-412",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 915,
+     "dockHeight": 123,
+     "problems": [],
+     "controls": 15,
+     "mid": 1581
+    }
+   ]
+  },
+  {
+   "scope": "player/compose-dock@phone-landscape",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 375,
+     "dockHeight": 66,
+     "problems": [],
+     "controls": 15,
+     "mid": 1478
+    }
+   ]
+  },
+  {
+   "scope": "player/compose-dock@tablet",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 1024,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 15,
+     "mid": 1413
+    }
+   ]
+  },
+  {
+   "scope": "player/compose-dock@desktop",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 800,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 15,
+     "mid": 1482
+    }
+   ]
+  },
+  {
+   "scope": "player/compose-dock@table",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 1080,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 15,
+     "mid": 1357
+    }
+   ]
+  },
+  {
+   "scope": "player/compose-dock@tablet-narrow",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 900,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 15,
+     "mid": 1514
+    }
+   ]
+  },
+  {
+   "scope": "gm/console-pending-dock@phone-small",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 568,
+     "dockHeight": 123,
+     "problems": [],
+     "controls": 2,
+     "mid": 2407
+    }
+   ]
+  },
+  {
+   "scope": "gm/console-pending-dock@phone",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 812,
+     "dockHeight": 123,
+     "problems": [],
+     "controls": 2,
+     "mid": 2222
+    }
+   ]
+  },
+  {
+   "scope": "gm/console-pending-dock@phone-390",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 844,
+     "dockHeight": 123,
+     "problems": [],
+     "controls": 2,
+     "mid": 2183
+    }
+   ]
+  },
+  {
+   "scope": "gm/console-pending-dock@phone-412",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 915,
+     "dockHeight": 123,
+     "problems": [],
+     "controls": 2,
+     "mid": 2169
+    }
+   ]
+  },
+  {
+   "scope": "gm/console-pending-dock@phone-landscape",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 375,
+     "dockHeight": 66,
+     "problems": [],
+     "controls": 2,
+     "mid": 1986
+    }
+   ]
+  },
+  {
+   "scope": "gm/console-pending-dock@tablet",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 1024,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 2,
+     "mid": 1990
+    }
+   ]
+  },
+  {
+   "scope": "gm/console-pending-dock@desktop",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 800,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 2,
+     "mid": 2126
+    }
+   ]
+  },
+  {
+   "scope": "gm/console-pending-dock@table",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 1080,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 2,
+     "mid": 2029
+    }
+   ]
+  },
+  {
+   "scope": "gm/console-pending-dock@tablet-narrow",
+   "results": [
+    {
+     "status": "Pool: 4 dice",
+     "sticky": true,
+     "innerHeight": 900,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 2,
+     "mid": 2034
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-dock@phone-small",
+   "results": [
+    {
+     "status": "2 of 2 dice still need a target.",
+     "sticky": true,
+     "innerHeight": 568,
+     "dockHeight": 124,
+     "problems": [],
+     "controls": 9,
+     "mid": 1511
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-dock@phone",
+   "results": [
+    {
+     "status": "2 of 2 dice still need a target.",
+     "sticky": true,
+     "innerHeight": 812,
+     "dockHeight": 106,
+     "problems": [],
+     "controls": 9,
+     "mid": 1167
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-dock@phone-390",
+   "results": [
+    {
+     "status": "2 of 2 dice still need a target.",
+     "sticky": true,
+     "innerHeight": 844,
+     "dockHeight": 106,
+     "problems": [],
+     "controls": 9,
+     "mid": 1135
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-dock@phone-412",
+   "results": [
+    {
+     "status": "2 of 2 dice still need a target.",
+     "sticky": true,
+     "innerHeight": 915,
+     "dockHeight": 106,
+     "problems": [],
+     "controls": 9,
+     "mid": 1067
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-dock@phone-landscape",
+   "results": [
+    {
+     "status": "2 of 2 dice still need a target.",
+     "sticky": true,
+     "innerHeight": 375,
+     "dockHeight": 66,
+     "problems": [],
+     "controls": 9,
+     "mid": 1241
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-dock@tablet",
+   "results": [
+    {
+     "status": "2 of 2 dice still need a target.",
+     "sticky": true,
+     "innerHeight": 1024,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 9,
+     "mid": 820
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-dock@desktop",
+   "results": [
+    {
+     "status": "2 of 2 dice still need a target.",
+     "sticky": true,
+     "innerHeight": 800,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 9,
+     "mid": 1044
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-dock@table",
+   "results": [
+    {
+     "status": "2 of 2 dice still need a target.",
+     "sticky": true,
+     "innerHeight": 1080,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 9,
+     "mid": 764
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-dock@tablet-narrow",
+   "results": [
+    {
+     "status": "2 of 2 dice still need a target.",
+     "sticky": true,
+     "innerHeight": 900,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 9,
+     "mid": 976
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-assigned-dock@phone-small",
+   "results": [
+    {
+     "status": "Every die has a target.",
+     "sticky": true,
+     "innerHeight": 568,
+     "dockHeight": 106,
+     "problems": [],
+     "controls": 9,
+     "mid": 1534
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-assigned-dock@phone",
+   "results": [
+    {
+     "status": "Every die has a target.",
+     "sticky": true,
+     "innerHeight": 812,
+     "dockHeight": 106,
+     "problems": [],
+     "controls": 9,
+     "mid": 1205
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-assigned-dock@phone-390",
+   "results": [
+    {
+     "status": "Every die has a target.",
+     "sticky": true,
+     "innerHeight": 844,
+     "dockHeight": 106,
+     "problems": [],
+     "controls": 9,
+     "mid": 1173
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-assigned-dock@phone-412",
+   "results": [
+    {
+     "status": "Every die has a target.",
+     "sticky": true,
+     "innerHeight": 915,
+     "dockHeight": 106,
+     "problems": [],
+     "controls": 9,
+     "mid": 1086
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-assigned-dock@phone-landscape",
+   "results": [
+    {
+     "status": "Every die has a target.",
+     "sticky": true,
+     "innerHeight": 375,
+     "dockHeight": 66,
+     "problems": [],
+     "controls": 9,
+     "mid": 1241
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-assigned-dock@tablet",
+   "results": [
+    {
+     "status": "Every die has a target.",
+     "sticky": true,
+     "innerHeight": 1024,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 9,
+     "mid": 820
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-assigned-dock@desktop",
+   "results": [
+    {
+     "status": "Every die has a target.",
+     "sticky": true,
+     "innerHeight": 800,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 9,
+     "mid": 1044
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-assigned-dock@table",
+   "results": [
+    {
+     "status": "Every die has a target.",
+     "sticky": true,
+     "innerHeight": 1080,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 9,
+     "mid": 764
+    }
+   ]
+  },
+  {
+   "scope": "player/allocation-assigned-dock@tablet-narrow",
+   "results": [
+    {
+     "status": "Every die has a target.",
+     "sticky": true,
+     "innerHeight": 900,
+     "dockHeight": 78,
+     "problems": [],
+     "controls": 9,
+     "mid": 1014
+    }
+   ]
+  }
+ ]
+}

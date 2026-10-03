@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type SyntheticEvent } from "react";
 import {
   eatTheReichTemplate,
   STATS,
@@ -8,6 +8,7 @@ import {
 } from "@digitable/template-eat-the-reich";
 import type { ViewerProjection } from "@digitable/contracts";
 import type { EatTheReichView } from "@digitable/template-eat-the-reich";
+import { ActionDock } from "../shared/ActionDock.js";
 import { Icon, STAT_ICON_NAMES, STAT_LABELS } from "../shared/Icon.js";
 
 export interface ComposeStep2Props {
@@ -24,6 +25,17 @@ function highestStatIndex(character: CharacterFullSheet): number {
     if (character.stats[STATS[i]!] > character.stats[STATS[best]!]) best = i;
   }
   return best;
+}
+
+/**
+ * Opening "Why?" grows the page under the pinned dock, which would leave the new list behind it. Bring
+ * the opened list into view; `scroll-padding-bottom` (the dock's measured height) keeps it clear.
+ */
+function revealOpenedDetails(event: SyntheticEvent<HTMLDetailsElement>): void {
+  const details = event.currentTarget;
+  if (details.open && typeof details.scrollIntoView === "function") {
+    details.scrollIntoView({ block: "nearest" });
+  }
 }
 
 /** docs/ETR_SESSION_FLOW.md section 6.1: stat / items / abilities / bonus claims / engaged threats, derived from the real `self` sheet (C06). */
@@ -93,6 +105,13 @@ export function ComposeStep2({
   const estimatedTotal = basePool.total + abilityDice + claimedBonusDice;
 
   const canDeclare = !character.downed && !character.retired && !actedThisRound;
+  const blockedReason = character.downed
+    ? "you're down"
+    : character.retired
+      ? "your story is told"
+      : actedThisRound
+        ? "you've acted this round"
+        : null;
 
   function handleDeclare(): void {
     onDeclare({
@@ -140,27 +159,37 @@ export function ComposeStep2({
         <legend>Items</legend>
         <div className="gear-list">
           {character.items.map((item) => (
-            <label key={item.id} className="gear-option">
-              <input
-                type="checkbox"
-                checked={itemIds.includes(item.id)}
-                disabled={item.usesRemaining <= 0 || item.poolEligible === false}
-                onChange={() => toggleClaimable(itemIds, item.id, setItemIds)}
-              />
-              {item.name} ({item.usesRemaining}/{item.maxUses} uses)
-              {item.usesRemaining <= 0 ? " — no uses left" : ""}
-              {item.useEffect?.kind === "gainBlood"
-                ? ` — mark to regain ${item.useEffect.amount} Blood`
-                : ""}
-              {item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
-                ? " — mark to ignore an Injury or being Downed; then destroy the hat"
-                : ""}
+            // A utility item's own action sits beside its claim row, never inside the label: a button
+            // inside a label is invalid, its text is folded into the checkbox's accessible name, and on a
+            // phone it was squeezed into a narrow, unstyled sliver next to the label text.
+            <div key={item.id} className="gear-item">
+              <label id={`item-${item.id}-label`} className="gear-option">
+                <input
+                  type="checkbox"
+                  checked={itemIds.includes(item.id)}
+                  disabled={item.usesRemaining <= 0 || item.poolEligible === false}
+                  onChange={() => toggleClaimable(itemIds, item.id, setItemIds)}
+                />
+                {item.name} ({item.usesRemaining}/{item.maxUses} uses)
+                {item.usesRemaining <= 0 ? " — no uses left" : ""}
+                {item.useEffect?.kind === "gainBlood"
+                  ? ` — mark to regain ${item.useEffect.amount} Blood`
+                  : ""}
+                {item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
+                  ? " — mark to ignore an Injury or being Downed; then destroy the hat"
+                  : ""}
+              </label>
               {item.useEffect?.kind === "gainBlood" && item.usesRemaining > 0 ? (
-                <button type="button" onClick={() => onUseUtilityItem(item.id)}>
+                <button
+                  type="button"
+                  className="secondary-action"
+                  aria-describedby={`item-${item.id}-label`}
+                  onClick={() => onUseUtilityItem(item.id)}
+                >
                   Mark and regain Blood
                 </button>
               ) : null}
-            </label>
+            </div>
           ))}
         </div>
       </fieldset>
@@ -241,11 +270,8 @@ export function ComposeStep2({
       </fieldset>
 
       <div className="pool-summary">
-        <p>
-          Pool: <strong>{estimatedTotal}</strong> {estimatedTotal === 1 ? "die" : "dice"} (needs 4+
-          on a d6; 6 is a critical)
-        </p>
-        <details>
+        <p className="form-hint">A d6 needs 4+ to succeed; a 6 is a critical.</p>
+        <details onToggle={revealOpenedDetails}>
           <summary>Why?</summary>
           <ul>
             {basePool.components.map((component, i) => (
@@ -259,19 +285,31 @@ export function ComposeStep2({
         </details>
       </div>
 
-      <button
-        type="button"
-        className="primary-action"
-        disabled={!canDeclare}
-        onClick={handleDeclare}
-      >
-        Declare action
-      </button>
       {character.downed && <p role="alert">You&rsquo;re down. A teammate must rescue you.</p>}
       {character.retired && <p role="alert">Your story is told.</p>}
       {actedThisRound && !character.downed && !character.retired && (
         <p role="alert">You&rsquo;ve acted this round. Wait for the GM to end the round.</p>
       )}
+
+      <ActionDock
+        statusId="compose-dock-status"
+        status={
+          <>
+            Pool: <strong>{estimatedTotal}</strong> {estimatedTotal === 1 ? "die" : "dice"}
+            {blockedReason ? ` — ${blockedReason}` : ""}
+          </>
+        }
+      >
+        <button
+          type="button"
+          className="primary-action"
+          aria-describedby="compose-dock-status"
+          disabled={!canDeclare}
+          onClick={handleDeclare}
+        >
+          Declare action
+        </button>
+      </ActionDock>
     </section>
   );
 }

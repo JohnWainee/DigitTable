@@ -1,6 +1,12 @@
 import { useLayoutEffect, type RefObject } from "react";
 
 /**
+ * Below this visible height (in rem, so it scales with the user's text size) a pinned title, body and
+ * action row cannot all be shown: the sheet is "compact" and scrolls as one page instead.
+ */
+export const COMPACT_BELOW_REM = 15;
+
+/**
  * Mirrors `window.visualViewport` onto CSS custom properties of `ref`'s
  * element (`--vv-top`, `--vv-left`, `--vv-width`, `--vv-height`) whenever the
  * visual viewport differs from the layout viewport: an on-screen keyboard on
@@ -15,6 +21,12 @@ import { useLayoutEffect, type RefObject } from "react";
  * stylesheet's plain `100dvh`/`100%` fallbacks apply and nothing here can
  * disturb ordinary layout (for example a desktop page scrollbar).
  *
+ * It also sets `data-compact` on that element while the visible height is under
+ * `COMPACT_BELOW_REM`. On a landscape phone with the on-screen keyboard up, real iOS
+ * Safari leaves roughly 70-140px (measured in the iOS Simulator): a pinned header and
+ * footer alone need more than that, which clipped the action row and pushed the title
+ * out of view. The stylesheet makes the whole sheet scroll in that state.
+ *
  * Presentation only. No game state, projection, or authorization is read or
  * written here.
  */
@@ -27,6 +39,11 @@ export function useVisualViewportBox(ref: RefObject<HTMLElement | null>): void {
     const visual: VisualViewport = viewport;
 
     function apply(): void {
+      // The smaller of the two heights: iOS shrinks only the visual viewport for the keyboard, Chrome
+      // Android (interactive-widget=resizes-content) shrinks both.
+      const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      const visibleHeight = Math.min(visual.height, window.innerHeight);
+      target.toggleAttribute("data-compact", visibleHeight < COMPACT_BELOW_REM * rootFontSize);
       const differs =
         visual.scale !== 1 ||
         Math.abs(visual.offsetTop) > 0.5 ||

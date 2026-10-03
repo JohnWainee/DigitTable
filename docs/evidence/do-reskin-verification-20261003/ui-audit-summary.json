@@ -1,0 +1,61 @@
+{
+ "label": "before-candidate-888e5e1",
+ "base": "http://127.0.0.1:4290",
+ "startedAt": "2026-10-03T13:19:46.695Z",
+ "finishedAt": "2026-10-03T13:30:06.164Z",
+ "ok": true,
+ "summary": {
+  "states": 288,
+  "controlsAudited": 3448,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "axeHardViolations": 0,
+  "axeBestPractice": [
+   "anon/route-claim-no-such-room@phone: page-has-heading-one"
+  ],
+  "keyboardFocusChecks": 87,
+  "dockFocusChecks": 441,
+  "validationScenarios": 8,
+  "sheetCases": 23,
+  "failures": 0
+ },
+ "failures": [],
+ "console": {
+  "gm": {
+   "consoleErrors": [],
+   "failedRequests": []
+  },
+  "player": {
+   "consoleErrors": [],
+   "failedRequests": []
+  },
+  "table": {
+   "consoleErrors": [],
+   "failedRequests": []
+  },
+  "anon": {
+   "consoleErrors": [],
+   "failedRequests": []
+  },
+  "player2": {
+   "consoleErrors": [],
+   "failedRequests": []
+  },
+  "player3": {
+   "consoleErrors": [],
+   "failedRequests": []
+  },
+  "player4": {
+   "consoleErrors": [],
+   "failedRequests": []
+  },
+  "player5": {
+   "consoleErrors": [],
+   "failedRequests": []
+  },
+  "player6": {
+   "consoleErrors": [],
+   "failedRequests": []
+  }
+ }
+}

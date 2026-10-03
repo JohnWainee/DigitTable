@@ -5,6 +5,7 @@ import {
   type EatTheReichView,
   type RollViewFull,
 } from "@digitable/template-eat-the-reich";
+import { ActionDock } from "../shared/ActionDock.js";
 
 export interface PendingActionsPanelProps {
   readonly pending: readonly RollViewFull[];
@@ -153,17 +154,24 @@ function PendingActionCard({
         </div>
       </fieldset>
 
-      <p>
-        Pool: <strong>{diceCount}</strong> {diceCount === 1 ? "die" : "dice"}
-        {claimableIds.length !== roll.declaredBonusClaimIds.length ? " (before approval)" : ""}
-      </p>
-      <button
-        type="button"
-        className="primary-action"
-        onClick={() => onReview(roll.rollId, approvedClaimIds, engagedThreatIds)}
+      <ActionDock
+        statusId={`pending-${roll.rollId}-dock-status`}
+        status={
+          <>
+            Pool: <strong>{diceCount}</strong> {diceCount === 1 ? "die" : "dice"}
+            {claimableIds.length !== roll.declaredBonusClaimIds.length ? " (before approval)" : ""}
+          </>
+        }
       >
-        Roll it
-      </button>
+        <button
+          type="button"
+          className="primary-action"
+          aria-describedby={`pending-${roll.rollId}-dock-status`}
+          onClick={() => onReview(roll.rollId, approvedClaimIds, engagedThreatIds)}
+        >
+          Roll it
+        </button>
+      </ActionDock>
     </li>
   );
 }
