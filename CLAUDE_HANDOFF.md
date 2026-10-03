@@ -452,6 +452,12 @@ When pausing or finishing a material unit:
 
 ## Integrated verification and next action
 
+### 2026-10-03: pop-out and visual-viewport audit, no defect (`sonnet-dt/reskin-hourly-20261003`)
+
+- **Base:** reviewed `47bc087`. Fresh audit of every player, GM, table and landing flow and every pop-out (native selects, `<details>`, `SheetDialog`, dock, inline allocation pickers). **No in-scope defect found, so no source change**; evidence only. Not merged, not deployed.
+- **Evidence:** `npm run check` 803 passed, 11 todo; build passed; `ui-audit-selftest` passed; `ui-audit.mjs` 288 states / 3,192 controls / 0 failures (153 dock focus checks, 4 pinch scenarios, 23 sheet cases); smoke all steps passed; emulator suites 18 + 86 + 4 (APFS clone, remapped ports 57xxx; peers' default-port emulators untouched). Record: `docs/evidence/dt-audit-20261003/README.md`; review `docs/reviews/2026-10-03-dt-popout-audit-independent-review.md` (read-only review: confirms no defect, ran no browser or gates itself).
+- **Still open:** physical iOS/Android (iOS keyboard shrinking only the visual viewport, real WebKit pinch, browser-chrome collapse, thumb reach, VoiceOver/TalkBack). Staging not re-run (predates the dock).
+
 ### 2026-10-03: dock follows the visual viewport (`sonnet-dq/reskin-fresh-20261003`)
 
 - **Base:** reviewed `888e5e1`. Presentation only (`apps/web`, `scripts/playtest`, docs); no authority, privacy, projection, engine, Firebase or asset change. Not merged, not deployed.
