@@ -442,3 +442,36 @@ describe("layout-diff.mjs (proves a CSS change leaves the default-size layout id
     expect(result.out).toContain("button:2: 16,100 288x48 -> 0,0 0x0");
   });
 });
+
+describe("option-row stress probe", () => {
+  const stress = script("option-row-stress.mjs");
+  const stressRules = readFileSync(
+    join(here, "../../../../scripts/playtest/optionRowStressRules.mjs"),
+    "utf8",
+  );
+
+  it("keeps the gates that would have caught the large-text word breaks", () => {
+    // The supported range: a cut word at <= 200% text on a >= 320px viewport is a hard failure.
+    expect(stressRules).toContain("SUPPORTED_MAX_SCALE = 2");
+    expect(stressRules).toContain("SUPPORTED_MIN_WIDTH = 320");
+    expect(stressRules).toContain("scale <= SUPPORTED_MAX_SCALE && width >= SUPPORTED_MIN_WIDTH");
+    // A word cut while its text still sits beside the box means stacking did not happen first.
+    expect(stressRules).toContain("while still beside its box");
+    // A row that fits must not move at the default text size, and nothing may widen the page or its row.
+    expect(stressRules).toContain("stacked at the default text size");
+    expect(stressRules).toContain("page overflows");
+    expect(stressRules).toContain("text overruns the row");
+    // Rows keep their 48px tap height.
+    expect(stressRules).toContain("MIN_ROW_HEIGHT = 47.5");
+    expect(stressRules).toContain("row.rowH < MIN_ROW_HEIGHT");
+  });
+
+  it("can fail on purpose, so a pass is not vacuous", () => {
+    // `--expect-failures` is the negative control: run against the pre-fix stylesheet it must find problems.
+    expect(stress).toContain("--expect-failures");
+    expect(stress).toContain("NEGATIVE CONTROL FAILED");
+    // It drives the app's real option-row classes, not a lookalike.
+    expect(stress).toContain('class="gear-option"');
+    expect(stress).toContain('class="option-text"');
+  });
+});

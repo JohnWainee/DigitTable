@@ -1,0 +1,14 @@
+note  240px @ 100% checkbox row (141px): "Phantasmagoria" (needs 117px, text column 116px) is cut
+note  240px @ 100% radio row (141px): "Phantasmagoria" (needs 117px, text column 116px) is cut
+note  240px @ 150% checkbox row (154px): "Phantasmagoria" (needs 168px, text column 140px) is cut
+note  240px @ 150% checkbox row (154px): "Fragmentation" (needs 150px, text column 140px) is cut
+note  240px @ 150% radio row (154px): "Phantasmagoria" (needs 168px, text column 140px) is cut
+note  240px @ 150% radio row (154px): "Fragmentation" (needs 150px, text column 140px) is cut
+note  240px @ 150% gm-card row (164px): "Phantasmagoria" (needs 168px, text column 152px) is cut
+note  240px @ 200% checkbox row (160px): "Phantasmagoria" (needs 223px, text column 148px) is cut
+note  240px @ 200% checkbox row (160px): "Panzerfaust" (needs 161px, text column 148px) is cut
+note  240px @ 200% checkbox row (160px): "submachine" (needs 168px, text column 148px) is cut
+note  240px @ 200% checkbox row (160px): "Fragmentation" (needs 200px, text column 148px) is cut
+note  240px @ 200% radio row (160px): "Phantasmagoria" (needs 223px, text column 148px) is cut
+option-row stress: 30 width x scale frames, 0 failures, 108 out-of-range cut words (/private/tmp/digitable-sonnet-em-reskin-orchestrated-20261004/apps/web/src/styles.css)
+OPTION-ROW STRESS PASSED

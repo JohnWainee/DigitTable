@@ -141,7 +141,9 @@ export function ComposeStep2({
               onChange={() => setStatIndex(i)}
             />
             <Icon name={STAT_ICON_NAMES[i]!} className="stat-icon" />
-            {STAT_LABELS[i]} ({character.stats[statName]})
+            <span className="option-text">
+              {STAT_LABELS[i]} ({character.stats[statName]})
+            </span>
           </label>
         ))}
         <label className="gear-option">
@@ -151,7 +153,7 @@ export function ComposeStep2({
             checked={statIndex === null}
             onChange={() => setStatIndex(null)}
           />
-          No stat fits (2 dice)
+          <span className="option-text">No stat fits (2 dice)</span>
         </label>
       </fieldset>
 
@@ -170,14 +172,16 @@ export function ComposeStep2({
                   disabled={item.usesRemaining <= 0 || item.poolEligible === false}
                   onChange={() => toggleClaimable(itemIds, item.id, setItemIds)}
                 />
-                {item.name} ({item.usesRemaining}/{item.maxUses} uses)
-                {item.usesRemaining <= 0 ? " — no uses left" : ""}
-                {item.useEffect?.kind === "gainBlood"
-                  ? ` — mark to regain ${item.useEffect.amount} Blood`
-                  : ""}
-                {item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
-                  ? " — mark to ignore an Injury or being Downed; then destroy the hat"
-                  : ""}
+                <span className="option-text">
+                  {item.name} ({item.usesRemaining}/{item.maxUses} uses)
+                  {item.usesRemaining <= 0 ? " — no uses left" : ""}
+                  {item.useEffect?.kind === "gainBlood"
+                    ? ` — mark to regain ${item.useEffect.amount} Blood`
+                    : ""}
+                  {item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
+                    ? " — mark to ignore an Injury or being Downed; then destroy the hat"
+                    : ""}
+                </span>
               </label>
               {item.useEffect?.kind === "gainBlood" && item.usesRemaining > 0 ? (
                 <button
@@ -208,9 +212,11 @@ export function ComposeStep2({
                   disabled={disabled}
                   onChange={() => toggleClaimable(abilityIds, ability.id, setAbilityIds)}
                 />
-                {ability.name} (
-                {ability.trigger === "blood" ? `${ability.bloodCost ?? 1} Blood` : "free"})
-                {disabled ? " — not enough Blood" : ""}
+                <span className="option-text">
+                  {ability.name} (
+                  {ability.trigger === "blood" ? `${ability.bloodCost ?? 1} Blood` : "free"})
+                  {disabled ? " — not enough Blood" : ""}
+                </span>
               </label>
             );
           })}
@@ -241,7 +247,9 @@ export function ComposeStep2({
                     checked={bonusClaimIds.includes(id)}
                     onChange={() => toggle(bonusClaimIds, id, setBonusClaimIds)}
                   />
-                  I&rsquo;m meeting {name}&rsquo;s bonus ({bonusRequirement}, +{bonusPlus})
+                  <span className="option-text">
+                    I&rsquo;m meeting {name}&rsquo;s bonus ({bonusRequirement}, +{bonusPlus})
+                  </span>
                 </label>
               );
             })}
@@ -262,7 +270,7 @@ export function ComposeStep2({
                   checked={engagedThreatIds.includes(threat.id)}
                   onChange={() => toggle(engagedThreatIds, threat.id, setEngagedThreatIds)}
                 />
-                {threat.name}
+                <span className="option-text">{threat.name}</span>
               </label>
             ))}
           </div>

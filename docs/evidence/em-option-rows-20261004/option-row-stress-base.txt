@@ -1,0 +1,43 @@
+FAIL  240px @ 100% checkbox row (141px): "Phantasmagoria" (needs 117px, text column 76px) is cut while still beside its box
+FAIL  240px @ 100% checkbox row (141px): "Panzerfaust" (needs 87px, text column 76px) is cut while still beside its box
+FAIL  240px @ 100% checkbox row (141px): "submachine" (needs 88px, text column 76px) is cut while still beside its box
+FAIL  240px @ 100% checkbox row (141px): "Fragmentation" (needs 105px, text column 76px) is cut while still beside its box
+FAIL  240px @ 100% radio row (141px): "Phantasmagoria" (needs 117px, text column 76px) is cut while still beside its box
+FAIL  240px @ 100% radio row (141px): "Panzerfaust" (needs 87px, text column 76px) is cut while still beside its box
+FAIL  240px @ 100% radio row (141px): "submachine" (needs 88px, text column 76px) is cut while still beside its box
+FAIL  240px @ 100% radio row (141px): "Fragmentation" (needs 105px, text column 76px) is cut while still beside its box
+FAIL  240px @ 100% gm-card row (152px): "Phantasmagoria" (needs 117px, text column 94px) is cut while still beside its box
+FAIL  240px @ 100% gm-card row (152px): "Fragmentation" (needs 105px, text column 94px) is cut while still beside its box
+FAIL  240px @ 150% checkbox row (141px): "Phantasmagoria" (needs 168px, text column 76px) is cut while still beside its box
+FAIL  240px @ 150% checkbox row (141px): "Panzerfaust" (needs 121px, text column 76px) is cut while still beside its box
+FAIL  240px @ 150% checkbox row (141px): "submachine" (needs 126px, text column 76px) is cut while still beside its box
+FAIL  240px @ 150% checkbox row (141px): "Fragmentation" (needs 150px, text column 76px) is cut while still beside its box
+FAIL  240px @ 150% checkbox row (141px): "grenades" (needs 96px, text column 76px) is cut while still beside its box
+FAIL  240px @ 150% radio row (141px): "Phantasmagoria" (needs 168px, text column 76px) is cut while still beside its box
+FAIL  240px @ 150% radio row (141px): "Panzerfaust" (needs 121px, text column 76px) is cut while still beside its box
+FAIL  240px @ 150% radio row (141px): "submachine" (needs 126px, text column 76px) is cut while still beside its box
+FAIL  240px @ 150% radio row (141px): "Fragmentation" (needs 150px, text column 76px) is cut while still beside its box
+FAIL  240px @ 150% radio row (141px): "grenades" (needs 96px, text column 76px) is cut while still beside its box
+FAIL  240px @ 150% gm-card row (152px): "Phantasmagoria" (needs 168px, text column 94px) is cut while still beside its box
+FAIL  240px @ 150% gm-card row (152px): "Panzerfaust" (needs 121px, text column 94px) is cut while still beside its box
+FAIL  240px @ 150% gm-card row (152px): "submachine" (needs 126px, text column 94px) is cut while still beside its box
+FAIL  240px @ 150% gm-card row (152px): "Fragmentation" (needs 150px, text column 94px) is cut while still beside its box
+FAIL  240px @ 150% gm-card row (152px): "grenades" (needs 96px, text column 94px) is cut while still beside its box
+FAIL  240px @ 200% checkbox row (141px): "Phantasmagoria" (needs 223px, text column 76px) is cut while still beside its box
+FAIL  240px @ 200% checkbox row (141px): "Panzerfaust" (needs 161px, text column 76px) is cut while still beside its box
+FAIL  240px @ 200% checkbox row (141px): "submachine" (needs 168px, text column 76px) is cut while still beside its box
+FAIL  240px @ 200% checkbox row (141px): "Fragmentation" (needs 200px, text column 76px) is cut while still beside its box
+FAIL  240px @ 200% checkbox row (141px): "grenades" (needs 128px, text column 76px) is cut while still beside its box
+FAIL  240px @ 200% radio row (141px): "Phantasmagoria" (needs 223px, text column 76px) is cut while still beside its box
+FAIL  240px @ 200% radio row (141px): "Panzerfaust" (needs 161px, text column 76px) is cut while still beside its box
+FAIL  240px @ 200% radio row (141px): "submachine" (needs 168px, text column 76px) is cut while still beside its box
+FAIL  240px @ 200% radio row (141px): "Fragmentation" (needs 200px, text column 76px) is cut while still beside its box
+FAIL  240px @ 200% radio row (141px): "grenades" (needs 128px, text column 76px) is cut while still beside its box
+FAIL  240px @ 200% gm-card row (152px): "Phantasmagoria" (needs 223px, text column 94px) is cut while still beside its box
+FAIL  240px @ 200% gm-card row (152px): "Panzerfaust" (needs 161px, text column 94px) is cut while still beside its box
+FAIL  240px @ 200% gm-card row (152px): "submachine" (needs 168px, text column 94px) is cut while still beside its box
+FAIL  240px @ 200% gm-card row (152px): "Fragmentation" (needs 200px, text column 94px) is cut while still beside its box
+FAIL  240px @ 200% gm-card row (152px): "grenades" (needs 128px, text column 94px) is cut while still beside its box
+... and 158 more
+option-row stress: 30 width x scale frames, 198 failures, 0 out-of-range cut words (/Users/john/.claude/jobs/3f97789a/tmp/styles-base.css)
+NEGATIVE CONTROL OK (the probe fails on this stylesheet)

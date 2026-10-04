@@ -183,7 +183,7 @@ export function CreateSessionScreen(): JSX.Element {
               checked={wroteDownSecrets}
               onChange={(e) => setWroteDownSecrets(e.target.checked)}
             />
-            I have written these down
+            <span className="option-text">I have written these down</span>
           </label>
           <button
             type="button"

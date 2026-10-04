@@ -1,0 +1,33 @@
+FAIL player2/compose@phone-small+text200: word broken across lines: label.gear-option "submachine"
+FAIL player2/compose@phone-small+text200: word broken across lines: label.gear-option "Panzerfaust"
+FAIL player3/compose@phone-small+text150: word broken across lines: label.gear-option "Phantasmagoria"
+FAIL player3/compose@phone-small+text200: word broken across lines: label.gear-option "Phantasmagoria"
+FAIL player3/compose@phone+text200: word broken across lines: label.gear-option "Phantasmagoria"
+FAIL player5/compose@phone-small+text200: word broken across lines: label.gear-option "Fragmentation"
+{
+  "states": 288,
+  "controlsAudited": 3336,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "contrastBoxesMeasured": 8440,
+  "contrastBoxesInsufficient": 319,
+  "contrastFailures": 0,
+  "contrastInvalidSlices": 0,
+  "contrastUnparsedBoxes": 0,
+  "contrastTruncatedPages": 5,
+  "textScaleStates": 256,
+  "textScaleControls": 3336,
+  "textScaleOverflowStates": 0,
+  "fontFallback": null,
+  "axeHardViolations": 0,
+  "axeBestPractice": [
+    "anon/route-claim-no-such-room@phone: page-has-heading-one"
+  ],
+  "keyboardFocusChecks": 87,
+  "dockFocusChecks": 385,
+  "dockPinchScenarios": 4,
+  "validationScenarios": 8,
+  "sheetCases": 23,
+  "failures": 6
+}
+UI AUDIT FOUND PROBLEMS

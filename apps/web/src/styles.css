@@ -81,6 +81,14 @@
   --gutter-sm: min(0.85rem, 13.6px);
   --gutter-xs: min(0.65rem, 10.4px);
   --gutter-btn: min(1.25rem, 20px);
+  /* The two paddings between an option row's text and the screen edge (the side padding of a fieldset of
+     option rows, and of a row) ease DOWN with the text size instead of holding at their default px, to a
+     4px floor: a 13-14 letter name needs ~225px at 200% text and a 320px phone leaves 196px with them held.
+     Identical to the tokens above at and below the default size (the middle term equals the default px at
+     a 16px root), plain linear calc in rem (no length division): 13.6px at 16px, 10.2px at 125% text,
+     6.8px at 150%, 4px from 200% up. The text size in between (106-199%) moves them, which is the point. */
+  --gutter-sm-fit: clamp(4px, calc(27.2px - 0.85rem), min(0.85rem, 13.6px));
+  --gutter-xs-fit: clamp(4px, calc(20.8px - 0.65rem), min(0.65rem, 10.4px));
 }
 
 * {
@@ -340,6 +348,12 @@ fieldset {
   gap: 0.5rem;
   border: 2px solid var(--rule);
   background: rgba(5, 5, 6, 0.55);
+}
+
+/* Only a fieldset of option rows gives its side padding back as the text grows (see --gutter-sm-fit);
+   every other fieldset keeps its padding. (The GM card's own, tighter variant below is more specific.) */
+fieldset:has(.gear-option) {
+  padding-inline: var(--gutter-sm-fit);
 }
 
 legend {
@@ -713,10 +727,13 @@ input[type="radio"]:disabled {
 .gear-option,
 .form-field--checkbox {
   display: flex;
+  /* At large text on a narrow phone the label drops under its box rather than being cut mid-word
+     (see .option-text). */
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--gutter-sm);
   min-height: var(--tap);
-  padding: 0.4rem var(--gutter-xs);
+  padding: 0.4rem var(--gutter-xs-fit);
   /* A long word wraps instead of widening the row (and so the page) at large text. */
   overflow-wrap: anywhere;
   border: 2px solid transparent;
@@ -730,6 +747,20 @@ input[type="radio"]:disabled {
 
 .form-field--checkbox {
   flex-direction: row;
+}
+
+/* The text of a check/radio row. Its flex BASIS is its longest word (min-content) and a flex line breaks
+   on the basis, so the text stays beside the box while that word fits and otherwise takes its own full
+   line under the box: decided by the content and the real text size, with no breakpoint, and a row that
+   fits never changes. `break-word` (not the row's `anywhere`, which shrinks min-content to one letter and
+   so could never stack) keeps the basis at the longest word. If even a whole line is too narrow (text
+   far past 200%), `min-width: 0` lets the word shrink to the row and break inside it: it can never widen
+   the page (a `min-width: min-content` would win over `max-width` and overflow instead). */
+.option-text {
+  flex: 1 1 min-content;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 /* A gear row plus its optional own-action button (a utility item): the button sits under the label at
@@ -746,8 +777,10 @@ input[type="radio"]:disabled {
 }
 
 .gear-item > .secondary-action {
-  max-width: calc(100% - var(--gutter-xs)); /* its own left margin must fit inside the row too */
-  margin: 0 0 4px var(--gutter-xs); /* the 4px hard shadow hangs below the button */
+  /* Its left margin tracks the row's own (eased) side padding, so the button stays under the label, and
+     must fit inside the row too; the 4px hard shadow hangs below the button. */
+  max-width: calc(100% - var(--gutter-xs-fit));
+  margin: 0 0 4px var(--gutter-xs-fit);
 }
 
 /* A row that carries its own action (the GM's "Reveal" on a hidden threat). The button's own
@@ -886,9 +919,14 @@ details ul {
   padding-inline: min(0.85rem, 10px);
 }
 
+/* The card's fieldsets of option rows ease their (tighter, px) side padding like any other (see --gutter-sm-fit). */
+.pending-action-card fieldset:has(.gear-option) {
+  padding-inline: clamp(4px, calc(23.6px - 0.85rem), min(0.85rem, 10px));
+}
+
 .pending-action-card .gear-option {
   gap: min(0.85rem, 12px);
-  padding-inline: min(0.65rem, 8px);
+  padding-inline: clamp(4px, calc(18.4px - 0.65rem), min(0.65rem, 8px));
   overflow-wrap: anywhere;
 }
 

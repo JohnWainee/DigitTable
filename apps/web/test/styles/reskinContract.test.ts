@@ -180,7 +180,7 @@ describe("reskin stylesheet contract", () => {
       expect(rulesFor(/^\.gear-item$/).join("")).toMatch(/flex-direction:\s*column/);
       // Its own left margin must fit inside the row (a bare 100% would overflow the row by the margin).
       expect(declaration(rulesFor(/^\.gear-item > \.secondary-action$/), "max-width")).toEqual([
-        "calc(100% - var(--gutter-xs))",
+        "calc(100% - var(--gutter-xs-fit))",
       ]);
       expect(rulesFor(/^\.scene-director-detail$/).join("")).toMatch(/flex-direction:\s*column/);
       expect(
@@ -604,11 +604,21 @@ describe("reskin stylesheet contract", () => {
     });
 
     it("caps the GM card's nested inline padding in px so 200% text cannot squeeze its rows", () => {
+      // Capped at the default px, never rem-sized; a card fieldset of option rows also eases it as text
+      // grows (see the "eases" test), by a more specific rule so no ordering can let the generic one win.
       expect(declaration(rulesFor(/^\.pending-action-card fieldset$/), "padding-inline")).toEqual([
         "min(0.85rem, 10px)",
       ]);
+      expect(
+        declaration(
+          rulesFor(/^\.pending-action-card fieldset:has\(\.gear-option\)$/),
+          "padding-inline",
+        ),
+      ).toEqual(["clamp(4px, calc(23.6px - 0.85rem), min(0.85rem, 10px))"]);
       const option = rulesFor(/^\.pending-action-card \.gear-option$/);
-      expect(declaration(option, "padding-inline")).toEqual(["min(0.65rem, 8px)"]);
+      expect(declaration(option, "padding-inline")).toEqual([
+        "clamp(4px, calc(18.4px - 0.65rem), min(0.65rem, 8px))",
+      ]);
       expect(declaration(option, "gap")).toEqual(["min(0.85rem, 12px)"]);
       expect(declaration(option, "overflow-wrap")).toEqual(["anywhere"]);
       expect(
@@ -754,6 +764,145 @@ describe("reskin stylesheet contract", () => {
       }
     });
 
+    it("eases the option row's side paddings down as text grows, and never moves them at or below the default size", () => {
+      // Every "fit" padding is clamp(FLOOR, calc(INTERCEPT - K rem), min(K rem, DEFAULT px)): a no-op up to
+      // the default size, a linear give-back above it, a floor at the bottom. The numbers expected at each
+      // root size are written out here (not derived from the expression under test), so a wrong intercept,
+      // slope, cap or floor, or one token's numbers pasted into another, fails.
+      const evaluate = (expression: string, root: number): number => {
+        const m =
+          /^clamp\(([\d.]+)px,\s*calc\(([\d.]+)px - ([\d.]+)rem\),\s*min\(([\d.]+)rem,\s*([\d.]+)px\)\)$/.exec(
+            expression.trim(),
+          );
+        expect(m, `unexpected shape: ${expression}`).not.toBeNull();
+        const [floor, intercept, slope, capRem, capPx] = m!.slice(1).map(Number) as [
+          number,
+          number,
+          number,
+          number,
+          number,
+        ];
+        expect(capRem, "the cap and the slope are the same rem value").toBe(slope);
+        return Math.max(floor, Math.min(intercept - slope * root, Math.min(capRem * root, capPx)));
+      };
+      const root = (name: string): string => new RegExp(`--${name}:\\s*([^;]+);`).exec(css)![1]!;
+      // [what, expression, expected px at root 12, 14, 16 (default), 20 (125%), 24 (150%), 32 (200%), 48]
+      const table: [string, string, number[]][] = [
+        ["--gutter-sm-fit", root("gutter-sm-fit"), [10.2, 11.9, 13.6, 10.2, 6.8, 4, 4]],
+        ["--gutter-xs-fit", root("gutter-xs-fit"), [7.8, 9.1, 10.4, 7.8, 5.2, 4, 4]],
+        [
+          "card fieldset of rows",
+          declaration(
+            rulesFor(/^\.pending-action-card fieldset:has\(\.gear-option\)$/),
+            "padding-inline",
+          )[0]!,
+          [10, 10, 10, 6.6, 4, 4, 4],
+        ],
+        [
+          "card option row",
+          declaration(rulesFor(/^\.pending-action-card \.gear-option$/), "padding-inline")[0]!,
+          [7.8, 8, 8, 5.4, 4, 4, 4],
+        ],
+      ];
+      for (const [what, expression, expected] of table) {
+        [12, 14, 16, 20, 24, 32, 48].forEach((rootPx, i) => {
+          expect(evaluate(expression, rootPx), `${what} at a ${rootPx}px root`).toBeCloseTo(
+            expected[i]!,
+            5,
+          );
+        });
+        // Never grows with the text, from the default size up.
+        let previous = evaluate(expression, 16);
+        for (let size = 17; size <= 48; size += 0.5) {
+          expect(evaluate(expression, size), `${what} at ${size}px`).toBeLessThanOrEqual(
+            previous + 1e-9,
+          );
+          previous = evaluate(expression, size);
+        }
+      }
+      // The plain tokens' default px equals the old ones', so a 16px root is exactly the old layout.
+      expect(root("gutter-sm")).toBe("min(0.85rem, 13.6px)");
+      expect(root("gutter-xs")).toBe("min(0.65rem, 10.4px)");
+    });
+
+    it("gives the padding back only to fieldsets of option rows, and keeps every other fieldset as it was", () => {
+      expect(declaration(rulesFor(/^fieldset$/), "padding").join(" ")).toContain(
+        "var(--gutter-sm) ",
+      );
+      expect(declaration(rulesFor(/^fieldset$/), "padding").join(" ")).not.toContain("-fit");
+      expect(declaration(rulesFor(/^fieldset:has\(\.gear-option\)$/), "padding-inline")).toEqual([
+        "var(--gutter-sm-fit)",
+      ]);
+      // The utility item's own button tracks the row's eased side padding, so it stays under its label.
+      const action = rulesFor(/^\.gear-item > \.secondary-action$/);
+      expect(declaration(action, "margin").join(" ")).toContain("var(--gutter-xs-fit)");
+      expect(declaration(action, "max-width").join(" ")).toContain("var(--gutter-xs-fit)");
+    });
+
+    it("lets a label that cannot sit beside its box drop under it, instead of breaking the word", () => {
+      // The row wraps; the label text's flex BASIS is its longest word, and a flex line breaks on the basis,
+      // so the text stays beside the box while that word fits and takes its own full-width line under the
+      // box when it does not (the 13-14 letter names at 150-200% text on a 320-375px phone).
+      const row = rulesFor(/^\.gear-option,\s*\.form-field--checkbox$/s);
+      expect(declaration(row, "flex-wrap")).toEqual(["wrap"]);
+      const text = rulesFor(/^\.option-text$/);
+      expect(declaration(text, "flex")).toEqual(["1 1 min-content"]);
+      // `anywhere` (the row's value) would shrink min-content to one letter, so the text could never stack.
+      expect(declaration(text, "overflow-wrap")).toEqual(["break-word"]);
+      // Last resort: a word wider than the whole line shrinks to it and wraps INSIDE the row. In CSS
+      // `min-width` beats `max-width`, so `min-width: min-content` would overflow the row (and the page).
+      expect(declaration(text, "min-width")).toEqual(["0"]);
+      expect(declaration(text, "max-width")).toEqual(["100%"]);
+      expect(css).not.toMatch(/\.option-text\s*\{[^{}]*min-width:\s*min-content/);
+      // The row keeps its tap height.
+      expect(declaration(row, "min-height")).toEqual(["var(--tap)"]);
+    });
+
+    it("wraps all of every check/radio row's text in one .option-text, so no option is left out of the stacking", () => {
+      const sources: string[] = [];
+      const walk = (dir: string): void => {
+        for (const name of readdirSync(dir)) {
+          const full = join(dir, name);
+          if (statSync(full).isDirectory()) walk(full);
+          else if (full.endsWith(".tsx")) sources.push(full);
+        }
+      };
+      walk(join(here, "../../src"));
+      let rows = 0;
+      let mentions = 0;
+      for (const file of sources) {
+        const text = readFileSync(file, "utf8");
+        for (const match of text.matchAll(
+          /<label\b[^>]*className="gear-option[^"]*"[^>]*>([\s\S]*?)<\/label>/g,
+        )) {
+          rows += 1;
+          // The control comes first, then (optionally) an icon, then the text: all in one .option-text span.
+          expect(match[1]!.trim(), `${file}: the input leads the label`).toMatch(/^<input\b/);
+          const afterInput = match[1]!
+            .replace(/<input\b[\s\S]*?\/>/, "")
+            .replace(/^\s*<Icon\b[^>]*\/>/, "")
+            .trim();
+          expect(afterInput, `${file}: label text outside .option-text`).toMatch(
+            /^<span className="option-text">[\s\S]*<\/span>$/,
+          );
+          expect(afterInput.match(/<span\b/g)?.length, `${file}: one .option-text per label`).toBe(
+            1,
+          );
+          expect(afterInput, `${file}: the control stays outside .option-text`).not.toContain(
+            "<input",
+          );
+        }
+        mentions += text.match(/gear-option/g)?.length ?? 0;
+      }
+      // Compose (stat, no-stat, items, abilities, bonus, threats), allocation, injury, correction (box,
+      // downed, retired), pending action (bonus, threat) and the landing "written down" row.
+      expect(rows).toBe(14);
+      // Every use of the class is one of those labels or the SceneDirector's Reveal row (a div with its own
+      // span and button, styled by its own rule): a row built another way (a conditional class, a template
+      // literal, a div) is not invisible to this test, it is a count it fails on.
+      expect(mentions).toBe(rows + 1);
+    });
+
     it("uses the gutter tokens in the nested chain that squeezed a 320px phone at 200% text", () => {
       const uses = (rules: RegExp, property: string): string =>
         declaration(rulesFor(rules), property).join(" ");
@@ -766,7 +915,7 @@ describe("reskin stylesheet contract", () => {
         "var(--gutter-btn)",
       );
       expect(uses(/^\.gear-option,\s*\.form-field--checkbox$/s, "padding")).toContain(
-        "var(--gutter-xs)",
+        "var(--gutter-xs-fit)",
       );
       // The dock bleeds by, and pads with, the same gutter as the panel it ends.
       expect(declaration(rulesFor(/^\.action-dock$/), "padding").join(" ")).toContain(

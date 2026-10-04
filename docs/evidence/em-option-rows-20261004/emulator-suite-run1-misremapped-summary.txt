@@ -1,0 +1,12 @@
+⚠  emulators: It seems that you are running multiple instances of the emulator suite for project demo-digitable. This may result in unexpected behavior.
+ Test Files  2 passed (2)
+      Tests  18 passed (18)
+ Test Files  4 passed (4)
+      Tests  86 passed (86)
+ FAIL  test-emulator/session.test.ts > FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A05) > creates a room, joins a player, dispatches a real command through the callable transport, and both viewers see updated projections
+ FAIL  test-emulator/session.test.ts > FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A05) > live-subscribes to projection updates via a real Firestore onSnapshot listener
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed (4)
+⚠  Script exited unsuccessfully (code 1)
+Error: Script "npm run test:emulator --workspaces --if-present" exited with code 1
+exit 1
