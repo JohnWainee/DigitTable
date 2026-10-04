@@ -40,6 +40,13 @@ import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import {
+  decodePng,
+  evaluateBoxes,
+  GLYPHS_MAGENTA_CSS,
+  GLYPHS_TRANSPARENT_CSS,
+  TEXT_BOXES_EXPRESSION,
+} from "./pixelContrast.mjs";
 
 const args = process.argv.slice(2);
 function arg(name, fallback) {
@@ -53,6 +60,22 @@ const PORT = Number(arg("port", "9350"));
 const SHOTS = !args.includes("--no-shots");
 const TOLERATE = args.includes("--tolerate-baseline");
 const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (fast iteration on the pop-out)
+// `--font-fallback sans|wide`: render the pages as a device WITHOUT the condensed display face (Impact
+// ships on macOS, iOS and Windows, not on Android, ChromeOS or most Linux, where the stack falls through
+// to system-ui or DejaVu Sans, which are far wider). `sans` approximates Roboto/SF bold, `wide` the
+// DejaVu Sans/Verdana worst case for display and body text alike. Default: the machine's own fonts.
+// `--only-states a,b`: audit just the named page states (fast iteration on one screen); every heavier
+// audit (sheet, keyboard, dock, validation, roster sweep) is skipped.
+const ONLY_STATES = new Set(arg("only-states", "").split(",").filter(Boolean));
+const FONT_FALLBACK = arg("font-fallback", "");
+const FONT_STACKS = {
+  sans: { display: "system-ui, sans-serif" },
+  wide: { display: "Verdana, sans-serif", body: "Verdana, sans-serif" },
+};
+if (FONT_FALLBACK && !FONT_STACKS[FONT_FALLBACK]) {
+  console.error(`--font-fallback must be one of: ${Object.keys(FONT_STACKS).join(", ")}`);
+  process.exit(2);
+}
 const CHROME =
   process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 mkdirSync(OUT, { recursive: true });
@@ -88,6 +111,9 @@ const report = {
   base: BASE,
   startedAt: new Date().toISOString(),
   states: [],
+  textScale: [],
+  contrast: [],
+  fontFallback: FONT_FALLBACK || null,
   modal: [],
   keyboard: [],
   docks: [],
@@ -185,6 +211,26 @@ async function openDevice(cdp, name, vp) {
   });
   for (const domain of ["Page", "Runtime", "Network", "Log"])
     await cdp.send(`${domain}.enable`, {}, sessionId);
+  if (FONT_FALLBACK) {
+    // Inline `!important` on <html> beats the stylesheet's `:root` custom properties, on every navigation.
+    // <html> does not exist yet when this runs, so wait for it.
+    const stack = FONT_STACKS[FONT_FALLBACK];
+    const source = `(() => {
+      const apply = () => {
+        const root = document.documentElement;
+        if (!root) return false;
+        root.style.setProperty("--font-display", ${JSON.stringify(stack.display)}, "important");${
+          stack.body
+            ? `
+        root.style.setProperty("--font-body", ${JSON.stringify(stack.body)}, "important");`
+            : ""
+        }
+        return true;
+      };
+      if (!apply()) new MutationObserver((_, observer) => { if (apply()) observer.disconnect(); }).observe(document, { childList: true });
+    })()`;
+    await cdp.send("Page.addScriptToEvaluateOnNewDocument", { source }, sessionId);
+  }
   await applyViewport(device, vp);
   devices.push(device);
   return device;
@@ -361,6 +407,41 @@ const CONTROL_AUDIT = `(() => {
   return { controls: count, overflowPx: de.scrollWidth - de.clientWidth, issues };
 })()`;
 
+/**
+ * In-page: words the browser has broken in the middle (a single word whose glyphs sit on more than one
+ * line), which is how an over-wide display heading or an unbreakable label degrades at a large text size
+ * ("SESSIO" over "N"). Not an overflow, so the geometry audit cannot see it, but unreadable all the same.
+ * Hyphenated and slashed compounds are split first because a browser may legitimately wrap after those.
+ * Deliberately long strings that are meant to break anywhere (a one-time code) opt out with
+ * `data-wrap-anywhere` or sit in a `<dd>`.
+ */
+const WORD_BREAK_AUDIT = `(() => {
+  const broken = [];
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let node; (node = walker.nextNode()); ) {
+    const el = node.parentElement;
+    if (!el || el.closest("svg, script, style, [inert], option, dd, [data-wrap-anywhere]")) continue;
+    const cs = getComputedStyle(el);
+    if (cs.display === "none" || cs.visibility === "hidden") continue;
+    const re = /[^\\s\\-\\u2013\\u2014/]{4,}/g;
+    for (let m; (m = re.exec(node.nodeValue)); ) {
+      const range = document.createRange();
+      range.setStart(node, m.index);
+      range.setEnd(node, m.index + m[0].length);
+      const rects = [...range.getClientRects()].filter((r) => r.width > 0.5 && r.height > 0.5);
+      if (rects.length < 2) continue;
+      const minHeight = Math.min(...rects.map((r) => r.height));
+      const tops = [];
+      for (const r of rects) if (!tops.some((t) => Math.abs(t - r.top) < minHeight / 2)) tops.push(r.top);
+      if (tops.length > 1) {
+        const cls = typeof el.className === "string" && el.className ? "." + el.className.trim().split(/\\s+/)[0] : "";
+        broken.push(el.tagName.toLowerCase() + cls + ' "' + m[0] + '"');
+      }
+    }
+  }
+  return broken;
+})()`;
+
 async function runAxe(device) {
   if (!(await ev(device, `typeof axe !== "undefined"`))) {
     await ev(device, AXE_SOURCE.replace(/\n\/\/# sourceMappingURL=.*$/, ""));
@@ -388,7 +469,7 @@ function isHardAxe(violation) {
  * `axeViewports` limits the (slower) axe pass to a representative subset.
  */
 async function captureState(device, state, { axeViewports = ["phone", "tablet", "desktop"] } = {}) {
-  if (MODAL_ONLY) return;
+  if (MODAL_ONLY || (ONLY_STATES.size > 0 && !ONLY_STATES.has(state))) return;
   const original = device.vp;
   for (const vp of VIEWPORTS) {
     await applyViewport(device, vp);
@@ -420,9 +501,165 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
     for (const issue of audit.issues) {
       fail(`${device.name}/${state}@${vp.name}`, `${issue.control}: ${issue.problems.join("; ")}`);
     }
+    entry.brokenWords = await ev(device, WORD_BREAK_AUDIT);
+    for (const word of entry.brokenWords) {
+      fail(`${device.name}/${state}@${vp.name}`, `word broken across lines: ${word}`);
+    }
     report.states.push(entry);
   }
   await applyViewport(device, original);
+  await captureTextScaled(device, state);
+  await auditPixelContrast(device, state);
+}
+
+/**
+ * Contrast measured from the rendered pixels (see pixelContrast.mjs): axe cannot score text over the
+ * panels' grain texture, hazard-tape bands, gradients or art, so it reports those as "incomplete" and the
+ * hard-axe gate never sees them. Each viewport-sized slice of the page is captured twice (glyphs
+ * transparent, glyphs magenta) and every text box is scored against the background under its own glyphs.
+ */
+const CONTRAST_VIEWPORTS = ["phone", "phone-landscape", "desktop"];
+
+async function captureViewportPng(device, css) {
+  await ev(
+    device,
+    `(() => { const s = document.createElement("style"); s.id = "__contrast"; s.textContent = ${JSON.stringify(css)}; document.head.appendChild(s); })()`,
+  );
+  await sleep(120);
+  try {
+    const { data } = await device.cdp.send(
+      "Page.captureScreenshot",
+      { format: "png" },
+      device.sessionId,
+    );
+    return decodePng(Buffer.from(data, "base64"));
+  } finally {
+    await ev(device, `document.getElementById("__contrast")?.remove()`);
+  }
+}
+
+async function auditPixelContrast(device, state) {
+  if (MODAL_ONLY) return;
+  const original = device.vp;
+  const names = device.name === "table" ? ["table"] : CONTRAST_VIEWPORTS;
+  for (const name of names) {
+    const vp = byName[name];
+    await applyViewport(device, vp);
+    await sleep(250);
+    const page = await ev(
+      device,
+      `({ height: document.documentElement.scrollHeight, inner: innerHeight })`,
+    );
+    const step = Math.max(200, Math.floor(page.inner * 0.9));
+    const offsets = [];
+    for (let y = 0; y < page.height - 1 && offsets.length < 8; y += step) offsets.push(y);
+    const scope = `${device.name}/${state}@${vp.name}`;
+    const entry = { scope, slices: 0, measured: 0, insufficient: 0, occluded: 0, failures: [], worst: [] };
+    for (const y of offsets) {
+      await ev(device, `scrollTo(0, ${y})`);
+      await sleep(150);
+      const { boxes, occluded } = await ev(device, TEXT_BOXES_EXPRESSION);
+      const background = await captureViewportPng(device, GLYPHS_TRANSPARENT_CSS);
+      const glyphs = await captureViewportPng(device, GLYPHS_MAGENTA_CSS);
+      const results = evaluateBoxes(boxes, background, glyphs);
+      entry.slices += 1;
+      entry.occluded += occluded;
+      for (const r of results) {
+        if (r.status === "insufficient") entry.insufficient += 1;
+        if (r.status !== "pass" && r.status !== "fail") continue;
+        entry.measured += 1;
+        entry.worst.push({ element: r.element, text: r.text, p5: r.p5, required: r.required });
+        if (r.status === "fail") {
+          entry.failures.push({
+            element: r.element,
+            text: r.text,
+            p5: r.p5,
+            min: r.min,
+            required: r.required,
+            scrollY: y,
+            box: [r.l, r.t, r.r, r.b].map(Math.round),
+          });
+          if (SHOTS && entry.failures.length <= 3) {
+            const { data } = await device.cdp.send(
+              "Page.captureScreenshot",
+              { format: "jpeg", quality: 80 },
+              device.sessionId,
+            );
+            writeFileSync(
+              join(OUT, `contrast-fail-${scope.replace(/[^a-z0-9]+/gi, "-")}-y${Math.round(y)}-${entry.failures.length}.jpg`),
+              Buffer.from(data, "base64"),
+            );
+          }
+          fail(
+            scope,
+            `text contrast ${r.p5}:1 (needs ${r.required}:1) for ${r.element} "${r.text}" over its rendered background`,
+          );
+        }
+      }
+    }
+    entry.worst.sort((a, b) => a.p5 - b.p5);
+    entry.worst = entry.worst.slice(0, 3);
+    await ev(device, `scrollTo(0, 0)`);
+    report.contrast.push(entry);
+  }
+  await applyViewport(device, original);
+}
+
+/**
+ * What a browser's "font size: large / very large" does to every rem: 150% and 200% of the 16px root.
+ * Only the correction sheet used to be audited at these sizes; every page (landing, forms, claim, the
+ * player's compose/allocation, the director console, the table) is audited here, at the phone sizes
+ * where a wider heading, a wrapped button or a nested rem padding can push the page sideways or squeeze
+ * a control (the table display is a wall surface and is not text-scaled by a visitor).
+ */
+const TEXT_SCALES = [
+  { name: "150", px: 24 },
+  { name: "200", px: 32 },
+];
+const TEXT_SCALE_VIEWPORTS = ["phone-small", "phone", "phone-412", "phone-landscape"];
+
+async function captureTextScaled(device, state) {
+  if (MODAL_ONLY || device.name === "table") return;
+  const original = device.vp;
+  for (const scale of TEXT_SCALES) {
+    for (const name of TEXT_SCALE_VIEWPORTS) {
+      const vp = byName[name];
+      await applyViewport(device, vp);
+      await ev(device, `document.documentElement.style.fontSize = "${scale.px}px"`);
+      await sleep(300);
+      const scope = `${device.name}/${state}@${vp.name}+text${scale.name}`;
+      try {
+        const audit = await ev(device, CONTROL_AUDIT);
+        const file = await screenshot(
+          device,
+          `${device.name}-${state}-text${scale.name}-${vp.name}.jpg`,
+        );
+        report.textScale.push({
+          surface: device.name,
+          state,
+          viewport: vp.name,
+          size: `${vp.width}x${vp.height}`,
+          textScale: scale.name,
+          controls: audit.controls,
+          overflowPx: audit.overflowPx,
+          controlIssues: audit.issues,
+          brokenWords: await ev(device, WORD_BREAK_AUDIT),
+          screenshot: file,
+        });
+        if (audit.overflowPx > 1) fail(scope, `horizontal overflow ${audit.overflowPx}px`);
+        for (const word of report.textScale[report.textScale.length - 1].brokenWords) {
+          fail(scope, `word broken across lines: ${word}`);
+        }
+        for (const issue of audit.issues) {
+          fail(scope, `${issue.control}: ${issue.problems.join("; ")}`);
+        }
+      } finally {
+        await ev(device, `document.documentElement.style.fontSize = ""`);
+      }
+    }
+  }
+  await applyViewport(device, original);
+  await sleep(150);
 }
 
 // ---------- modal (correction sheet) audit ----------
@@ -646,6 +883,7 @@ async function auditSheetCase(gm, vp, index = 0) {
 }
 
 async function auditModal(gm) {
+  if (ONLY_STATES.size > 0) return;
   await applyViewport(gm, byName["desktop"]);
   const cases = [
     { name: "phone-small", ...byName["phone-small"] },
@@ -890,6 +1128,7 @@ async function auditModal(gm) {
 }
 
 async function auditReducedMotion(gm) {
+  if (ONLY_STATES.size > 0) return;
   const result = { allowed: {}, reduced: {} };
   async function probe() {
     await openCorrection(gm);
@@ -969,6 +1208,7 @@ const KEYBOARD_FOCUS_AUDIT = `(async () => {
 })()`;
 
 async function auditKeyboardFocus(device, state) {
+  if (ONLY_STATES.size > 0) return;
   if (MODAL_ONLY) return;
   const original = device.vp;
   for (const vp of [byName["phone-small"], byName["phone"], byName["phone-landscape"]]) {
@@ -1085,6 +1325,7 @@ const DOCK_VIEWPORTS = [
 ];
 
 async function auditActionDock(device, state) {
+  if (ONLY_STATES.size > 0) return;
   if (MODAL_ONLY) return;
   const original = device.vp;
   let sawDock = false;
@@ -1183,6 +1424,7 @@ async function auditDockPinch(device, state) {
  * button, and focus moved to the first invalid field with that field inside the viewport.
  */
 async function auditInlineValidation(device, config) {
+  if (ONLY_STATES.size > 0) return;
   if (MODAL_ONLY) return;
   const original = device.vp;
   for (const vp of [byName["phone-small"], byName["phone"]]) {
@@ -1316,6 +1558,7 @@ async function joinAndClaim(device, codes, displayName) {
  * screen is audited at every viewport, then the GM's correction sheet is audited for each of them.
  */
 async function rosterSweep(cdp, gm, table, codes) {
+  if (ONLY_STATES.size > 0) return;
   // As many more players as there are characters left to claim (the GM holds one seat, the room caps at 8).
   const total = await ev(gm, `document.querySelectorAll(".roster-panel-list li button").length`);
   const names = ["Bea", "Cy", "Dee", "Eli", "Fay", "Gus", "Hal"];
@@ -1649,6 +1892,13 @@ async function main() {
       controlsAudited: report.states.reduce((n, s) => n + s.controls, 0),
       controlIssues: report.states.reduce((n, s) => n + s.controlIssues.length, 0),
       overflowStates: report.states.filter((s) => s.overflowPx > 1).length,
+      contrastBoxesMeasured: report.contrast.reduce((n, c) => n + c.measured, 0),
+      contrastBoxesInsufficient: report.contrast.reduce((n, c) => n + c.insufficient, 0),
+      contrastFailures: report.contrast.reduce((n, c) => n + c.failures.length, 0),
+      textScaleStates: report.textScale.length,
+      textScaleControls: report.textScale.reduce((n, s) => n + s.controls, 0),
+      textScaleOverflowStates: report.textScale.filter((s) => s.overflowPx > 1).length,
+      fontFallback: FONT_FALLBACK || null,
       axeHardViolations: report.states.reduce(
         (n, s) => n + (s.axe ?? []).filter(isHardAxe).length,
         0,

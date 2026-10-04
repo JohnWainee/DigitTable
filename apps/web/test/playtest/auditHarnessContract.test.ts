@@ -223,3 +223,50 @@ describe("ui-audit viewport matrix", () => {
     expect(audit).toMatch(/name: "phone-412", \.\.\.byName\["phone-412"\]/);
   });
 });
+
+describe("ui-audit whole-page text scaling, font fallback and rendered-pixel contrast", () => {
+  it("audits every signed-in and signed-out page at 150% and 200% text on the small phones and in landscape", () => {
+    // Only the correction sheet used to be audited at these sizes.
+    expect(audit).toContain("await captureTextScaled(device, state)");
+    expect(audit).toMatch(/\{ name: "150", px: 24 \}/);
+    expect(audit).toMatch(/\{ name: "200", px: 32 \}/);
+    for (const name of ["phone-small", "phone", "phone-412", "phone-landscape"]) {
+      expect(audit, name).toContain(`"${name}"`);
+    }
+    // Overflow and squeezed or off-screen controls gate, exactly like the 100% sweep.
+    expect(audit).toContain("horizontal overflow ${audit.overflowPx}px");
+    expect(audit).toContain("report.textScale.push(");
+  });
+
+  it("can render the pages as a device without the Impact display face (Android, ChromeOS, most Linux)", () => {
+    expect(audit).toContain('arg("font-fallback", "")');
+    expect(audit).toContain("Page.addScriptToEvaluateOnNewDocument");
+    expect(audit).toContain('"--font-display"');
+    expect(audit).toMatch(/wide: \{ display: "Verdana, sans-serif", body: "Verdana, sans-serif" \}/);
+  });
+
+  it("scores text contrast from the rendered pixels, because axe reports text over textures as incomplete", () => {
+    expect(audit).toContain("await auditPixelContrast(device, state)");
+    expect(audit).toContain("GLYPHS_TRANSPARENT_CSS");
+    expect(audit).toContain("GLYPHS_MAGENTA_CSS");
+    expect(audit).toContain("text contrast ${r.p5}:1 (needs ${r.required}:1)");
+    const module = readFileSync(
+      join(here, "../../../../scripts/playtest/pixelContrast.mjs"),
+      "utf8",
+    );
+    // 4.5:1 for body text, 3:1 only for WCAG large text.
+    expect(module).toContain("isLargeText(box.size, box.weight) ? 3 : 4.5");
+    expect(module).toContain("sizePx >= 24 || (weight >= 700 && sizePx >= 18.66)");
+    // A box with too few glyph pixels is "insufficient", never a pass.
+    expect(module).toContain('status: "insufficient"');
+  });
+
+  it("proves the contrast measurement can fail (a negative control), not only pass", () => {
+    const selftest = readFileSync(
+      join(here, "../../../../scripts/playtest/ui-audit-selftest.mjs"),
+      "utf8",
+    );
+    expect(selftest).toContain("white text over a black-to-white ramp fails");
+    expect(selftest).toContain("PNG decoder reproduces every row filter");
+  });
+});

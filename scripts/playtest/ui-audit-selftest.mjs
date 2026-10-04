@@ -13,6 +13,18 @@ import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { deflateSync } from "node:zlib";
+import {
+  contrastRatio,
+  decodePng,
+  evaluateBoxes,
+  GLYPHS_MAGENTA_CSS,
+  GLYPHS_TRANSPARENT_CSS,
+  isLargeText,
+  parseCssColor,
+  relativeLuminance,
+  TEXT_BOXES_EXPRESSION,
+} from "./pixelContrast.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const source = readFileSync(join(here, "ui-audit.mjs"), "utf8");
@@ -362,6 +374,116 @@ await send(
   { width: 375, height: 468, deviceScaleFactor: 1, mobile: true },
   sessionId,
 );
+
+// ---- pixelContrast.mjs: contrast measured from rendered pixels (what axe cannot score over images) ----
+function check(name, ok, detail = "") {
+  console.log(`${ok ? "ok  " : "FAIL"} ${name}${detail ? ": " + detail : ""}`);
+  if (!ok) failures.push(name);
+}
+{
+  check("contrast maths: black on white is 21:1", Math.abs(contrastRatio(relativeLuminance(0, 0, 0), relativeLuminance(255, 255, 255)) - 21) < 1e-9);
+  check("large-text rule: 24px, or 18.66px bold, not 18px regular", isLargeText(24, 400) && isLargeText(18.66, 700) && !isLargeText(18, 400) && !isLargeText(18.6, 700));
+  const parsed = parseCssColor("rgba(255, 51, 72, 0.5)");
+  check("css colour parsing keeps alpha", parsed && parsed[0] === 255 && parsed[3] === 0.5 && parseCssColor("rgb(1 2 3 / 25%)")[3] === 0.25 && parseCssColor("lab(1 2 3)") === null);
+
+  // A hand-built PNG that uses every row filter, so the decoder's unfilter paths are all exercised.
+  const w = 3;
+  const rows = [
+    [0, [10, 20, 30, 255, 40, 50, 60, 255, 70, 80, 90, 255]],
+    [1, [10, 20, 30, 255, 30, 30, 30, 0, 30, 30, 30, 0]],
+    [2, [1, 1, 1, 0, 2, 2, 2, 0, 3, 3, 3, 0]],
+    [3, [5, 5, 5, 255, 5, 5, 5, 0, 5, 5, 5, 0]],
+    [4, [9, 9, 9, 255, 1, 1, 1, 0, 1, 1, 1, 0]],
+  ];
+  const expected = [];
+  let prev = new Array(w * 4).fill(0);
+  const raw = [];
+  for (const [filter, bytes] of rows) {
+    raw.push(filter, ...bytes);
+    const line = [];
+    for (let x = 0; x < w * 4; x += 1) {
+      const left = x >= 4 ? line[x - 4] : 0;
+      const up = prev[x];
+      const upLeft = x >= 4 ? prev[x - 4] : 0;
+      let add = 0;
+      if (filter === 1) add = left;
+      else if (filter === 2) add = up;
+      else if (filter === 3) add = (left + up) >> 1;
+      else if (filter === 4) {
+        const pp = left + up - upLeft;
+        const pa = Math.abs(pp - left), pb = Math.abs(pp - up), pc = Math.abs(pp - upLeft);
+        add = pa <= pb && pa <= pc ? left : pb <= pc ? up : upLeft;
+      }
+      line.push((bytes[x] + add) & 255);
+    }
+    expected.push(...line);
+    prev = line;
+  }
+  const chunk = (type, body) => {
+    const head = Buffer.alloc(8);
+    head.writeUInt32BE(body.length, 0);
+    head.write(type, 4, "ascii");
+    return Buffer.concat([head, body, Buffer.alloc(4)]);
+  };
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(w, 0);
+  ihdr.writeUInt32BE(rows.length, 4);
+  ihdr[8] = 8;
+  ihdr[9] = 6;
+  const png = Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    chunk("IHDR", ihdr),
+    chunk("IDAT", deflateSync(Buffer.from(raw))),
+    chunk("IEND", Buffer.alloc(0)),
+  ]);
+  const decoded = decodePng(png);
+  check("PNG decoder reproduces every row filter (none/sub/up/average/paeth)", decoded.width === w && decoded.height === rows.length && Buffer.compare(Buffer.from(decoded.data), Buffer.from(expected)) === 0);
+
+  // evaluateBoxes on synthetic screenshots: a mid-grey background; the "glyphs" image is magenta over the box.
+  const size = 40;
+  const solid = (r, g, b) => ({ width: size, height: size, data: Buffer.from(Array.from({ length: size * size }, () => [r, g, b, 255]).flat()) });
+  const background = solid(100, 100, 100);
+  const glyphs = solid(100, 100, 100);
+  for (let y = 10; y < 20; y += 1) for (let x = 10; x < 30; x += 1) { const at = (y * size + x) * 4; glyphs.data[at] = 255; glyphs.data[at + 1] = 0; glyphs.data[at + 2] = 255; }
+  const box = (color, extra = {}) => ({ l: 8, t: 8, r: 32, b: 22, color, size: 16, weight: 400, opacity: 1, text: "x", element: "p", ...extra });
+  const [weak, strong, lowAlpha, tiny] = evaluateBoxes(
+    [box("rgb(120, 120, 120)"), box("rgb(255, 255, 255)"), box("rgb(255, 255, 255)", { opacity: 0.2 }), box("rgb(255, 255, 255)", { l: 28, r: 31, t: 10, b: 12 })],
+    background,
+    glyphs,
+  );
+  check("pixel contrast fails text too close to its background", weak.status === "fail", JSON.stringify({ p5: weak.p5, required: weak.required }));
+  check("pixel contrast passes light text on a dark background", strong.status === "pass", JSON.stringify({ p5: strong.p5 }));
+  check("pixel contrast applies inherited opacity", lowAlpha.status === "fail", JSON.stringify({ p5: lowAlpha.p5 }));
+  check("a box with too few glyph pixels is 'insufficient', never a pass", tiny.status === "insufficient", JSON.stringify({ core: tiny.core }));
+}
+// The same measurement in a real browser, over a gradient (axe reports text over a background image as
+// "incomplete", so only this can tell the bad line from the good one): white on a black-to-white ramp is
+// unreadable on its right half, white on a black-to-dark-grey ramp is fine.
+{
+  await send("Emulation.setDeviceMetricsOverride", { width: 375, height: 468, deviceScaleFactor: 1, mobile: false }, sessionId);
+  await page(
+    `<p id="bad" style="margin:20px;padding:10px;font:700 20px sans-serif;color:#fff;background-image:linear-gradient(90deg,#000,#fff)">Unreadable on the right half</p><p id="good" style="margin:20px;padding:10px;font:700 20px sans-serif;color:#fff;background-image:linear-gradient(90deg,#000,#444)">Readable across the ramp</p><p id="covered" style="margin:20px;padding:10px;font:700 20px sans-serif;color:#fff;background:#000">Hidden under the bar</p><div style="position:fixed;left:0;right:0;top:150px;height:70px;background:#fff;color:#fff">Bar text</div>`,
+    `1`,
+  );
+  const shot = async (css) => {
+    await send("Runtime.evaluate", { expression: `(() => { const s = document.createElement("style"); s.id = "__c"; s.textContent = ${JSON.stringify(css)}; document.head.appendChild(s); })()` }, sessionId);
+    await sleep(120);
+    const response = await send("Page.captureScreenshot", { format: "png" }, sessionId);
+    await send("Runtime.evaluate", { expression: `document.getElementById("__c")?.remove()` }, sessionId);
+    return decodePng(Buffer.from(response.result.data, "base64"));
+  };
+  const { boxes, occluded } = (
+    await send("Runtime.evaluate", { expression: TEXT_BOXES_EXPRESSION, returnByValue: true }, sessionId)
+  ).result.result.value;
+  const results = evaluateBoxes(boxes, await shot(GLYPHS_TRANSPARENT_CSS), await shot(GLYPHS_MAGENTA_CSS));
+  const byText = (text) => results.find((r) => r.text.startsWith(text));
+  check("real browser: white text over a black-to-white ramp fails", byText("Unreadable")?.status === "fail", JSON.stringify(byText("Unreadable")));
+  check("real browser: white text over a black-to-dark ramp passes", byText("Readable")?.status === "pass", JSON.stringify(byText("Readable")));
+  // Text another element is drawn over (the pinned dock) must be skipped and counted, not scored against
+  // the covering element's pixels (that produced bogus 1:1 results before the occlusion probe).
+  check("real browser: a line covered by a fixed bar is skipped as occluded, not scored", occluded >= 1 && !boxes.some((b) => b.text.startsWith("Hidden")), JSON.stringify({ occluded }));
+  await send("Emulation.setDeviceMetricsOverride", { width: 375, height: 468, deviceScaleFactor: 1, mobile: true }, sessionId);
+}
 
 chrome.kill();
 if (failures.length) {
