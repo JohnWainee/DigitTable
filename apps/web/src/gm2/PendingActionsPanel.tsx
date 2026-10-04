@@ -128,7 +128,9 @@ function PendingActionCard({
                   checked={approvedClaimIds.includes(source.id)}
                   onChange={() => toggleClaim(source.id)}
                 />
-                {source.name} (+{source.bonusPlus ?? 0}, {source.bonusRequirement})
+                <span className="option-text">
+                  {source.name} (+{source.bonusPlus ?? 0}, {source.bonusRequirement})
+                </span>
               </label>
             ))}
           </div>
@@ -147,8 +149,10 @@ function PendingActionCard({
                   checked={engagedThreatIds.includes(threat.id)}
                   onChange={() => toggleThreat(threat.id)}
                 />
-                {threat.name}
-                {"revealed" in threat && !threat.revealed ? " (not yet revealed to players)" : ""}
+                <span className="option-text">
+                  {threat.name}
+                  {"revealed" in threat && !threat.revealed ? " (not yet revealed to players)" : ""}
+                </span>
               </label>
             ))}
         </div>

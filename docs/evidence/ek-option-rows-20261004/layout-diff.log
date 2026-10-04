@@ -1,0 +1,8 @@
+# layout-diff.mjs (strict; states whose DOM changed are skipped by design), base vs final candidate, default text size
+184 comparable state/viewport pairs (11592 elements), 184 identical, 0 differ, 104 not comparable, 40 element boxes differ only where their own text differs
+LAYOUT DIFF FAILED: 104 state(s) have a different DOM and were not named by --allow-skip
+
+# layout-diff-ignoring.mjs --ignore 'label:\d+>span:\d+$' (the new .option-text span)
+264 comparable states, 201 identical, 24 still not comparable after dropping /label:\d+>span:\d+$/
+differing elements: 60 random-code width, 78 translated with the size unchanged (sticky dock / sprite container), 0 resized
+LAYOUT DIFF (ignoring) PASSED: no element changed size

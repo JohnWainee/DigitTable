@@ -140,7 +140,7 @@ export function AllocationPanel2({
                       setAssignments((prev) => ({ ...prev, [die.faceIndex]: option.id }))
                     }
                   />
-                  {option.label}
+                  <span className="option-text">{option.label}</span>
                 </label>
               ))}
             </div>

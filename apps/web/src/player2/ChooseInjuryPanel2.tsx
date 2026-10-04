@@ -69,7 +69,7 @@ export function ChooseInjuryPanel2({
                 checked={categoryId === category.id}
                 onChange={() => setCategoryId(category.id)}
               />
-              {category.label}
+              <span className="option-text">{category.label}</span>
             </label>
           ))}
         </fieldset>

@@ -1,0 +1,72 @@
+240px 100%  row 141px  stacked 10/18  overflow 0  broken: -
+240px 150%  row 141px  stacked 15/18  overflow 0  broken: -
+240px 200%  row 141px  stacked 15/18  overflow 45  broken: -
+240px 250%  row 141px  stacked 17/18  overflow 99  broken: -
+240px 300%  row 141px  stacked 18/18  overflow 154  broken: -
+280px 100%  row 181px  stacked 2/18  overflow 0  broken: -
+280px 150%  row 181px  stacked 10/18  overflow 0  broken: -
+280px 200%  row 181px  stacked 15/18  overflow 5  broken: -
+280px 250%  row 181px  stacked 15/18  overflow 59  broken: -
+280px 300%  row 181px  stacked 15/18  overflow 114  broken: -
+320px 100%  row 221px  stacked 0/18  overflow 0  broken: -
+320px 150%  row 221px  stacked 2/18  overflow 0  broken: -
+320px 200%  row 221px  stacked 10/18  overflow 0  broken: -
+320px 250%  row 221px  stacked 14/18  overflow 19  broken: -
+320px 300%  row 221px  stacked 15/18  overflow 74  broken: -
+375px 100%  row 276px  stacked 0/18  overflow 0  broken: -
+375px 150%  row 276px  stacked 0/18  overflow 0  broken: -
+375px 200%  row 276px  stacked 2/18  overflow 0  broken: -
+375px 250%  row 276px  stacked 6/18  overflow 0  broken: -
+375px 300%  row 276px  stacked 12/18  overflow 19  broken: -
+412px 100%  row 313px  stacked 0/18  overflow 0  broken: -
+412px 150%  row 313px  stacked 0/18  overflow 0  broken: -
+412px 200%  row 313px  stacked 0/18  overflow 0  broken: -
+412px 250%  row 313px  stacked 3/18  overflow 0  broken: -
+412px 300%  row 313px  stacked 8/18  overflow 0  broken: -
+768px 100%  row 637px  stacked 0/18  overflow 0  broken: -
+768px 150%  row 669px  stacked 0/18  overflow 0  broken: -
+768px 200%  row 669px  stacked 0/18  overflow 0  broken: -
+768px 250%  row 669px  stacked 0/18  overflow 0  broken: -
+768px 300%  row 669px  stacked 0/18  overflow 0  broken: -
+
+OPTION-ROW STRESS FOUND PROBLEMS (247):
+  240px @ 150%: a row scrolls 41px sideways
+  240px @ 150%: text overruns its row by 39px
+  240px @ 150%: a row scrolls 24px sideways
+  240px @ 150%: text overruns its row by 22px
+  240px @ 150%: a row scrolls 28px sideways
+  240px @ 150%: text overruns its row by 26px
+  240px @ 150%: a row scrolls 10px sideways
+  240px @ 150%: text overruns its row by 8px
+  240px @ 200%: page overflows by 45px
+  240px @ 200%: a row scrolls 97px sideways
+  240px @ 200%: text overruns its row by 95px
+  240px @ 200%: a row scrolls 35px sideways
+  240px @ 200%: text overruns its row by 33px
+  240px @ 200%: a row scrolls 42px sideways
+  240px @ 200%: text overruns its row by 40px
+  240px @ 200%: a row scrolls 73px sideways
+  240px @ 200%: text overruns its row by 71px
+  240px @ 200%: a row scrolls 12px sideways
+  240px @ 200%: text overruns its row by 11px
+  240px @ 200%: a row scrolls 83px sideways
+  240px @ 200%: text overruns its row by 81px
+  240px @ 200%: a row scrolls 21px sideways
+  240px @ 200%: text overruns its row by 19px
+  240px @ 200%: a row scrolls 28px sideways
+  240px @ 200%: text overruns its row by 26px
+  240px @ 200%: a row scrolls 60px sideways
+  240px @ 200%: text overruns its row by 58px
+  240px @ 250%: page overflows by 99px
+  240px @ 250%: a row scrolls 151px sideways
+  240px @ 250%: text overruns its row by 149px
+  240px @ 250%: a row scrolls 73px sideways
+  240px @ 250%: text overruns its row by 72px
+  240px @ 250%: a row scrolls 83px sideways
+  240px @ 250%: text overruns its row by 81px
+  240px @ 250%: a row scrolls 121px sideways
+  240px @ 250%: text overruns its row by 120px
+  240px @ 250%: a row scrolls 46px sideways
+  240px @ 250%: text overruns its row by 44px
+  240px @ 250%: a row scrolls 137px sideways
+  240px @ 250%: text overruns its row by 135px

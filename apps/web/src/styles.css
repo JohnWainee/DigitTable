@@ -81,6 +81,13 @@
   --gutter-sm: min(0.85rem, 13.6px);
   --gutter-xs: min(0.65rem, 10.4px);
   --gutter-btn: min(1.25rem, 20px);
+  /* The two paddings that sit between an option row's text and the screen edge (fieldset sides, row sides).
+     Unchanged up to the default text size; as the text grows they ease DOWN to a 4px floor instead of
+     holding at the default px, which hands a long option name (13-14 letters at 200% text on a 320px
+     phone) the ~30px it needs to stay whole under its box. Linear in rem, so plain calc (no length
+     division): 27.2px - 0.85rem is 13.6px at a 16px root, 6.8px at 24px, below 4px from 28px up. */
+  --gutter-sm-fit: clamp(4px, calc(27.2px - 0.85rem), min(0.85rem, 13.6px));
+  --gutter-xs-fit: clamp(4px, calc(20.8px - 0.65rem), min(0.65rem, 10.4px));
 }
 
 * {
@@ -334,7 +341,7 @@ li + li {
 fieldset {
   min-width: 0;
   margin: 0;
-  padding: 1.1rem var(--gutter-sm) 0.85rem;
+  padding: 1.1rem var(--gutter-sm-fit) 0.85rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -713,10 +720,15 @@ input[type="radio"]:disabled {
 .gear-option,
 .form-field--checkbox {
   display: flex;
+  /* Large text on a narrow phone: when the row's longest word cannot sit beside the box, the label drops
+     under it (see .option-text) instead of being cut mid-word. */
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--gutter-sm);
+  align-content: center;
+  column-gap: var(--gutter-sm);
+  row-gap: 0.15rem;
   min-height: var(--tap);
-  padding: 0.4rem var(--gutter-xs);
+  padding: 0.4rem var(--gutter-xs-fit);
   /* A long word wraps instead of widening the row (and so the page) at large text. */
   overflow-wrap: anywhere;
   border: 2px solid transparent;
@@ -730,6 +742,21 @@ input[type="radio"]:disabled {
 
 .form-field--checkbox {
   flex-direction: row;
+}
+
+/* The text of a checkbox / radio row. Its flex BASIS is its longest word (`min-content`), and a flex line
+   breaks on the hypothetical size (basis clamped by min/max), so the label stays beside the box while that
+   word fits and wraps onto its own full-width line beneath the box when it does not: the "stacked at large
+   text" layout, decided by the content and the real text size rather than by a guessed breakpoint.
+   `break-word` (unlike the row's `anywhere`) keeps min-content at the longest word. The last resort is
+   `min-width: 0` with `max-width: 100%`: a word longer than the whole row (very large text, a viewport under
+   320px) shrinks to the row and breaks inside it, so stacking can never widen the page. (A
+   `min-width: min-content` here would win over `max-width` and overflow instead.) */
+.option-text {
+  flex: 1 1 min-content;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 /* A gear row plus its optional own-action button (a utility item): the button sits under the label at
@@ -756,6 +783,7 @@ input[type="radio"]:disabled {
    full width instead, and drops under the label when the row is too narrow to hold both. */
 .gear-option:has(> .secondary-action) {
   flex-wrap: wrap;
+  row-gap: var(--gutter-sm); /* the action's drop under the label keeps its default-size gap */
 }
 
 .gear-option > .secondary-action {
@@ -883,12 +911,12 @@ details ul {
 }
 
 .pending-action-card fieldset {
-  padding-inline: min(0.85rem, 10px);
+  padding-inline: clamp(4px, calc(23.6px - 0.85rem), min(0.85rem, 10px));
 }
 
 .pending-action-card .gear-option {
-  gap: min(0.85rem, 12px);
-  padding-inline: min(0.65rem, 8px);
+  column-gap: min(0.85rem, 12px);
+  padding-inline: clamp(4px, calc(18.4px - 0.65rem), min(0.65rem, 8px));
   overflow-wrap: anywhere;
 }
 

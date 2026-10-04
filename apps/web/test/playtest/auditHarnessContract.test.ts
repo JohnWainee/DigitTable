@@ -442,3 +442,88 @@ describe("layout-diff.mjs (proves a CSS change leaves the default-size layout id
     expect(result.out).toContain("button:2: 16,100 288x48 -> 0,0 0x0");
   });
 });
+
+describe("layout-diff-ignoring.mjs (compares layouts across an added wrapper element)", () => {
+  const tool = join(here, "../../../../scripts/playtest/layout-diff-ignoring.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "layout-diff-ignoring-"));
+  // 120 states of the same three-element page, so the tool's "too few comparable states" floor is met.
+  const states = (rows: (string | null)[]): Record<string, string[]> =>
+    Object.fromEntries(
+      Array.from({ length: 120 }, (_, i) => [
+        `p/s${i}@phone`,
+        rows.filter((row): row is string => row !== null),
+      ]),
+    );
+  const base = [
+    "div:1|0|0|320|400|",
+    "div:1>label:1|16|100|288|48|",
+    "div:1>label:1>input:1|26|112|26|26|",
+    "div:1>p:2|16|160|288|18|",
+  ];
+  const run = (before: string[], after: string[]): { code: number; out: string } => {
+    writeFileSync(join(dir, "b.json"), JSON.stringify(states(before)));
+    writeFileSync(join(dir, "a.json"), JSON.stringify(states(after)));
+    try {
+      const out = execFileSync(
+        "node",
+        [tool, join(dir, "b.json"), join(dir, "a.json"), "--ignore", "label:\\d+>span:\\d+$"],
+        { encoding: "utf8" },
+      );
+      return { code: 0, out };
+    } catch (error) {
+      const failure = error as { status: number; stdout: string };
+      return { code: failure.status, out: failure.stdout };
+    }
+  };
+
+  it("passes when the only difference is the added wrapper element", () => {
+    const result = run(base, [...base, "div:1>label:1>span:2|52|112|230|26|"]);
+    expect(result.code).toBe(0);
+    expect(result.out).toContain("120 comparable states, 120 identical");
+    expect(result.out).toContain("no element changed size");
+  });
+
+  it("fails when an element changed size, and tolerates a translation and a random code's width", () => {
+    const grown = base.map((row) => row.replace("|288|48|", "|288|59|"));
+    const resized = run(base, grown);
+    expect(resized.code).toBe(1);
+    expect(resized.out).toContain("RESIZED p/s0@phone div:1>label:1: 288x48 -> 288x59");
+    // A pure translation (a sticky dock's recorded top) is counted, not failed.
+    const moved = run(
+      base,
+      base.map((row) => row.replace("|16|160|288|18|", "|16|212|288|18|")),
+    );
+    expect(moved.code).toBe(0);
+    expect(moved.out).toContain("120 translated with the size unchanged");
+    const withCode = (width: number): string[] => [
+      ...base,
+      `div:1>p:2>strong:1|40|160|${width}|18|`,
+    ];
+    const code = run(withCode(122), withCode(119));
+    expect(code.code).toBe(0);
+    expect(code.out).toContain("120 random-code width");
+  });
+
+  it("refuses to pass on too few comparable states or a missing --ignore", () => {
+    writeFileSync(join(dir, "few.json"), JSON.stringify({ a: base }));
+    let failed = 0;
+    try {
+      execFileSync("node", [tool, join(dir, "few.json"), join(dir, "few.json"), "--ignore", "x"], {
+        encoding: "utf8",
+      });
+    } catch (error) {
+      failed = (error as { status: number }).status;
+    }
+    expect(failed).toBe(1);
+    let usage = 0;
+    try {
+      execFileSync("node", [tool, join(dir, "few.json"), join(dir, "few.json")], {
+        encoding: "utf8",
+        stdio: "pipe",
+      });
+    } catch (error) {
+      usage = (error as { status: number }).status;
+    }
+    expect(usage).toBe(2);
+  });
+});

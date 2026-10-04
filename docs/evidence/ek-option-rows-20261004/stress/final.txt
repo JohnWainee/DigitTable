@@ -1,0 +1,32 @@
+240px 100%  row 141px  stacked 10/18  overflow 0  broken: Phantasmagoria
+240px 150%  row 154px  stacked 14/18  overflow 0  broken: Phantasmagoria, Fragmentation
+240px 200%  row 160px  stacked 15/18  overflow 0  broken: Phantasmagoria, Panzerfaust, submachine, Fragmentation
+240px 250%  row 160px  stacked 15/18  overflow 0  broken: Phantasmagoria, Panzerfaust, submachine, Fragmentation, Enormous
+240px 300%  row 160px  stacked 15/18  overflow 0  broken: Phantasmagoria, Panzerfaust, submachine, Fragmentation, Enormous
+280px 100%  row 181px  stacked 2/18  overflow 0  broken: -
+280px 150%  row 194px  stacked 5/18  overflow 0  broken: -
+280px 200%  row 200px  stacked 12/18  overflow 0  broken: Phantasmagoria, Fragmentation
+280px 250%  row 200px  stacked 15/18  overflow 0  broken: Phantasmagoria, Panzerfaust, submachine, Fragmentation
+280px 300%  row 200px  stacked 15/18  overflow 0  broken: Phantasmagoria, Panzerfaust, submachine, Fragmentation, Enormous
+320px 100%  row 221px  stacked 0/18  overflow 0  broken: -
+320px 150%  row 234px  stacked 0/18  overflow 0  broken: -
+320px 200%  row 240px  stacked 6/18  overflow 0  broken: -
+320px 250%  row 240px  stacked 12/18  overflow 0  broken: Phantasmagoria, Fragmentation
+320px 300%  row 240px  stacked 15/18  overflow 0  broken: Phantasmagoria, Panzerfaust, submachine, Fragmentation
+375px 100%  row 276px  stacked 0/18  overflow 0  broken: -
+375px 150%  row 289px  stacked 0/18  overflow 0  broken: -
+375px 200%  row 295px  stacked 0/18  overflow 0  broken: -
+375px 250%  row 295px  stacked 5/18  overflow 0  broken: -
+375px 300%  row 295px  stacked 9/18  overflow 0  broken: Phantasmagoria, Fragmentation
+412px 100%  row 313px  stacked 0/18  overflow 0  broken: -
+412px 150%  row 326px  stacked 0/18  overflow 0  broken: -
+412px 200%  row 332px  stacked 0/18  overflow 0  broken: -
+412px 250%  row 332px  stacked 0/18  overflow 0  broken: -
+412px 300%  row 332px  stacked 6/18  overflow 0  broken: Phantasmagoria
+768px 100%  row 637px  stacked 0/18  overflow 0  broken: -
+768px 150%  row 682px  stacked 0/18  overflow 0  broken: -
+768px 200%  row 688px  stacked 0/18  overflow 0  broken: -
+768px 250%  row 688px  stacked 0/18  overflow 0  broken: -
+768px 300%  row 688px  stacked 0/18  overflow 0  broken: -
+
+OPTION-ROW STRESS PASSED

@@ -1,0 +1,132 @@
+(node:57695) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57708) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+    at warnOnDeactivatedColors (node:internal/tty:112:13)
+    at Object.getColorDepth (node:internal/tty:137:9)
+    at Object.shouldColorize (node:internal/util/colors:20:32)
+    at Object.refresh (node:internal/util/colors:27:24)
+    at node:internal/util/colors:51:16
+    at BuiltinModule.compileForInternalLoader (node:internal/bootstrap/realm:398:7)
+    at requireBuiltin (node:internal/bootstrap/realm:429:14)
+    at node:internal/assert/assertion_error:23:16
+    at BuiltinModule.compileForInternalLoader (node:internal/bootstrap/realm:398:7)
+    at requireBuiltin (node:internal/bootstrap/realm:429:14)
+i  emulators: Starting emulators: auth, functions, firestore, database
+i  emulators: Detected demo project ID "demo-digitable", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+⚠  emulators: It seems that you are running multiple instances of the emulator suite for project demo-digitable. This may result in unexpected behavior.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 62081.
+i  database: Database Emulator logging to database-debug.log
+i  functions: Watching "/private/tmp/digitable-sonnet-ek-reskin-option-rows-20261004/apps/functions" for Cloud Functions...
+⚠  functions: Your requested "node" version "22" doesn't match your global version "24". Using node@24 from host.
+Serving at port 8328
+
+✔  functions: Loaded functions definitions from source: admitMember, claimSeat, createRoom, recoverSeat, submitRoomCommand.
+✔  functions[us-west1-admitMember]: http function initialized (http://127.0.0.1:62001/demo-digitable/us-west1/admitMember).
+✔  functions[us-west1-claimSeat]: http function initialized (http://127.0.0.1:62001/demo-digitable/us-west1/claimSeat).
+✔  functions[us-west1-createRoom]: http function initialized (http://127.0.0.1:62001/demo-digitable/us-west1/createRoom).
+✔  functions[us-west1-recoverSeat]: http function initialized (http://127.0.0.1:62001/demo-digitable/us-west1/recoverSeat).
+✔  functions[us-west1-submitRoomCommand]: http function initialized (http://127.0.0.1:62001/demo-digitable/us-west1/submitRoomCommand).
+i  Running script: npm run test:emulator --workspaces --if-present
+
+> @digitable/testing@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+(node:58000) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v5.0.0 /private/tmp/digitable-sonnet-ek-reskin-option-rows-20261004/packages/testing
+
+(node:58065) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:58064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  2 passed (2)
+      Tests  18 passed (18)
+   Start at  08:43:36
+   Duration  2.26s (tests 93%, import 6%, transform 1%)
+
+
+> @digitable/functions@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+(node:58087) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v5.0.0 /private/tmp/digitable-sonnet-ek-reskin-option-rows-20261004/apps/functions
+
+(node:58089) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:58090) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:58088) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:58091) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  4 passed (4)
+      Tests  86 passed (86)
+   Start at  08:43:38
+   Duration  17.84s (tests 97%, import 2%, transform 1%)
+
+
+> @digitable/web@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+(node:58165) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v5.0.0 /private/tmp/digitable-sonnet-ek-reskin-option-rows-20261004/apps/web
+
+(node:58166) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+>  (node:58167) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+>  (Use `node --trace-warnings ...` to show where the warning was created)
+i  functions: Beginning execution of "us-west1-createRoom"
+i  functions: Finished "us-west1-createRoom" in 101.129875ms
+>  (node:58170) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+>  (Use `node --trace-warnings ...` to show where the warning was created)
+i  functions: Beginning execution of "us-west1-admitMember"
+i  functions: Finished "us-west1-admitMember" in 107.623792ms
+>  (node:58171) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+>  (Use `node --trace-warnings ...` to show where the warning was created)
+i  functions: Beginning execution of "us-west1-submitRoomCommand"
+i  functions: Finished "us-west1-submitRoomCommand" in 74.334667ms
+i  functions: Beginning execution of "us-west1-submitRoomCommand"
+i  functions: Finished "us-west1-submitRoomCommand" in 20.518166ms
+i  functions: Beginning execution of "us-west1-submitRoomCommand"
+i  functions: Finished "us-west1-submitRoomCommand" in 18.900708ms
+i  functions: Beginning execution of "us-west1-admitMember"
+i  functions: Finished "us-west1-admitMember" in 29.726417ms
+i  functions: Beginning execution of "us-west1-createRoom"
+i  functions: Finished "us-west1-createRoom" in 39.554666ms
+i  functions: Beginning execution of "us-west1-admitMember"
+i  functions: Finished "us-west1-admitMember" in 51.143459ms
+>  (node:58172) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+>  (Use `node --trace-warnings ...` to show where the warning was created)
+i  functions: Beginning execution of "us-west1-recoverSeat"
+i  functions: Finished "us-west1-recoverSeat" in 126.863667ms
+i  functions: Beginning execution of "us-west1-recoverSeat"
+i  functions: Finished "us-west1-recoverSeat" in 69.034583ms
+i  functions: Beginning execution of "us-west1-createRoom"
+i  functions: Finished "us-west1-createRoom" in 35.68075ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  08:43:56
+   Duration  3.03s (tests 94%, transform 3%, import 3%)
+
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  functions: Stopping Functions Emulator
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  auth: Stopping Authentication Emulator
+i  eventarc: Stopping Eventarc Emulator
+i  tasks: Stopping Cloud Tasks Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
