@@ -452,6 +452,13 @@ When pausing or finishing a material unit:
 
 ## Integrated verification and next action
 
+### 2026-10-04: fresh reskin and pop-out audit, no defect (`sonnet-eb/reskin-orchestrated-20261004`)
+
+- **Base:** `77ef1ad`. No source change; evidence and docs only. Not merged, not deployed; no staging write (deployed baseline remains 17/17 from `9ee8aa5`).
+- **Audit:** own review of phone/tablet/desktop/table captures plus automated passes. Every select, disclosure, the single modal sheet, the sticky dock and the allocation pickers re-inventoried; no anchored popover/menu/listbox exists, so nothing can clip.
+- **Evidence:** `npm run check` 805 passed, 11 todo; `ui-audit.mjs` 288 states / 3,416 controls / 0 failures; selftest passed; smoke ALL STEPS PASSED; emulator suites 18 + 86 + 4 (clone, remapped 47xxx ports; peers untouched). Record `docs/evidence/eb-reskin-audit-20261004/`, review `docs/reviews/2026-10-04-eb-reskin-audit-independent-review.md` (read-only; could not disprove).
+- **Still open:** physical iOS/Android/AT rehearsal, iOS Safari keyboard visual-viewport, a real TV; six-member table at 1920x1080 still 38px tall.
+
 ### 2026-10-04: table display legibility (`sonnet-dz/reskin-uiux-20261004`)
 
 - **Base:** `9ee8aa5`. Presentation only (`apps/web/src/styles.css` plus a contract test, docs); no authority, projection, engine, Firebase or asset change. Not merged, not deployed.
