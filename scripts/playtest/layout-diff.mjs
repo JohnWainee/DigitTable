@@ -1,0 +1,85 @@
+#!/usr/bin/env node
+// Compares two `ui-audit.mjs --layout-dump` files (the rounded box of every visible element, per state
+// and viewport at the DEFAULT text size) and reports every element that moved or resized. It exists to
+// prove that a CSS change meant only for large text or narrow phones leaves the default-size layout
+// identical: run the audit against the old bundle and the new one, then
+//
+//   node scripts/playtest/layout-diff.mjs before.json after.json [--tolerance 1] [--show 8]
+//
+// A state is "comparable" when both runs rendered the same element paths (the same DOM); states whose
+// DOM differs between runs (a random roll, a different number of dice) are listed, not compared. Exits
+// 1 when any comparable state has an element off by more than the tolerance (default 1 CSS px, to
+// absorb sub-pixel rounding), or when nothing was comparable (a vacuous pass is a failure).
+
+import { readFileSync } from "node:fs";
+
+const args = process.argv.slice(2);
+const flagIndexes = new Set();
+args.forEach((a, i) => {
+  if (a.startsWith("--")) {
+    flagIndexes.add(i);
+    flagIndexes.add(i + 1);
+  }
+});
+const files = args.filter((_, i) => !flagIndexes.has(i));
+const flag = (name, fallback) => {
+  const i = args.indexOf(`--${name}`);
+  return i >= 0 ? Number(args[i + 1]) : fallback;
+};
+const TOLERANCE = flag("tolerance", 1);
+const SHOW = flag("show", 8);
+if (files.length !== 2) {
+  console.error("usage: layout-diff.mjs before.json after.json [--tolerance 1] [--show 8]");
+  process.exit(2);
+}
+const [before, after] = files.map((f) => JSON.parse(readFileSync(f, "utf8")));
+
+const parse = (line) => {
+  const parts = line.split("|");
+  const [x, y, w, h] = parts.slice(-4).map(Number);
+  return { path: parts.slice(0, -4).join("|"), x, y, w, h };
+};
+
+let comparable = 0;
+let identical = 0;
+let skipped = 0;
+let elements = 0;
+const moved = [];
+for (const key of Object.keys(before)) {
+  if (!(key in after)) continue;
+  const a = before[key].map(parse);
+  const b = after[key].map(parse);
+  if (a.length !== b.length || a.some((el, i) => el.path !== b[i].path)) {
+    skipped += 1;
+    console.log(`not comparable (different DOM): ${key} (${a.length} vs ${b.length} elements)`);
+    continue;
+  }
+  comparable += 1;
+  elements += a.length;
+  const diffs = a
+    .map((el, i) => ({ el, to: b[i] }))
+    .filter(({ el, to }) => ["x", "y", "w", "h"].some((k) => Math.abs(el[k] - to[k]) > TOLERANCE));
+  if (diffs.length === 0) {
+    identical += 1;
+    continue;
+  }
+  moved.push({ key, count: diffs.length, of: a.length, sample: diffs.slice(0, SHOW) });
+}
+
+for (const m of moved) {
+  console.log(`DIFF ${m.key}: ${m.count}/${m.of} elements moved or resized`);
+  for (const { el, to } of m.sample) {
+    console.log(
+      `   ${el.path.split(">").slice(-3).join(">")}: ${el.x},${el.y} ${el.w}x${el.h} -> ${to.x},${to.y} ${to.w}x${to.h}`,
+    );
+  }
+}
+console.log(
+  `${comparable} comparable state/viewport pairs (${elements} elements), ${identical} identical, ${moved.length} differ, ${skipped} not comparable`,
+);
+if (comparable === 0) {
+  console.log("LAYOUT DIFF FAILED: nothing was comparable");
+  process.exit(1);
+}
+console.log(moved.length === 0 ? "LAYOUT IDENTICAL" : "LAYOUT DIFFERS");
+process.exit(moved.length === 0 ? 0 : 1);

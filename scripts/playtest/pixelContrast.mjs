@@ -39,7 +39,9 @@ export function decodePng(buffer) {
       const depth = body[8];
       colorType = body[9];
       if (depth !== 8 || (colorType !== 2 && colorType !== 6) || body[12] !== 0) {
-        throw new Error(`unsupported PNG (depth ${depth}, colour type ${colorType}, interlace ${body[12]})`);
+        throw new Error(
+          `unsupported PNG (depth ${depth}, colour type ${colorType}, interlace ${body[12]})`,
+        );
       }
     } else if (type === "IDAT") {
       idat.push(body);

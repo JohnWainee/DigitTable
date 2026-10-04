@@ -1,4 +1,6 @@
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ORIGINAL_ROSTER } from "@digitable/template-eat-the-reich";
@@ -242,7 +244,9 @@ describe("ui-audit whole-page text scaling, font fallback and rendered-pixel con
     expect(audit).toContain('arg("font-fallback", "")');
     expect(audit).toContain("Page.addScriptToEvaluateOnNewDocument");
     expect(audit).toContain('"--font-display"');
-    expect(audit).toMatch(/wide: \{ display: "Verdana, sans-serif", body: "Verdana, sans-serif" \}/);
+    expect(audit).toMatch(
+      /wide: \{ display: "Verdana, sans-serif", body: "Verdana, sans-serif" \}/,
+    );
   });
 
   it("scores text contrast from the rendered pixels, because axe reports text over textures as incomplete", () => {
@@ -261,6 +265,15 @@ describe("ui-audit whole-page text scaling, font fallback and rendered-pixel con
     expect(module).toContain('status: "insufficient"');
   });
 
+  it("detects broken words and fingerprints the default-size layout so a CSS change can be proven neutral", () => {
+    expect(audit).toContain("WORD_BREAK_AUDIT");
+    expect(audit).toContain("word broken across lines");
+    // Identifiers and codes are not words; everything else must stay whole.
+    expect(audit).toContain("if (m[0].length > 16) continue;");
+    expect(audit).toContain("LAYOUT_DUMP_EXPRESSION");
+    expect(audit).toContain('arg("layout-dump", "")');
+  });
+
   it("proves the contrast measurement can fail (a negative control), not only pass", () => {
     const selftest = readFileSync(
       join(here, "../../../../scripts/playtest/ui-audit-selftest.mjs"),
@@ -268,5 +281,44 @@ describe("ui-audit whole-page text scaling, font fallback and rendered-pixel con
     );
     expect(selftest).toContain("white text over a black-to-white ramp fails");
     expect(selftest).toContain("PNG decoder reproduces every row filter");
+  });
+});
+
+describe("layout-diff.mjs (proves a CSS change leaves the default-size layout identical)", () => {
+  const tool = join(here, "../../../../scripts/playtest/layout-diff.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "layout-diff-"));
+  function run(before: unknown, after: unknown): { code: number; out: string } {
+    writeFileSync(join(dir, "a.json"), JSON.stringify(before));
+    writeFileSync(join(dir, "b.json"), JSON.stringify(after));
+    try {
+      const out = execFileSync("node", [tool, join(dir, "a.json"), join(dir, "b.json")], {
+        encoding: "utf8",
+      });
+      return { code: 0, out };
+    } catch (error) {
+      const e = error as { status: number; stdout: string };
+      return { code: e.status, out: e.stdout };
+    }
+  }
+  const page = ["main:1|0|0|320|600", "main:1>h1:1|16|16|288|50", "main:1>button:2|16|100|288|48"];
+
+  it("passes identical layouts, and ignores sub-pixel rounding", () => {
+    const nudged = page.map((line) => line.replace("|288|50", "|289|50"));
+    expect(run({ "gm/x@phone": page }, { "gm/x@phone": page }).code).toBe(0);
+    expect(run({ "gm/x@phone": page }, { "gm/x@phone": nudged }).code).toBe(0);
+  });
+
+  it("fails when an element moved or resized, and names it", () => {
+    const moved = page.map((line) => line.replace("|16|100|288|48", "|16|100|288|96"));
+    const result = run({ "gm/x@phone": page }, { "gm/x@phone": moved });
+    expect(result.code).toBe(1);
+    expect(result.out).toContain("button:2: 16,100 288x48 -> 16,100 288x96");
+  });
+
+  it("does not compare different DOMs, and fails a vacuous run", () => {
+    const extra = [...page, "main:1>p:3|16|160|288|20"];
+    const result = run({ "gm/x@phone": page }, { "gm/x@phone": extra });
+    expect(result.out).toContain("not comparable (different DOM)");
+    expect(result.code).toBe(1); // nothing comparable is a failure, not a pass
   });
 });

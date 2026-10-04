@@ -67,6 +67,12 @@ const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (f
 // `--only-states a,b`: audit just the named page states (fast iteration on one screen); every heavier
 // audit (sheet, keyboard, dock, validation, roster sweep) is skipped.
 const ONLY_STATES = new Set(arg("only-states", "").split(",").filter(Boolean));
+// `--layout-dump FILE`: write the rounded box of every visible element, per state and viewport at the
+// default text size, to FILE. scripts/playtest/layout-diff.mjs compares two dumps, which proves a CSS
+// change leaves the default-size layout identical (the large-text work must not move a pixel at 100%).
+const LAYOUT_DUMP = arg("layout-dump", "");
+// `--layout-only`: with --layout-dump, skip axe, text scaling and pixel contrast (a fast fingerprint run).
+const LAYOUT_ONLY = args.includes("--layout-only");
 const FONT_FALLBACK = arg("font-fallback", "");
 const FONT_STACKS = {
   sans: { display: "system-ui, sans-serif" },
@@ -113,6 +119,7 @@ const report = {
   states: [],
   textScale: [],
   contrast: [],
+  layouts: {},
   fontFallback: FONT_FALLBACK || null,
   modal: [],
   keyboard: [],
@@ -413,7 +420,8 @@ const CONTROL_AUDIT = `(() => {
  * ("SESSIO" over "N"). Not an overflow, so the geometry audit cannot see it, but unreadable all the same.
  * Hyphenated and slashed compounds are split first because a browser may legitimately wrap after those.
  * Deliberately long strings that are meant to break anywhere (a one-time code) opt out with
- * `data-wrap-anywhere` or sit in a `<dd>`.
+ * `data-wrap-anywhere` or sit in a `<dd>`; tokens over 16 characters (a command identifier in a GM
+ * briefing) are not words and are skipped.
  */
 const WORD_BREAK_AUDIT = `(() => {
   const broken = [];
@@ -425,6 +433,8 @@ const WORD_BREAK_AUDIT = `(() => {
     if (cs.display === "none" || cs.visibility === "hidden") continue;
     const re = /[^\\s\\-\\u2013\\u2014/]{4,}/g;
     for (let m; (m = re.exec(node.nodeValue)); ) {
+      // A token this long is an identifier or a code, not a word: nothing makes it fit a narrow column.
+      if (m[0].length > 16) continue;
       const range = document.createRange();
       range.setStart(node, m.index);
       range.setEnd(node, m.index + m[0].length);
@@ -440,6 +450,26 @@ const WORD_BREAK_AUDIT = `(() => {
     }
   }
   return broken;
+})()`;
+
+/** In-page: `path|x|y|w|h` (CSS px, rounded, page coordinates) for every rendered element, in DOM order. */
+const LAYOUT_DUMP_EXPRESSION = `(() => {
+  const out = [];
+  const path = (el) => {
+    const parts = [];
+    for (let p = el; p && p !== document.body; p = p.parentElement) {
+      parts.push(p.tagName.toLowerCase() + ":" + (Array.prototype.indexOf.call(p.parentElement.children, p) + 1));
+    }
+    return parts.reverse().join(">");
+  };
+  for (const el of document.body.querySelectorAll("*")) {
+    if (el.closest("svg") && el.tagName.toLowerCase() !== "svg") continue;
+    const cs = getComputedStyle(el);
+    if (cs.display === "none") continue;
+    const r = el.getBoundingClientRect();
+    out.push(path(el) + "|" + Math.round(r.left + scrollX) + "|" + Math.round(r.top + scrollY) + "|" + Math.round(r.width) + "|" + Math.round(r.height));
+  }
+  return out;
 })()`;
 
 async function runAxe(device) {
@@ -475,6 +505,12 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
     await applyViewport(device, vp);
     await sleep(250);
     const audit = await ev(device, CONTROL_AUDIT);
+    if (LAYOUT_DUMP) {
+      report.layouts[`${device.name}/${state}@${vp.name}`] = await ev(
+        device,
+        LAYOUT_DUMP_EXPRESSION,
+      );
+    }
     const file = await screenshot(device, `${device.name}-${state}-${vp.name}.jpg`);
     const entry = {
       surface: device.name,
@@ -486,7 +522,7 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
       controlIssues: audit.issues,
       screenshot: file,
     };
-    if (axeViewports.includes(vp.name)) {
+    if (axeViewports.includes(vp.name) && !LAYOUT_ONLY) {
       entry.axe = await runAxe(device);
       for (const v of entry.axe.filter(isHardAxe)) {
         fail(
@@ -539,7 +575,7 @@ async function captureViewportPng(device, css) {
 }
 
 async function auditPixelContrast(device, state) {
-  if (MODAL_ONLY) return;
+  if (MODAL_ONLY || LAYOUT_ONLY) return;
   const original = device.vp;
   const names = device.name === "table" ? ["table"] : CONTRAST_VIEWPORTS;
   for (const name of names) {
@@ -554,7 +590,15 @@ async function auditPixelContrast(device, state) {
     const offsets = [];
     for (let y = 0; y < page.height - 1 && offsets.length < 8; y += step) offsets.push(y);
     const scope = `${device.name}/${state}@${vp.name}`;
-    const entry = { scope, slices: 0, measured: 0, insufficient: 0, occluded: 0, failures: [], worst: [] };
+    const entry = {
+      scope,
+      slices: 0,
+      measured: 0,
+      insufficient: 0,
+      occluded: 0,
+      failures: [],
+      worst: [],
+    };
     for (const y of offsets) {
       await ev(device, `scrollTo(0, ${y})`);
       await sleep(150);
@@ -586,7 +630,10 @@ async function auditPixelContrast(device, state) {
               device.sessionId,
             );
             writeFileSync(
-              join(OUT, `contrast-fail-${scope.replace(/[^a-z0-9]+/gi, "-")}-y${Math.round(y)}-${entry.failures.length}.jpg`),
+              join(
+                OUT,
+                `contrast-fail-${scope.replace(/[^a-z0-9]+/gi, "-")}-y${Math.round(y)}-${entry.failures.length}.jpg`,
+              ),
               Buffer.from(data, "base64"),
             );
           }
@@ -619,7 +666,7 @@ const TEXT_SCALES = [
 const TEXT_SCALE_VIEWPORTS = ["phone-small", "phone", "phone-412", "phone-landscape"];
 
 async function captureTextScaled(device, state) {
-  if (MODAL_ONLY || device.name === "table") return;
+  if (MODAL_ONLY || LAYOUT_ONLY || device.name === "table") return;
   const original = device.vp;
   for (const scale of TEXT_SCALES) {
     for (const name of TEXT_SCALE_VIEWPORTS) {
@@ -1922,6 +1969,8 @@ async function main() {
       sheetCases: report.modal.filter((m) => m.rosterIndex !== undefined).length,
       failures: report.failures.length,
     };
+    if (LAYOUT_DUMP) writeFileSync(LAYOUT_DUMP, JSON.stringify(report.layouts));
+    delete report.layouts;
     writeFileSync(join(OUT, "report.json"), JSON.stringify(report, null, 2) + "\n");
     try {
       cdp?.ws.close();
