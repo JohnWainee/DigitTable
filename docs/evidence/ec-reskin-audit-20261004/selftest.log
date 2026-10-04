@@ -1,0 +1,33 @@
+(node:46267) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok   button nested in a label: reports "interactive control nested inside a <label>"
+ok   class-less button: reports "button without a reskin class"
+ok   squeezed button: reports "label squeezed onto"
+ok   truncated select without echo: reports "is truncated and not echoed in full"
+ok   truncated select WITH a visible full-text echo: reports nothing
+ok   select whose echo is hidden: reports "is truncated and not echoed in full"
+ok   select whose value fits: reports nothing
+ok   form relying on native validation: reports "relies on native validation bubbles"
+ok   noValidate form: reports nothing
+ok   a sibling styled button: reports nothing
+ok   keyboard focus: clear page reports nothing (2 controls)
+ok   keyboard focus: a fixed bar over the lower input is reported covered
+ok   dock audit, a sticky dock over a long panel: reports nothing
+ok   dock audit, a sticky dock WITHOUT scroll-padding hides a control the browser scrolls to: reports "covered by the dock when focused"
+ok   dock audit, a dock that is not pinned: reports "dock is not pinned"
+ok   dock audit, a dock taller than 45% of the viewport: reports "cap is 45%"
+ok   dock audit, a primary button with no status: reports "no visible described-by status"
+ok   real stylesheet, dock at 320px / 16px text, 900px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":237,"dockHeight":205,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":900}
+ok   real stylesheet, dock at 360px / 16px text, 900px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":277,"dockHeight":184,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":900}
+ok   real stylesheet, dock at 320px / 32px text, 900px tall, with two long buttons: {"clipped":true,"primaryVisible":true,"statusWidth":158,"dockHeight":405,"dockOverflowX":0,"pageOverflowX":0,"innerHeight":900}
+ok   real stylesheet, dock at 320px / 32px text, 568px tall, with two long buttons: {"clipped":true,"primaryVisible":true,"statusWidth":158,"dockHeight":256,"dockOverflowX":0,"pageOverflowX":0,"innerHeight":568}
+ok   real stylesheet, dock at 375px / 24px text, 667px tall, with two long buttons: {"clipped":true,"primaryVisible":true,"statusWidth":245,"dockHeight":300,"dockOverflowX":0,"pageOverflowX":0,"innerHeight":667}
+ok   real stylesheet, dock at 320px / 32px text, 568px tall, GM card, with two long buttons: {"clipped":true,"primaryVisible":true,"statusWidth":126,"dockHeight":256,"dockOverflowX":0,"pageOverflowX":0,"innerHeight":568}
+ok   real stylesheet, dock at 320px / 24px text, 568px tall, GM card, with two long buttons: {"clipped":true,"primaryVisible":true,"statusWidth":158,"dockHeight":256,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":568}
+ok   real stylesheet, dock at 540px / 16px text, 900px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":457,"dockHeight":145,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":900}
+ok   real stylesheet, dock at 600px / 16px text, 900px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":517,"dockHeight":166,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":900}
+ok   real stylesheet, dock at 700px / 16px text, 900px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":604,"dockHeight":106,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":900}
+ok   real stylesheet, dock at 800px / 16px text, 900px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":668,"dockHeight":106,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":900}
+ok   real stylesheet, data-unpinned releases the dock: {"pinned":{"position":"sticky","maxHeight":"379.8px","shadow":"rgba(0, 0, 0, 0.85) 0px -14.4px 17.6px -9.6px","pad":"140px"},"released":{"position":"static","maxHeight":"none","shadow":"none","pad":"0px"}}
+
+SELF-TEST PASSED

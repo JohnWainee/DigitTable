@@ -1935,13 +1935,14 @@ html:has(.action-dock[data-unpinned]) {
     font-size: 1.4rem;
   }
 
-  /* Keeps the scene, route and party within a 1080px-tall display now the text is larger. */
+  /* Keeps the scene, route and a full six-member party within a 1080px-tall display now the text is
+     larger (a wall display cannot scroll). */
   .table-screen .scene-card-art--banner {
-    height: 18rem;
+    height: 15rem;
   }
 
   .table-screen .route-map {
-    max-width: 38rem;
+    max-width: 34rem;
   }
 }
 

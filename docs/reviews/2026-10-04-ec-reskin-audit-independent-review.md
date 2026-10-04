@@ -1,0 +1,7 @@
+# Independent review: pop-out audit and six-member table fit, lane `sonnet-ec` (2026-10-04)
+
+- **Scope:** `sonnet-ec/reskin-orchestrated-20261004` on base `0cb3d19`: CSS change inside `@media (min-width: 110rem)` (route map 34rem, banner 15rem), contract-test update, evidence.
+- **Reviewer:** a separate fresh Sonnet subagent (not the author), read-only. It read the diff, AGENTS.md, the before/after captures and logs, and ran `npx vitest run apps/web/test/styles` (67/67 pass).
+- **Verdict:** APPROVE; no blockers. Confirmed: diff scope, change confined to the >=110rem block and `.table-screen` descendants, no AGENTS.md invariant touched, 1118 -> 1080px visible in captures with nothing clipped, log/README consistency, no physical-device claim, table view shows only public data.
+- **Findings and resolution (all evidence wording, applied):** (6) the 3,416 vs 3,336 control-count difference was explained too confidently, now stated as uninvestigated; (7) "untouched by construction" and "~80px spare" are inferred / one capture, now worded so; (8) the leaky first emulator run is a process breach of the shared-ports rule and its log was not kept, now stated; (10) states other than idle and six-member were not captured, added under "Not measured". Minor cosmetic note: the narrower map leaves a wider gutter beside the scene card; accepted.
+- **Not verified by the reviewer:** `npm run check`, build and emulator suites (log reading only; author-run), desktop/tablet captures, other table states, real devices, whether the peer RTDB write disturbed anything.

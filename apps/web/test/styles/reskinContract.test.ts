@@ -721,8 +721,8 @@ describe("reskin stylesheet contract", () => {
       // Larger chips would stack one per column and push a full party past 1080px.
       expect(ruleFor(".table-screen .party-strip")).toMatch(/column-span:\s*all/);
       const huge = mediaBlock("(min-width: 110rem)");
-      expect(huge).toMatch(/\.table-screen \.scene-card-art--banner\s*\{[^}]*height:\s*18rem/);
-      expect(huge).toMatch(/\.table-screen \.route-map\s*\{[^}]*max-width:\s*38rem/);
+      expect(huge).toMatch(/\.table-screen \.scene-card-art--banner\s*\{[^}]*height:\s*15rem/);
+      expect(huge).toMatch(/\.table-screen \.route-map\s*\{[^}]*max-width:\s*34rem/);
     });
   });
 });
