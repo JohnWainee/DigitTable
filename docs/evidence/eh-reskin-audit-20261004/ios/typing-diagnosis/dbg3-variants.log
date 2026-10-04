@@ -1,0 +1,5 @@
+V1 before field=(16.0, 292.0, 343.0, 49.0)
+V1-settle-tap: field=(16.0, 350.0, 343.0, 49.0) kb=(0.0, 0.0, 0.0, 0.0) hasFocus=0
+V2-coordinate-left: field=(16.0, 139.0, 343.0, 49.0) kb=(0.0, 451.0, 375.0, 216.0) hasFocus=1
+V3-double-tap: field=(16.0, 139.0, 343.0, 49.0) kb=(0.0, 451.0, 375.0, 216.0) hasFocus=1
+V4-after-dismiss: field=(16.0, 369.0, 343.0, 49.0) kb=(0.0, 451.0, 375.0, 216.0) hasFocus=0

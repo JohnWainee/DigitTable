@@ -442,3 +442,66 @@ describe("layout-diff.mjs (proves a CSS change leaves the default-size layout id
     expect(result.out).toContain("button:2: 16,100 288x48 -> 0,0 0x0");
   });
 });
+
+describe("iOS Simulator rig (SafariFlowUITests.swift), pinned from the iPhone SE (3rd generation) run", () => {
+  const swift = readFileSync(
+    join(here, "../../../../scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift"),
+    "utf8",
+  );
+  const body = (name: string): string => {
+    const start = swift.indexOf(`func ${name}(`);
+    expect(start, `${name} exists`).toBeGreaterThan(-1);
+    const next = swift.indexOf("\n    func ", start + 1);
+    return swift.slice(start, next === -1 ? undefined : next);
+  };
+
+  it("types into a field by tapping its upper part, never its centre", () => {
+    // With the keyboard up on a 667pt phone, a tap at the middle or lower part of the next field left the
+    // keyboard dismissed and nothing focused (Safari's own UI sits just below it; mechanism not established).
+    const tapField = body("tapField");
+    const offset =
+      /coordinate\(withNormalizedOffset: CGVector\(dx: [\d.]+, dy: ([\d.]+)\)\)\.tap\(\)/.exec(
+        tapField,
+      );
+    expect(offset, "tapField taps by coordinate").not.toBeNull();
+    expect(Number(offset?.[1])).toBeLessThanOrEqual(0.35);
+    // A coordinate tap does not scroll the field into view, so the helper must.
+    expect(tapField).toContain("bringIntoView(f)");
+  });
+
+  it("scrolls to the Compose rows with a drag-and-check helper rather than a swipe loop", () => {
+    // A slow swipe's momentum carried the rows past the screen after they were first seen (landscape SE).
+    expect(swift).toContain("func bringIntoView(");
+    const dock = body("testSignedInDockInRealSafari");
+    expect(dock).toContain("bringIntoView(firstStat)");
+    expect(dock).not.toMatch(/while !firstStat\.isHittable[^\n]*swipeUp/);
+  });
+
+  it("requires the GM's scene to arrive through the live listener, not the 30 s fallback poll", () => {
+    // Against the emulators Mobile Safari only got updates by the poll (30.1 s) until the emulator client
+    // forced long polling; a 30 s wait passes by accident, so the budget must sit well under it.
+    expect(body("createSessionAndOpenConsole")).toContain("XCTAssertLessThan(");
+    expect(body("createSessionAndOpenConsole")).toContain("sceneBudget");
+    const budget = /DIGITABLE_SCENE_BUDGET"\] \?\? ""\) \?\? (\d+)/.exec(swift);
+    expect(budget, "default scene budget").not.toBeNull();
+    expect(Number(budget?.[1])).toBeGreaterThanOrEqual(5);
+    expect(Number(budget?.[1])).toBeLessThan(30);
+    expect(
+      readFileSync(join(here, "../../../../scripts/playtest/ios-simulator/run.sh"), "utf8"),
+    ).toContain("TEST_RUNNER_DIGITABLE_SCENE_BUDGET");
+  });
+});
+
+describe("emulator Firestore transport (apps/web/src/firebase/firestore.ts)", () => {
+  const source = readFileSync(join(here, "../../src/firebase/firestore.ts"), "utf8").replace(
+    /\/\*[\s\S]*?\*\//g,
+    "",
+  );
+
+  it("requests long polling only after the no-emulator return, so a deployed project keeps the SDK default", () => {
+    expect(source).toContain("experimentalForceLongPolling: true");
+    const deployed = source.search(/if \(emulator === undefined\)\s*return getFirestore\(app\);/);
+    expect(deployed).toBeGreaterThan(-1);
+    expect(deployed).toBeLessThan(source.indexOf("initializeFirestore(app"));
+  });
+});

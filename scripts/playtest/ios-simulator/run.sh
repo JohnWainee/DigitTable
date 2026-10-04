@@ -83,7 +83,7 @@ for device in "${DEVICES[@]}"; do
     BOOTED_HERE+=("$udid")
   fi
   xcrun simctl bootstatus "$udid" >/dev/null 2>&1
-  if TEST_RUNNER_DIGITABLE_BASE="$BASE" TEST_RUNNER_DIGITABLE_OUT="$OUT/$tag" TEST_RUNNER_DIGITABLE_TAG="$tag" \
+  if TEST_RUNNER_DIGITABLE_BASE="$BASE" TEST_RUNNER_DIGITABLE_OUT="$OUT/$tag" TEST_RUNNER_DIGITABLE_TAG="$tag" TEST_RUNNER_DIGITABLE_SCENE_BUDGET="${DIGITABLE_SCENE_BUDGET:-}" \
     xcodebuild test -project IosPlaytest.xcodeproj -scheme IosPlaytest \
       -destination "platform=iOS Simulator,id=$udid" -derivedDataPath "$DERIVED" ${ONLY[@]+"${ONLY[@]}"} \
       CODE_SIGNING_ALLOWED=NO > "$OUT/$tag-xcodebuild.log" 2>&1; then

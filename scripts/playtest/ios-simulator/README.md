@@ -57,6 +57,26 @@ overlapped the footer, and the action buttons were clipped. The sheet now switch
 (`data-compact`, set by `useVisualViewportBox` below 15rem of visible height) in which the whole sheet
 scrolls. See `docs/reviews/2026-10-02-db-popout-picker-audit-review.md`.
 
+## Findings it produced (2026-10-04, `sonnet-eh`, iPhone SE 3rd generation and iPhone 17 Pro, iOS 26.5)
+
+- **Realtime updates did not reach Mobile Safari against the emulators.** In the iOS Simulator the GM's own
+  "Load scene" appeared 30.1 s after the tap on both phones (the `useRoomProjection` fallback poll), 1.1 s with
+  Firestore long polling (iPhone 17 Pro, iPhone SE 3rd generation, iOS 26.5; after the fix also iPad mini and
+  iPhone 17e on iOS 27.0). Fixed for emulator builds in `apps/web/src/firebase/firestore.ts`; cause not
+  established, physical devices not measured. The same flow against the deployed staging site took 4.1 s, so
+  production transport is untouched. `createSessionAndOpenConsole` logs the delay and requires it to be under
+  `DIGITABLE_SCENE_BUDGET` seconds (default 20).
+- **A centre tap on a field failed next to Safari's own UI.** On a 667pt phone with the keyboard up, a tap at the
+  middle or lower part of the next field dismissed the keyboard and focused nothing ("Neither element nor any
+  descendant has keyboard focus"); taps in its upper part focused it every time. Safari's address capsule and
+  form-assist bar are drawn just below that field, but the exact mechanism is not established. This is the
+  "iPhone SE typing failure" earlier lanes could not attribute: a rig issue, not a page defect. `tapField` taps
+  the upper part of the field (scrolling it into view first). A person can also use the form-assist Next button.
+- **A swipe loop can stop on a transient frame.** `bringIntoView` drags toward the element and re-checks.
+- Create the SE device once: `xcrun simctl create "eh-iPhoneSE3" com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation com.apple.CoreSimulator.SimRuntime.iOS-26-5`
+  (the script matches simulators by exact name). `xcodebuild` can linger after a failing run; check for it before
+  starting another run on the same device.
+
 ## Limits
 
 - One engine and OS version per run; text-size and Dynamic Type settings, VoiceOver, and Safari's

@@ -1,0 +1,18 @@
+room code captured: yes
+scene appeared 1.3 s after tapping Load scene: true
+scene select found: true type=1
+scene select: frame=(49.0, 748.0, 292.0, 21.0) screen=(0.0, 0.0, 390.0, 844.0) keyboardTop=844.0 inScreen=true aboveKeyboard=true hittable=true
+picker keyboards/pickers: pickerWheels=0 buttons Done=false
+sheet apply (no keyboard): frame=(18.0, 709.59716796875, 171.0, 67.06689453125) screen=(0.0, 0.0, 390.0, 844.0) keyboardTop=844.0 inScreen=true aboveKeyboard=true hittable=true
+sheet cancel (no keyboard): frame=(201.0, 709.59716796875, 171.0, 67.06689453125) screen=(0.0, 0.0, 390.0, 844.0) keyboardTop=844.0 inScreen=true aboveKeyboard=true hittable=true
+landscape (no keyboard) apply: frame=(119.0, 269.0, 297.0, 67.0) screen=(0.0, 0.0, 844.0, 390.0) keyboardTop=390.0 inScreen=true aboveKeyboard=true hittable=true
+landscape (no keyboard) cancel: frame=(427.0, 269.0, 297.0, 67.0) screen=(0.0, 0.0, 844.0, 390.0) keyboardTop=390.0 inScreen=true aboveKeyboard=true hittable=true
+sheet reason before focus: frame=(18.0, 589.0, 354.0, 49.0) screen=(0.0, 0.0, 390.0, 844.0) keyboardTop=844.0 inScreen=true aboveKeyboard=true hittable=true
+sheet reason with keyboard up: frame=(18.0, 259.0, 354.0, 49.0) screen=(0.0, 0.0, 390.0, 844.0) keyboardTop=560.0 inScreen=true aboveKeyboard=true hittable=true
+sheet apply with keyboard up: frame=(18.0, 337.0, 171.0, 67.0) screen=(0.0, 0.0, 390.0, 844.0) keyboardTop=560.0 inScreen=true aboveKeyboard=true hittable=true
+sheet cancel with keyboard up: frame=(201.0, 337.0, 171.0, 67.0) screen=(0.0, 0.0, 390.0, 844.0) keyboardTop=560.0 inScreen=true aboveKeyboard=true hittable=true
+sheet heading with keyboard up: frame=(27.0, 96.0, 144.0, 31.0) screen=(0.0, 0.0, 390.0, 844.0) keyboardTop=560.0 inScreen=true aboveKeyboard=true hittable=true
+landscape reason: frame=(120.0, 16.0, 604.0, 49.0) screen=(0.0, 0.0, 844.0, 390.0) keyboardTop=210.0 inScreen=true aboveKeyboard=true hittable=true
+landscape apply (scrolls): frame=(120.0, 82.0, 296.0, 67.0) screen=(0.0, 0.0, 844.0, 390.0) keyboardTop=210.0 inScreen=true aboveKeyboard=true hittable=true
+landscape cancel (scrolls): frame=(428.0, 82.0, 296.0, 67.0) screen=(0.0, 0.0, 844.0, 390.0) keyboardTop=210.0 inScreen=true aboveKeyboard=true hittable=true
+sheet closed: true

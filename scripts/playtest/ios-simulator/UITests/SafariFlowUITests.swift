@@ -12,6 +12,9 @@ final class SafariFlowUITests: XCTestCase {
     var web: XCUIElement { safari.webViews.firstMatch }
     var logLines: [String] = []
     var roomCode = ""
+    /// Seconds the GM's scene may take to arrive. It includes callable latency, so a cold deployed project may
+    /// need more; it must stay well under the 30 s fallback poll to prove the live listener works.
+    let sceneBudget = Double(ProcessInfo.processInfo.environment["DIGITABLE_SCENE_BUDGET"] ?? "") ?? 20
 
     override func setUpWithError() throws {
         continueAfterFailure = true
@@ -62,10 +65,43 @@ final class SafariFlowUITests: XCTestCase {
         while !element.isHittable && n < maxSwipes { web.swipeUp(velocity: .slow); n += 1 }
     }
 
+    /// Scrolls with short drags, toward wherever the element is, until it is hittable; returns the number of
+    /// drags. Drags are short (30% of the view) so it overshoots far less than a swipe loop, and it settles
+    /// before returning; it scrolls toward the element whether it is below or above (or partly above) the
+    /// visible area. Callers still re-check after a pause.
+    @discardableResult
+    func bringIntoView(_ element: XCUIElement, maxDrags: Int = 80) -> Int {
+        var drags = 0
+        while !element.isHittable && drags < maxDrags {
+            let area = web.frame
+            // Unknown or off-screen above: scroll up the page (finger moves down); otherwise scroll down.
+            let above = element.exists && element.frame.minY < area.minY
+            let from: CGFloat = above ? 0.35 : 0.65
+            let to: CGFloat = above ? 0.65 : 0.35
+            web.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: from))
+                .press(forDuration: 0.05, thenDragTo: web.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: to)))
+            drags += 1
+        }
+        if drags > 0 { sleep(1) } // let momentum settle before the caller reads frames or takes a screenshot
+        return drags
+    }
+
+    /// Writes the app's accessibility tree next to the screenshots, for a failure that needs a post-mortem.
+    func dumpTree(_ name: String) {
+        try? safari.debugDescription.write(toFile: "\(out)/\(tag)-\(name)-tree.txt", atomically: true, encoding: .utf8)
+    }
+
     func tapField(_ label: String, _ text: String) {
         let f = web.textFields[label]
         XCTAssertTrue(f.waitForExistence(timeout: 10), "field \(label)")
-        f.tap()
+        // Not the centre: on a 667pt phone with the keyboard already up, a tap at the middle or lower part of the
+        // next field left the keyboard dismissed and nothing focused (iPhone SE (3rd generation), iOS 26.5). Safari's
+        // own address capsule and form-assist bar are drawn just below that field (the capsule's accessibility frame
+        // starts 7pt above the field's bottom edge), but the exact mechanism is not established; what was measured
+        // is that taps in the upper part of the field focus it every time and centre taps did not.
+        // A coordinate tap, unlike `tap()`, does not scroll the element into view first.
+        if !f.isHittable { bringIntoView(f) }
+        f.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.25)).tap()
         if !text.isEmpty { f.typeText(text) }
     }
 
@@ -137,7 +173,16 @@ final class SafariFlowUITests: XCTestCase {
         let load = el("Load scene", .button)
         scrollTo(load)
         load.tap()
-        XCTAssertTrue(containing("End round 1", .button).waitForExistence(timeout: 30), "scene loaded")
+        let loadedAt = Date()
+        let sceneLoaded = containing("End round 1", .button).waitForExistence(timeout: 90)
+        log("scene appeared \(String(format: "%.1f", Date().timeIntervalSince(loadedAt))) s after tapping Load scene: \(sceneLoaded)")
+        if !sceneLoaded { dumpTree("scene-not-loaded") }
+        XCTAssertTrue(sceneLoaded, "scene loaded")
+        // The page's live listener, not its 30 s fallback poll, must have delivered it: against the emulators
+        // Mobile Safari only received updates by that poll (30.1 s, every run) until the emulator client
+        // forced long polling (`apps/web/src/firebase/firestore.ts`; 1.1 s). Staging, on the default
+        // transport, measured 4.1 s.
+        XCTAssertLessThan(Date().timeIntervalSince(loadedAt), sceneBudget, "the scene reached the GM through the live listener (budget \(sceneBudget) s, which includes Functions latency)")
         shot("console-loaded")
     }
 
@@ -337,10 +382,12 @@ final class SafariFlowUITests: XCTestCase {
         // `max-height` media query keeps reading 292 even after scrolling collapses the bars (innerHeight 402).
         // The dock used to be released under 320px, so Declare action sat at the end of the form (hittable false).
         let firstStat = containing("Brawl (")
-        var swipes = 0
-        while !firstStat.isHittable && swipes < 40 { web.swipeUp(velocity: .slow); swipes += 1 }
+        let swipes = bringIntoView(firstStat)
         XCTAssertGreaterThan(swipes, 0, "the Compose rows were reached by scrolling, not already on screen at the top")
+        // A swipe's momentum can carry the rows past the screen after they were first seen (measured on iPhone SE
+        // (3rd generation) landscape), so settle and bring them back before asserting.
         sleep(1)
+        _ = bringIntoView(firstStat)
         shot("player-compose-landscape-scrolled")
         logViewport("landscape with the panel on screen")
         XCTAssertTrue(firstStat.isHittable, "landscape: the Compose rows are on screen")

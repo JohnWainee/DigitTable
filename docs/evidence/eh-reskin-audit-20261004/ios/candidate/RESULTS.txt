@@ -1,0 +1,29 @@
+xcodebuild summaries (3 XCUITests per device). Final rig = the committed SafariFlowUITests.swift.
+
+== final2/eh-iphonese3-xcodebuild.log (final rig)
+	 Executed 3 tests, with 0 failures (0 unexpected) in 248.405 (248.408) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 248.405 (248.409) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 248.405 (248.410) seconds
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (70.987 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' passed (18.533 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari]' passed (158.885 seconds).
+== final2/iphone-17-pro-xcodebuild.log (final rig)
+	 Executed 3 tests, with 0 failures (0 unexpected) in 242.046 (242.049) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 242.046 (242.050) seconds
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (70.683 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' passed (17.737 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari]' passed (153.626 seconds).
+== multi-cand/ipad-mini-a17-pro-xcodebuild.log (rig before the review's tap-guard, settle and budget-variable edits)
+	 Executed 3 tests, with 0 failures (0 unexpected) in 216.839 (216.850) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 216.839 (216.851) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 216.839 (216.852) seconds
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (72.922 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' passed (19.467 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari]' passed (124.450 seconds).
+== multi-cand/iphone-17e-xcodebuild.log (rig before the review's tap-guard, settle and budget-variable edits)
+	 Executed 3 tests, with 0 failures (0 unexpected) in 2318.956 (2318.968) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 2318.956 (2318.970) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 2318.956 (2318.972) seconds
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (2160.736 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' passed (19.340 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari]' passed (138.879 seconds).

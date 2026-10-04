@@ -80,6 +80,14 @@ is not implemented yet).
   same browser profile, or start a fresh room.
 - The landing/create/join pages show "Connected" from a short timer, not from a live link check;
   the room screens (claim, player, GM, table) show real connection state.
+- **Emulator builds request Firestore long polling.** In the iOS Simulator, Mobile Safari (iPhone 17 Pro and
+  iPhone SE 3rd generation, iOS 26.5) against the local emulator received updates only when the 30 second
+  fallback poll ran: the GM's own *Load scene* took 30.1 s to appear, against 1.1 s with long polling. The cause
+  is not established, and physical phones on a LAN were not measured. Builds with
+  `VITE_FIREBASE_USE_EMULATOR=true` therefore request long polling (`apps/web/src/firebase/firestore.ts`). If a
+  physical phone shows other devices' changes about 30 seconds late, you are on an older build or this
+  assumption does not hold there: please note it in the checklist. The deployed staging site keeps the SDK
+  default and took 4 seconds in the same Simulator Safari.
 - Emulator data is volatile: stopping `lan-up.sh` deletes every room, member, and secret.
 - Functions log `admission.appCheckMissing` warnings; App Check is monitoring-only and unset here.
 - Placeholder art is original but unapproved for public release (see
