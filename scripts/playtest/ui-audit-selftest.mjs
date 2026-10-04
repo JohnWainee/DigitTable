@@ -677,6 +677,17 @@ function check(name, ok, detail = "") {
     h1(a).split("|").slice(1, 5).join("|") === h1(retext).split("|").slice(1, 5).join("|") &&
       h1(a).split("|")[5] !== h1(retext).split("|")[5],
   );
+  // Page coordinates, not viewport coordinates: scrolling must not move an element in the dump.
+  const tall = await page(
+    `<main><div style="height:900px"></div><h1 style="margin:0">Below the fold</h1></main>`,
+    `(() => { const dump = () => ${LAYOUT_DUMP_EXPRESSION}; const top = dump(); scrollTo(0, 300); const scrolled = dump(); return { top, scrolled }; })()`,
+  );
+  check(
+    "layout fingerprint: page coordinates do not move when the page is scrolled",
+    JSON.stringify(tall.top) === JSON.stringify(tall.scrolled) &&
+      tall.top.some((line) => /h1:2\|0\|900\|/.test(line)),
+    JSON.stringify(tall.scrolled),
+  );
   check(
     "layout fingerprint: a display:none element stays in the dump as a zero box",
     hiddenDump.length === a.length && hiddenDump.some((line) => /p:2\|0\|0\|0\|0\|/.test(line)),

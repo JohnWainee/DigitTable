@@ -287,13 +287,25 @@ describe("ui-audit whole-page text scaling, font fallback and rendered-pixel con
 describe("layout-diff.mjs (proves a CSS change leaves the default-size layout identical)", () => {
   const tool = join(here, "../../../../scripts/playtest/layout-diff.mjs");
   const dir = mkdtempSync(join(tmpdir(), "layout-diff-"));
-  function run(before: unknown, after: unknown): { code: number; out: string } {
+  function run(
+    before: unknown,
+    after: unknown,
+    extra: string[] = [],
+  ): { code: number; out: string } {
     writeFileSync(join(dir, "a.json"), JSON.stringify(before));
     writeFileSync(join(dir, "b.json"), JSON.stringify(after));
     try {
-      const out = execFileSync("node", [tool, join(dir, "a.json"), join(dir, "b.json")], {
-        encoding: "utf8",
-      });
+      const out = execFileSync(
+        "node",
+        [
+          tool,
+          join(dir, "a.json"),
+          join(dir, "b.json"),
+          ...(extra.includes("--min-elements") ? [] : ["--min-elements", "1", "--min-total", "1"]),
+          ...extra,
+        ],
+        { encoding: "utf8" },
+      );
       return { code: 0, out };
     } catch (error) {
       const e = error as { status: number; stdout: string };
@@ -320,13 +332,17 @@ describe("layout-diff.mjs (proves a CSS change leaves the default-size layout id
   });
 
   it("does not blame the CSS for an element whose own text differs between runs (a random room code)", () => {
-    const other = page.map((line) => line.replace("|288|50|abc", "|300|50|zzz"));
-    const result = run({ "gm/x@phone": page }, { "gm/x@phone": other });
+    // 200 elements, so one excused box is well under the 1% cap.
+    const big = Array.from({ length: 200 }, (_, i) => `main:1>p:${i + 1}|0|${i * 20}|288|18|t${i}`);
+    const other = big.map((line, i) =>
+      i === 7 ? line.replace("|288|18|t7", "|300|18|zzz") : line,
+    );
+    const result = run({ "gm/x@phone": big }, { "gm/x@phone": other });
     expect(result.code).toBe(0);
     expect(result.out).toContain("1 element boxes differ only where their own text differs");
     // The same box change with the same text is a real layout change.
-    const same = page.map((line) => line.replace("|288|50|abc", "|300|50|abc"));
-    expect(run({ "gm/x@phone": page }, { "gm/x@phone": same }).code).toBe(1);
+    const same = big.map((line, i) => (i === 7 ? line.replace("|288|18|t7", "|300|18|t7") : line));
+    expect(run({ "gm/x@phone": big }, { "gm/x@phone": same }).code).toBe(1);
   });
 
   it("fails a vacuous run, a partial dump and an unexplained DOM change, and names allowed ones", () => {
@@ -353,7 +369,17 @@ describe("layout-diff.mjs (proves a CSS change leaves the default-size layout id
     );
     const allowed = execFileSync(
       "node",
-      [tool, join(dir, "m1.json"), join(dir, "m2.json"), "--allow-skip", "join-form"],
+      [
+        tool,
+        join(dir, "m1.json"),
+        join(dir, "m2.json"),
+        "--min-elements",
+        "1",
+        "--min-total",
+        "1",
+        "--allow-skip",
+        "join-form",
+      ],
       { encoding: "utf8" },
     );
     expect(allowed).toContain("different DOM, allowed");
@@ -362,6 +388,50 @@ describe("layout-diff.mjs (proves a CSS change leaves the default-size layout id
     const partial = run({ "gm/x@phone": page, "gm/x@tablet": page }, { "gm/x@phone": page });
     expect(partial.code).toBe(1);
     expect(partial.out).toContain("MISSING from the second dump: gm/x@tablet");
+  });
+
+  it("fails blank dumps, bad parameters, substring skips and a runaway own-text exemption", () => {
+    // Two blank or near-empty dumps are not "identical", they are a broken build both times.
+    const blank = (extra: string[] = []) => {
+      writeFileSync(join(dir, "e1.json"), JSON.stringify({ a: [], b: [] }));
+      try {
+        return execFileSync("node", [tool, join(dir, "e1.json"), join(dir, "e1.json"), ...extra], {
+          encoding: "utf8",
+        });
+      } catch (error) {
+        return `exit ${(error as { status: number }).status}`;
+      }
+    };
+    expect(blank()).toBe("exit 1");
+    // A real-sized pair passes the per-pair floor but still needs enough elements in total.
+    const smallButReal = Array.from(
+      { length: 12 },
+      (_, i) => `main:1>p:${i + 1}|0|${i * 20}|288|18|`,
+    );
+    expect(
+      run({ "gm/x@phone": smallButReal }, { "gm/x@phone": smallButReal }, ["--min-elements", "10"])
+        .code,
+    ).toBe(1);
+    // A tolerance that is not a number would make every comparison false, so it is refused.
+    expect(run({ "gm/x@phone": page }, { "gm/x@phone": page }, ["--tolerance", "abc"]).code).toBe(
+      2,
+    );
+    expect(run({ "gm/x@phone": page }, { "gm/x@phone": page }, ["--min-elements", "x"]).code).toBe(
+      2,
+    );
+    // --allow-skip names a whole state: an empty name or a mere substring excuses nothing.
+    const extra = [...page, "main:1>p:3|16|160|288|20|"];
+    const two = { "gm/x@phone": page, "anon/join-form@phone": page };
+    const twoDom = { "gm/x@phone": page, "anon/join-form@phone": extra };
+    expect(run(two, twoDom, ["--allow-skip", ""]).code).toBe(2);
+    expect(run(two, twoDom, ["--allow-skip", "join"]).code).toBe(1);
+    expect(run(two, twoDom, ["--allow-skip", "join-form"]).code).toBe(0);
+    // Everything widened with different text is not an "own text differs" excuse: capped at 1%.
+    const many = Array.from({ length: 10 }, (_, i) => `main:1>p:${i + 1}|0|${i * 10}|100|10|t${i}`);
+    const wider = many.map((line) => line.replace("|100|10|t", "|300|10|u"));
+    const runaway = run({ "gm/x@phone": many }, { "gm/x@phone": wider });
+    expect(runaway.code).toBe(1);
+    expect(runaway.out).toContain("more than 1%");
   });
 
   it("sees an element that a stylesheet hides or shows (the dump keeps display:none boxes)", () => {

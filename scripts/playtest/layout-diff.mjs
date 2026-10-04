@@ -5,7 +5,7 @@
 // identical: run the audit against the old bundle and the new one, then
 //
 //   node scripts/playtest/layout-diff.mjs before.json after.json [--tolerance 1] [--show 8]
-//                                         [--allow-skip join-form]...
+//                                         [--min-elements 10] [--min-total 1000] [--allow-skip join-form]...
 //
 // A state is "comparable" when both runs rendered the same element paths (the same DOM); states whose
 // DOM differs between runs (a random roll, a different number of dice) are listed, not compared; an
@@ -14,6 +14,11 @@
 // absorb sub-pixel rounding), when nothing was comparable, when the two dumps cover different
 // state/viewport keys (a partial dump must not read as identical), or when a state is not comparable and
 // was not named by --allow-skip (a substring of the key; use it for a DOM change you made on purpose).
+// It also fails on a blank or near-empty dump (--min-elements per comparable pair, default 10 (the
+// smallest real page here has 16), and --min-total across all pairs, default 1000: both runs hitting an
+// error page must not read as identical), on a --tolerance that is not a number, on an empty
+// --allow-skip, and when more than 1% of the compared boxes were excused as "own text differs".
+// --allow-skip names a whole state (the middle of "surface/state@viewport"), never a substring.
 // The dump keeps display:none elements as zero boxes, so a stylesheet that hides or shows an element at
 // some width is a moved box here, not a skipped "different DOM".
 
@@ -35,6 +40,23 @@ const flag = (name, fallback) => {
 };
 const TOLERANCE = flag("tolerance", 1);
 const SHOW = flag("show", 8);
+const MIN_ELEMENTS = flag("min-elements", 10);
+const MIN_TOTAL = flag("min-total", 1000);
+for (const [name, value] of [
+  ["--tolerance", TOLERANCE],
+  ["--show", SHOW],
+  ["--min-elements", MIN_ELEMENTS],
+  ["--min-total", MIN_TOTAL],
+]) {
+  if (!Number.isFinite(value) || value < 0) {
+    console.error(`${name} must be a non-negative number`);
+    process.exit(2);
+  }
+}
+if (allowSkip.some((name) => !name || name.startsWith("--"))) {
+  console.error("--allow-skip needs a state name (for example join-form)");
+  process.exit(2);
+}
 if (files.length !== 2) {
   console.error("usage: layout-diff.mjs before.json after.json [--tolerance 1] [--show 8]");
   process.exit(2);
@@ -53,6 +75,7 @@ let identical = 0;
 let skipped = 0;
 let elements = 0;
 let contentVaried = 0;
+let tooSmall = 0;
 const moved = [];
 const onlyBefore = Object.keys(before).filter((key) => !(key in after));
 const onlyAfter = Object.keys(after).filter((key) => !(key in before));
@@ -65,12 +88,19 @@ for (const key of Object.keys(before)) {
   const b = after[key].map(parse);
   if (a.length !== b.length || a.some((el, i) => el.path !== b[i].path)) {
     skipped += 1;
-    const allowed = allowSkip.some((fragment) => key.includes(fragment));
+    const state = key.split("/").slice(1).join("/").split("@")[0];
+    const allowed = allowSkip.includes(state);
     if (!allowed) unallowedSkips += 1;
     console.log(
       `not comparable (different DOM${allowed ? ", allowed" : ""}): ${key} (${a.length} vs ${b.length} elements)`,
     );
     continue;
+  }
+  if (a.length < MIN_ELEMENTS) {
+    tooSmall += 1;
+    console.log(
+      `TOO FEW ELEMENTS: ${key} has ${a.length} (need ${MIN_ELEMENTS}); an empty or error page proves nothing`,
+    );
   }
   comparable += 1;
   elements += a.length;
@@ -110,6 +140,24 @@ if (comparable === 0) {
 }
 if (onlyBefore.length + onlyAfter.length > 0) {
   console.log("LAYOUT DIFF FAILED: the dumps cover different state/viewport keys");
+  process.exit(1);
+}
+if (elements < MIN_TOTAL) {
+  console.log(
+    `LAYOUT DIFF FAILED: only ${elements} element boxes were compared (need ${MIN_TOTAL})`,
+  );
+  process.exit(1);
+}
+if (tooSmall > 0) {
+  console.log(
+    `LAYOUT DIFF FAILED: ${tooSmall} comparable pair(s) have too few elements to prove anything`,
+  );
+  process.exit(1);
+}
+if (contentVaried > elements * 0.01) {
+  console.log(
+    `LAYOUT DIFF FAILED: ${contentVaried} boxes were excused as "own text differs", more than 1% of ${elements}`,
+  );
   process.exit(1);
 }
 if (unallowedSkips > 0) {
