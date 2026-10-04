@@ -1897,6 +1897,32 @@ html:has(.action-dock[data-unpinned]) {
     max-width: 100%;
   }
 
+  /* The wall display is read from across a room. Secondary text is sized in root rem (12-14px), so
+     it would not follow the table's larger base size; em ties it to .table-screen's own size
+     (Paused, Round, Objective/Threat labels, party Blood and Injuries, link state). */
+  .table-screen .form-hint {
+    font-size: 1em;
+  }
+
+  .table-screen h3 {
+    font-size: 0.9em;
+  }
+
+  .table-screen .party-member-stats,
+  .table-screen .connection-status {
+    font-size: 0.9em;
+  }
+
+  .table-screen .party-member-name {
+    font-size: 1.1em;
+  }
+
+  /* The party spans both columns so six larger chips wrap across the width instead of stacking in
+     one column; a wall display cannot scroll. */
+  .table-screen .party-strip {
+    column-span: all;
+  }
+
   /* An absolutely positioned decoration can be fragmented into the wrong
      column by multi-column layout, so the display surface goes without it. */
   .table-screen .scene-card::before {
@@ -1907,6 +1933,15 @@ html:has(.action-dock[data-unpinned]) {
 @media (min-width: 110rem) {
   .table-screen {
     font-size: 1.4rem;
+  }
+
+  /* Keeps the scene, route and party within a 1080px-tall display now the text is larger. */
+  .table-screen .scene-card-art--banner {
+    height: 18rem;
+  }
+
+  .table-screen .route-map {
+    max-width: 38rem;
   }
 }
 

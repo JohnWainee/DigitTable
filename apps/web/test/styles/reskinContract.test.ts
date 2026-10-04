@@ -691,4 +691,38 @@ describe("reskin stylesheet contract", () => {
       expect(css).not.toMatch(/\[popover\]|:popover-open|anchor-name|position-anchor/);
     });
   });
+
+  describe("shared table display legibility", () => {
+    const wide = mediaBlock("(min-width: 80rem)");
+    const ruleFor = (selector: string): string => {
+      const re = /([^{}]+)\{([^{}]*)\}/g;
+      for (let m = re.exec(wide); m; m = re.exec(wide)) {
+        if (m[1]!.split(",").some((part) => part.trim() === selector)) return m[2]!;
+      }
+      throw new Error(`no ${selector} rule in the wide-screen block`);
+    };
+
+    it("sizes secondary text relative to the table base so it scales with the wall display", () => {
+      // Root-rem secondary text (0.75-0.9rem) stays 12-14px while .table-screen grows to 18-22px.
+      for (const selector of [
+        ".table-screen .form-hint",
+        ".table-screen h3",
+        ".table-screen .party-member-stats",
+        ".table-screen .connection-status",
+      ]) {
+        const size = /font-size:\s*([\d.]+)em\b/.exec(ruleFor(selector));
+        expect(size, selector).not.toBeNull();
+        // Never below 0.9x the table's own (>= 1.15rem = 18.4px) size: >= ~16.5px on screen.
+        expect(Number(size![1]), selector).toBeGreaterThanOrEqual(0.9);
+      }
+    });
+
+    it("keeps the larger table text inside a non-scrolling display", () => {
+      // Larger chips would stack one per column and push a full party past 1080px.
+      expect(ruleFor(".table-screen .party-strip")).toMatch(/column-span:\s*all/);
+      const huge = mediaBlock("(min-width: 110rem)");
+      expect(huge).toMatch(/\.table-screen \.scene-card-art--banner\s*\{[^}]*height:\s*18rem/);
+      expect(huge).toMatch(/\.table-screen \.route-map\s*\{[^}]*max-width:\s*38rem/);
+    });
+  });
 });

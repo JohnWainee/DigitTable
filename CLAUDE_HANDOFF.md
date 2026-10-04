@@ -452,6 +452,14 @@ When pausing or finishing a material unit:
 
 ## Integrated verification and next action
 
+### 2026-10-04: table display legibility (`sonnet-dz/reskin-uiux-20261004`)
+
+- **Base:** `9ee8aa5`. Presentation only (`apps/web/src/styles.css` plus a contract test, docs); no authority, projection, engine, Firebase or asset change. Not merged, not deployed.
+- **Gap found:** on the shared table/TV display the base text scales (1.15rem / 1.4rem) but secondary text is root-rem sized, so Paused, Round, OBJECTIVE/THREATS labels and party Blood/Injuries stayed 12-14px. Now `em`-relative (about 16.6px, 20px at >= 110rem), the party strip spans both columns, and at >= 110rem the route map (38rem) and banner (18rem) are capped so the idle table still fits 1920x1080 (full six-member party 1175 -> 1118px, was 1485 in the first cut). Phone/tablet untouched (rules only in >= 80rem queries).
+- **Evidence:** `npm run check` 805 passed, 11 todo (803 base + 2 contract tests, verified to fail on the old CSS); `ui-audit.mjs` 288 states / 3,336 controls / 0 failures; smoke ALL STEPS PASSED; emulator suites 18 + 86 + 4 on the rerun (first run: one `createRoom` collision test flaked under load, rerun clean). Record and before/after captures: `docs/evidence/dz-table-legibility-20261004/`.
+- **Review:** author self-review only (`docs/reviews/2026-10-04-dz-table-legibility-review.md`); the task forbade spawning agents, so an **independent review is still required** before merge.
+- **Still open:** physical iOS/Android and assistive-technology rehearsal, a real TV at viewing distance; a six-member party at 1920x1080 still scrolls by 38px; staging not re-run (predates the dock and this change).
+
 ### 2026-10-04 UTC: deployed staging playthrough rerun (`sonnet-dt/reskin-hourly-20261003`)
 
 - **Recovered evidence:** the missing `digitable-staging-playthrough` Sonnet session was not a successful or failed application run: it was blocked by local port contention and left only untracked scratch output. The later harness repair is recorded in `docs/reviews/2026-10-02-df-reskin-verification-review.md`; no product fix was needed during this rerun.
