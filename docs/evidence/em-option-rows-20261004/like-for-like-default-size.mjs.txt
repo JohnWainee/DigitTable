@@ -1,0 +1,50 @@
+// Controlled like-for-like at the DEFAULT text size: identical markup rendered with the base stylesheet (labels hold bare text)
+// and with the final stylesheet (the same text inside <span class="option-text">), boxes of every element compared to 1px.
+// Covers what the random-roll allocation states cannot: the allocation die fieldsets, compose rows, utility item, landing row,
+// GM card rows and the Reveal row, at phone/tablet/desktop/table widths.
+import { spawnSync } from "node:child_process";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+const [baseCss, candCss] = process.argv.slice(2).map((f) => readFileSync(f, "utf8"));
+const WIDTHS = [320, 360, 375, 390, 412, 540, 768, 1280, 1920];
+const L = ["Station Patrol A", "Plated Squad (rating 4)", "Marksman Nest", "Phantasmagoria (1 Blood)", "[5] Panzerfaust (1/1 uses)", "No stat fits (2 dice)"];
+const html = (css, span) => {
+  const t = (s) => (span ? `<span class="option-text">${s}</span>` : s);
+  const row = (s, i, type, name) => `<label class="gear-option"><input type="${type}" name="${name}"${i === 1 ? " checked" : ""}${i === 0 && type === "checkbox" ? " disabled" : ""}>${t(s)}</label>`;
+  const rows = (type, n) => L.map((s, i) => row(s, i, type, n)).join("");
+  const stat = ["Con (4)", "Terrify (3)", "No stat fits (2 dice)"].map((s, i) => `<label class="gear-option"><input type="radio" name="s"${i === 1 ? " checked" : ""}><svg class="etr-icon stat-icon" aria-hidden="true"></svg>${t(s)}</label>`).join("");
+  return `<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><style>${css}</style><style>html{overflow:hidden!important;scrollbar-gutter:auto!important}</style>
+<main class="player-screen"><section class="step"><h2>Choose</h2>
+<fieldset><legend>Stat</legend>${stat}</fieldset>
+<fieldset><legend>Items</legend><div class="gear-list">${rows("checkbox", "i")}<div class="gear-item"><label class="gear-option"><input type="checkbox" disabled>${t("Cigarettes taken from the pockets of hanged men (3/3 uses) — mark to regain 2 Blood")}</label><button type="button" class="secondary-action">Mark and regain Blood</button></div></div></fieldset>
+<fieldset><legend><span>Die 1</span> <span class="die-target">choose a target</span></legend><div class="gear-list">${rows("radio", "d1")}</div></fieldset>
+<fieldset><legend><span>Die 2</span> <span class="die-target" data-assigned="true">Station Patrol A</span></legend><div class="gear-list">${rows("radio", "d2")}</div></fieldset>
+<fieldset><legend>Injury category</legend>${rows("radio", "inj")}</fieldset>
+<label class="gear-option form-field--checkbox" for="w"><input id="w" type="checkbox">${t("I have written these down")}</label></section>
+<ul style="list-style:none;margin:0;padding:0"><li class="pending-action-card"><fieldset><legend>Bonus claims</legend><div class="gear-list">${rows("checkbox", "b")}</div></fieldset>
+<fieldset><legend>Engaged threats</legend><div class="gear-list">${rows("checkbox", "e")}</div></fieldset>
+<div class="gear-list"><div class="gear-option"><span>Station Patrol A (hidden from players)</span><button type="button" class="secondary-action">Reveal</button></div></div></li></ul></main>
+<script>
+const out=[];const walk=(el,path)=>{const r=el.getBoundingClientRect();out.push(path+"|"+[r.left,r.top,r.width,r.height].map(Math.round).join("|"));const cnt={};for(const c of el.children){if(c.matches(".option-text"))continue;cnt[c.tagName]=(cnt[c.tagName]||0)+1;walk(c,path+">"+c.tagName+cnt[c.tagName]);}};
+walk(document.body,"body");parent.postMessage({w:innerWidth,out},"*");</script>`;
+};
+const dir = mkdtempSync(join(tmpdir(), "lfl-"));
+writeFileSync(join(dir, "base.html"), html(baseCss, false));
+writeFileSync(join(dir, "cand.html"), html(candCss, true));
+const host = (f) => `<!doctype html><meta charset=utf-8><pre id=o></pre>${WIDTHS.map((w) => `<iframe src="${f}" width=${w} height=1400 style="border:0;display:block"></iframe>`).join("")}<script>const s=[];addEventListener("message",e=>{s.push(e.data);if(s.length===${WIDTHS.length})document.getElementById("o").textContent=JSON.stringify(s)})</script>`;
+const run = (f) => {
+  writeFileSync(join(dir, `host-${f}`), host(f));
+  const r = spawnSync("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", ["--headless=new", "--disable-gpu", "--hide-scrollbars", "--allow-file-access-from-files", `--user-data-dir=${join(dir, "p" + f)}`, "--virtual-time-budget=6000", "--dump-dom", `file://${join(dir, "host-" + f)}`], { encoding: "utf8", timeout: 90000 });
+  const m = /<pre id="o">([\s\S]*?)<\/pre>/.exec(r.stdout);
+  return JSON.parse(m[1].replaceAll("&quot;", '"').replaceAll("&amp;", "&").replaceAll("&lt;", "<").replaceAll("&gt;", ">"));
+};
+const A = run("base.html"), B = run("cand.html");
+let compared = 0, differ = 0;
+for (const wd of WIDTHS) {
+  const a = A.find((x) => x.w === wd).out, b = B.find((x) => x.w === wd).out;
+  if (a.length !== b.length) { console.log(`${wd}px: element count ${a.length} vs ${b.length}`); differ++; continue; }
+  a.forEach((la, i) => { const pa = la.split("|"), pb = b[i].split("|"); compared++; if (pa[0] !== pb[0] || [1, 2, 3, 4].some((k) => Math.abs(pa[k] - pb[k]) > 1)) { differ++; console.log(`${wd}px ${pa[0]}: ${pa.slice(1)} -> ${pb.slice(1)}`); } });
+}
+console.log(`like-for-like at 100% text: ${WIDTHS.length} widths, ${compared} element boxes compared, ${differ} differ`);
+process.exit(differ ? 1 : 0);

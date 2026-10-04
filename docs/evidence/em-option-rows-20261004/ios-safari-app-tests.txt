@@ -1,0 +1,7 @@
+	 Executed 3 tests, with 0 failures (0 unexpected) in 236.002 (236.006) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 236.002 (236.007) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 236.002 (236.009) seconds
+** TEST SUCCEEDED **
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (71.134 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' passed (18.765 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari]' passed (146.104 seconds).

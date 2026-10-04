@@ -1,7 +1,7 @@
 {
   "label": "after",
   "base": "http://127.0.0.1:41174",
-  "startedAt": "2026-10-04T21:19:55.532Z",
+  "startedAt": "2026-10-04T22:40:05.059Z",
   "states": [
     {
       "surface": "anon",
@@ -1918,7 +1918,7 @@
       "state": "allocation",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-small.jpg",
@@ -1929,7 +1929,7 @@
       "state": "allocation",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone.jpg",
@@ -1941,7 +1941,7 @@
       "state": "allocation",
       "viewport": "phone-390",
       "size": "390x844",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-390.jpg",
@@ -1952,7 +1952,7 @@
       "state": "allocation",
       "viewport": "phone-412",
       "size": "412x915",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-412.jpg",
@@ -1963,7 +1963,7 @@
       "state": "allocation",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-landscape.jpg",
@@ -1974,7 +1974,7 @@
       "state": "allocation",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-tablet.jpg",
@@ -1986,7 +1986,7 @@
       "state": "allocation",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-desktop.jpg",
@@ -1998,7 +1998,7 @@
       "state": "allocation",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-table.jpg",
@@ -2009,7 +2009,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-small.jpg",
@@ -2020,7 +2020,7 @@
       "state": "allocation-assigned",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone.jpg",
@@ -2032,7 +2032,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-390",
       "size": "390x844",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-390.jpg",
@@ -2043,7 +2043,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-412",
       "size": "412x915",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-412.jpg",
@@ -2054,7 +2054,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-landscape.jpg",
@@ -2065,7 +2065,7 @@
       "state": "allocation-assigned",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-tablet.jpg",
@@ -2076,7 +2076,7 @@
       "state": "allocation-assigned",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-desktop.jpg",
@@ -2087,7 +2087,7 @@
       "state": "allocation-assigned",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-table.jpg",
@@ -5193,7 +5193,7 @@
       "viewport": "phone-small",
       "size": "320x568",
       "textScale": "150",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5205,7 +5205,7 @@
       "viewport": "phone",
       "size": "375x812",
       "textScale": "150",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5217,7 +5217,7 @@
       "viewport": "phone-412",
       "size": "412x915",
       "textScale": "150",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5229,7 +5229,7 @@
       "viewport": "phone-landscape",
       "size": "812x375",
       "textScale": "150",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5241,7 +5241,7 @@
       "viewport": "phone-small",
       "size": "320x568",
       "textScale": "200",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5253,7 +5253,7 @@
       "viewport": "phone",
       "size": "375x812",
       "textScale": "200",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5265,7 +5265,7 @@
       "viewport": "phone-412",
       "size": "412x915",
       "textScale": "200",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5277,7 +5277,7 @@
       "viewport": "phone-landscape",
       "size": "812x375",
       "textScale": "200",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5289,7 +5289,7 @@
       "viewport": "phone-small",
       "size": "320x568",
       "textScale": "150",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5301,7 +5301,7 @@
       "viewport": "phone",
       "size": "375x812",
       "textScale": "150",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5313,7 +5313,7 @@
       "viewport": "phone-412",
       "size": "412x915",
       "textScale": "150",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5325,7 +5325,7 @@
       "viewport": "phone-landscape",
       "size": "812x375",
       "textScale": "150",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5337,7 +5337,7 @@
       "viewport": "phone-small",
       "size": "320x568",
       "textScale": "200",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5349,7 +5349,7 @@
       "viewport": "phone",
       "size": "375x812",
       "textScale": "200",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5361,7 +5361,7 @@
       "viewport": "phone-412",
       "size": "412x915",
       "textScale": "200",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -5373,7 +5373,7 @@
       "viewport": "phone-landscape",
       "size": "812x375",
       "textScale": "200",
-      "controls": 10,
+      "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
       "brokenWords": [],
@@ -8173,99 +8173,39 @@
     },
     {
       "scope": "player/allocation@phone",
-      "slices": 3,
-      "measured": 91,
-      "insufficient": 3,
-      "occluded": 10,
+      "slices": 2,
+      "measured": 62,
+      "insufficient": 4,
+      "occluded": 1,
       "unparsed": 0,
       "truncated": false,
       "failures": [],
       "worst": [
         {
-          "element": "legend",
-          "text": "Die:",
-          "p5": 6.38,
+          "element": "li.die-chip",
+          "text": "2",
+          "p5": 6.76,
           "required": 4.5
         },
         {
-          "element": "legend",
-          "text": "5",
-          "p5": 6.38,
+          "element": "li.die-chip",
+          "text": "(discarded)",
+          "p5": 6.76,
           "required": 4.5
         },
         {
-          "element": "legend",
-          "text": "(",
-          "p5": 6.38,
+          "element": "li.die-chip",
+          "text": "2",
+          "p5": 6.76,
           "required": 4.5
         }
       ]
     },
     {
       "scope": "player/allocation@phone-landscape",
-      "slices": 6,
-      "measured": 68,
+      "slices": 4,
+      "measured": 56,
       "insufficient": 3,
-      "occluded": 21,
-      "unparsed": 0,
-      "truncated": false,
-      "failures": [],
-      "worst": [
-        {
-          "element": "legend",
-          "text": "Die:",
-          "p5": 6.38,
-          "required": 4.5
-        },
-        {
-          "element": "legend",
-          "text": "5",
-          "p5": 6.38,
-          "required": 4.5
-        },
-        {
-          "element": "legend",
-          "text": "(",
-          "p5": 6.38,
-          "required": 4.5
-        }
-      ]
-    },
-    {
-      "scope": "player/allocation@desktop",
-      "slices": 3,
-      "measured": 89,
-      "insufficient": 12,
-      "occluded": 2,
-      "unparsed": 0,
-      "truncated": false,
-      "failures": [],
-      "worst": [
-        {
-          "element": "legend",
-          "text": "Die:",
-          "p5": 6.38,
-          "required": 4.5
-        },
-        {
-          "element": "legend",
-          "text": "5",
-          "p5": 6.38,
-          "required": 4.5
-        },
-        {
-          "element": "legend",
-          "text": "(",
-          "p5": 6.38,
-          "required": 4.5
-        }
-      ]
-    },
-    {
-      "scope": "player/allocation-assigned@phone",
-      "slices": 3,
-      "measured": 90,
-      "insufficient": 9,
       "occluded": 10,
       "unparsed": 0,
       "truncated": false,
@@ -8285,7 +8225,67 @@
         },
         {
           "element": "li.die-chip",
-          "text": "1",
+          "text": "2",
+          "p5": 6.76,
+          "required": 4.5
+        }
+      ]
+    },
+    {
+      "scope": "player/allocation@desktop",
+      "slices": 2,
+      "measured": 57,
+      "insufficient": 6,
+      "occluded": 1,
+      "unparsed": 0,
+      "truncated": false,
+      "failures": [],
+      "worst": [
+        {
+          "element": "li.die-chip",
+          "text": "2",
+          "p5": 6.76,
+          "required": 4.5
+        },
+        {
+          "element": "li.die-chip",
+          "text": "(discarded)",
+          "p5": 6.76,
+          "required": 4.5
+        },
+        {
+          "element": "li.die-chip",
+          "text": "2",
+          "p5": 6.76,
+          "required": 4.5
+        }
+      ]
+    },
+    {
+      "scope": "player/allocation-assigned@phone",
+      "slices": 2,
+      "measured": 62,
+      "insufficient": 4,
+      "occluded": 1,
+      "unparsed": 0,
+      "truncated": false,
+      "failures": [],
+      "worst": [
+        {
+          "element": "li.die-chip",
+          "text": "2",
+          "p5": 6.76,
+          "required": 4.5
+        },
+        {
+          "element": "li.die-chip",
+          "text": "(discarded)",
+          "p5": 6.76,
+          "required": 4.5
+        },
+        {
+          "element": "li.die-chip",
+          "text": "2",
           "p5": 6.76,
           "required": 4.5
         }
@@ -8293,10 +8293,10 @@
     },
     {
       "scope": "player/allocation-assigned@phone-landscape",
-      "slices": 6,
-      "measured": 72,
+      "slices": 4,
+      "measured": 56,
       "insufficient": 3,
-      "occluded": 21,
+      "occluded": 10,
       "unparsed": 0,
       "truncated": false,
       "failures": [],
@@ -8315,7 +8315,7 @@
         },
         {
           "element": "li.die-chip",
-          "text": "1",
+          "text": "2",
           "p5": 6.76,
           "required": 4.5
         }
@@ -8323,10 +8323,10 @@
     },
     {
       "scope": "player/allocation-assigned@desktop",
-      "slices": 3,
-      "measured": 91,
-      "insufficient": 12,
-      "occluded": 2,
+      "slices": 2,
+      "measured": 57,
+      "insufficient": 6,
+      "occluded": 1,
       "unparsed": 0,
       "truncated": false,
       "failures": [],
@@ -8345,7 +8345,7 @@
         },
         {
           "element": "li.die-chip",
-          "text": "1",
+          "text": "2",
           "p5": 6.76,
           "required": 4.5
         }
@@ -8354,7 +8354,7 @@
     {
       "scope": "player/resolved@phone",
       "slices": 2,
-      "measured": 60,
+      "measured": 56,
       "insufficient": 4,
       "occluded": 1,
       "unparsed": 0,
@@ -8384,7 +8384,7 @@
     {
       "scope": "player/resolved@phone-landscape",
       "slices": 4,
-      "measured": 54,
+      "measured": 49,
       "insufficient": 3,
       "occluded": 2,
       "unparsed": 0,
@@ -8414,7 +8414,7 @@
     {
       "scope": "player/resolved@desktop",
       "slices": 2,
-      "measured": 52,
+      "measured": 49,
       "insufficient": 6,
       "occluded": 1,
       "unparsed": 0,
@@ -10343,7 +10343,7 @@
       },
       "notes": [],
       "scaleBefore": 1,
-      "scaleAfter": 2.0000007152557373,
+      "scaleAfter": 1.9999992847442627,
       "informationalChecks": []
     },
     {
@@ -10783,8 +10783,8 @@
           "height": 96
         },
         "reason": {
-          "top": 3479.234375,
-          "bottom": 3575.234375,
+          "top": 3527.234375,
+          "bottom": 3623.234375,
           "left": 34,
           "right": 341,
           "width": 307,
@@ -10813,7 +10813,7 @@
           "overflowY": "hidden"
         },
         "body": {
-          "scrollHeight": 3434,
+          "scrollHeight": 3482,
           "clientHeight": 373,
           "scrollTop": 0,
           "overflowY": "auto"
@@ -10880,8 +10880,8 @@
           "height": 96
         },
         "reason": {
-          "top": 3688.671875,
-          "bottom": 3784.671875,
+          "top": 4197.421875,
+          "bottom": 4293.421875,
           "left": 34,
           "right": 286,
           "width": 252,
@@ -10910,7 +10910,7 @@
           "overflowY": "hidden"
         },
         "body": {
-          "scrollHeight": 3648,
+          "scrollHeight": 4157,
           "clientHeight": 172,
           "scrollTop": 0,
           "overflowY": "auto"
@@ -14887,13 +14887,13 @@
       "scope": "player/allocation-dock@phone-small",
       "results": [
         {
-          "status": "2 of 2 dice still need a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 568,
-          "dockHeight": 124,
+          "dockHeight": 106,
           "problems": [],
-          "controls": 8,
-          "mid": 1489
+          "controls": 0,
+          "mid": 966
         }
       ]
     },
@@ -14901,13 +14901,13 @@
       "scope": "player/allocation-dock@phone",
       "results": [
         {
-          "status": "2 of 2 dice still need a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 812,
           "dockHeight": 106,
           "problems": [],
-          "controls": 8,
-          "mid": 1111
+          "controls": 0,
+          "mid": 499
         }
       ]
     },
@@ -14915,13 +14915,13 @@
       "scope": "player/allocation-dock@phone-390",
       "results": [
         {
-          "status": "2 of 2 dice still need a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 844,
           "dockHeight": 106,
           "problems": [],
-          "controls": 8,
-          "mid": 1079
+          "controls": 0,
+          "mid": 467
         }
       ]
     },
@@ -14929,13 +14929,13 @@
       "scope": "player/allocation-dock@phone-412",
       "results": [
         {
-          "status": "2 of 2 dice still need a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 915,
           "dockHeight": 106,
           "problems": [],
-          "controls": 8,
-          "mid": 1011
+          "controls": 0,
+          "mid": 399
         }
       ]
     },
@@ -14943,13 +14943,13 @@
       "scope": "player/allocation-dock@phone-landscape",
       "results": [
         {
-          "status": "2 of 2 dice still need a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 375,
           "dockHeight": 66,
           "problems": [],
-          "controls": 8,
-          "mid": 1218
+          "controls": 0,
+          "mid": 791
         }
       ]
     },
@@ -14957,13 +14957,13 @@
       "scope": "player/allocation-dock@tablet",
       "results": [
         {
-          "status": "2 of 2 dice still need a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 1024,
           "dockHeight": 78,
           "problems": [],
-          "controls": 8,
-          "mid": 764
+          "controls": 0,
+          "mid": 153
         }
       ]
     },
@@ -14971,13 +14971,13 @@
       "scope": "player/allocation-dock@desktop",
       "results": [
         {
-          "status": "2 of 2 dice still need a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 800,
           "dockHeight": 78,
           "problems": [],
-          "controls": 8,
-          "mid": 988
+          "controls": 0,
+          "mid": 377
         }
       ]
     },
@@ -14985,13 +14985,13 @@
       "scope": "player/allocation-dock@table",
       "results": [
         {
-          "status": "2 of 2 dice still need a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 1080,
           "dockHeight": 78,
           "problems": [],
-          "controls": 8,
-          "mid": 708
+          "controls": 0,
+          "mid": 97
         }
       ]
     },
@@ -14999,13 +14999,13 @@
       "scope": "player/allocation-dock@tablet-narrow",
       "results": [
         {
-          "status": "2 of 2 dice still need a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 900,
           "dockHeight": 78,
           "problems": [],
-          "controls": 8,
-          "mid": 920
+          "controls": 0,
+          "mid": 367
         }
       ]
     },
@@ -15013,13 +15013,13 @@
       "scope": "player/allocation-dock@phone-landscape-bars",
       "results": [
         {
-          "status": "2 of 2 dice still need a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 292,
           "dockHeight": 66,
           "problems": [],
-          "controls": 8,
-          "mid": 1218
+          "controls": 0,
+          "mid": 874
         }
       ]
     },
@@ -15027,13 +15027,13 @@
       "scope": "player/allocation-dock@phone-se-landscape-bars",
       "results": [
         {
-          "status": "2 of 2 dice still need a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 250,
           "dockHeight": 66,
           "problems": [],
-          "controls": 8,
-          "mid": 1218
+          "controls": 0,
+          "mid": 916
         }
       ]
     },
@@ -15041,13 +15041,13 @@
       "scope": "player/allocation-assigned-dock@phone-small",
       "results": [
         {
-          "status": "Every die has a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 568,
           "dockHeight": 106,
           "problems": [],
-          "controls": 8,
-          "mid": 1512
+          "controls": 0,
+          "mid": 966
         }
       ]
     },
@@ -15055,13 +15055,13 @@
       "scope": "player/allocation-assigned-dock@phone",
       "results": [
         {
-          "status": "Every die has a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 812,
           "dockHeight": 106,
           "problems": [],
-          "controls": 8,
-          "mid": 1149
+          "controls": 0,
+          "mid": 499
         }
       ]
     },
@@ -15069,13 +15069,13 @@
       "scope": "player/allocation-assigned-dock@phone-390",
       "results": [
         {
-          "status": "Every die has a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 844,
           "dockHeight": 106,
           "problems": [],
-          "controls": 8,
-          "mid": 1117
+          "controls": 0,
+          "mid": 467
         }
       ]
     },
@@ -15083,13 +15083,13 @@
       "scope": "player/allocation-assigned-dock@phone-412",
       "results": [
         {
-          "status": "Every die has a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 915,
           "dockHeight": 106,
           "problems": [],
-          "controls": 8,
-          "mid": 1011
+          "controls": 0,
+          "mid": 399
         }
       ]
     },
@@ -15097,13 +15097,13 @@
       "scope": "player/allocation-assigned-dock@phone-landscape",
       "results": [
         {
-          "status": "Every die has a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 375,
           "dockHeight": 66,
           "problems": [],
-          "controls": 8,
-          "mid": 1218
+          "controls": 0,
+          "mid": 791
         }
       ]
     },
@@ -15111,13 +15111,13 @@
       "scope": "player/allocation-assigned-dock@tablet",
       "results": [
         {
-          "status": "Every die has a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 1024,
           "dockHeight": 78,
           "problems": [],
-          "controls": 8,
-          "mid": 764
+          "controls": 0,
+          "mid": 153
         }
       ]
     },
@@ -15125,13 +15125,13 @@
       "scope": "player/allocation-assigned-dock@desktop",
       "results": [
         {
-          "status": "Every die has a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 800,
           "dockHeight": 78,
           "problems": [],
-          "controls": 8,
-          "mid": 988
+          "controls": 0,
+          "mid": 377
         }
       ]
     },
@@ -15139,13 +15139,13 @@
       "scope": "player/allocation-assigned-dock@table",
       "results": [
         {
-          "status": "Every die has a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 1080,
           "dockHeight": 78,
           "problems": [],
-          "controls": 8,
-          "mid": 708
+          "controls": 0,
+          "mid": 97
         }
       ]
     },
@@ -15153,13 +15153,13 @@
       "scope": "player/allocation-assigned-dock@tablet-narrow",
       "results": [
         {
-          "status": "Every die has a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 900,
           "dockHeight": 78,
           "problems": [],
-          "controls": 8,
-          "mid": 958
+          "controls": 0,
+          "mid": 367
         }
       ]
     },
@@ -15167,13 +15167,13 @@
       "scope": "player/allocation-assigned-dock@phone-landscape-bars",
       "results": [
         {
-          "status": "Every die has a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 292,
           "dockHeight": 66,
           "problems": [],
-          "controls": 8,
-          "mid": 1218
+          "controls": 0,
+          "mid": 874
         }
       ]
     },
@@ -15181,13 +15181,13 @@
       "scope": "player/allocation-assigned-dock@phone-se-landscape-bars",
       "results": [
         {
-          "status": "Every die has a target.",
+          "status": "No dice to assign.",
           "sticky": true,
           "innerHeight": 250,
           "dockHeight": 66,
           "problems": [],
-          "controls": 8,
-          "mid": 1234
+          "controls": 0,
+          "mid": 916
         }
       ]
     }
@@ -15834,21 +15834,21 @@
       "failedRequests": []
     }
   },
-  "finishedAt": "2026-10-04T21:41:55.948Z",
+  "finishedAt": "2026-10-04T23:01:57.886Z",
   "ok": true,
   "summary": {
     "states": 288,
-    "controlsAudited": 3320,
+    "controlsAudited": 3192,
     "controlIssues": 0,
     "overflowStates": 0,
-    "contrastBoxesMeasured": 8462,
-    "contrastBoxesInsufficient": 330,
+    "contrastBoxesMeasured": 8299,
+    "contrastBoxesInsufficient": 314,
     "contrastFailures": 0,
     "contrastInvalidSlices": 0,
     "contrastUnparsedBoxes": 0,
     "contrastTruncatedPages": 5,
     "textScaleStates": 256,
-    "textScaleControls": 3320,
+    "textScaleControls": 3192,
     "textScaleOverflowStates": 0,
     "fontFallback": null,
     "axeHardViolations": 0,
@@ -15856,7 +15856,7 @@
       "anon/route-claim-no-such-room@phone: page-has-heading-one"
     ],
     "keyboardFocusChecks": 87,
-    "dockFocusChecks": 363,
+    "dockFocusChecks": 187,
     "dockPinchScenarios": 4,
     "validationScenarios": 8,
     "sheetCases": 23,

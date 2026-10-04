@@ -1,6 +1,6 @@
 {
   "base": "http://127.0.0.1:41174",
-  "startedAt": "2026-10-04T21:41:56.086Z",
+  "startedAt": "2026-10-04T23:01:58.036Z",
   "noImages": false,
   "blocked": [],
   "devices": {
@@ -39,7 +39,7 @@
     {
       "name": "landing renders on every device",
       "ok": true,
-      "ms": 2077,
+      "ms": 2083,
       "detail": {
         "gm": {
           "origin": "http://127.0.0.1:41174",
@@ -76,15 +76,15 @@
     {
       "name": "GM creates a session and receives the one-time codes",
       "ok": true,
-      "ms": 1911,
+      "ms": 1908,
       "detail": {
-        "roomCode": "TEVGK-8RYF6"
+        "roomCode": "7F4KK-22BQF"
       }
     },
     {
       "name": "GM loads the opening scene",
       "ok": true,
-      "ms": 1332,
+      "ms": 1340,
       "detail": null
     },
     {
@@ -98,19 +98,19 @@
     {
       "name": "player joins on a phone-sized device with plain-http crypto limits",
       "ok": true,
-      "ms": 2193,
+      "ms": 2184,
       "detail": null
     },
     {
       "name": "player claims the first available character",
       "ok": true,
-      "ms": 1232,
+      "ms": 1229,
       "detail": null
     },
     {
       "name": "table display connects with the separate table code",
       "ok": true,
-      "ms": 1141,
+      "ms": 1133,
       "detail": {
         "tableSceneImage": {
           "currentSrc": "http://127.0.0.1:41174/etr/scene-drop-forecourt-1024.webp",
@@ -126,43 +126,43 @@
     {
       "name": "GM sees the claimed character (cross-device propagation)",
       "ok": true,
-      "ms": 1188,
+      "ms": 1194,
       "detail": null
     },
     {
       "name": "player declares an action and the GM sees it pending",
       "ok": true,
-      "ms": 2142,
+      "ms": 2144,
       "detail": null
     },
     {
       "name": "GM rolls; player allocates every die and confirms",
       "ok": true,
-      "ms": 2055,
+      "ms": 2048,
       "detail": null
     },
     {
       "name": "player continues; table shows the roll outcome state",
       "ok": true,
-      "ms": 817,
+      "ms": 822,
       "detail": null
     },
     {
       "name": "GM pauses; player and table both reflect it; GM resumes",
       "ok": true,
-      "ms": 1387,
+      "ms": 1394,
       "detail": null
     },
     {
       "name": "GM ends the round, advances the scene with a reason; devices follow",
       "ok": true,
-      "ms": 2308,
+      "ms": 2325,
       "detail": null
     },
     {
       "name": "every device layout has no horizontal overflow at 375/768/1024/1280/1920",
       "ok": true,
-      "ms": 4612,
+      "ms": 4615,
       "detail": {
         "gm": {
           "375": 0,
@@ -190,19 +190,19 @@
     {
       "name": "page title, GM invite copy, and unauthorized-seat guidance",
       "ok": true,
-      "ms": 794,
+      "ms": 811,
       "detail": null
     },
     {
       "name": "landing Resume goes straight to the claimed dashboard with one h1",
       "ok": true,
-      "ms": 1051,
+      "ms": 1047,
       "detail": null
     },
     {
       "name": "player reload restores the seat and dashboard without re-joining",
       "ok": true,
-      "ms": 1198,
+      "ms": 1219,
       "detail": null
     }
   ],
@@ -230,7 +230,7 @@
       "1920": -15
     }
   },
-  "finishedAt": "2026-10-04T21:42:24.798Z",
+  "finishedAt": "2026-10-04T23:02:26.719Z",
   "ok": true,
   "consoleByDevice": {
     "gm": {

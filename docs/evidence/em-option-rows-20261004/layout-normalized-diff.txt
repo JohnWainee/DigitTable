@@ -1,10 +1,8 @@
 {
-  "pairs": 288,
-  "elements": 23248,
-  "lengthMismatch": 0,
-  "sizeChanged": {
-    "p:2>strong:1": 48
-  },
+  "pairs": 272,
+  "elements": 21856,
+  "lengthMismatch": 16,
+  "sizeChanged": {},
   "moved": {
     "div:1>div:1": 15,
     "div:1>svg:1": 15,

@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+// Record (not repo tooling): compares two `ui-audit.mjs --layout-dump` files of the default-size layout when the
+// candidate adds one `<span class="option-text">` inside every check/radio `<label>`. scripts/playtest/layout-diff.mjs skips
+// states whose DOM differs, so this first removes that span from the candidate (and blanks each label's own-text hash, since
+// the text moved into the span), then compares every element's box to 1px and groups the differences by element kind.
+//   node layout-normalized-diff.mjs base-dump.json candidate-dump.json [--same-dom]
+import { readFileSync } from "node:fs";
+const [baseFile, candFile] = process.argv.slice(2);
+const sameDom = process.argv.includes("--same-dom");
+const load = (file, dropSpan) => {
+  const dump = JSON.parse(readFileSync(file, "utf8"));
+  return Object.fromEntries(
+    Object.entries(dump).map(([key, lines]) => [
+      key,
+      lines
+        .filter((line) => !(dropSpan && /(^|>)label:\d+>span:\d+\|/.test(line)))
+        .map((line) => {
+          const parts = line.split("|");
+          if (/(^|>)label:\d+$/.test(parts[0])) parts[parts.length - 1] = "";
+          return parts.join("|");
+        }),
+    ]),
+  );
+};
+const a = load(baseFile, false);
+const b = load(candFile, !sameDom);
+const size = {};
+const move = {};
+let pairs = 0;
+let elements = 0;
+let lengthMismatch = 0;
+for (const key of Object.keys(a)) {
+  if (!b[key] || a[key].length !== b[key].length) {
+    lengthMismatch += 1;
+    continue;
+  }
+  pairs += 1;
+  const before = new Map(a[key].map((line) => [line.split("|")[0], line.split("|")]));
+  for (const line of b[key]) {
+    const p = line.split("|");
+    const x = before.get(p[0]);
+    elements += 1;
+    if (!x) {
+      lengthMismatch += 1;
+      continue;
+    }
+    const d = [1, 2, 3, 4].map((i) => Number(p[i]) - Number(x[i]));
+    if (d.every((v) => Math.abs(v) <= 1)) continue;
+    const kind = p[0].split(">").slice(-2).join(">");
+    const bucket = Math.abs(d[2]) > 1 || Math.abs(d[3]) > 1 ? size : move;
+    bucket[kind] = (bucket[kind] ?? 0) + 1;
+  }
+}
+console.log(JSON.stringify({ pairs, elements, lengthMismatch, sizeChanged: size, moved: move }, null, 2));

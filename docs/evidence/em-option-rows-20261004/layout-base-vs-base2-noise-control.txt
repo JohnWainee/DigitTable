@@ -1,0 +1,19 @@
+{
+  "pairs": 288,
+  "elements": 23248,
+  "lengthMismatch": 0,
+  "sizeChanged": {
+    "ul:3>li:1": 16,
+    "ul:3>li:2": 16
+  },
+  "moved": {
+    "li:2>svg:1": 14,
+    "div:1>div:1": 8,
+    "div:1>svg:1": 8,
+    "section:7>div:7": 8,
+    "div:7>p:1": 8,
+    "p:1>strong:1": 8,
+    "div:7>div:2": 8,
+    "div:2>button:1": 8
+  }
+}
