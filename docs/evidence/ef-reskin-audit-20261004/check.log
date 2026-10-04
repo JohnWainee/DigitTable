@@ -1,0 +1,59 @@
+
+> digitable@0.0.0 check
+> npm run format && npm run lint && npm run typecheck && npm run test
+
+
+> digitable@0.0.0 format
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> digitable@0.0.0 lint
+> eslint .
+
+
+> digitable@0.0.0 typecheck
+> npm run typecheck --workspaces --if-present
+
+
+> @digitable/contracts@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @digitable/engine@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @digitable/testing@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @digitable/template-eat-the-reich@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @digitable/functions@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @digitable/web@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> digitable@0.0.0 test
+> vitest run
+
+
+ RUN  v5.0.0 /private/tmp/digitable-sonnet-ef-reskin-orchestrated-20261004
+
+
+ Test Files  80 passed | 1 skipped (81)
+      Tests  805 passed | 11 todo (816)
+   Start at  01:37:35
+   Duration  5.32s (tests 51%, environment 19%, setup 11%, transform 11%, import 8%)
+
+    Isolate  81 workers spawned · ~173ms startup each (spawn + environment, per file)
+             at least ~1.10s faster with isolate: false — reuses workers across files instead of one per file
+
+exit 0

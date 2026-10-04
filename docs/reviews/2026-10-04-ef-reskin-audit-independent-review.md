@@ -1,0 +1,7 @@
+# Independent review: reskin / pop-out audit, lane `sonnet-ef` (2026-10-04)
+
+- **Scope:** evidence-only audit on base `125cbaf`; `git diff 125cbaf --stat` over source is empty (only `docs/evidence/ef-reskin-audit-20261004/`, this file, and the handoff).
+- **Reviewer:** a separate fresh read-only subagent (not the author); it read the logs, `report.json`, captures and the relevant source, and recomputed contrast. It ran no gates, browser or emulator itself.
+- **Verdict:** APPROVE; could not disprove "no pop-out defect". Confirmed: counts in the README match the logs (288 states / 3,384 controls / 0 failures; smoke 17 steps; emulator 18 + 86 + 4; selftest), viewport meta has no zoom lock, inputs 16px with 3rem targets, reduced motion verified in the report, `sheet-keyboard-typed.png` shows title, field and actions above the keyboard, scope limits stated honestly.
+- **Findings and resolution:** (1) `check`/`build` results had no log in the evidence folder: logs added. (2) `--rule` divider is about 2.3:1: decorative only, noted in the README, unchanged. (3) 0.75rem mono labels pass contrast; no action. (4) "No anchored popover" is an inventory plus the 3,384-control audit; the reviewer's own grep failed on a glob, so this rests on the author's grep and the audit.
+- **Not verified by the reviewer:** gate counts beyond the logs, the other captures, the 61xxx isolation claim (no port log kept), physical devices, assistive technology.
