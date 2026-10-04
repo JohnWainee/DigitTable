@@ -1,0 +1,65 @@
+FAIL player/join-reveal@phone-small+text150: button.primary-action "I wrote it down — pick a charact": label squeezed onto 4 lines
+FAIL player/join-reveal@phone-small+text200: button.primary-action "I wrote it down — pick a charact": label squeezed onto 4 lines
+FAIL player/claim-roster@phone-small: word broken across lines: h1 "character"
+FAIL player/claim-roster@phone: word broken across lines: h1 "character"
+FAIL player/claim-roster@phone-390: word broken across lines: h1 "character"
+FAIL player/claim-roster@phone-412: word broken across lines: h1 "character"
+FAIL player/claim-roster@phone-small+text150: word broken across lines: h1 "character"
+FAIL player/claim-roster@phone+text150: word broken across lines: h1 "character"
+FAIL player/claim-roster@phone-412+text150: word broken across lines: h1 "character"
+FAIL player/claim-roster@phone-small+text200: word broken across lines: h1 "character"
+FAIL player/claim-roster@phone+text200: word broken across lines: h1 "character"
+FAIL player/claim-roster@phone-412+text200: word broken across lines: h1 "character"
+FAIL player/compose@phone-small+text200: word broken across lines: h1 "dashboard"
+FAIL player/compose@phone-small+text200: word broken across lines: label.gear-option "Search"
+FAIL player/compose@phone-small+text200: word broken across lines: label.gear-option "Sneak"
+FAIL player/compose@phone-small+text200: word broken across lines: label.gear-option "Terrify"
+FAIL player/compose@phone-small+text200: word broken across lines: label.gear-option "Cigarettes"
+FAIL player/compose-why-open@phone-small+text200: word broken across lines: h1 "dashboard"
+FAIL player/compose-why-open@phone-small+text200: word broken across lines: label.gear-option "Search"
+FAIL player/compose-why-open@phone-small+text200: word broken across lines: label.gear-option "Sneak"
+FAIL player/compose-why-open@phone-small+text200: word broken across lines: label.gear-option "Terrify"
+FAIL player/compose-why-open@phone-small+text200: word broken across lines: label.gear-option "Cigarettes"
+FAIL gm/console-scene-loaded@phone-small+text150: word broken across lines: button.secondary-action "simplified"
+FAIL gm/console-scene-loaded@phone-small+text200: word broken across lines: button.secondary-action "simplified"
+FAIL gm/console-edit-target@phone-small+text150: word broken across lines: button.secondary-action "simplified"
+FAIL gm/console-edit-target@phone-small+text200: word broken across lines: button.secondary-action "simplified"
+FAIL player/declared@phone-small+text200: word broken across lines: h1 "dashboard"
+FAIL gm/console-pending@phone-small+text150: word broken across lines: button.secondary-action "simplified"
+FAIL gm/console-pending@phone-small+text200: word broken across lines: button.secondary-action "simplified"
+FAIL player/allocation@phone-small+text200: word broken across lines: h1 "dashboard"
+FAIL player/allocation-assigned@phone-small+text200: word broken across lines: h1 "dashboard"
+FAIL player/resolved@phone-small+text200: word broken across lines: h1 "dashboard"
+FAIL player/paused@phone-small+text200: word broken across lines: h1 "dashboard"
+FAIL player/paused@phone-small+text200: word broken across lines: label.gear-option "Search"
+FAIL player/paused@phone-small+text200: word broken across lines: label.gear-option "Sneak"
+FAIL player/paused@phone-small+text200: word broken across lines: label.gear-option "Terrify"
+FAIL player/paused@phone-small+text200: word broken across lines: label.gear-option "Cigarettes"
+FAIL gm/console-next-scene@phone-small+text150: word broken across lines: button.secondary-action "simplified"
+FAIL gm/console-next-scene@phone-small+text200: word broken across lines: button.secondary-action "simplified"
+{
+  "states": 208,
+  "controlsAudited": 2392,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "contrastBoxesMeasured": 5744,
+  "contrastBoxesInsufficient": 223,
+  "contrastFailures": 0,
+  "contrastInvalidSlices": 0,
+  "contrastUnparsedBoxes": 0,
+  "contrastTruncatedPages": 4,
+  "textScaleStates": 184,
+  "textScaleControls": 2392,
+  "textScaleOverflowStates": 0,
+  "fontFallback": "wide",
+  "axeHardViolations": 0,
+  "axeBestPractice": [],
+  "keyboardFocusChecks": 0,
+  "dockFocusChecks": 0,
+  "dockPinchScenarios": 0,
+  "validationScenarios": 0,
+  "sheetCases": 0,
+  "failures": 39
+}
+UI AUDIT FOUND PROBLEMS
+exit 1

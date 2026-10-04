@@ -1,0 +1,58 @@
+(node:70951) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok   button nested in a label: reports "interactive control nested inside a <label>"
+ok   class-less button: reports "button without a reskin class"
+ok   squeezed button: reports "label squeezed onto"
+ok   truncated select without echo: reports "is truncated and not echoed in full"
+ok   truncated select WITH a visible full-text echo: reports nothing
+ok   select whose echo is hidden: reports "is truncated and not echoed in full"
+ok   select whose value fits: reports nothing
+ok   form relying on native validation: reports "relies on native validation bubbles"
+ok   noValidate form: reports nothing
+ok   a sibling styled button: reports nothing
+ok   keyboard focus: clear page reports nothing (2 controls)
+ok   keyboard focus: a fixed bar over the lower input is reported covered
+ok   dock audit, a sticky dock over a long panel: reports nothing
+ok   dock audit, a sticky dock WITHOUT scroll-padding hides a control the browser scrolls to: reports "covered by the dock when focused"
+ok   dock audit, a dock that is not pinned: reports "dock is not pinned"
+ok   dock audit, a dock taller than 45% of the viewport: reports "cap is 45%"
+ok   dock audit, a primary button with no status: reports "no visible described-by status"
+ok   real stylesheet, dock at 320px / 16px text, 900px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":237,"dockHeight":205,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":900,"position":"sticky","primaryVisiblePx":48}
+ok   real stylesheet, dock at 360px / 16px text, 900px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":277,"dockHeight":184,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":900,"position":"sticky","primaryVisiblePx":48}
+ok   real stylesheet, dock at 320px / 32px text, 900px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":237,"dockHeight":355,"dockOverflowX":0,"pageOverflowX":0,"innerHeight":900,"position":"sticky","primaryVisiblePx":96}
+ok   real stylesheet, dock at 320px / 32px text, 568px tall, with two long buttons: {"clipped":true,"primaryVisible":true,"statusWidth":222,"dockHeight":256,"dockOverflowX":0,"pageOverflowX":0,"innerHeight":568,"position":"sticky","primaryVisiblePx":96}
+ok   real stylesheet, dock at 375px / 24px text, 667px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":277,"dockHeight":300,"dockOverflowX":0,"pageOverflowX":0,"innerHeight":667,"position":"sticky","primaryVisiblePx":72}
+ok   real stylesheet, dock at 320px / 32px text, 568px tall, GM card, with two long buttons: {"clipped":true,"primaryVisible":true,"statusWidth":190,"dockHeight":256,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":568,"position":"sticky","primaryVisiblePx":96}
+ok   real stylesheet, dock at 320px / 24px text, 568px tall, GM card, with two long buttons: {"clipped":true,"primaryVisible":true,"statusWidth":190,"dockHeight":256,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":568,"position":"sticky","primaryVisiblePx":72}
+ok   real stylesheet, dock at 540px / 16px text, 900px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":457,"dockHeight":145,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":900,"position":"sticky","primaryVisiblePx":87}
+ok   real stylesheet, dock at 600px / 16px text, 900px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":517,"dockHeight":166,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":900,"position":"sticky","primaryVisiblePx":48}
+ok   real stylesheet, dock at 700px / 16px text, 900px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":604,"dockHeight":106,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":900,"position":"sticky","primaryVisiblePx":48}
+ok   real stylesheet, dock at 800px / 16px text, 900px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":668,"dockHeight":106,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":900,"position":"sticky","primaryVisiblePx":48}
+ok   real stylesheet, dock at 874px / 16px text, 292px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":668,"dockHeight":90,"dockOverflowX":0,"pageOverflowX":0,"innerHeight":292,"position":"sticky","primaryVisiblePx":48}
+ok   real stylesheet, dock at 874px / 16px text, 292px tall, GM card, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":226,"dockHeight":66,"dockOverflowX":0,"pageOverflowX":-15,"innerHeight":292,"position":"sticky","primaryVisiblePx":48}
+ok   real stylesheet, dock at 667px / 16px text, 250px tall, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":584,"dockHeight":90,"dockOverflowX":0,"pageOverflowX":0,"innerHeight":250,"position":"sticky","primaryVisiblePx":48}
+ok   real stylesheet, dock at 667px / 16px text, 250px tall, GM card, with two long buttons: {"clipped":false,"primaryVisible":true,"statusWidth":552,"dockHeight":90,"dockOverflowX":0,"pageOverflowX":0,"innerHeight":250,"position":"sticky","primaryVisiblePx":48}
+ok   real stylesheet, dock at 874px / 32px text, 292px tall (limit: partly clipped, >= 44px of the button visible): {"clipped":true,"primaryVisible":false,"statusWidth":776,"dockHeight":131,"dockOverflowX":0,"pageOverflowX":0,"innerHeight":292,"position":"sticky","primaryVisiblePx":67}
+ok   real stylesheet, dock at 667px / 32px text, 250px tall (limit: partly clipped, >= 44px of the button visible): {"clipped":true,"primaryVisible":false,"statusWidth":569,"dockHeight":113,"dockOverflowX":0,"pageOverflowX":0,"innerHeight":250,"position":"sticky","primaryVisiblePx":48}
+ok   real stylesheet, data-unpinned releases the dock: {"pinned":{"position":"sticky","maxHeight":"379.8px","shadow":"rgba(0, 0, 0, 0.85) 0px -14.4px 17.6px -9.6px","pad":"140px"},"released":{"position":"static","maxHeight":"none","shadow":"none","pad":"0px"}}
+ok   contrast maths: black on white is 21:1
+ok   large-text rule: 24px, or 18.66px bold, not 18px regular
+ok   css colour parsing keeps alpha
+ok   PNG decoder reproduces every row filter (none/sub/up/average/paeth)
+ok   pixel contrast fails text too close to its background: {"p5":1.34,"required":4.5}
+ok   pixel contrast passes light text on a dark background: {"p5":5.92}
+ok   pixel contrast applies inherited opacity: {"p5":1.56}
+ok   a box with too few glyph pixels is 'insufficient', never a pass: {"core":4}
+ok   real browser: white text over a black-to-white ramp fails: {"l":30,"t":30,"r":295.578125,"b":53,"color":"rgb(255, 255, 255)","size":20,"weight":700,"opacity":1,"text":"Unreadable on the right half","element":"p#bad","status":"fail","core":1243,"min":1.53,"p5":1.69,"required":3}
+ok   real browser: white text over a black-to-dark ramp passes: {"l":30,"t":93,"r":279,"b":116,"color":"rgb(255, 255, 255)","size":20,"weight":700,"opacity":1,"text":"Readable across the ramp","element":"p#good","status":"pass","core":1146,"min":12.27,"p5":12.82,"required":3}
+ok   real browser: a line covered by a fixed bar is skipped as occluded, not scored: {"occluded":1}
+ok   broken words: a word split mid-word in a narrow box is reported: ["div \"SESSION\""]
+ok   broken words: the same word with room to spare is clean: []
+ok   broken words: wrapped sentences, hyphenated compounds, identifiers over 16 characters and <dd> are exempt: []
+ok   layout fingerprint: an identical page dumps identically
+ok   layout fingerprint: a wider element changes its box: main:1>h1:1|0|0|200|37|3ro0p1 -> main:1>h1:1|0|0|260|37|3ro0p1
+ok   layout fingerprint: different own text changes only the text hash
+ok   layout fingerprint: page coordinates do not move when the page is scrolled: ["main:1|0|0|375|937|","main:1>div:1|0|0|375|900|","main:1>h1:2|0|900|375|37|1ecr5ta"]
+ok   layout fingerprint: a display:none element stays in the dump as a zero box: ["main:1|0|0|375|37|","main:1>h1:1|0|0|200|37|3ro0p1","main:1>p:2|0|0|0|0|zpa1hx"]
+
+SELF-TEST PASSED

@@ -1,0 +1,327 @@
+FAIL anon/join-form@phone-small+text150: button.secondary-action "Lost your browser? Recover your ": label squeezed onto 4 lines
+FAIL anon/join-form@phone-small+text200: button.secondary-action "Lost your browser? Recover your ": label squeezed onto 7 lines
+FAIL anon/join-form@phone+text200: button.secondary-action "Lost your browser? Recover your ": label squeezed onto 4 lines
+FAIL anon/join-form@phone-412+text200: button.secondary-action "Lost your browser? Recover your ": label squeezed onto 4 lines
+FAIL gm/secrets-reveal@phone-small+text200: button.primary-action "I'm ready — continue": label squeezed onto 5 lines
+FAIL gm/secrets-reveal@phone+text200: button.primary-action "I'm ready — continue": label squeezed onto 4 lines
+FAIL gm/console-empty@phone-small+text200: button.primary-action "Load scene": label squeezed onto 5 lines
+FAIL gm/console-empty@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-empty@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-empty@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-empty@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-empty@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-empty@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-empty@phone-small+text200: select#grant-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-empty@phone-small+text200: button.secondary-action "Grant item": label squeezed onto 6 lines
+FAIL gm/console-empty@phone-small+text200: select#advance-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-empty@phone-small+text200: button.secondary-action "Unlock advance": label squeezed onto 9 lines
+FAIL gm/console-empty@phone-small+text200: select#reassign-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-empty@phone-small+text200: button.secondary-action "Reassign": label squeezed onto 5 lines
+FAIL gm/console-empty@phone+text200: select#grant-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-empty@phone+text200: select#advance-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-empty@phone+text200: button.secondary-action "Unlock advance": label squeezed onto 4 lines
+FAIL gm/console-empty@phone+text200: select#reassign-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL player/join-filled@phone-small+text150: button.secondary-action "Lost your browser? Recover your ": label squeezed onto 4 lines
+FAIL player/join-filled@phone-small+text200: button.secondary-action "Lost your browser? Recover your ": label squeezed onto 7 lines
+FAIL player/join-filled@phone+text200: button.secondary-action "Lost your browser? Recover your ": label squeezed onto 4 lines
+FAIL player/join-filled@phone-412+text200: button.secondary-action "Lost your browser? Recover your ": label squeezed onto 4 lines
+FAIL player/join-reveal@phone-small+text150: button.primary-action "I wrote it down — pick a charact": label squeezed onto 4 lines
+FAIL player/join-reveal@phone-small+text200: button.primary-action "I wrote it down — pick a charact": label squeezed onto 10 lines
+FAIL player/join-reveal@phone+text200: button.primary-action "I wrote it down — pick a charact": label squeezed onto 6 lines
+FAIL player/join-reveal@phone-412+text200: button.primary-action "I wrote it down — pick a charact": label squeezed onto 5 lines
+FAIL player/compose@phone-small+text150: button.secondary-action "Mark and regain Blood": label squeezed onto 4 lines
+FAIL player/compose@phone-small+text200: horizontal overflow 47px
+FAIL player/compose@phone-small+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 18 lines
+FAIL player/compose@phone-small+text200: button.primary-action "Declare action": label squeezed onto 4 lines
+FAIL player/compose@phone+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 7 lines
+FAIL player/compose@phone-412+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 5 lines
+FAIL player/compose@phone: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "The forecourt of the Gare de" over its rendered background
+FAIL player/compose@phone: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "The forecourt of the Gare de" over its rendered background
+FAIL player/compose@phone: text contrast 1:1 (needs 4.5:1) for legend "Abilities" over its rendered background
+FAIL player/compose@phone: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "— not enough Blood" over its rendered background
+FAIL player/compose@phone: text contrast 1.05:1 (needs 4.5:1) for legend "Engaged threats" over its rendered background
+FAIL player/compose@phone: text contrast 2.71:1 (needs 4.5:1) for label.gear-option "Station Patrol A" over its rendered background
+FAIL player/compose@phone-landscape: text contrast 1.05:1 (needs 4.5:1) for legend "Engaged threats" over its rendered background
+FAIL player/compose@desktop: text contrast 1:1 (needs 4.5:1) for legend "Items" over its rendered background
+FAIL player/compose-why-open@phone-small+text150: button.secondary-action "Mark and regain Blood": label squeezed onto 4 lines
+FAIL player/compose-why-open@phone-small+text200: horizontal overflow 47px
+FAIL player/compose-why-open@phone-small+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 18 lines
+FAIL player/compose-why-open@phone-small+text200: button.primary-action "Declare action": label squeezed onto 4 lines
+FAIL player/compose-why-open@phone+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 7 lines
+FAIL player/compose-why-open@phone-412+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 5 lines
+FAIL player/compose-why-open@phone: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "The forecourt of the Gare de" over its rendered background
+FAIL player/compose-why-open@phone: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "The forecourt of the Gare de" over its rendered background
+FAIL player/compose-why-open@phone: text contrast 1:1 (needs 4.5:1) for legend "Abilities" over its rendered background
+FAIL player/compose-why-open@phone: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "— not enough Blood" over its rendered background
+FAIL player/compose-why-open@phone: text contrast 2.71:1 (needs 4.5:1) for label.gear-option "Station Patrol A" over its rendered background
+FAIL player/compose-why-open@phone-landscape: text contrast 1.05:1 (needs 4.5:1) for legend "Engaged threats" over its rendered background
+FAIL player/compose-why-open@desktop: text contrast 1:1 (needs 4.5:1) for legend "Items" over its rendered background
+FAIL gm/console-scene-loaded@phone-small+text150: button.secondary-action "Switch to simplified": label squeezed onto 4 lines
+FAIL gm/console-scene-loaded@phone-small+text150: select#edit-target "Choose one…Objective: Get clear ": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-scene-loaded@phone+text150: select#edit-target "Choose one…Objective: Get clear ": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-scene-loaded@phone-small+text200: button.primary-action "Advance scene": label squeezed onto 7 lines
+FAIL gm/console-scene-loaded@phone-small+text200: button.secondary-action "Switch to simplified": label squeezed onto 11 lines
+FAIL gm/console-scene-loaded@phone-small+text200: select#edit-target "Choose one…Objective: Get clear ": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-scene-loaded@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-scene-loaded@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-scene-loaded@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-scene-loaded@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-scene-loaded@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-scene-loaded@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-scene-loaded@phone-small+text200: select#grant-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-scene-loaded@phone-small+text200: button.secondary-action "Grant item": label squeezed onto 6 lines
+FAIL gm/console-scene-loaded@phone-small+text200: select#advance-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-scene-loaded@phone-small+text200: button.secondary-action "Unlock advance": label squeezed onto 9 lines
+FAIL gm/console-scene-loaded@phone-small+text200: select#reassign-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-scene-loaded@phone-small+text200: button.secondary-action "Reassign": label squeezed onto 5 lines
+FAIL gm/console-scene-loaded@phone+text200: button.primary-action "Advance scene": label squeezed onto 4 lines
+FAIL gm/console-scene-loaded@phone+text200: button.secondary-action "Switch to simplified": label squeezed onto 5 lines
+FAIL gm/console-scene-loaded@phone+text200: select#edit-target "Choose one…Objective: Get clear ": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-scene-loaded@phone+text200: select#grant-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-scene-loaded@phone+text200: select#advance-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-scene-loaded@phone+text200: button.secondary-action "Unlock advance": label squeezed onto 4 lines
+FAIL gm/console-scene-loaded@phone+text200: select#reassign-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-scene-loaded@phone-412+text200: button.secondary-action "Switch to simplified": label squeezed onto 4 lines
+FAIL gm/console-scene-loaded@phone-412+text200: select#edit-target "Choose one…Objective: Get clear ": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-edit-target@phone-small+text150: button.secondary-action "Switch to simplified": label squeezed onto 4 lines
+FAIL gm/console-edit-target@phone-small+text200: button.primary-action "Advance scene": label squeezed onto 7 lines
+FAIL gm/console-edit-target@phone-small+text200: button.secondary-action "Switch to simplified": label squeezed onto 11 lines
+FAIL gm/console-edit-target@phone-small+text200: button.secondary-action "Apply edit": label squeezed onto 5 lines
+FAIL gm/console-edit-target@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-edit-target@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-edit-target@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-edit-target@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-edit-target@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-edit-target@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-edit-target@phone-small+text200: select#grant-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-edit-target@phone-small+text200: button.secondary-action "Grant item": label squeezed onto 6 lines
+FAIL gm/console-edit-target@phone-small+text200: select#advance-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-edit-target@phone-small+text200: button.secondary-action "Unlock advance": label squeezed onto 9 lines
+FAIL gm/console-edit-target@phone-small+text200: select#reassign-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-edit-target@phone-small+text200: button.secondary-action "Reassign": label squeezed onto 5 lines
+FAIL gm/console-edit-target@phone+text200: button.primary-action "Advance scene": label squeezed onto 4 lines
+FAIL gm/console-edit-target@phone+text200: button.secondary-action "Switch to simplified": label squeezed onto 5 lines
+FAIL gm/console-edit-target@phone+text200: select#grant-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-edit-target@phone+text200: select#advance-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-edit-target@phone+text200: button.secondary-action "Unlock advance": label squeezed onto 4 lines
+FAIL gm/console-edit-target@phone+text200: select#reassign-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-edit-target@phone-412+text200: button.secondary-action "Switch to simplified": label squeezed onto 4 lines
+FAIL gm/console-pending@phone-small+text150: button.secondary-action "Switch to simplified": label squeezed onto 4 lines
+FAIL gm/console-pending@phone-small+text150: select#edit-target "Choose one…Objective: Get clear ": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-pending@phone+text150: select#edit-target "Choose one…Objective: Get clear ": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-pending@phone-small+text200: button.primary-action "Advance scene": label squeezed onto 7 lines
+FAIL gm/console-pending@phone-small+text200: button.secondary-action "Switch to simplified": label squeezed onto 11 lines
+FAIL gm/console-pending@phone-small+text200: select#edit-target "Choose one…Objective: Get clear ": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-pending@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-pending@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-pending@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-pending@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-pending@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-pending@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-pending@phone-small+text200: button.secondary-action "Void this roll": label squeezed onto 7 lines
+FAIL gm/console-pending@phone-small+text200: select#grant-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-pending@phone-small+text200: button.secondary-action "Grant item": label squeezed onto 6 lines
+FAIL gm/console-pending@phone-small+text200: select#advance-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-pending@phone-small+text200: button.secondary-action "Unlock advance": label squeezed onto 9 lines
+FAIL gm/console-pending@phone-small+text200: select#reassign-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-pending@phone-small+text200: button.secondary-action "Reassign": label squeezed onto 5 lines
+FAIL gm/console-pending@phone+text200: button.primary-action "Advance scene": label squeezed onto 4 lines
+FAIL gm/console-pending@phone+text200: button.secondary-action "Switch to simplified": label squeezed onto 5 lines
+FAIL gm/console-pending@phone+text200: select#edit-target "Choose one…Objective: Get clear ": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-pending@phone+text200: select#grant-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-pending@phone+text200: select#advance-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-pending@phone+text200: button.secondary-action "Unlock advance": label squeezed onto 4 lines
+FAIL gm/console-pending@phone+text200: select#reassign-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-pending@phone-412+text200: button.secondary-action "Switch to simplified": label squeezed onto 4 lines
+FAIL gm/console-pending@phone-412+text200: select#edit-target "Choose one…Objective: Get clear ": selected option "Choose one…" is truncated and not echoed in full
+FAIL player/allocation@phone-small+text200: horizontal overflow 11px
+FAIL player/allocation@phone-small+text200: button.primary-action "Confirm allocation": label squeezed onto 4 lines
+FAIL player/allocation@phone: text contrast 1.26:1 (needs 4.5:1) for legend "Die:" over its rendered background
+FAIL player/allocation@phone: text contrast 1.26:1 (needs 4.5:1) for legend "6" over its rendered background
+FAIL player/allocation@phone: text contrast 1.26:1 (needs 4.5:1) for legend "(" over its rendered background
+FAIL player/allocation@phone: text contrast 1.26:1 (needs 4.5:1) for legend "critical" over its rendered background
+FAIL player/allocation@phone: text contrast 1.26:1 (needs 4.5:1) for legend ")" over its rendered background
+FAIL player/allocation@phone: text contrast 1.26:1 (needs 4.5:1) for legend "—" over its rendered background
+FAIL player/allocation@phone: text contrast 1.26:1 (needs 4.5:1) for span.die-target "choose a target" over its rendered background
+FAIL player/allocation@phone: text contrast 1.26:1 (needs 4.5:1) for span.die-target "choose a target" over its rendered background
+FAIL player/allocation-assigned@phone-small+text200: horizontal overflow 11px
+FAIL player/allocation-assigned@phone-small+text200: button.primary-action "Confirm allocation": label squeezed onto 4 lines
+FAIL player/resolved@phone-small+text200: button.primary-action "Back to scene": label squeezed onto 4 lines
+FAIL player/paused@phone-small+text150: button.secondary-action "Mark and regain Blood": label squeezed onto 4 lines
+FAIL player/paused@phone-small+text200: horizontal overflow 47px
+FAIL player/paused@phone-small+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 18 lines
+FAIL player/paused@phone-small+text200: button.primary-action "Declare action": label squeezed onto 4 lines
+FAIL player/paused@phone+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 7 lines
+FAIL player/paused@phone-412+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 5 lines
+FAIL player/paused@phone: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "The forecourt of the Gare de" over its rendered background
+FAIL player/paused@phone: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "The forecourt of the Gare de" over its rendered background
+FAIL player/paused@phone: text contrast 1:1 (needs 4.5:1) for legend "Abilities" over its rendered background
+FAIL player/paused@phone: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "— not enough Blood" over its rendered background
+FAIL player/paused@phone: text contrast 2.71:1 (needs 4.5:1) for label.gear-option "Station Patrol A" over its rendered background
+FAIL player/paused@phone-landscape: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "The forecourt of the Gare de" over its rendered background
+FAIL gm/console-next-scene@phone-small+text150: button.secondary-action "Reveal": label squeezed onto 6 lines
+FAIL gm/console-next-scene@phone-small+text150: button.secondary-action "Switch to simplified": label squeezed onto 4 lines
+FAIL gm/console-next-scene@phone-small+text150: select#edit-target "Choose one…Objective: Cut throug": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-next-scene@phone+text150: select#edit-target "Choose one…Objective: Cut throug": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-next-scene@phone-small+text200: horizontal overflow 6px
+FAIL gm/console-next-scene@phone-small+text200: button.secondary-action "Reveal": outside viewport (230..326 of 320); label squeezed onto 6 lines
+FAIL gm/console-next-scene@phone-small+text200: button.primary-action "Advance scene": label squeezed onto 7 lines
+FAIL gm/console-next-scene@phone-small+text200: button.secondary-action "Switch to simplified": label squeezed onto 11 lines
+FAIL gm/console-next-scene@phone-small+text200: select#edit-target "Choose one…Objective: Cut throug": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-next-scene@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-next-scene@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-next-scene@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-next-scene@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-next-scene@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-next-scene@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-next-scene@phone-small+text200: select#grant-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-next-scene@phone-small+text200: button.secondary-action "Grant item": label squeezed onto 6 lines
+FAIL gm/console-next-scene@phone-small+text200: select#advance-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-next-scene@phone-small+text200: button.secondary-action "Unlock advance": label squeezed onto 9 lines
+FAIL gm/console-next-scene@phone-small+text200: select#reassign-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-next-scene@phone-small+text200: button.secondary-action "Reassign": label squeezed onto 5 lines
+FAIL gm/console-next-scene@phone+text200: button.secondary-action "Reveal": label squeezed onto 6 lines
+FAIL gm/console-next-scene@phone+text200: button.primary-action "Advance scene": label squeezed onto 4 lines
+FAIL gm/console-next-scene@phone+text200: button.secondary-action "Switch to simplified": label squeezed onto 5 lines
+FAIL gm/console-next-scene@phone+text200: select#edit-target "Choose one…Objective: Cut throug": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-next-scene@phone+text200: select#grant-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-next-scene@phone+text200: select#advance-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-next-scene@phone+text200: button.secondary-action "Unlock advance": label squeezed onto 4 lines
+FAIL gm/console-next-scene@phone+text200: select#reassign-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-next-scene@phone-412+text200: button.secondary-action "Reveal": label squeezed onto 6 lines
+FAIL gm/console-next-scene@phone-412+text200: button.secondary-action "Switch to simplified": label squeezed onto 4 lines
+FAIL gm/console-next-scene@phone-412+text200: select#edit-target "Choose one…Objective: Cut throug": selected option "Choose one…" is truncated and not echoed in full
+FAIL player2/compose@phone-small+text200: horizontal overflow 47px
+FAIL player2/compose@phone-small+text200: button.primary-action "Declare action": label squeezed onto 4 lines
+FAIL player2/compose@phone: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "An abandoned Métro platform," over its rendered background
+FAIL player2/compose@phone: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "An abandoned Métro platform," over its rendered background
+FAIL player2/compose@phone: text contrast 1.06:1 (needs 4.5:1) for legend "Abilities" over its rendered background
+FAIL player2/compose@phone: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "— not enough Blood" over its rendered background
+FAIL player2/compose@phone: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "Blink" over its rendered background
+FAIL player2/compose@phone: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "1 Blood" over its rendered background
+FAIL player2/compose@phone: text contrast 1.05:1 (needs 4.5:1) for legend "Engaged threats" over its rendered background
+FAIL player2/compose@phone: text contrast 2.71:1 (needs 4.5:1) for label.gear-option "Plated Squad" over its rendered background
+FAIL player2/compose@phone-landscape: text contrast 2.71:1 (needs 4.5:1) for label.gear-option "Plated Squad" over its rendered background
+FAIL player3/compose@phone-small+text200: horizontal overflow 102px
+FAIL player3/compose@phone-small+text200: button.primary-action "Declare action": label squeezed onto 4 lines
+FAIL player3/compose@phone+text200: horizontal overflow 47px
+FAIL player3/compose@phone-412+text200: horizontal overflow 9px
+FAIL player3/compose@phone: text contrast 1.2:1 (needs 4.5:1) for h3 "Threats" over its rendered background
+FAIL player3/compose@phone: text contrast 1.08:1 (needs 4.5:1) for li "Plated Squad" over its rendered background
+FAIL player3/compose@phone: text contrast 1.08:1 (needs 4.5:1) for li "— rating" over its rendered background
+FAIL player3/compose@phone: text contrast 1.08:1 (needs 4.5:1) for li "6" over its rendered background
+FAIL player3/compose@phone: text contrast 1.08:1 (needs 4.5:1) for li "," over its rendered background
+FAIL player3/compose@phone: text contrast 1.08:1 (needs 4.5:1) for li "3" over its rendered background
+FAIL player3/compose@phone: text contrast 1.08:1 (needs 4.5:1) for li "," over its rendered background
+FAIL player3/compose@phone: text contrast 1.04:1 (needs 4.5:1) for legend "Engaged threats" over its rendered background
+FAIL player3/compose@phone: text contrast 2.71:1 (needs 4.5:1) for li "CON" over its rendered background
+FAIL player3/compose@phone: text contrast 2.71:1 (needs 4.5:1) for li ":" over its rendered background
+FAIL player3/compose@phone: text contrast 2.71:1 (needs 4.5:1) for li "3" over its rendered background
+FAIL player3/compose@phone: text contrast 1.05:1 (needs 4.5:1) for button.primary-action "Declare action" over its rendered background
+FAIL player3/compose@phone-landscape: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "An abandoned Métro platform," over its rendered background
+FAIL player3/compose@phone-landscape: text contrast 1.05:1 (needs 3:1) for h2#compose-heading "Choose an action" over its rendered background
+FAIL player3/compose@phone-landscape: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "Danse Macabre" over its rendered background
+FAIL player3/compose@phone-landscape: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "(" over its rendered background
+FAIL player3/compose@phone-landscape: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "1 Blood" over its rendered background
+FAIL player3/compose@phone-landscape: text contrast 1.06:1 (needs 4.5:1) for legend "Engaged threats" over its rendered background
+FAIL player4/compose@phone-small+text200: horizontal overflow 47px
+FAIL player4/compose@phone-small+text200: button.primary-action "Declare action": label squeezed onto 4 lines
+FAIL player4/compose@phone: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "An abandoned Métro platform," over its rendered background
+FAIL player4/compose@phone: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "An abandoned Métro platform," over its rendered background
+FAIL player4/compose@phone: text contrast 1.06:1 (needs 4.5:1) for legend "Abilities" over its rendered background
+FAIL player4/compose@phone: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "— not enough Blood" over its rendered background
+FAIL player4/compose@phone: text contrast 1.06:1 (needs 4.5:1) for legend "Engaged threats" over its rendered background
+FAIL player4/compose@phone: text contrast 2.71:1 (needs 4.5:1) for label.gear-option "Plated Squad" over its rendered background
+FAIL player4/compose@phone-landscape: text contrast 2.71:1 (needs 4.5:1) for label.gear-option "Plated Squad" over its rendered background
+FAIL player5/compose@phone-small+text200: horizontal overflow 78px
+FAIL player5/compose@phone-small+text200: button.primary-action "Declare action": label squeezed onto 4 lines
+FAIL player5/compose@phone+text200: horizontal overflow 24px
+FAIL player5/compose@phone: text contrast 1.2:1 (needs 4.5:1) for h3 "Objective" over its rendered background
+FAIL player5/compose@phone: text contrast 1.08:1 (needs 4.5:1) for li "Cut through the tunnels to t" over its rendered background
+FAIL player5/compose@phone: text contrast 1.05:1 (needs 3:1) for h2#compose-heading "Choose an action" over its rendered background
+FAIL player5/compose@phone: text contrast 1.05:1 (needs 4.5:1) for legend "Stat" over its rendered background
+FAIL player5/compose@phone: text contrast 1.08:1 (needs 4.5:1) for label.gear-option "Con" over its rendered background
+FAIL player5/compose@phone: text contrast 1.08:1 (needs 4.5:1) for label.gear-option "(" over its rendered background
+FAIL player5/compose@phone: text contrast 1.08:1 (needs 4.5:1) for label.gear-option "1" over its rendered background
+FAIL player5/compose@phone: text contrast 1.08:1 (needs 4.5:1) for label.gear-option ")" over its rendered background
+FAIL player5/compose@phone: text contrast 2.71:1 (needs 4.5:1) for label#item-delphine-ledger-of-names-label.gear-option "Greatspear" over its rendered background
+FAIL player5/compose@phone: text contrast 1.06:1 (needs 4.5:1) for legend "Abilities" over its rendered background
+FAIL player5/compose@phone: text contrast 1.06:1 (needs 4.5:1) for legend "Abilities" over its rendered background
+FAIL player5/compose@phone: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "— not enough Blood" over its rendered background
+FAIL player5/compose@phone: text contrast 1.06:1 (needs 4.5:1) for legend "Engaged threats" over its rendered background
+FAIL player5/compose@phone: text contrast 1.14:1 (needs 4.5:1) for button.primary-action "Declare action" over its rendered background
+FAIL player5/compose@phone-landscape: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "An abandoned Métro platform," over its rendered background
+FAIL player5/compose@phone-landscape: text contrast 1.05:1 (needs 3:1) for h2#compose-heading "Choose an action" over its rendered background
+FAIL player5/compose@phone-landscape: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "Bloodhunt" over its rendered background
+FAIL player5/compose@phone-landscape: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "(" over its rendered background
+FAIL player5/compose@phone-landscape: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "1 Blood" over its rendered background
+FAIL player6/compose@phone-small+text200: horizontal overflow 47px
+FAIL player6/compose@phone-small+text200: button.primary-action "Declare action": label squeezed onto 4 lines
+FAIL player6/compose@phone: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "An abandoned Métro platform," over its rendered background
+FAIL player6/compose@phone: text contrast 1.76:1 (needs 4.5:1) for p.scene-card-description "An abandoned Métro platform," over its rendered background
+FAIL player6/compose@phone: text contrast 1.05:1 (needs 3:1) for h2#compose-heading "Choose an action" over its rendered background
+FAIL player6/compose@phone: text contrast 2.71:1 (needs 4.5:1) for label#item-tallow-belt-fed-gun-label.gear-option "Steel gouging claws" over its rendered background
+FAIL player6/compose@phone: text contrast 1.06:1 (needs 4.5:1) for legend "Abilities" over its rendered background
+FAIL player6/compose@phone: text contrast 2.38:1 (needs 4.5:1) for label.gear-option "— not enough Blood" over its rendered background
+FAIL player6/compose@phone: text contrast 1.06:1 (needs 4.5:1) for legend "Engaged threats" over its rendered background
+FAIL player6/compose@phone: text contrast 2.71:1 (needs 4.5:1) for label.gear-option "Plated Squad" over its rendered background
+FAIL player6/compose@phone-landscape: text contrast 2.71:1 (needs 4.5:1) for label.gear-option "Plated Squad" over its rendered background
+FAIL gm/console-full-roster@phone-small+text150: button.secondary-action "Reveal": label squeezed onto 6 lines
+FAIL gm/console-full-roster@phone-small+text150: button.secondary-action "Switch to simplified": label squeezed onto 4 lines
+FAIL gm/console-full-roster@phone-small+text150: select#edit-target "Choose one…Objective: Cut throug": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-full-roster@phone+text150: select#edit-target "Choose one…Objective: Cut throug": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-full-roster@phone-small+text200: horizontal overflow 6px
+FAIL gm/console-full-roster@phone-small+text200: button.secondary-action "Reveal": outside viewport (230..326 of 320); label squeezed onto 6 lines
+FAIL gm/console-full-roster@phone-small+text200: button.primary-action "Advance scene": label squeezed onto 7 lines
+FAIL gm/console-full-roster@phone-small+text200: button.secondary-action "Switch to simplified": label squeezed onto 11 lines
+FAIL gm/console-full-roster@phone-small+text200: select#edit-target "Choose one…Objective: Cut throug": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-full-roster@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-full-roster@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-full-roster@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-full-roster@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-full-roster@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-full-roster@phone-small+text200: button.secondary-action "Correct": label squeezed onto 6 lines
+FAIL gm/console-full-roster@phone-small+text200: select#grant-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-full-roster@phone-small+text200: button.secondary-action "Grant item": label squeezed onto 6 lines
+FAIL gm/console-full-roster@phone-small+text200: select#advance-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-full-roster@phone-small+text200: button.secondary-action "Unlock advance": label squeezed onto 9 lines
+FAIL gm/console-full-roster@phone-small+text200: select#reassign-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-full-roster@phone-small+text200: button.secondary-action "Reassign": label squeezed onto 5 lines
+FAIL gm/console-full-roster@phone+text200: button.secondary-action "Reveal": label squeezed onto 6 lines
+FAIL gm/console-full-roster@phone+text200: button.primary-action "Advance scene": label squeezed onto 4 lines
+FAIL gm/console-full-roster@phone+text200: button.secondary-action "Switch to simplified": label squeezed onto 5 lines
+FAIL gm/console-full-roster@phone+text200: select#edit-target "Choose one…Objective: Cut throug": selected option "Choose one…" is truncated and not echoed in full
+FAIL gm/console-full-roster@phone+text200: select#grant-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-full-roster@phone+text200: select#advance-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-full-roster@phone+text200: button.secondary-action "Unlock advance": label squeezed onto 4 lines
+FAIL gm/console-full-roster@phone+text200: select#reassign-character "IrynaNicoleCosgraveChuckAstridFl": selected option "Iryna" is truncated and not echoed in full
+FAIL gm/console-full-roster@phone-412+text200: button.secondary-action "Reveal": label squeezed onto 6 lines
+FAIL gm/console-full-roster@phone-412+text200: button.secondary-action "Switch to simplified": label squeezed onto 4 lines
+FAIL gm/console-full-roster@phone-412+text200: select#edit-target "Choose one…Objective: Cut throug": selected option "Choose one…" is truncated and not echoed in full
+FAIL anon/recover-reveal@phone-small+text200: button.primary-action "I wrote it down — continue": label squeezed onto 7 lines
+FAIL anon/recover-reveal@phone+text200: button.primary-action "I wrote it down — continue": label squeezed onto 5 lines
+{
+  "states": 288,
+  "controlsAudited": 3352,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "contrastBoxesMeasured": 6887,
+  "contrastBoxesInsufficient": 2067,
+  "contrastFailures": 91,
+  "textScaleStates": 256,
+  "textScaleControls": 3352,
+  "textScaleOverflowStates": 15,
+  "fontFallback": null,
+  "axeHardViolations": 0,
+  "axeBestPractice": [
+    "anon/route-claim-no-such-room@phone: page-has-heading-one"
+  ],
+  "keyboardFocusChecks": 87,
+  "dockFocusChecks": 333,
+  "dockPinchScenarios": 4,
+  "validationScenarios": 8,
+  "sheetCases": 23,
+  "failures": 302
+}
+UI AUDIT FOUND PROBLEMS
+exit 1

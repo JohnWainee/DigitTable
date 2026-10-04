@@ -1,0 +1,10 @@
+not comparable (different DOM, allowed): anon/join-form@phone-small (20 vs 22 elements)
+not comparable (different DOM, allowed): anon/join-form@phone (20 vs 22 elements)
+not comparable (different DOM, allowed): anon/join-form@phone-390 (20 vs 22 elements)
+not comparable (different DOM, allowed): anon/join-form@phone-412 (20 vs 22 elements)
+not comparable (different DOM, allowed): anon/join-form@phone-landscape (20 vs 22 elements)
+not comparable (different DOM, allowed): anon/join-form@tablet (20 vs 22 elements)
+not comparable (different DOM, allowed): anon/join-form@desktop (20 vs 22 elements)
+not comparable (different DOM, allowed): anon/join-form@table (20 vs 22 elements)
+112 comparable state/viewport pairs (8832 elements), 112 identical, 0 differ, 8 not comparable, 24 element boxes differ only where their own text differs
+LAYOUT IDENTICAL

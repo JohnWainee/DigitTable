@@ -1,0 +1,98 @@
+(node:18814) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+FAIL player/compose@phone-small+text150: button.secondary-action "Mark and regain Blood": label squeezed onto 4 lines
+FAIL player/compose@phone-small+text200: horizontal overflow 47px
+FAIL player/compose@phone-small+text200: word broken across lines: h2 "Forecourt"
+FAIL player/compose@phone-small+text200: word broken across lines: h2 "Ombres"
+FAIL player/compose@phone-small+text200: word broken across lines: h2 "Choose"
+FAIL player/compose@phone-small+text200: word broken across lines: legend "Items"
+FAIL player/compose@phone-small+text200: word broken across lines: button.secondary-action "Mark"
+FAIL player/compose@phone-small+text200: word broken across lines: button.secondary-action "regain"
+FAIL player/compose@phone-small+text200: word broken across lines: button.secondary-action "Blood"
+FAIL player/compose@phone-small+text200: word broken across lines: legend "Abilities"
+FAIL player/compose@phone-small+text200: word broken across lines: legend "Engaged"
+FAIL player/compose@phone-small+text200: word broken across lines: legend "threats"
+FAIL player/compose@phone-small+text200: word broken across lines: button.primary-action "Declare"
+FAIL player/compose@phone-small+text200: word broken across lines: button.primary-action "action"
+FAIL player/compose@phone-small+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 18 lines
+FAIL player/compose@phone-small+text200: button.primary-action "Declare action": label squeezed onto 4 lines
+FAIL player/compose@phone+text200: word broken across lines: h2 "Forecourt"
+FAIL player/compose@phone+text200: word broken across lines: button.secondary-action "Mark"
+FAIL player/compose@phone+text200: word broken across lines: button.secondary-action "regain"
+FAIL player/compose@phone+text200: word broken across lines: button.secondary-action "Blood"
+FAIL player/compose@phone+text200: word broken across lines: legend "Abilities"
+FAIL player/compose@phone+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 7 lines
+FAIL player/compose@phone-412+text200: word broken across lines: button.secondary-action "regain"
+FAIL player/compose@phone-412+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 5 lines
+FAIL player/compose@phone: contrast not measured at scrollY 0: screenshot 375x812 vs viewport 375x812, page scale 1.1437500715255737, dpr 1, scrollWidth 375 vs clientWidth 375
+FAIL player/compose@phone: contrast not measured at scrollY 730: screenshot 375x812 vs viewport 375x812, page scale 1.1437500715255737, dpr 1, scrollWidth 375 vs clientWidth 375
+FAIL player/compose@phone: contrast not measured at scrollY 1460: screenshot 375x812 vs viewport 375x812, page scale 1.1437500715255737, dpr 1, scrollWidth 375 vs clientWidth 375
+FAIL player/compose@phone: contrast not measured at scrollY 2190: screenshot 375x812 vs viewport 375x812, page scale 1.1437500715255737, dpr 1, scrollWidth 375 vs clientWidth 375
+FAIL player/compose@phone-landscape: contrast not measured at scrollY 0: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/compose@phone-landscape: contrast not measured at scrollY 337: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/compose@phone-landscape: contrast not measured at scrollY 674: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/compose@phone-landscape: contrast not measured at scrollY 1011: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/compose@phone-landscape: contrast not measured at scrollY 1348: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/compose@phone-landscape: contrast not measured at scrollY 1685: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/compose@phone-landscape: contrast not measured at scrollY 2022: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/compose@phone-landscape: contrast not measured at scrollY 2359: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/paused@phone-small+text150: button.secondary-action "Mark and regain Blood": label squeezed onto 4 lines
+FAIL player/paused@phone-small+text200: horizontal overflow 47px
+FAIL player/paused@phone-small+text200: word broken across lines: h2 "Forecourt"
+FAIL player/paused@phone-small+text200: word broken across lines: h2 "Ombres"
+FAIL player/paused@phone-small+text200: word broken across lines: h2 "Choose"
+FAIL player/paused@phone-small+text200: word broken across lines: legend "Items"
+FAIL player/paused@phone-small+text200: word broken across lines: button.secondary-action "Mark"
+FAIL player/paused@phone-small+text200: word broken across lines: button.secondary-action "regain"
+FAIL player/paused@phone-small+text200: word broken across lines: button.secondary-action "Blood"
+FAIL player/paused@phone-small+text200: word broken across lines: legend "Abilities"
+FAIL player/paused@phone-small+text200: word broken across lines: legend "Engaged"
+FAIL player/paused@phone-small+text200: word broken across lines: legend "threats"
+FAIL player/paused@phone-small+text200: word broken across lines: button.primary-action "Declare"
+FAIL player/paused@phone-small+text200: word broken across lines: button.primary-action "action"
+FAIL player/paused@phone-small+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 18 lines
+FAIL player/paused@phone-small+text200: button.primary-action "Declare action": label squeezed onto 4 lines
+FAIL player/paused@phone+text200: word broken across lines: h2 "Forecourt"
+FAIL player/paused@phone+text200: word broken across lines: button.secondary-action "Mark"
+FAIL player/paused@phone+text200: word broken across lines: button.secondary-action "regain"
+FAIL player/paused@phone+text200: word broken across lines: button.secondary-action "Blood"
+FAIL player/paused@phone+text200: word broken across lines: legend "Abilities"
+FAIL player/paused@phone+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 7 lines
+FAIL player/paused@phone-412+text200: word broken across lines: button.secondary-action "regain"
+FAIL player/paused@phone-412+text200: button.secondary-action "Mark and regain Blood": label squeezed onto 5 lines
+FAIL player/paused@phone: contrast not measured at scrollY 0: screenshot 375x812 vs viewport 375x812, page scale 1.1437500715255737, dpr 1, scrollWidth 375 vs clientWidth 375
+FAIL player/paused@phone: contrast not measured at scrollY 730: screenshot 375x812 vs viewport 375x812, page scale 1.1437500715255737, dpr 1, scrollWidth 375 vs clientWidth 375
+FAIL player/paused@phone: contrast not measured at scrollY 1460: screenshot 375x812 vs viewport 375x812, page scale 1.1437500715255737, dpr 1, scrollWidth 375 vs clientWidth 375
+FAIL player/paused@phone: contrast not measured at scrollY 2190: screenshot 375x812 vs viewport 375x812, page scale 1.1437500715255737, dpr 1, scrollWidth 375 vs clientWidth 375
+FAIL player/paused@phone-landscape: contrast not measured at scrollY 0: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/paused@phone-landscape: contrast not measured at scrollY 337: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/paused@phone-landscape: contrast not measured at scrollY 674: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/paused@phone-landscape: contrast not measured at scrollY 1011: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/paused@phone-landscape: contrast not measured at scrollY 1348: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/paused@phone-landscape: contrast not measured at scrollY 1685: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/paused@phone-landscape: contrast not measured at scrollY 2022: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+FAIL player/paused@phone-landscape: contrast not measured at scrollY 2359: screenshot 812x375 vs viewport 812x375, page scale 1.1437500715255737, dpr 1, scrollWidth 812 vs clientWidth 812
+{
+  "states": 16,
+  "controlsAudited": 320,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "contrastBoxesMeasured": 297,
+  "contrastBoxesInsufficient": 12,
+  "contrastFailures": 0,
+  "contrastInvalidSlices": 24,
+  "textScaleStates": 16,
+  "textScaleControls": 320,
+  "textScaleOverflowStates": 2,
+  "fontFallback": null,
+  "axeHardViolations": 0,
+  "axeBestPractice": [],
+  "keyboardFocusChecks": 0,
+  "dockFocusChecks": 0,
+  "dockPinchScenarios": 0,
+  "validationScenarios": 0,
+  "sheetCases": 0,
+  "failures": 72
+}
+UI AUDIT FOUND PROBLEMS
+exit 1

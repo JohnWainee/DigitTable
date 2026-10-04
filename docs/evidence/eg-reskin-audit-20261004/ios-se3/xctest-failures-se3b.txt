@@ -1,0 +1,3 @@
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:69: error: -[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker] : Failed to synthesize event: Neither element nor any descendant has keyboard focus. Event dispatch snapshot: TextField, {{16.0, 350.0}, {343.0, 
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:69: error: -[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari] : Failed to synthesize event: Neither element nor any descendant has keyboard focus. Event dispatch snapshot: TextField, {{16.0, 350.0}, {343.0, 49.0}}, labe
+	 Executed 3 tests, with 2 failures (0 unexpected) in 56.329 (56.334) seconds

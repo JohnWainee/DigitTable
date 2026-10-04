@@ -1,0 +1,132 @@
+no default port left in the clone's edited files
+
+> digitable@0.0.0 pretest:emulator
+> npm run build --workspace @digitable/functions
+
+
+> @digitable/functions@0.0.0 build
+> esbuild src/index.ts --bundle --platform=node --target=node22 --format=esm --outfile=dist/index.js --external:firebase-admin --external:firebase-admin/* --external:firebase-functions --external:firebase-functions/*
+
+
+  dist/index.js  216.6kb
+
+⚡ Done in 13ms
+
+> digitable@0.0.0 test:emulator
+> firebase emulators:exec --only auth,firestore,database,functions --project demo-digitable "npm run test:emulator --workspaces --if-present"
+
+    at warnOnDeactivatedColors (node:internal/tty:112:13)
+    at Object.getColorDepth (node:internal/tty:137:9)
+    at Object.shouldColorize (node:internal/util/colors:20:32)
+    at Object.refresh (node:internal/util/colors:27:24)
+    at node:internal/util/colors:51:16
+    at BuiltinModule.compileForInternalLoader (node:internal/bootstrap/realm:398:7)
+    at requireBuiltin (node:internal/bootstrap/realm:429:14)
+    at node:internal/assert/assertion_error:23:16
+    at BuiltinModule.compileForInternalLoader (node:internal/bootstrap/realm:398:7)
+    at requireBuiltin (node:internal/bootstrap/realm:429:14)
+i  emulators: Starting emulators: auth, functions, firestore, database
+i  emulators: Detected demo project ID "demo-digitable", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+⚠  emulators: It seems that you are running multiple instances of the emulator suite for project demo-digitable. This may result in unexpected behavior.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 52081.
+i  database: Database Emulator logging to database-debug.log
+i  functions: Watching "/Users/john/.claude/jobs/c3c5d4e7/tmp/clone/apps/functions" for Cloud Functions...
+⚠  functions: Your requested "node" version "22" doesn't match your global version "24". Using node@24 from host.
+Serving at port 8889
+
+✔  functions: Loaded functions definitions from source: admitMember, claimSeat, createRoom, recoverSeat, submitRoomCommand.
+✔  functions[us-west1-admitMember]: http function initialized (http://127.0.0.1:52001/demo-digitable/us-west1/admitMember).
+✔  functions[us-west1-claimSeat]: http function initialized (http://127.0.0.1:52001/demo-digitable/us-west1/claimSeat).
+✔  functions[us-west1-createRoom]: http function initialized (http://127.0.0.1:52001/demo-digitable/us-west1/createRoom).
+✔  functions[us-west1-recoverSeat]: http function initialized (http://127.0.0.1:52001/demo-digitable/us-west1/recoverSeat).
+✔  functions[us-west1-submitRoomCommand]: http function initialized (http://127.0.0.1:52001/demo-digitable/us-west1/submitRoomCommand).
+i  Running script: npm run test:emulator --workspaces --if-present
+
+> @digitable/testing@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+
+ RUN  v5.0.0 /Users/john/.claude/jobs/c3c5d4e7/tmp/clone/packages/testing
+
+
+ Test Files  2 passed (2)
+      Tests  18 passed (18)
+   Start at  04:30:49
+   Duration  2.36s (tests 92%, import 7%, transform 1%)
+
+
+> @digitable/functions@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+
+ RUN  v5.0.0 /Users/john/.claude/jobs/c3c5d4e7/tmp/clone/apps/functions
+
+
+ Test Files  4 passed (4)
+      Tests  86 passed (86)
+   Start at  04:30:51
+   Duration  18.39s (tests 95%, import 3%, transform 1%)
+
+
+> @digitable/web@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+
+ RUN  v5.0.0 /Users/john/.claude/jobs/c3c5d4e7/tmp/clone/apps/web
+
+i  functions: Beginning execution of "us-west1-createRoom"
+>  {"function":"createRoom","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-createRoom" in 97.479334ms
+i  functions: Beginning execution of "us-west1-admitMember"
+>  {"function":"admitMember","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-admitMember" in 117.87975ms
+i  functions: Beginning execution of "us-west1-submitRoomCommand"
+>  {"function":"submitRoomCommand","severity":"INFO","message":"gameCommand.appCheckMissing"}
+>  {"commandId":"cdf34187-f571-4077-af5f-01fd49e13416","roomIdHash":"6feb726e15992c38","status":"accepted","code":"accepted","latencyMs":"81","severity":"INFO","message":"gameCommand.result"}
+i  functions: Finished "us-west1-submitRoomCommand" in 87.81375ms
+i  functions: Beginning execution of "us-west1-submitRoomCommand"
+>  {"function":"submitRoomCommand","severity":"INFO","message":"gameCommand.appCheckMissing"}
+>  {"commandId":"bca583d1-52d6-41f5-8942-41405b5951b4","roomIdHash":"6feb726e15992c38","status":"accepted","code":"accepted","latencyMs":"21","severity":"INFO","message":"gameCommand.result"}
+i  functions: Finished "us-west1-submitRoomCommand" in 22.557875ms
+i  functions: Beginning execution of "us-west1-submitRoomCommand"
+>  {"function":"submitRoomCommand","severity":"INFO","message":"gameCommand.appCheckMissing"}
+>  {"commandId":"6a6a3c87-abd9-461d-8b53-375859c1aab8","roomIdHash":"6feb726e15992c38","status":"accepted","code":"accepted","latencyMs":"17","severity":"INFO","message":"gameCommand.result"}
+i  functions: Finished "us-west1-submitRoomCommand" in 18.414834ms
+i  functions: Beginning execution of "us-west1-admitMember"
+>  {"function":"admitMember","severity":"WARNING","message":"admission.appCheckMissing"}
+>  {"function":"admitMember","code":"ROOM_NOT_FOUND","severity":"INFO","message":"admission.denied"}
+i  functions: Finished "us-west1-admitMember" in 30.589833ms
+i  functions: Beginning execution of "us-west1-createRoom"
+>  {"function":"createRoom","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-createRoom" in 40.487959ms
+i  functions: Beginning execution of "us-west1-admitMember"
+>  {"function":"admitMember","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-admitMember" in 53.647459ms
+i  functions: Beginning execution of "us-west1-recoverSeat"
+>  {"function":"recoverSeat","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-recoverSeat" in 134.612958ms
+i  functions: Beginning execution of "us-west1-recoverSeat"
+>  {"function":"recoverSeat","severity":"WARNING","message":"admission.appCheckMissing"}
+>  {"function":"recoverSeat","code":"INVALID_RECOVERY_CODE","severity":"INFO","message":"admission.denied"}
+i  functions: Finished "us-west1-recoverSeat" in 71.434625ms
+i  functions: Beginning execution of "us-west1-createRoom"
+>  {"function":"createRoom","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-createRoom" in 37.167542ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  04:31:10
+   Duration  3.41s (tests 94%, transform 3%, import 3%)
+
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  functions: Stopping Functions Emulator
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  auth: Stopping Authentication Emulator
+i  eventarc: Stopping Eventarc Emulator
+i  tasks: Stopping Cloud Tasks Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

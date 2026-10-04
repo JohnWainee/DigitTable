@@ -1,0 +1,2 @@
+	 Executed 3 tests, with 0 failures (0 unexpected) in 234.132 (234.137) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 234.132 (234.138) seconds
