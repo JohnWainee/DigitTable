@@ -377,9 +377,21 @@ export function JoinScreen(): JSX.Element {
       )}
 
       {!accepted && (
-        <button type="button" className="secondary-action" onClick={() => setMode("recover")}>
-          Lost your browser? Recover your seat
-        </button>
+        <div className="landing-actions">
+          {/* The question is a hint, not part of the label: one long sentence in a button wrapped to four to
+              seven lines at 150-200% text on a phone. */}
+          <p className="form-hint" id="recover-hint">
+            Lost your browser?
+          </p>
+          <button
+            type="button"
+            className="secondary-action"
+            aria-describedby="recover-hint"
+            onClick={() => setMode("recover")}
+          >
+            Recover your seat
+          </button>
+        </div>
       )}
     </main>
   );

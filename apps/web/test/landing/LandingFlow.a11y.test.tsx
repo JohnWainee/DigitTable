@@ -218,7 +218,7 @@ describe("Landing / create / join / claim (C01)", () => {
     window.localStorage.clear();
     goTo("#/");
     goTo("#/join");
-    await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+    await user.click(screen.getByRole("button", { name: /recover your seat/i }));
     await user.type(screen.getByLabelText(/^room code$/i), roomCode);
     await user.type(screen.getByLabelText(/recovery code/i), originalCode);
     await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
@@ -240,7 +240,7 @@ describe("Landing / create / join / claim (C01)", () => {
 
     window.localStorage.clear();
     goTo("#/join");
-    await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+    await user.click(screen.getByRole("button", { name: /recover your seat/i }));
     await user.type(screen.getByLabelText(/^room code$/i), roomCode);
     await user.type(screen.getByLabelText(/recovery code/i), originalCode);
     await user.type(screen.getByLabelText(/your display name/i), "Someone else");
@@ -264,7 +264,7 @@ describe("Landing / create / join / claim (C01)", () => {
     window.localStorage.clear();
     goTo("#/");
     goTo("#/join");
-    await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+    await user.click(screen.getByRole("button", { name: /recover your seat/i }));
     await user.type(screen.getByLabelText(/^room code$/i), roomCode.toLowerCase());
     await user.type(screen.getByLabelText(/recovery code/i), ` ${originalCode.toLowerCase()} `);
     await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
@@ -286,7 +286,7 @@ describe("Landing / create / join / claim (C01)", () => {
       expect(field).toHaveAttribute("spellcheck", "false");
     }
 
-    await userEvent.setup().click(screen.getByRole("button", { name: /lost your browser/i }));
+    await userEvent.setup().click(screen.getByRole("button", { name: /recover your seat/i }));
     for (const label of [/^room code$/i, /recovery code/i]) {
       const field = screen.getByLabelText(label);
       expect(field).toHaveAttribute("autocapitalize", "characters");

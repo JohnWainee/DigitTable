@@ -198,7 +198,7 @@ describe("inline form validation (no native bubbles)", () => {
     it("flags empty fields and a malformed room code inline, never as a native bubble", async () => {
       const user = userEvent.setup();
       renderApp("#/join");
-      await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+      await user.click(screen.getByRole("button", { name: /recover your seat/i }));
       expect(document.querySelector("form")).toHaveAttribute("novalidate");
 
       await user.click(screen.getByRole("button", { name: /^recover my seat$/i }));
@@ -217,7 +217,7 @@ describe("inline form validation (no native bubbles)", () => {
     it("keeps the browser's semantics for it (empty fails, whitespace is a value), since the recover callable never sees it", async () => {
       const user = userEvent.setup();
       renderApp("#/join");
-      await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+      await user.click(screen.getByRole("button", { name: /recover your seat/i }));
       await user.type(field(/^room code$/i), "ABCD-1234");
       await user.type(field(/recovery code/i), "CODE-1234");
       await user.type(field(/your display name/i), "   ");

@@ -180,7 +180,7 @@ describe("reskin stylesheet contract", () => {
       expect(rulesFor(/^\.gear-item$/).join("")).toMatch(/flex-direction:\s*column/);
       // Its own left margin must fit inside the row (a bare 100% would overflow the row by the margin).
       expect(declaration(rulesFor(/^\.gear-item > \.secondary-action$/), "max-width")).toEqual([
-        "calc(100% - 0.65rem)",
+        "calc(100% - var(--gutter-xs))",
       ]);
       expect(rulesFor(/^\.scene-director-detail$/).join("")).toMatch(/flex-direction:\s*column/);
       expect(
@@ -586,10 +586,15 @@ describe("reskin stylesheet contract", () => {
 
     it("bleeds to its panel's own edges, with the card's smaller padding declared where it differs", () => {
       const margin = declaration(dock(), "margin").join(" ");
-      expect(margin).toContain("var(--dock-bleed-x, 1rem)");
+      // The default bleed is the panel's own gutter token, so the two cannot drift apart.
+      expect(margin).toContain("var(--dock-bleed-x, var(--gutter))");
       expect(margin).toContain("var(--dock-bleed-b, 1.25rem)");
-      // .step pads 1rem / 1.25rem, so the defaults match it; the GM card pads 0.85rem all round.
-      expect(declaration(rulesFor(/\.pending-action-card/), "padding")).toContain("0.85rem");
+      // .step pads var(--gutter) / 1.25rem, so the defaults match it; the GM card pads 0.85rem all round.
+      expect(
+        declaration(rulesFor(/\.pending-action-card/), "padding").some((v) =>
+          v.startsWith("0.85rem"),
+        ),
+      ).toBe(true);
       const card = rulesFor(/^\.pending-action-card$/).join(" ");
       expect(card).toContain("--dock-bleed-x: var(--pending-pad)");
       expect(card).toContain("--dock-bleed-b: var(--pending-pad)");
@@ -729,5 +734,147 @@ describe("reskin stylesheet contract", () => {
       expect(huge).toMatch(/\.table-screen \.scene-card-art--banner\s*\{[^}]*height:\s*15rem/);
       expect(huge).toMatch(/\.table-screen \.route-map\s*\{[^}]*max-width:\s*34rem/);
     });
+  });
+
+  describe("large text on a narrow phone (150-200% root text on 320-412px)", () => {
+    /** `min(Xrem, Ypx)` -> [X, Y]. */
+    function remPxCap(value: string): [number, number] {
+      const match = /^min\(([\d.]+)rem,\s*([\d.]+)px\)$/.exec(value.trim());
+      if (!match) throw new Error(`not a min(rem, px) cap: ${value}`);
+      return [Number(match[1]), Number(match[2])];
+    }
+
+    it("caps every horizontal gutter at its default-size px, so only larger text changes", () => {
+      for (const name of ["gutter", "gutter-sm", "gutter-xs", "gutter-btn"]) {
+        const match = new RegExp(`--${name}:\\s*([^;]+);`).exec(css);
+        expect(match, `--${name} is defined in :root`).not.toBeNull();
+        const [rem, px] = remPxCap(match![1]!);
+        // At the default 16px root the rem value IS the px value, so the default text size is unchanged.
+        expect(rem * 16, `--${name}: ${match![1]}`).toBeCloseTo(px, 5);
+      }
+    });
+
+    it("uses the gutter tokens in the nested chain that squeezed a 320px phone at 200% text", () => {
+      const uses = (rules: RegExp, property: string): string =>
+        declaration(rulesFor(rules), property).join(" ");
+      expect(
+        uses(/^\.landing-screen,\s*\.player-screen,\s*\.gm-screen,\s*\.table-screen$/s, "padding"),
+      ).toContain("var(--gutter)");
+      expect(uses(/^\.step,\s*\.scene-card,/s, "padding")).toContain("var(--gutter)");
+      expect(uses(/^fieldset$/, "padding")).toContain("var(--gutter-sm)");
+      expect(uses(/^\.primary-action,\s*\.secondary-action$/s, "padding")).toContain(
+        "var(--gutter-btn)",
+      );
+      expect(uses(/^\.gear-option,\s*\.form-field--checkbox$/s, "padding")).toContain(
+        "var(--gutter-xs)",
+      );
+      // The dock bleeds by, and pads with, the same gutter as the panel it ends.
+      expect(declaration(rulesFor(/^\.action-dock$/), "padding").join(" ")).toContain(
+        "var(--gutter)",
+      );
+    });
+
+    it("lets a long word wrap at a row, button or option edge instead of widening the page", () => {
+      expect(
+        declaration(rulesFor(/^\.gear-option,\s*\.form-field--checkbox$/s), "overflow-wrap"),
+      ).toEqual(["anywhere"]);
+      expect(
+        declaration(rulesFor(/^\.primary-action,\s*\.secondary-action$/s), "overflow-wrap"),
+      ).toEqual(["anywhere"]);
+    });
+
+    it("keeps a row's own action whole: it never shrinks below its word and drops under the label instead", () => {
+      // `min-width: var(--tap)` is an explicit minimum, so as a flex item the button shrank to 77px and
+      // "REVEAL" broke in the middle at the default text size on every phone width.
+      expect(declaration(rulesFor(/^\.gear-option > \.secondary-action$/), "flex")).toEqual([
+        "none",
+      ]);
+      expect(declaration(rulesFor(/^\.gear-option > \.secondary-action$/), "max-width")).toEqual([
+        "100%",
+      ]);
+      expect(
+        declaration(rulesFor(/^\.gear-option:has\(> \.secondary-action\)$/), "flex-wrap"),
+      ).toEqual(["wrap"]);
+      expect(
+        declaration(rulesFor(/^\.gear-option:has\(> \.secondary-action\) > span$/), "min-width"),
+      ).toEqual(["0"]);
+    });
+
+    it("keeps the drawn check and radio marks inside their px-capped boxes at any text size", () => {
+      const box = declaration(
+        rulesFor(/^input\[type="checkbox"\],\s*input\[type="radio"\]$/s),
+        "width",
+      );
+      expect(box).toContain("min(1.65rem, 26.4px)");
+      expect(declaration(rulesFor(/^input\[type="checkbox"\]::after$/), "width")).toEqual([
+        "min(0.95rem, 15.2px)",
+      ]);
+      expect(declaration(rulesFor(/^input\[type="radio"\]::after$/), "width")).toEqual([
+        "min(0.75rem, 12px)",
+      ]);
+      // Mark px caps are smaller than the box cap (26.4px), so a mark can never overflow its box.
+      expect(15.2).toBeLessThan(26.4);
+      expect(12).toBeLessThan(26.4);
+    });
+
+    it("keeps a one-time code on one line, without changing its default size from 320px up", () => {
+      const [value] = declaration(rulesFor(/^\.reveal-code$/), "font-size");
+      expect(value).toBe("min(1.35rem, 7.5vw)");
+      // 13 monospaced characters (0.6em advance plus 0.1em tracking) must fit a 320px phone's panel
+      // (320 - 2*16 screen gutter - 2*(16 + 2) panel gutter and border = 252px) at any text size.
+      const capPx = (7.5 * 320) / 100;
+      expect(13 * capPx * 0.7).toBeLessThan(252);
+      // Above the default-size result everywhere from 320px, so 100% text is untouched.
+      for (let width = 320; width <= 1920; width += 10) {
+        expect((7.5 * width) / 100).toBeGreaterThanOrEqual(1.35 * 16);
+      }
+    });
+
+    it("keeps the select's chevron and its reserved room at their default-size px", () => {
+      const select = rulesFor(/^select$/).join(" ");
+      expect(select).toContain("padding-right: min(2.75rem, 44px)");
+      expect(select).toContain("background-size: min(1rem, 16px) min(1rem, 16px)");
+    });
+
+    /** Evaluate `min(clamp(Frem, Mvw, Rrem), Cvw)` at a viewport width and a root size. */
+    function displaySize(value: string, viewportWidth: number, rootPx: number): number {
+      const m = /^min\(clamp\(([\d.]+)rem,\s*([\d.]+)vw,\s*([\d.]+)rem\),\s*([\d.]+)vw\)$/.exec(
+        value.trim(),
+      );
+      if (!m) throw new Error(`not a capped display size: ${value}`);
+      const [floor, mid, max, cap] = [m[1], m[2], m[3], m[4]].map(Number) as [
+        number,
+        number,
+        number,
+        number,
+      ];
+      const clamped = Math.min(Math.max(floor * rootPx, (mid * viewportWidth) / 100), max * rootPx);
+      return Math.min(clamped, (cap * viewportWidth) / 100);
+    }
+
+    it.each([
+      ["h1", /^h1$/],
+      ["landing h1", /^\.landing-screen h1$/],
+      ["h2", /^h2$/],
+      ["sheet h2", /^\.sheet-header h2$/],
+    ])(
+      "%s: capped by the width, and unchanged at the default text size from 320px up",
+      (_name, selector) => {
+        const value = declaration(rulesFor(selector), "font-size").find((v) =>
+          v.startsWith("min(clamp("),
+        )!;
+        expect(value, "a capped display size").toBeDefined();
+        const uncapped = value.replace(/^min\((clamp\([^)]*\)),.*$/, "$1");
+        for (let width = 320; width <= 1920; width += 10) {
+          const capped = displaySize(value, width, 16);
+          const plain = displaySize(`min(${uncapped}, 1000vw)`, width, 16);
+          expect(capped, `${value} at ${width}px`).toBeCloseTo(plain, 6);
+        }
+        // ...and at 200% text on the narrowest phone it is held to the width, not to 2x the type.
+        expect(displaySize(value, 320, 32)).toBeLessThan(
+          displaySize(`min(${uncapped}, 1000vw)`, 320, 32),
+        );
+      },
+    );
   });
 });
