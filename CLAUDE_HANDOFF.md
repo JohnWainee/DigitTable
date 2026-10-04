@@ -452,6 +452,12 @@ When pausing or finishing a material unit:
 
 ## Integrated verification and next action
 
+### 2026-10-04 UTC: deployed staging playthrough rerun (`sonnet-dt/reskin-hourly-20261003`)
+
+- **Recovered evidence:** the missing `digitable-staging-playthrough` Sonnet session was not a successful or failed application run: it was blocked by local port contention and left only untracked scratch output. The later harness repair is recorded in `docs/reviews/2026-10-02-df-reskin-verification-review.md`; no product fix was needed during this rerun.
+- **Fresh deployment evidence:** `two-device-smoke.mjs --base https://digitable.signal-bleed.com --reload --port 9354` completed **17/17** steps at `2026-10-04T01:26:10.612Z`: GM/player/table creation and admission, action resolution/allocation, pause/resume, scene advance, role guidance, resume and reload recovery. All three browser contexts recorded zero console errors/request failures, with no horizontal overflow at 375/768/1024/1280/1920px. Machine-local report/screenshots: `/private/tmp/digitable-staging-playthrough-20261004/`; committed record: `docs/evidence/dt-staging-playthrough-20261004/README.md`.
+- **Boundary:** this is a read/run against the existing deployment, not a deploy. Staging predates the unmerged dock and visual-viewport reskin commits, so it cannot validate them. Physical iOS/Android and assistive-technology rehearsal remain required before a reskin release.
+
 ### 2026-10-03: pop-out and visual-viewport audit, no defect (`sonnet-dt/reskin-hourly-20261003`)
 
 - **Base:** reviewed `47bc087`. Fresh audit of every player, GM, table and landing flow and every pop-out (native selects, `<details>`, `SheetDialog`, dock, inline allocation pickers). **No in-scope defect found, so no source change**; evidence only. Not merged, not deployed.
