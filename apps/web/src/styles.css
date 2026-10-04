@@ -939,7 +939,7 @@ html:has(.action-dock) {
   }
 }
 
-@media (max-height: 20rem) {
+@media (max-height: 15rem) {
   .action-dock {
     position: static;
     max-height: none;
@@ -952,7 +952,7 @@ html:has(.action-dock) {
 }
 
 /* The same fallback for the VISUAL viewport, which no media query can see: pinch-zoomed in (the pinned
-   bar would sit below what is on screen, or cover a large share of it) or shorter than 20rem because an
+   bar would sit below what is on screen, or cover a large share of it) or shorter than 15rem because an
    on-screen keyboard or browser chrome took the rest. Set by useDockPinning in ActionDock.tsx. */
 .action-dock[data-unpinned] {
   position: static;

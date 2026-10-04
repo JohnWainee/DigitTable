@@ -1,0 +1,13 @@
+room code captured: yes
+compose dock at top (panel below the fold, expected off screen): hittable=false
+compose dock after scroll 1: frame=(34.0, 753.0, 334.0, 50.0) web=(0.0, 0.0, 402.0, 874.0) hittable=true exists=true
+compose dock after scroll 2: frame=(34.0, 754.0, 334.0, 50.0) web=(0.0, 0.0, 402.0, 874.0) hittable=true exists=true
+compose dock after scroll 3: frame=(34.0, 754.0, 334.0, 49.0) web=(0.0, 0.0, 402.0, 874.0) hittable=true exists=true
+compose dock at page bottom: frame=(34.0, 672.0, 334.0, 49.0) web=(0.0, 0.0, 402.0, 874.0) hittable=true exists=true
+landscape at top (chrome expanded): iH=292 cH=292 vv.h=292 vv.top=0 sc=1 sY=0 dock.top=904.9 bot=991.3 unp=false pos=sticky bottom=0px pb=28px ins=87px
+landscape with the panel on screen: iH=402 cH=292 vv.h=402 vv.top=0 sc=1 sY=948 dock.top=315.6 bot=402 unp=false pos=sticky bottom=0px pb=28px ins=87px
+landscape panel on screen: stat row hittable=true declare hittable=true frame=(541.0, 326.0, 185.0, 49.0)
+landscape, scrolled up again (bars showing): iH=292 cH=292 vv.h=292 vv.top=0 sc=1 sY=739 dock.top=205.6 bot=292 unp=false pos=sticky bottom=0px pb=28px ins=87px
+landscape bars showing: stat row hittable=true declare hittable=true frame=(541.0, 326.0, 185.0, 49.0)
+compose dock after rotating back: frame=(34.0, 712.0, 334.0, 49.0) web=(0.0, 0.0, 402.0, 874.0) hittable=true exists=true
+GM pending dock: frame=(52.0, 753.0, 302.0, 50.0) web=(0.0, 0.0, 402.0, 874.0) hittable=true exists=true

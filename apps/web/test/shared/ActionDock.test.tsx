@@ -187,13 +187,24 @@ describe("shouldUnpinDock", () => {
     expect(shouldUnpinDock({ ...base, scale: 3 })).toBe(true);
   });
 
-  it("unpins when the visible height (the smaller of visual and layout) is under 320px (the 20rem media query's basis)", () => {
+  it("unpins when the visible height (the smaller of visual and layout) is at or under 240px (the 15rem media query's basis, inclusive like it)", () => {
     const limit = UNPIN_BELOW_PX;
-    expect(shouldUnpinDock({ ...base, visualHeight: limit })).toBe(false);
+    expect(limit).toBe(240);
+    expect(shouldUnpinDock({ ...base, visualHeight: limit + 1 })).toBe(false);
+    expect(shouldUnpinDock({ ...base, visualHeight: limit })).toBe(true);
+    expect(shouldUnpinDock({ ...base, layoutHeight: limit })).toBe(true);
     expect(shouldUnpinDock({ ...base, visualHeight: limit - 1 })).toBe(true);
     // iOS keyboard: only the visual viewport shrinks. Chrome Android: both do.
-    expect(shouldUnpinDock({ ...base, visualHeight: 250 })).toBe(true);
-    expect(shouldUnpinDock({ ...base, layoutHeight: 250 })).toBe(true);
+    expect(shouldUnpinDock({ ...base, visualHeight: 200 })).toBe(true);
+    expect(shouldUnpinDock({ ...base, layoutHeight: 200 })).toBe(true);
+  });
+
+  it("stays pinned in a landscape phone with the browser bars showing (iPhone 17 Pro in Mobile Safari: 292px visible)", () => {
+    // Measured in the iOS Simulator: a tab bar plus address bar leave 292px (innerHeight reads 402 once scrolling
+    // collapses them, but clientHeight and the media query stay 292). At the old 320px line the dock was released
+    // and Declare sat at the end of a 2,400px form.
+    expect(shouldUnpinDock({ ...base, visualHeight: 292, layoutHeight: 292 })).toBe(false);
+    expect(shouldUnpinDock({ ...base, visualHeight: 250, layoutHeight: 250 })).toBe(false);
   });
 
   it("does not depend on text size: a 568px phone at 200% text stays pinned (the capped, scrolling dock)", () => {
@@ -251,7 +262,7 @@ describe("ActionDock pinning follows the visual viewport", () => {
       expect(dock).toHaveAttribute("data-unpinned");
       vv.set({ scale: 1 });
       expect(dock).not.toHaveAttribute("data-unpinned");
-      vv.set({ height: 280 }); // keyboard or browser chrome took the rest
+      vv.set({ height: 200 }); // keyboard took the rest (landscape: ios-simulator/README.md measured 70-140px)
       expect(dock).toHaveAttribute("data-unpinned");
       vv.set({ height: 800 });
       expect(dock).not.toHaveAttribute("data-unpinned");

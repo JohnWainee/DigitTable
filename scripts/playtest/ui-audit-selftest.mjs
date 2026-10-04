@@ -292,6 +292,9 @@ async function dockLayoutAt(width, rootFontPx = 16, height = 900, gmCard = false
         dockOverflowX: dock.scrollWidth - dock.clientWidth,
         pageOverflowX: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         innerHeight,
+        position: getComputedStyle(dock).position,
+        // How much of the primary button is inside the dock's own box (it scrolls internally when capped).
+        primaryVisiblePx: Math.round(Math.max(0, Math.min(primary.bottom, box.bottom) - Math.max(primary.top, box.top))),
       };
     })()`,
   );
@@ -310,6 +313,12 @@ for (const [width, font, height, gm] of [
   [600, 16],
   [700, 16],
   [800, 16],
+  // Real Mobile Safari landscape with the bars showing (874x292, measured in the iOS Simulator) and an iPhone SE
+  // class landscape (667x250): the dock must stay pinned and inside its 45% cap.
+  [874, 16, 292],
+  [874, 16, 292, true],
+  [667, 16, 250],
+  [667, 16, 250, true],
 ]) {
   const layout = await dockLayoutAt(width, font, height, gm);
   const ok =
@@ -318,11 +327,30 @@ for (const [width, font, height, gm] of [
     layout.dockOverflowX <= 1 &&
     layout.pageOverflowX <= 1 &&
     // The primary action is visible without scrolling the dock, even when the content overflows its cap.
-    layout.primaryVisible;
+    layout.primaryVisible &&
+    // Pinned above the 15rem line (the media query is inclusive at exactly 240px) (it was released under 20rem, which hid it on a real landscape iPhone).
+    (layout.innerHeight <= 240 || layout.position === "sticky");
   console.log(
     `${ok ? "ok  " : "FAIL"} real stylesheet, dock at ${width}px / ${font}px text, ${height ?? 900}px tall${gm ? ", GM card" : ""}, with two long buttons: ${JSON.stringify(layout)}`,
   );
   if (!ok) failures.push(`dock-layout-${width}-${font}-${height ?? 900}${gm ? "-gm" : ""}`);
+}
+// 200% text in those short landscape viewports is a recorded limit, not a pass: the dock is capped at 45% of the
+// height (131px at 292, 112px at 250) and scrolls inside itself, and in the row layout (>= 34rem) `data-clipped` does
+// not move the actions first, so the primary button is only partly inside the capped box. It is still pinned and the
+// button keeps at least a 44px tappable strip. (Before this change the dock was static there and reachable by page
+// scroll; 200% text on a landscape phone with the browser bars showing is the extreme corner.)
+for (const [width, height] of [
+  [874, 292],
+  [667, 250],
+]) {
+  const layout = await dockLayoutAt(width, 32, height);
+  const ok =
+    layout.position === "sticky" && layout.primaryVisiblePx >= 44 && layout.pageOverflowX <= 1;
+  console.log(
+    `${ok ? "ok  " : "FAIL"} real stylesheet, dock at ${width}px / 32px text, ${height}px tall (limit: partly clipped, >= 44px of the button visible): ${JSON.stringify(layout)}`,
+  );
+  if (!ok) failures.push(`dock-layout-large-text-${width}-${height}`);
 }
 // ---- the REAL stylesheet: a pinch-zoomed or short visual viewport releases the pinned dock ----
 // The hook (ActionDock.tsx useDockPinning) sets data-unpinned; this proves what the CSS does with it.

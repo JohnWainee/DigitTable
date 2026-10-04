@@ -5,7 +5,7 @@
 # device (see README.md); this tool exists because headless Chrome cannot shrink only the visual viewport
 # the way iOS does for the keyboard.
 #
-#   scripts/playtest/ios-simulator/run.sh [--base URL] [--out DIR] ["iPhone 17 Pro" "iPad mini (A17 Pro)" ...]
+#   scripts/playtest/ios-simulator/run.sh [--base URL] [--out DIR] [--only TestName ...] ["iPhone 17 Pro" "iPad mini (A17 Pro)" ...]
 #
 # Needs Xcode with iOS Simulator runtimes, and the app + emulators already running on this Mac's loopback:
 # the Firebase emulators (auth, firestore, functions) plus a `vite preview` of a build made with
@@ -20,11 +20,13 @@ BASE="${DIGITABLE_BASE:-http://127.0.0.1:4173}"
 OUT="${DIGITABLE_OUT:-/private/tmp/digitable-ios-playtest}"
 DEVICES=()
 ALLOW_REMOTE=0
+ONLY=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --base) BASE="$2"; shift 2 ;;
     --out) OUT="$2"; shift 2 ;;
     --allow-remote) ALLOW_REMOTE=1; shift ;;
+    --only) ONLY+=("-only-testing:IosPlaytestUITests/SafariFlowUITests/$2"); shift 2 ;;
     *) DEVICES+=("$1"); shift ;;
   esac
 done
@@ -83,7 +85,7 @@ for device in "${DEVICES[@]}"; do
   xcrun simctl bootstatus "$udid" >/dev/null 2>&1
   if TEST_RUNNER_DIGITABLE_BASE="$BASE" TEST_RUNNER_DIGITABLE_OUT="$OUT/$tag" TEST_RUNNER_DIGITABLE_TAG="$tag" \
     xcodebuild test -project IosPlaytest.xcodeproj -scheme IosPlaytest \
-      -destination "platform=iOS Simulator,id=$udid" -derivedDataPath "$DERIVED" \
+      -destination "platform=iOS Simulator,id=$udid" -derivedDataPath "$DERIVED" ${ONLY[@]+"${ONLY[@]}"} \
       CODE_SIGNING_ALLOWED=NO > "$OUT/$tag-xcodebuild.log" 2>&1; then
     echo "   passed"
   else
