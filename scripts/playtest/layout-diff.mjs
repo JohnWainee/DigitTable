@@ -5,12 +5,17 @@
 // identical: run the audit against the old bundle and the new one, then
 //
 //   node scripts/playtest/layout-diff.mjs before.json after.json [--tolerance 1] [--show 8]
+//                                         [--allow-skip join-form]...
 //
 // A state is "comparable" when both runs rendered the same element paths (the same DOM); states whose
 // DOM differs between runs (a random roll, a different number of dice) are listed, not compared; an
 // element whose own text differs between runs (a random room code) is counted, not compared. Exits
 // 1 when any comparable state has an element off by more than the tolerance (default 1 CSS px, to
-// absorb sub-pixel rounding), or when nothing was comparable (a vacuous pass is a failure).
+// absorb sub-pixel rounding), when nothing was comparable, when the two dumps cover different
+// state/viewport keys (a partial dump must not read as identical), or when a state is not comparable and
+// was not named by --allow-skip (a substring of the key; use it for a DOM change you made on purpose).
+// The dump keeps display:none elements as zero boxes, so a stylesheet that hides or shows an element at
+// some width is a moved box here, not a skipped "different DOM".
 
 import { readFileSync } from "node:fs";
 
@@ -23,6 +28,7 @@ args.forEach((a, i) => {
   }
 });
 const files = args.filter((_, i) => !flagIndexes.has(i));
+const allowSkip = args.flatMap((a, i) => (a === "--allow-skip" ? [args[i + 1]] : []));
 const flag = (name, fallback) => {
   const i = args.indexOf(`--${name}`);
   return i >= 0 ? Number(args[i + 1]) : fallback;
@@ -48,13 +54,22 @@ let skipped = 0;
 let elements = 0;
 let contentVaried = 0;
 const moved = [];
+const onlyBefore = Object.keys(before).filter((key) => !(key in after));
+const onlyAfter = Object.keys(after).filter((key) => !(key in before));
+for (const key of onlyBefore) console.log(`MISSING from the second dump: ${key}`);
+for (const key of onlyAfter) console.log(`MISSING from the first dump: ${key}`);
+let unallowedSkips = 0;
 for (const key of Object.keys(before)) {
   if (!(key in after)) continue;
   const a = before[key].map(parse);
   const b = after[key].map(parse);
   if (a.length !== b.length || a.some((el, i) => el.path !== b[i].path)) {
     skipped += 1;
-    console.log(`not comparable (different DOM): ${key} (${a.length} vs ${b.length} elements)`);
+    const allowed = allowSkip.some((fragment) => key.includes(fragment));
+    if (!allowed) unallowedSkips += 1;
+    console.log(
+      `not comparable (different DOM${allowed ? ", allowed" : ""}): ${key} (${a.length} vs ${b.length} elements)`,
+    );
     continue;
   }
   comparable += 1;
@@ -91,6 +106,16 @@ console.log(
 );
 if (comparable === 0) {
   console.log("LAYOUT DIFF FAILED: nothing was comparable");
+  process.exit(1);
+}
+if (onlyBefore.length + onlyAfter.length > 0) {
+  console.log("LAYOUT DIFF FAILED: the dumps cover different state/viewport keys");
+  process.exit(1);
+}
+if (unallowedSkips > 0) {
+  console.log(
+    `LAYOUT DIFF FAILED: ${unallowedSkips} state(s) have a different DOM and were not named by --allow-skip`,
+  );
   process.exit(1);
 }
 console.log(moved.length === 0 ? "LAYOUT IDENTICAL" : "LAYOUT DIFFERS");

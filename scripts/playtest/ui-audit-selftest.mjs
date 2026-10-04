@@ -39,6 +39,8 @@ function expression(name) {
 const CONTROL_AUDIT = expression("CONTROL_AUDIT");
 const KEYBOARD_FOCUS_AUDIT = expression("KEYBOARD_FOCUS_AUDIT");
 const DOCK_AUDIT = expression("DOCK_AUDIT");
+const WORD_BREAK_AUDIT = expression("WORD_BREAK_AUDIT");
+const LAYOUT_DUMP_EXPRESSION = expression("LAYOUT_DUMP_EXPRESSION");
 
 const args = process.argv.slice(2);
 const portIndex = args.indexOf("--port");
@@ -615,6 +617,70 @@ function check(name, ok, detail = "") {
     "Emulation.setDeviceMetricsOverride",
     { width: 375, height: 468, deviceScaleFactor: 1, mobile: true },
     sessionId,
+  );
+}
+
+// ---- WORD_BREAK_AUDIT: a word split across lines is reported; wrapped sentences and exempt strings are not ----
+{
+  const narrow = (inner, width = 120) =>
+    `<div style="width:${width}px;font:700 40px sans-serif;overflow-wrap:anywhere">${inner}</div>`;
+  const broken = await page(narrow("SESSION"), WORD_BREAK_AUDIT);
+  check(
+    "broken words: a word split mid-word in a narrow box is reported",
+    broken.length === 1 && broken[0].includes("SESSION"),
+    JSON.stringify(broken),
+  );
+  const whole = await page(narrow("SESSION", 400), WORD_BREAK_AUDIT);
+  check(
+    "broken words: the same word with room to spare is clean",
+    whole.length === 0,
+    JSON.stringify(whole),
+  );
+  // A sentence wraps between words, a hyphenated compound may wrap at its hyphen, a token over 16 characters
+  // is an identifier, and a <dd> (a one-time code) may break anywhere: none of those is a defect.
+  const exempt = await page(
+    narrow("alpha beta gamma delta epsilon mid-air-strike ChooseSecondaryReward", 200) +
+      `<dl><dd style="width:90px;font:700 30px monospace;overflow-wrap:anywhere">ABCDEFGHJK234</dd></dl>`,
+    WORD_BREAK_AUDIT,
+  );
+  check(
+    "broken words: wrapped sentences, hyphenated compounds, identifiers over 16 characters and <dd> are exempt",
+    exempt.length === 0,
+    JSON.stringify(exempt),
+  );
+}
+
+// ---- LAYOUT_DUMP_EXPRESSION: the fingerprint moves with geometry, text and display:none ----
+{
+  const dump = (width, text, hidden) =>
+    page(
+      `<main><h1 style="width:${width}px;margin:0">${text}</h1><p style="margin:0;${hidden ? "display:none" : ""}">second</p></main>`,
+      LAYOUT_DUMP_EXPRESSION,
+    );
+  const a = await dump(200, "Title", false);
+  const same = await dump(200, "Title", false);
+  const wider = await dump(260, "Title", false);
+  const retext = await dump(200, "Titles", false);
+  const hiddenDump = await dump(200, "Title", true);
+  const h1 = (lines) => lines.find((line) => /h1:1\|/.test(line));
+  check(
+    "layout fingerprint: an identical page dumps identically",
+    JSON.stringify(a) === JSON.stringify(same),
+  );
+  check(
+    "layout fingerprint: a wider element changes its box",
+    h1(a) !== h1(wider) && h1(wider).split("|")[3] === "260",
+    `${h1(a)} -> ${h1(wider)}`,
+  );
+  check(
+    "layout fingerprint: different own text changes only the text hash",
+    h1(a).split("|").slice(1, 5).join("|") === h1(retext).split("|").slice(1, 5).join("|") &&
+      h1(a).split("|")[5] !== h1(retext).split("|")[5],
+  );
+  check(
+    "layout fingerprint: a display:none element stays in the dump as a zero box",
+    hiddenDump.length === a.length && hiddenDump.some((line) => /p:2\|0\|0\|0\|0\|/.test(line)),
+    JSON.stringify(hiddenDump),
   );
 }
 

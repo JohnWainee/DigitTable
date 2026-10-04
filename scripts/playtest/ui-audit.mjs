@@ -477,8 +477,8 @@ const LAYOUT_DUMP_EXPRESSION = `(() => {
   };
   for (const el of document.body.querySelectorAll("*")) {
     if (el.closest("svg") && el.tagName.toLowerCase() !== "svg") continue;
-    const cs = getComputedStyle(el);
-    if (cs.display === "none") continue;
+    // display:none elements are kept (as zero boxes), so an element a stylesheet hides or shows at some width
+    // is a moved box in the diff, not a "different DOM" that gets skipped.
     const r = el.getBoundingClientRect();
     const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.nodeValue.replace(/\\s+/g, " ").trim()).join(" ").trim();
     out.push(path(el) + "|" + Math.round(r.left + scrollX) + "|" + Math.round(r.top + scrollY) + "|" + Math.round(r.width) + "|" + Math.round(r.height) + "|" + hash(own));
@@ -569,6 +569,8 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
  * transparent, glyphs magenta) and every text box is scored against the background under its own glyphs.
  */
 const CONTRAST_VIEWPORTS = ["phone", "phone-landscape", "desktop"];
+/** Viewport-sized slices scored per page. A longer page is scored only this far and says so (`truncated`). */
+const MAX_CONTRAST_SLICES = 12;
 
 async function captureViewportPng(device, css) {
   await ev(
@@ -602,7 +604,8 @@ async function auditPixelContrast(device, state) {
     );
     const step = Math.max(200, Math.floor(page.inner * 0.9));
     const offsets = [];
-    for (let y = 0; y < page.height - 1 && offsets.length < 8; y += step) offsets.push(y);
+    for (let y = 0; y < page.height - 1 && offsets.length < MAX_CONTRAST_SLICES; y += step)
+      offsets.push(y);
     const scope = `${device.name}/${state}@${vp.name}`;
     const entry = {
       scope,
@@ -610,6 +613,10 @@ async function auditPixelContrast(device, state) {
       measured: 0,
       insufficient: 0,
       occluded: 0,
+      unparsed: 0,
+      truncated:
+        offsets.length >= MAX_CONTRAST_SLICES &&
+        offsets[offsets.length - 1] + page.inner < page.height - 1,
       failures: [],
       worst: [],
     };
@@ -645,6 +652,8 @@ async function auditPixelContrast(device, state) {
       entry.occluded += occluded;
       for (const r of results) {
         if (r.status === "insufficient") entry.insufficient += 1;
+        // A text colour the sampler cannot parse (color-mix(), oklch()) is counted, never silently dropped.
+        if (r.status === "unparsed-colour") entry.unparsed += 1;
         if (r.status !== "pass" && r.status !== "fail") continue;
         entry.measured += 1;
         entry.worst.push({ element: r.element, text: r.text, p5: r.p5, required: r.required });
@@ -1982,6 +1991,8 @@ async function main() {
       contrastBoxesInsufficient: report.contrast.reduce((n, c) => n + c.insufficient, 0),
       contrastFailures: report.contrast.reduce((n, c) => n + c.failures.length, 0),
       contrastInvalidSlices: report.contrast.reduce((n, c) => n + (c.invalid ?? 0), 0),
+      contrastUnparsedBoxes: report.contrast.reduce((n, c) => n + c.unparsed, 0),
+      contrastTruncatedPages: report.contrast.filter((c) => c.truncated).length,
       textScaleStates: report.textScale.length,
       textScaleControls: report.textScale.reduce((n, s) => n + s.controls, 0),
       textScaleOverflowStates: report.textScale.filter((s) => s.overflowPx > 1).length,
