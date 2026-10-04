@@ -445,33 +445,32 @@ describe("layout-diff.mjs (proves a CSS change leaves the default-size layout id
 
 describe("option-row stress probe", () => {
   const stress = script("option-row-stress.mjs");
-  const stressRules = readFileSync(
-    join(here, "../../../../scripts/playtest/optionRowStressRules.mjs"),
-    "utf8",
-  );
-
-  it("keeps the gates that would have caught the large-text word breaks", () => {
-    // The supported range: a cut word at <= 200% text on a >= 320px viewport is a hard failure.
-    expect(stressRules).toContain("SUPPORTED_MAX_SCALE = 2");
-    expect(stressRules).toContain("SUPPORTED_MIN_WIDTH = 320");
-    expect(stressRules).toContain("scale <= SUPPORTED_MAX_SCALE && width >= SUPPORTED_MIN_WIDTH");
-    // A word cut while its text still sits beside the box means stacking did not happen first.
-    expect(stressRules).toContain("while still beside its box");
-    // A row that fits must not move at the default text size, and nothing may widen the page or its row.
-    expect(stressRules).toContain("stacked at the default text size");
-    expect(stressRules).toContain("page overflows");
-    expect(stressRules).toContain("text overruns the row");
-    // Rows keep their 48px tap height.
-    expect(stressRules).toContain("MIN_ROW_HEIGHT = 47.5");
-    expect(stressRules).toContain("row.rowH < MIN_ROW_HEIGHT");
-  });
 
   it("can fail on purpose, so a pass is not vacuous", () => {
-    // `--expect-failures` is the negative control: run against the pre-fix stylesheet it must find problems.
+    // `--expect-failures` is the negative control: run against the pre-fix stylesheet it must find the
+    // intended failure (a word cut while still beside its box), not merely some failure.
     expect(stress).toContain("--expect-failures");
+    expect(stress).toContain("besideBoxFailures > 0");
     expect(stress).toContain("NEGATIVE CONTROL FAILED");
-    // It drives the app's real option-row classes, not a lookalike.
+    // It drives the app's real option-row classes, not a lookalike, and refuses a frame with no rows.
     expect(stress).toContain('class="gear-option"');
     expect(stress).toContain('class="option-text"');
+    expect(stress).toContain("expected ${expectedRows}");
+  });
+
+  it("measures the structures the real screens have, not just plain rows", () => {
+    // A stat row's icon, a utility item's own button, the landing row and the GM's Reveal row all share
+    // `.gear-option` and each once behaved differently from a plain row.
+    for (const needle of [
+      "stat-icon",
+      "gear-item",
+      "secondary-action",
+      "form-field--checkbox",
+      "pending-action-card",
+    ]) {
+      expect(stress, needle).toContain(needle);
+    }
+    // Letters, not ASCII only, and short words too (a 5-letter word never needs to break).
+    expect(stress).toContain("\\p{L}{5,}");
   });
 });

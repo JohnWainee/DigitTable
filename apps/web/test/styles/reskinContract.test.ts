@@ -825,6 +825,42 @@ describe("reskin stylesheet contract", () => {
       expect(root("gutter-xs")).toBe("min(0.65rem, 10.4px)");
     });
 
+    it("has no other rule that sets padding or margin on a fieldset or an option row, so none can out-rank the eased ones", () => {
+      // A later rule of equal specificity (`.step fieldset { padding-inline: ... }`) or a media query on
+      // `.gear-option` would silently win over the easing and put the 320px/200% word breaks back. Every
+      // rule that touches those boxes' spacing is listed here: a new one has to be added on purpose.
+      const found: string[] = [];
+      const re = /([^{}]+)\{([^{}]*)\}/g;
+      for (let match = re.exec(css); match; match = re.exec(css)) {
+        const selector = match[1]!.trim().replace(/\s+/g, " ");
+        if (
+          !/(^|[\s,>+~])fieldset|\.gear-option|\.form-field--checkbox|\.option-text|\.gear-item/.test(
+            selector,
+          )
+        ) {
+          continue;
+        }
+        const properties = [
+          ...match[2]!.matchAll(/(?:^|;|\s)(padding[a-z-]*|margin[a-z-]*)\s*:/g),
+        ].map((m) => m[1]!);
+        if (properties.length > 0)
+          found.push(`${selector} -> ${[...new Set(properties)].join(",")}`);
+      }
+      expect(found).toEqual([
+        "fieldset -> margin,padding",
+        "fieldset:has(.gear-option) -> padding-inline",
+        ".gear-option, .form-field--checkbox -> padding",
+        ".gear-item > .secondary-action -> margin",
+        ".pending-action-card fieldset -> padding-inline",
+        ".pending-action-card fieldset:has(.gear-option) -> padding-inline",
+        ".pending-action-card .gear-option -> padding-inline",
+      ]);
+      // And the order that matters between equal-specificity rules: the scoped easing comes after the base.
+      expect(css.indexOf("fieldset:has(.gear-option) {")).toBeGreaterThan(
+        css.indexOf("fieldset {"),
+      );
+    });
+
     it("gives the padding back only to fieldsets of option rows, and keeps every other fieldset as it was", () => {
       expect(declaration(rulesFor(/^fieldset$/), "padding").join(" ")).toContain(
         "var(--gutter-sm) ",
@@ -846,7 +882,9 @@ describe("reskin stylesheet contract", () => {
       const row = rulesFor(/^\.gear-option,\s*\.form-field--checkbox$/s);
       expect(declaration(row, "flex-wrap")).toEqual(["wrap"]);
       const text = rulesFor(/^\.option-text$/);
-      expect(declaration(text, "flex")).toEqual(["1 1 min-content"]);
+      // The `0%` declaration first is the fallback for an engine that rejects `min-content` as a basis
+      // (it keeps the old behaviour: beside the box, the word breaks); the later one wins everywhere else.
+      expect(declaration(text, "flex")).toEqual(["1 1 0%", "1 1 min-content"]);
       // `anywhere` (the row's value) would shrink min-content to one letter, so the text could never stack.
       expect(declaration(text, "overflow-wrap")).toEqual(["break-word"]);
       // Last resort: a word wider than the whole line shrinks to it and wraps INSIDE the row. In CSS

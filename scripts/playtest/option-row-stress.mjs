@@ -23,8 +23,8 @@
 // Why iframes: an iframe's viewport IS its width (media queries and vw units included), whereas a headless
 // window will not go below ~500px, which would silently test the wrong width.
 
-import { spawnSync } from "node:child_process";
-import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { spawn } from "node:child_process";
+import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { evaluateStress } from "./optionRowStressRules.mjs";
@@ -169,7 +169,12 @@ addEventListener("message", (e) => {
 </script>`,
 );
 
-const run = spawnSync(
+// Headless Chrome prints the DOM and then does not exit by itself, so wait for the end of the dump (or a
+// deadline) and kill its process group; the profile directory is removed on every way out.
+function cleanUp() {
+  rmSync(dir, { recursive: true, force: true });
+}
+const chrome = spawn(
   CHROME,
   [
     "--headless=new",
@@ -181,12 +186,40 @@ const run = spawnSync(
     "--dump-dom",
     `file://${join(dir, "host.html")}`,
   ],
-  { encoding: "utf8", timeout: 90_000 },
+  { stdio: ["ignore", "pipe", "pipe"], detached: true },
 );
-const match = /<pre id="out">([\s\S]*?)<\/pre>/.exec(run.stdout ?? "");
+let stdout = "";
+let stderr = "";
+const timedOut = await new Promise((resolve) => {
+  const stop = (reason) => {
+    clearTimeout(deadline);
+    try {
+      process.kill(-chrome.pid, "SIGKILL");
+    } catch {
+      // already gone
+    }
+    resolve(reason);
+  };
+  const deadline = setTimeout(() => stop(true), 60_000);
+  chrome.stdout.on("data", (chunk) => {
+    stdout += chunk;
+    if (stdout.includes("</html>")) stop(false);
+  });
+  chrome.stderr.on("data", (chunk) => {
+    stderr += chunk;
+  });
+  chrome.on("error", () => stop(false));
+  chrome.on("exit", () => stop(false));
+});
+const match = /<pre id="out">([\s\S]*?)<\/pre>/.exec(stdout);
 if (!match) {
-  console.error("Chrome produced no result (is Google Chrome installed? set CHROME_PATH).");
-  console.error((run.stderr ?? "").slice(0, 600));
+  cleanUp();
+  console.error(
+    timedOut
+      ? "Chrome produced no result within 60s."
+      : "Chrome produced no result (is Google Chrome installed? set CHROME_PATH).",
+  );
+  console.error(stderr.slice(0, 600));
   process.exit(2);
 }
 const decode = (s) =>
@@ -196,6 +229,7 @@ const decode = (s) =>
     .replaceAll("&gt;", ">")
     .replaceAll("&amp;", "&");
 const byWidth = JSON.parse(decode(match[1]));
+cleanUp();
 if (byWidth.length !== WIDTHS.length) {
   console.error(`expected ${WIDTHS.length} frames, got ${byWidth.length}`);
   process.exit(2);

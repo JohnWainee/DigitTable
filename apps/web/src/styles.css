@@ -84,9 +84,10 @@
   /* The two paddings between an option row's text and the screen edge (the side padding of a fieldset of
      option rows, and of a row) ease DOWN with the text size instead of holding at their default px, to a
      4px floor: a 13-14 letter name needs ~225px at 200% text and a 320px phone leaves 196px with them held.
-     Identical to the tokens above at and below the default size (the middle term equals the default px at
-     a 16px root), plain linear calc in rem (no length division): 13.6px at 16px, 10.2px at 125% text,
-     6.8px at 150%, 4px from 200% up. The text size in between (106-199%) moves them, which is the point. */
+     Identical to the tokens above at the default size and below it (the middle term equals the default px at
+     a 16px root), plain linear calc in rem (no length division): 13.6px at 16px, 10.2px at 125% text, 6.8px
+     at 150%, and the 4px floor from about 170% (the row's own, 10.4px at 16px: about 162%). Between 100% and
+     the floor the padding is in motion, which is the point. */
   --gutter-sm-fit: clamp(4px, calc(27.2px - 0.85rem), min(0.85rem, 13.6px));
   --gutter-xs-fit: clamp(4px, calc(20.8px - 0.65rem), min(0.65rem, 10.4px));
 }
@@ -757,6 +758,9 @@ input[type="radio"]:disabled {
    far past 200%), `min-width: 0` lets the word shrink to the row and break inside it: it can never widen
    the page (a `min-width: min-content` would win over `max-width` and overflow instead). */
 .option-text {
+  /* An engine without `min-content` as a flex basis drops the declaration below and keeps this one: the text
+     stays beside its box and the word breaks, which is how a row behaved before. */
+  flex: 1 1 0%;
   flex: 1 1 min-content;
   min-width: 0;
   max-width: 100%;
