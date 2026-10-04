@@ -452,6 +452,13 @@ When pausing or finishing a material unit:
 
 ## Integrated verification and next action
 
+### 2026-10-04: control / pop-out audit on `802ef4b`, no source change (`sonnet-ej/reskin-orchestrated-20261004`)
+
+- **Base:** `802ef4b`. Evidence and docs only; not merged, not deployed; staging touched read-only (three status-code GETs).
+- **Finding:** full audit of selects, sheet, disclosures, option lists and pickers at phone/tablet/desktop/table widths: 288 states, 3,256 controls, 0 control, overflow, hard-axe or contrast failures; only the six known option-row word-break findings at 150-200% text remain. They are an arithmetic limit (~209px text column vs ~220px for "Phantasmagoria" at 375px/200%); `hyphens: auto` was tried and reverted (no hyphenation dictionary in the Chrome used, so unverifiable and browser-dependent). Untried layout options are listed in the evidence README.
+- **Gates:** `npm run check` (829 passed, 11 todo), `npm run build`, smoke `--reload` passed, emulator suites 18 + 86 + 4 (ports 64xxx; a peer lane holds 55001/59099/58080). Record: `docs/evidence/ej-reskin-audit-20261004/`, `docs/reviews/2026-10-04-ej-control-audit-independent-review.md`.
+- **Still open:** as the `sonnet-ei` entry; John's call on stacking the checkbox above option labels at large text.
+
 ### 2026-10-04: pop-out audit on `a0e8f36`, iPhone SE failure resolved to the rig, no source change (`sonnet-ei/reskin-orchestrated-20261004`)
 
 - **Base:** `a0e8f36`. Evidence and docs only; not merged, not deployed; staging touched read-only (three GETs).
