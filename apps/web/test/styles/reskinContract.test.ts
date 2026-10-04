@@ -806,6 +806,10 @@ describe("reskin stylesheet contract", () => {
       expect(
         declaration(rulesFor(/^\.gear-option:has\(> \.secondary-action\) > span$/), "min-width"),
       ).toEqual(["0"]);
+      // The label keeps its natural width (the action stays beside it on a wide row), not a growing one.
+      expect(
+        declaration(rulesFor(/^\.gear-option:has\(> \.secondary-action\) > span$/), "flex"),
+      ).toEqual(["0 1 auto"]);
     });
 
     it("keeps the drawn check and radio marks inside their px-capped boxes at any text size", () => {

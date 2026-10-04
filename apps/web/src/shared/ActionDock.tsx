@@ -50,9 +50,12 @@ function useActionDockInset(ref: RefObject<HTMLElement | null>): void {
  * the `max-height` media query stay at 292 even after scrolling collapses the bars (`innerHeight` then reads 402),
  * so the dock was released and "Declare action" sat at the very end of a 2,400px form. A compact dock is about
  * 66-87px, so 292px still leaves 200px of page and 240px leaves 150px.
- * Inclusive, to agree with `@media (max-height: 15rem)` (which also matches at exactly 15rem), whose rem is the
- * browser's initial 16px. Not scaled by the root font size: scaling it would unpin the dock for every phone at
- * 200% text, which is exactly where the capped, internally scrolled dock (`data-clipped`) is meant to stay pinned.
+ * Inclusive, to agree with `@media (max-height: 15rem)` (which also matches at exactly 15rem). A rem inside a media
+ * query is the browser's default font-size SETTING, not the page's root size: 16px unless the visitor changed it, in
+ * which case the media query moves with that setting (15 x 24px = 360px at a 24px default) and this constant does not.
+ * That divergence predates this line and is a known limit. The constant is not scaled by the page's root font size:
+ * scaling it would unpin the dock for every phone at 200% text, which is exactly where the capped, internally scrolled
+ * dock (`data-clipped`) is meant to stay pinned.
  */
 export const UNPIN_BELOW_PX = 240;
 /** Pinch-zoom beyond this scale unpins the dock (1 plus the engines' rounding noise). */

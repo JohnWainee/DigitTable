@@ -218,7 +218,12 @@ describe("Landing / create / join / claim (C01)", () => {
     window.localStorage.clear();
     goTo("#/");
     goTo("#/join");
-    await user.click(screen.getByRole("button", { name: /recover your seat/i }));
+    const recover = screen.getByRole("button", { name: /recover your seat/i });
+    // The question is a hint, not part of the label: it is the button's description, so assistive technology
+    // still hears it, and the accessible name equals the visible label (WCAG 2.5.3).
+    expect(recover).toHaveAccessibleName("Recover your seat");
+    expect(recover).toHaveAccessibleDescription("Lost your browser?");
+    await user.click(recover);
     await user.type(screen.getByLabelText(/^room code$/i), roomCode);
     await user.type(screen.getByLabelText(/recovery code/i), originalCode);
     await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");

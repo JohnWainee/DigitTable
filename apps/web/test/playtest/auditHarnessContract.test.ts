@@ -329,10 +329,46 @@ describe("layout-diff.mjs (proves a CSS change leaves the default-size layout id
     expect(run({ "gm/x@phone": page }, { "gm/x@phone": same }).code).toBe(1);
   });
 
-  it("does not compare different DOMs, and fails a vacuous run", () => {
+  it("fails a vacuous run, a partial dump and an unexplained DOM change, and names allowed ones", () => {
     const extra = [...page, "main:1>p:3|16|160|288|20|"];
-    const result = run({ "gm/x@phone": page }, { "gm/x@phone": extra });
-    expect(result.out).toContain("not comparable (different DOM)");
-    expect(result.code).toBe(1); // nothing comparable is a failure, not a pass
+    // Nothing comparable at all is a failure, not a pass.
+    const vacuous = run({ "gm/x@phone": page }, { "gm/x@phone": extra });
+    expect(vacuous.out).toContain("not comparable (different DOM)");
+    expect(vacuous.code).toBe(1);
+    // One comparable pair does not excuse an unexplained different DOM next to it...
+    const mixed = run(
+      { "gm/x@phone": page, "anon/join-form@phone": page },
+      { "gm/x@phone": page, "anon/join-form@phone": extra },
+    );
+    expect(mixed.code).toBe(1);
+    expect(mixed.out).toContain("were not named by --allow-skip");
+    // ...but a DOM change named on purpose is allowed.
+    writeFileSync(
+      join(dir, "m1.json"),
+      JSON.stringify({ "gm/x@phone": page, "anon/join-form@phone": page }),
+    );
+    writeFileSync(
+      join(dir, "m2.json"),
+      JSON.stringify({ "gm/x@phone": page, "anon/join-form@phone": extra }),
+    );
+    const allowed = execFileSync(
+      "node",
+      [tool, join(dir, "m1.json"), join(dir, "m2.json"), "--allow-skip", "join-form"],
+      { encoding: "utf8" },
+    );
+    expect(allowed).toContain("different DOM, allowed");
+    expect(allowed).toContain("LAYOUT IDENTICAL");
+    // A dump that lacks a key the other has (a crash, or --only-states) cannot read as identical.
+    const partial = run({ "gm/x@phone": page, "gm/x@tablet": page }, { "gm/x@phone": page });
+    expect(partial.code).toBe(1);
+    expect(partial.out).toContain("MISSING from the second dump: gm/x@tablet");
+  });
+
+  it("sees an element that a stylesheet hides or shows (the dump keeps display:none boxes)", () => {
+    const shown = page.map((line) => line.replace("|16|100|288|48|xyz", "|16|100|288|48|xyz"));
+    const hidden = page.map((line) => line.replace("|16|100|288|48|xyz", "|0|0|0|0|xyz"));
+    const result = run({ "gm/x@phone": shown }, { "gm/x@phone": hidden });
+    expect(result.code).toBe(1);
+    expect(result.out).toContain("button:2: 16,100 288x48 -> 0,0 0x0");
   });
 });

@@ -764,7 +764,9 @@ input[type="radio"]:disabled {
 }
 
 .gear-option:has(> .secondary-action) > span {
-  flex: 1 1 8rem;
+  /* Natural width: the action sits right beside its label on a wide row (as it always did) and drops
+     under it only when the two do not fit. */
+  flex: 0 1 auto;
   min-width: 0;
 }
 
