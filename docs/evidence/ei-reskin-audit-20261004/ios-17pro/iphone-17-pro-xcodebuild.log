@@ -1,0 +1,1259 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project IosPlaytest.xcodeproj -scheme IosPlaytest -destination "platform=iOS Simulator,id=1191CD12-6B14-4EEF-8693-E62312789E38" -derivedDataPath /private/tmp/ei-lane/tmp//digitable-ios-playtest-dd CODE_SIGNING_ALLOWED=NO
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (2 targets)
+    Target 'IosPlaytestUITests' in project 'IosPlaytest'
+        ➜ Explicit dependency on target 'IosPlaytest' in project 'IosPlaytest'
+    Target 'IosPlaytest' in project 'IosPlaytest' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: ec87db9a2bce711debf7b96cb201f21e
+Build description path: /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/XCBuildData/ec87db9a2bce711debf7b96cb201f21e.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk /tmp/ei-lane/tmp/digitable-ios-playtest-dd/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator/IosPlaytest.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -o /tmp/ei-lane/tmp/digitable-ios-playtest-dd/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache
+
+ProcessInfoPlistFile /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytest.app/Info.plist /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytest.build/empty-IosPlaytest.plist (in target 'IosPlaytest' from project 'IosPlaytest')
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator
+    builtin-infoPlistUtility /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytest.build/empty-IosPlaytest.plist -producttype com.apple.product-type.application -genpkginfo /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytest.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -o /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytest.app/Info.plist
+
+SwiftDriver IosPlaytestUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name IosPlaytestUITests -O @/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests.SwiftFileList -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios17.0-simulator -g -module-cache-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/ModuleCache.noindex -Xfrontend -serialize-debugging-options -swift-version 5 -I /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -parse-as-library -c -j12 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/ei-lane/tmp/digitable-ios-playtest-dd/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -output-file-map /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/ModuleCache.noindex -sdk-module-cache-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/ei-lane/tmp/digitable-ios-playtest-dd/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/IosPlaytestUITests-generated-files.hmap -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/IosPlaytestUITests-own-target-headers.hmap -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/IosPlaytestUITests-all-target-headers.hmap -Xcc -iquote -Xcc /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/IosPlaytestUITests-project-headers.hmap -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/DerivedSources/arm64 -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/DerivedSources -emit-objc-header -emit-objc-header-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests-Swift.h -working-directory /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator -experimental-emit-module-separately -disable-cmo
+
+CopySwiftLibs /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytest.app (in target 'IosPlaytest' from project 'IosPlaytest')
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator
+    builtin-swiftStdLibTool --copy --verbose --scan-executable /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytest.app/IosPlaytest --scan-folder /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytest.app/Frameworks --scan-folder /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytest.app/PlugIns --scan-folder /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytest.app/SystemExtensions --scan-folder /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytest.app/Extensions --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytest.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytest.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ IosPlaytestUITests (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+
+SwiftCompile normal arm64 (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator
+    
+
+SwiftCompile normal arm64 Compiling\ SafariFlowUITests.swift /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+
+SwiftCompile normal arm64 /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator
+    builtin-SwiftPerFileCompile SafariFlowUITests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling SafariFlowUITests.swift (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+
+SwiftDriver\ Compilation IosPlaytestUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name IosPlaytestUITests -O @/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests.SwiftFileList -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios17.0-simulator -g -module-cache-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/ModuleCache.noindex -Xfrontend -serialize-debugging-options -swift-version 5 -I /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -parse-as-library -c -j12 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/ei-lane/tmp/digitable-ios-playtest-dd/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -output-file-map /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/ModuleCache.noindex -sdk-module-cache-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/ei-lane/tmp/digitable-ios-playtest-dd/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/IosPlaytestUITests-generated-files.hmap -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/IosPlaytestUITests-own-target-headers.hmap -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/IosPlaytestUITests-all-target-headers.hmap -Xcc -iquote -Xcc /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/IosPlaytestUITests-project-headers.hmap -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/DerivedSources/arm64 -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/DerivedSources -emit-objc-header -emit-objc-header-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests-Swift.h -working-directory /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for IosPlaytestUITests (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+
+SwiftDriver\ Compilation\ Requirements IosPlaytestUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name IosPlaytestUITests -O @/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests.SwiftFileList -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios17.0-simulator -g -module-cache-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/ModuleCache.noindex -Xfrontend -serialize-debugging-options -swift-version 5 -I /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -parse-as-library -c -j12 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/ei-lane/tmp/digitable-ios-playtest-dd/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -output-file-map /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/ModuleCache.noindex -sdk-module-cache-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/ei-lane/tmp/digitable-ios-playtest-dd/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/IosPlaytestUITests-generated-files.hmap -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/IosPlaytestUITests-own-target-headers.hmap -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/IosPlaytestUITests-all-target-headers.hmap -Xcc -iquote -Xcc /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/IosPlaytestUITests-project-headers.hmap -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/DerivedSources/arm64 -Xcc -I/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/DerivedSources -emit-objc-header -emit-objc-header-path /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests-Swift.h -working-directory /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator -experimental-emit-module-separately -disable-cmo
+
+Copy /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests.swiftmodule/arm64-apple-ios-simulator.abi.json /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests.abi.json (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -strip-unsigned-binaries -strip-deterministic -strip-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip -resolve-src-symlinks -rename /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests.abi.json /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+Copy /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests.swiftsourceinfo (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -strip-unsigned-binaries -strip-deterministic -strip-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip -resolve-src-symlinks -rename /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests.swiftsourceinfo /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+Ld /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest/IosPlaytestUITests normal (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios17.0-simulator -bundle -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -Os -Xlinker -no_warn_duplicate_libraries -L/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator -L/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F/tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -filelist /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests_lto.o -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests.swiftmodule -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport -o /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest/IosPlaytestUITests
+
+ExtractAppIntentsMetadata (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name IosPlaytestUITests --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk --xcode-version 27A266a --platform-family iOS --deployment-target 17.0 --bundle-identifier dev.digitable.iosplaytest.uitests --output /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest --target-triple arm64-apple-ios17.0-simulator --binary-file /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest/IosPlaytestUITests --dependency-file /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests_dependency_info.dat --stringsdata-file /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests.SwiftFileList --metadata-file-list /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/IosPlaytestUITests.DependencyMetadataFileList --static-metadata-file-list /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/IosPlaytestUITests.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/Objects-normal/arm64/IosPlaytestUITests.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-10-04 06:04:12.492 appintentsmetadataprocessor[43665:7554101] Starting appintentsmetadataprocessor export
+2026-10-04 06:04:12.496 appintentsmetadataprocessor[43665:7554101] warning: Metadata extraction skipped, no AppIntents.framework dependency found
+
+ProcessInfoPlistFile /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest/Info.plist /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/empty-IosPlaytestUITests.plist (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator
+    builtin-infoPlistUtility /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/empty-IosPlaytestUITests.plist -producttype com.apple.product-type.bundle.ui-testing -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/ProductTypeInfoPlistAdditions.plist -o /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest/Info.plist
+
+CopySwiftLibs /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator
+    builtin-swiftStdLibTool --copy --verbose --scan-executable /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest/IosPlaytestUITests --scan-folder /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest/Frameworks --scan-folder /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest/PlugIns --scan-folder /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest/SystemExtensions --scan-folder /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest/Extensions --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/IosPlaytest.build/Debug-iphonesimulator/IosPlaytestUITests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+GenerateDSYMFile /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest.dSYM /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest/IosPlaytestUITests (in target 'IosPlaytestUITests' from project 'IosPlaytest')
+    cd /tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator
+    export PATH\=/Applications/Xcode.app/Contents/SharedFrameworks/SwiftBuild.framework/Versions/A/PlugIns/SWBBuildService.bundle/Contents/PlugIns/SWBUniversalPlatformPlugin.bundle/Contents/Frameworks/SWBUniversalPlatform.framework/Resources:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/bin:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/libexec:/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/usr/bin:/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/usr/local/bin:/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/local/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/Users/john/.codex/tmp/arg0/codex-arg0WqdHxm:/Users/john/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override:/Users/john/.local/bin:/Users/john/.local/share/pi-node/node-v22.23.2-darwin-arm64/bin:/Users/john/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:/Applications/ChatGPT.app/Contents/Resources:/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/dsymutil /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest/IosPlaytestUITests -o /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Products/Debug-iphonesimulator/IosPlaytestUITests-Runner.app/PlugIns/IosPlaytestUITests.xctest.dSYM
+
+PruneExplicitPrecompiledModules /tmp/ei-lane/tmp/digitable-ios-playtest-dd/SDKExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/ei-lane/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+2026-10-04 06:04:20.115853-1000 IosPlaytestUITests-Runner[43701:7554532] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'All tests' started at 2026-10-04 06:04:22.228.
+Test Suite 'IosPlaytestUITests.xctest' started at 2026-10-04 06:04:22.228.
+Test Suite 'SafariFlowUITests' started at 2026-10-04 06:04:22.228.
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' started.
+    t =     0.00s Start Test at 2026-10-04 06:04:22.229
+    t =     0.12s Set Up
+    t =     0.12s     Open com.apple.mobilesafari
+    t =     0.12s         Launch com.apple.mobilesafari
+    t =     0.12s             Terminate com.apple.mobilesafari:29902
+objc[43701]: Class UIAccessibilityLoaderWebShared is implemented in both /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x10b1e8310) and /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x109a7c398). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =     1.58s             Setting up automation session
+    t =     2.13s             Wait for com.apple.mobilesafari to idle
+    t =     4.62s     Wait for com.apple.mobilesafari to become Running Foreground
+    t =     4.62s Opening default application for URL http://127.0.0.1:53174/?t=1791129866844#/create
+    t =     4.64s     Wait for com.apple.mobilesafari to idle
+    t =     7.71s Waiting 10.0s for "Session name" TextField to exist
+    t =     8.78s     Checking `Expect predicate `existsNoRetry == 1` for object "Session name" TextField`
+    t =     8.78s         Checking existence of `"Session name" TextField`
+    t =     8.85s Tap "Session name" TextField
+    t =     8.85s     Wait for com.apple.mobilesafari to idle
+    t =     8.85s     Find the "Session name" TextField
+    t =     8.87s     Check for interrupting elements affecting "Session name" TextField
+    t =     8.90s     Synthesize event
+    t =     9.31s     Wait for com.apple.mobilesafari to idle
+    t =     9.41s Type 'iOS Audit' into "Session name" TextField
+    t =     9.41s     Wait for com.apple.mobilesafari to idle
+    t =    10.44s     Find the "Session name" TextField
+    t =    10.49s     Check for interrupting elements affecting "Session name" TextField
+    t =    10.52s     Synthesize event
+    t =    10.87s     Wait for com.apple.mobilesafari to idle
+    t =    10.87s Waiting 10.0s for "Passphrase" TextField to exist
+    t =    11.93s     Checking `Expect predicate `existsNoRetry == 1` for object "Passphrase" TextField`
+    t =    11.93s         Checking existence of `"Passphrase" TextField`
+    t =    11.98s Tap "Passphrase" TextField
+    t =    11.98s     Wait for com.apple.mobilesafari to idle
+    t =    11.98s     Find the "Passphrase" TextField
+    t =    12.01s     Check for interrupting elements affecting "Passphrase" TextField
+    t =    12.04s     Synthesize event
+    t =    12.33s     Wait for com.apple.mobilesafari to idle
+    t =    13.39s Type 'audit-pass-1' into "Passphrase" TextField
+    t =    13.39s     Wait for com.apple.mobilesafari to idle
+    t =    13.39s     Find the "Passphrase" TextField
+    t =    13.42s     Check for interrupting elements affecting "Passphrase" TextField
+    t =    13.45s     Synthesize event
+    t =    13.86s     Wait for com.apple.mobilesafari to idle
+    t =    13.86s Waiting 10.0s for "Your display name" TextField to exist
+    t =    14.94s     Checking `Expect predicate `existsNoRetry == 1` for object "Your display name" TextField`
+    t =    14.94s         Checking existence of `"Your display name" TextField`
+    t =    14.98s Tap "Your display name" TextField
+    t =    14.98s     Wait for com.apple.mobilesafari to idle
+    t =    14.99s     Find the "Your display name" TextField
+    t =    15.02s     Check for interrupting elements affecting "Your display name" TextField
+    t =    15.05s     Synthesize event
+    t =    15.33s     Wait for com.apple.mobilesafari to idle
+    t =    16.62s Type 'Gamemaster' into "Your display name" TextField
+    t =    16.62s     Wait for com.apple.mobilesafari to idle
+    t =    16.63s     Find the "Your display name" TextField
+    t =    16.66s     Check for interrupting elements affecting "Your display name" TextField
+    t =    16.70s     Synthesize event
+    t =    17.06s     Wait for com.apple.mobilesafari to idle
+    t =    17.17s Find the Button (First Match)
+    t =    17.21s Tap "CREATE SESSION" Button
+    t =    17.21s     Wait for com.apple.mobilesafari to idle
+    t =    17.21s     Find the "CREATE SESSION" Button
+    t =    17.24s     Check for interrupting elements affecting "CREATE SESSION" Button
+    t =    17.27s     Synthesize event
+    t =    17.56s     Wait for com.apple.mobilesafari to idle
+    t =    18.73s Waiting 30.0s for Any (First Match) to exist
+    t =    19.79s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    19.80s         Checking existence of `Any (First Match)`
+    t =    19.96s Waiting 5.0s for Any (First Match) to exist
+    t =    21.04s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    21.04s         Checking existence of `Any (First Match)`
+    t =    21.06s Find the Any (First Match)
+[ios] room code captured: yes
+    t =    21.08s Find the Any (First Match)
+    t =    21.11s Tap "I have written these down" Switch
+    t =    21.12s     Wait for com.apple.mobilesafari to idle
+    t =    21.12s     Find the "I have written these down" Switch
+    t =    21.14s     Check for interrupting elements affecting "I have written these down" Switch
+    t =    21.17s     Synthesize event
+    t =    21.45s     Wait for com.apple.mobilesafari to idle
+    t =    21.46s Find the Button (First Match)
+    t =    21.49s Tap "I'M READY — CONTINUE" Button
+    t =    21.49s     Wait for com.apple.mobilesafari to idle
+    t =    21.49s     Find the "I'M READY — CONTINUE" Button
+    t =    21.52s     Check for interrupting elements affecting "I'M READY — CONTINUE" Button
+    t =    21.54s     Synthesize event
+    t =    21.83s     Wait for com.apple.mobilesafari to idle
+    t =    21.84s Waiting 20.0s for Button (First Match) to exist
+    t =    22.91s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    22.91s         Checking existence of `Button (First Match)`
+    t =    22.95s Find the Button (First Match)
+    t =    22.98s Tap "OPEN THE DIRECTOR CONSOLE" Button
+    t =    22.98s     Wait for com.apple.mobilesafari to idle
+    t =    22.98s     Find the "OPEN THE DIRECTOR CONSOLE" Button
+    t =    23.00s     Check for interrupting elements affecting "OPEN THE DIRECTOR CONSOLE" Button
+    t =    23.02s     Synthesize event
+    t =    23.31s     Wait for com.apple.mobilesafari to idle
+    t =    24.22s Waiting 30.0s for Any (First Match) to exist
+    t =    25.30s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    25.30s         Checking existence of `Any (First Match)`
+    t =    25.36s Find the Button (First Match)
+    t =    25.41s Swipe up WebView (First Match)
+    t =    25.41s     Wait for com.apple.mobilesafari to idle
+    t =    25.42s     Find the WebView (First Match)
+    t =    25.42s     Check for interrupting elements affecting "WebView" WebView
+    t =    25.47s     Synthesize event
+    t =    25.97s     Wait for com.apple.mobilesafari to idle
+    t =    28.52s Find the "LOAD SCENE" Button
+    t =    28.58s Tap "LOAD SCENE" Button
+    t =    28.58s     Wait for com.apple.mobilesafari to idle
+    t =    28.58s     Find the "LOAD SCENE" Button
+    t =    28.62s     Check for interrupting elements affecting "LOAD SCENE" Button
+    t =    28.66s     Synthesize event
+    t =    28.95s     Wait for com.apple.mobilesafari to idle
+    t =    28.95s Waiting 30.0s for Button (First Match) to exist
+    t =    30.02s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    30.02s         Checking existence of `Button (First Match)`
+    t =    30.09s         Capturing element debug description
+    t =    31.03s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    31.03s         Checking existence of `Button (First Match)`
+    t =    31.10s         Capturing element debug description
+    t =    31.95s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    31.95s         Checking existence of `Button (First Match)`
+    t =    32.00s         Capturing element debug description
+    t =    32.96s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    32.96s         Checking existence of `Button (First Match)`
+    t =    33.02s         Capturing element debug description
+    t =    33.97s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    33.97s         Checking existence of `Button (First Match)`
+    t =    34.02s         Capturing element debug description
+    t =    34.98s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    34.99s         Checking existence of `Button (First Match)`
+    t =    35.04s         Capturing element debug description
+    t =    36.00s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    36.00s         Checking existence of `Button (First Match)`
+    t =    36.06s         Capturing element debug description
+    t =    37.02s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    37.02s         Checking existence of `Button (First Match)`
+    t =    37.09s         Capturing element debug description
+    t =    38.05s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    38.05s         Checking existence of `Button (First Match)`
+    t =    38.11s         Capturing element debug description
+    t =    38.96s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    38.96s         Checking existence of `Button (First Match)`
+    t =    39.00s         Capturing element debug description
+    t =    40.03s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    40.03s         Checking existence of `Button (First Match)`
+    t =    40.09s         Capturing element debug description
+    t =    41.03s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    41.03s         Checking existence of `Button (First Match)`
+    t =    41.09s         Capturing element debug description
+    t =    42.04s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    42.05s         Checking existence of `Button (First Match)`
+    t =    42.11s         Capturing element debug description
+    t =    43.04s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    43.04s         Checking existence of `Button (First Match)`
+    t =    43.10s         Capturing element debug description
+    t =    43.96s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    43.96s         Checking existence of `Button (First Match)`
+    t =    44.03s         Capturing element debug description
+    t =    44.98s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    44.99s         Checking existence of `Button (First Match)`
+    t =    45.05s         Capturing element debug description
+    t =    45.99s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    45.99s         Checking existence of `Button (First Match)`
+    t =    46.04s         Capturing element debug description
+    t =    46.99s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    47.00s         Checking existence of `Button (First Match)`
+    t =    47.05s         Capturing element debug description
+    t =    47.99s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    47.99s         Checking existence of `Button (First Match)`
+    t =    48.04s         Capturing element debug description
+    t =    49.01s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    49.01s         Checking existence of `Button (First Match)`
+    t =    49.06s         Capturing element debug description
+    t =    50.01s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    50.01s         Checking existence of `Button (First Match)`
+    t =    50.06s         Capturing element debug description
+    t =    51.02s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    51.02s         Checking existence of `Button (First Match)`
+    t =    51.07s         Capturing element debug description
+    t =    52.00s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    52.00s         Checking existence of `Button (First Match)`
+    t =    52.06s         Capturing element debug description
+    t =    53.02s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    53.02s         Checking existence of `Button (First Match)`
+    t =    53.08s         Capturing element debug description
+    t =    54.02s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    54.02s         Checking existence of `Button (First Match)`
+    t =    54.08s         Capturing element debug description
+    t =    55.04s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    55.04s         Checking existence of `Button (First Match)`
+    t =    55.09s         Capturing element debug description
+    t =    56.03s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    56.03s         Checking existence of `Button (First Match)`
+    t =    56.08s         Capturing element debug description
+    t =    57.04s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    57.04s         Checking existence of `Button (First Match)`
+    t =    57.10s         Capturing element debug description
+    t =    57.96s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    57.96s         Checking existence of `Button (First Match)`
+    t =    58.02s         Capturing element debug description
+    t =    58.96s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    58.96s         Checking existence of `Button (First Match)`
+    t =    59.03s         Capturing element debug description
+    t =    59.03s     Checking existence of `Button (First Match)`
+    t =    59.08s Collecting debug information to assist test failure triage
+    t =    59.08s     Requesting snapshot of accessibility hierarchy for app with pid 43747
+/tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:140: error: -[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker] : XCTAssertTrue failed - scene loaded
+    t =    59.56s Checking existence of `PopUpButton (First Match)`
+    t =    59.60s Checking existence of `Any (First Match)`
+    t =    59.64s Find the Any (First Match)
+[ios] scene select found: true type=1
+    t =    59.69s Checking existence of `"Scene" Other`
+    t =    59.73s Find the "Scene" Other
+    t =    59.78s Find the Window (First Match)
+    t =    59.79s Checking existence of `Keyboard (First Match)`
+    t =    59.82s Find the "Scene" Other
+    t =    59.87s Find the "Scene" Other
+[ios] scene select: frame=(49.0, 221.0, 304.0, 22.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=874.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    59.93s Tap "Scene" Other
+    t =    59.93s     Wait for com.apple.mobilesafari to idle
+    t =    59.93s     Find the "Scene" Other
+    t =    59.98s     Check for interrupting elements affecting "Scene" Other
+    t =    60.02s     Synthesize event
+    t =    60.32s     Wait for com.apple.mobilesafari to idle
+    t =    63.74s Get number of matches for: Descendants matching type PickerWheel
+    t =    63.77s Checking existence of `"Done" Button`
+[ios] picker keyboards/pickers: pickerWheels=0 buttons Done=false
+    t =    63.82s Checking existence of `"Done" Button`
+    t =    63.87s Tap WebView (First Match)[0.50, 0.10]
+    t =    63.87s     Wait for com.apple.mobilesafari to idle
+    t =    63.87s     Find the WebView (First Match)
+    t =    63.89s     Check for interrupting elements affecting "WebView" WebView
+    t =    63.92s     Synthesize event
+    t =    63.93s         Find the "WebView" WebView
+    t =    63.95s         Find the "WebView" WebView
+    t =    63.96s         Find the "WebView" WebView
+    t =    64.26s     Wait for com.apple.mobilesafari to idle
+    t =    66.07s Waiting 10.0s for Button (First Match) to exist
+    t =    67.14s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    67.14s         Checking existence of `Button (First Match)`
+    t =    67.20s Find the Button (First Match)
+    t =    67.26s Swipe up WebView (First Match)
+    t =    67.26s     Wait for com.apple.mobilesafari to idle
+    t =    67.26s     Find the WebView (First Match)
+    t =    67.27s     Check for interrupting elements affecting "WebView" WebView
+    t =    67.30s     Synthesize event
+    t =    67.82s     Wait for com.apple.mobilesafari to idle
+    t =    69.77s Find the "CORRECT" Button
+    t =    69.83s Tap "CORRECT" Button
+    t =    69.83s     Wait for com.apple.mobilesafari to idle
+    t =    69.83s     Find the "CORRECT" Button
+    t =    69.87s     Check for interrupting elements affecting "CORRECT" Button
+    t =    69.91s     Synthesize event
+    t =    70.20s     Wait for com.apple.mobilesafari to idle
+    t =    70.21s Waiting 10.0s for StaticText (First Match) to exist
+    t =    71.25s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    71.25s         Checking existence of `StaticText (First Match)`
+    t =    72.40s Find the StaticText (First Match)
+    t =    72.43s Find the Window (First Match)
+    t =    72.44s Checking existence of `Keyboard (First Match)`
+    t =    72.46s Find the Button (First Match)
+    t =    72.49s Find the "APPLY CORRECTION" Button
+[ios] sheet apply (no keyboard): frame=(18.0, 737.0, 177.0, 68.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=874.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    72.52s Find the Window (First Match)
+    t =    72.53s Checking existence of `Keyboard (First Match)`
+    t =    72.55s Find the Button (First Match)
+    t =    72.58s Find the "CANCEL" Button
+[ios] sheet cancel (no keyboard): frame=(207.0, 737.0, 177.0, 68.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=874.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    72.62s Setting device orientation to Landscape Left
+    t =    72.62s     Device orientation changed to Landscape Left
+    t =    72.74s     Interface orientation changed to Landscape Right
+    t =    72.75s     Wait for com.apple.mobilesafari to idle
+    t =    75.09s Find the Window (First Match)
+    t =    75.09s Checking existence of `Keyboard (First Match)`
+    t =    75.11s Find the "APPLY CORRECTION" Button
+    t =    75.15s Find the "APPLY CORRECTION" Button
+[ios] landscape (no keyboard) apply: frame=(135.0, 281.0, 296.0, 67.0) screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=402.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    75.18s Find the Window (First Match)
+    t =    75.18s Checking existence of `Keyboard (First Match)`
+    t =    75.20s Find the "CANCEL" Button
+    t =    75.23s Find the "CANCEL" Button
+[ios] landscape (no keyboard) cancel: frame=(443.0, 281.0, 296.0, 67.0) screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=402.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    75.27s Setting device orientation to Portrait
+    t =    75.27s     Device orientation changed to Portrait
+    t =    75.29s     Interface orientation changed to Portrait
+    t =    75.29s     Wait for com.apple.mobilesafari to idle
+    t =    77.44s Find the "Reason (required)" TextField
+    t =    77.51s Swipe up WebView (First Match)
+    t =    77.51s     Wait for com.apple.mobilesafari to idle
+    t =    77.51s     Find the WebView (First Match)
+    t =    77.52s     Check for interrupting elements affecting "WebView" WebView
+    t =    77.55s     Synthesize event
+    t =    78.07s     Wait for com.apple.mobilesafari to idle
+    t =    80.01s Find the "Reason (required)" TextField
+    t =    80.06s Swipe up WebView (First Match)
+    t =    80.06s     Wait for com.apple.mobilesafari to idle
+    t =    80.07s     Find the WebView (First Match)
+    t =    80.08s     Check for interrupting elements affecting "WebView" WebView
+    t =    80.10s     Synthesize event
+    t =    80.62s     Wait for com.apple.mobilesafari to idle
+    t =    81.23s Find the "Reason (required)" TextField
+    t =    81.29s Find the Window (First Match)
+    t =    81.29s Checking existence of `Keyboard (First Match)`
+    t =    81.32s Find the "Reason (required)" TextField
+    t =    81.36s Find the "Reason (required)" TextField
+[ios] sheet reason before focus: frame=(18.0, 619.0, 366.0, 49.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=874.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    81.41s Tap "Reason (required)" TextField
+    t =    81.41s     Wait for com.apple.mobilesafari to idle
+    t =    81.41s     Find the "Reason (required)" TextField
+    t =    81.44s     Check for interrupting elements affecting "Reason (required)" TextField
+    t =    81.48s     Synthesize event
+    t =    81.79s     Wait for com.apple.mobilesafari to idle
+    t =    82.83s Waiting 8.0s for Keyboard (First Match) to exist
+    t =    83.89s     Checking `Expect predicate `existsNoRetry == 1` for object Keyboard (First Match)`
+    t =    83.89s         Checking existence of `Keyboard (First Match)`
+    t =    85.02s Find the Window (First Match)
+    t =    85.02s Checking existence of `Keyboard (First Match)`
+    t =    85.03s Find the Keyboard (First Match)
+    t =    85.03s Find the "Reason (required)" TextField
+    t =    85.09s Find the "Reason (required)" TextField
+[ios] sheet reason with keyboard up: frame=(18.0, 282.0, 366.0, 49.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    85.14s Find the Window (First Match)
+    t =    85.14s Checking existence of `Keyboard (First Match)`
+    t =    85.15s Find the Keyboard (First Match)
+    t =    85.15s Find the "Reason (required)" TextField
+    t =    85.20s Find the Window (First Match)
+    t =    85.21s Checking existence of `Keyboard (First Match)`
+    t =    85.21s Find the Keyboard (First Match)
+    t =    85.22s Find the "APPLY CORRECTION" Button
+    t =    85.27s Find the "APPLY CORRECTION" Button
+[ios] sheet apply with keyboard up: frame=(18.0, 360.0, 177.0, 67.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    85.32s Find the Window (First Match)
+    t =    85.32s Checking existence of `Keyboard (First Match)`
+    t =    85.33s Find the Keyboard (First Match)
+    t =    85.34s Find the "APPLY CORRECTION" Button
+    t =    85.39s Find the Window (First Match)
+    t =    85.39s Checking existence of `Keyboard (First Match)`
+    t =    85.40s Find the Keyboard (First Match)
+    t =    85.40s Find the "CANCEL" Button
+    t =    85.45s Find the "CANCEL" Button
+[ios] sheet cancel with keyboard up: frame=(207.0, 360.0, 177.0, 67.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    85.50s Find the Window (First Match)
+    t =    85.51s Checking existence of `Keyboard (First Match)`
+    t =    85.51s Find the Keyboard (First Match)
+    t =    85.52s Find the "CANCEL" Button
+    t =    85.57s Find the Window (First Match)
+    t =    85.57s Checking existence of `Keyboard (First Match)`
+    t =    85.57s Find the Keyboard (First Match)
+    t =    85.58s Find the "CORRECT IRYNA" StaticText
+    t =    85.63s Find the "CORRECT IRYNA" StaticText
+[ios] sheet heading with keyboard up: frame=(27.0, 111.0, 144.0, 31.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    85.69s Find the Window (First Match)
+    t =    85.69s Checking existence of `Keyboard (First Match)`
+    t =    85.69s Find the Keyboard (First Match)
+    t =    85.70s Find the "CORRECT IRYNA" StaticText
+    t =    85.75s Find the "Reason (required)" TextField
+    t =    85.81s Find the "APPLY CORRECTION" Button
+    t =    85.86s Type 'iOS keyboard check' into "Reason (required)" TextField
+    t =    85.86s     Wait for com.apple.mobilesafari to idle
+    t =    85.86s     Find the "Reason (required)" TextField
+    t =    85.91s     Check for interrupting elements affecting "Reason (required)" TextField
+    t =    85.95s     Synthesize event
+    t =    86.46s     Wait for com.apple.mobilesafari to idle
+    t =    87.59s Setting device orientation to Landscape Left
+    t =    87.60s     Device orientation changed to Landscape Left
+    t =    87.65s     Interface orientation changed to Landscape Right
+    t =    87.65s     Wait for com.apple.mobilesafari to idle
+    t =    90.00s Find the Window (First Match)
+    t =    90.00s Checking existence of `Keyboard (First Match)`
+    t =    90.01s Find the Keyboard (First Match)
+    t =    90.02s Find the "Reason (required)" TextField
+    t =    90.07s Find the "Reason (required)" TextField
+[ios] landscape reason: frame=(135.0, 48.0, 604.0, 49.0) screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    90.12s Find the Window (First Match)
+    t =    90.12s Checking existence of `Keyboard (First Match)`
+    t =    90.13s Find the Keyboard (First Match)
+    t =    90.14s Find the "Reason (required)" TextField
+    t =    90.19s Find the "Reason (required)" TextField
+    t =    90.23s Find the "APPLY CORRECTION" Button
+    t =    90.28s Find the Window (First Match)
+    t =    90.28s Checking existence of `Keyboard (First Match)`
+    t =    90.29s Find the Keyboard (First Match)
+    t =    90.30s Find the "APPLY CORRECTION" Button
+    t =    90.34s Find the "APPLY CORRECTION" Button
+[ios] landscape apply (scrolls): frame=(135.0, 114.0, 296.0, 67.0) screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    90.39s Find the Window (First Match)
+    t =    90.39s Checking existence of `Keyboard (First Match)`
+    t =    90.40s Find the Keyboard (First Match)
+    t =    90.40s Find the "CANCEL" Button
+    t =    90.45s Find the "CANCEL" Button
+[ios] landscape cancel (scrolls): frame=(443.0, 114.0, 296.0, 67.0) screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    90.50s Setting device orientation to Portrait
+    t =    90.50s     Device orientation changed to Portrait
+    t =    90.54s     Interface orientation changed to Portrait
+    t =    90.54s     Wait for com.apple.mobilesafari to idle
+    t =    92.78s Find the "CANCEL" Button
+    t =    92.86s Tap "CANCEL" Button
+    t =    92.86s     Wait for com.apple.mobilesafari to idle
+    t =    92.86s     Find the "CANCEL" Button
+    t =    92.90s     Check for interrupting elements affecting "CANCEL" Button
+    t =    92.94s     Synthesize event
+    t =    93.24s     Wait for com.apple.mobilesafari to idle
+    t =    95.34s Checking existence of `"CORRECT IRYNA" StaticText`
+[ios] sheet closed: true
+    t =    95.42s Tear Down
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' failed (96.010 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' started.
+    t =     0.00s Start Test at 2026-10-04 06:05:58.241
+    t =     0.03s Set Up
+    t =     0.03s     Open com.apple.mobilesafari
+    t =     0.03s         Launch com.apple.mobilesafari
+    t =     0.03s             Terminate com.apple.mobilesafari:43747
+    t =     1.30s             Setting up automation session
+    t =     1.93s             Wait for com.apple.mobilesafari to idle
+    t =     4.84s     Wait for com.apple.mobilesafari to become Running Foreground
+    t =     4.85s Opening default application for URL http://127.0.0.1:53174/?t=1791129963084#/join
+    t =     4.87s     Wait for com.apple.mobilesafari to idle
+    t =     9.82s Waiting 10.0s for "Room code" TextField to exist
+    t =    10.89s     Checking `Expect predicate `existsNoRetry == 1` for object "Room code" TextField`
+    t =    10.89s         Checking existence of `"Room code" TextField`
+    t =    10.95s Tap "Room code" TextField
+    t =    10.95s     Wait for com.apple.mobilesafari to idle
+    t =    10.95s     Find the "Room code" TextField
+    t =    10.97s     Check for interrupting elements affecting "Room code" TextField
+    t =    11.00s     Synthesize event
+    t =    11.30s     Wait for com.apple.mobilesafari to idle
+    t =    12.66s Waiting 8.0s for Keyboard (First Match) to exist
+    t =    13.71s     Checking `Expect predicate `existsNoRetry == 1` for object Keyboard (First Match)`
+    t =    13.72s         Checking existence of `Keyboard (First Match)`
+    t =    13.73s Find the Window (First Match)
+    t =    13.73s Checking existence of `Keyboard (First Match)`
+    t =    13.74s Find the Keyboard (First Match)
+    t =    13.74s Find the "Room code" TextField
+    t =    13.78s Find the "Room code" TextField
+[ios] join room-code field with keyboard up: frame=(16.0, 237.0, 370.0, 49.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    13.81s Find the Window (First Match)
+    t =    13.82s Checking existence of `Keyboard (First Match)`
+    t =    13.82s Find the Keyboard (First Match)
+    t =    13.83s Find the "Room code" TextField
+    t =    13.96s Checking existence of `Button (First Match)`
+    t =    13.97s Tap Button (First Match)
+    t =    13.97s     Wait for com.apple.mobilesafari to idle
+    t =    13.97s     Find the Button (First Match)
+    t =    13.98s     Check for interrupting elements affecting "Return" Button
+    t =    14.00s     Synthesize event
+    t =    14.29s     Wait for com.apple.mobilesafari to idle
+    t =    16.15s Checking existence of `Any (First Match)`
+[ios] inline room-code error present: true
+    t =    16.18s Checking existence of `Any (First Match)`
+    t =    16.21s Checking existence of `Any (First Match)`
+    t =    16.24s Find the Window (First Match)
+    t =    16.24s Checking existence of `Keyboard (First Match)`
+    t =    16.25s Find the Keyboard (First Match)
+    t =    16.25s Find the Any (First Match)
+    t =    16.29s Find the "Room code is required." StaticText
+[ios] room-code error text: frame=(98.0, 298.0, 168.0, 20.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    16.33s Find the Window (First Match)
+    t =    16.34s Checking existence of `Keyboard (First Match)`
+    t =    16.34s Find the Keyboard (First Match)
+    t =    16.35s Find the "Room code is required." StaticText
+    t =    16.39s Find the Window (First Match)
+    t =    16.39s Checking existence of `Keyboard (First Match)`
+    t =    16.39s Find the Keyboard (First Match)
+    t =    16.40s Find the "Room code" TextField
+    t =    16.44s Find the "Room code" TextField
+[ios] room-code field after failed submit: frame=(16.0, 237.0, 370.0, 49.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    16.47s Find the Window (First Match)
+    t =    16.48s Checking existence of `Keyboard (First Match)`
+    t =    16.48s Find the Keyboard (First Match)
+    t =    16.49s Find the "Room code" TextField
+    t =    16.52s Checking existence of `Keyboard (First Match)`
+    t =    16.53s Type 'bad code!' into "Room code" TextField
+    t =    16.53s     Wait for com.apple.mobilesafari to idle
+    t =    16.53s     Find the "Room code" TextField
+    t =    16.56s     Check for interrupting elements affecting "Room code" TextField
+    t =    16.59s     Synthesize event
+    t =    16.94s     Wait for com.apple.mobilesafari to idle
+    t =    18.71s Checking existence of `"Return" Button`
+    t =    18.72s Tap "Return" Button
+    t =    18.72s     Wait for com.apple.mobilesafari to idle
+    t =    18.73s     Find the "Return" Button
+    t =    18.74s     Check for interrupting elements affecting "Return" Button
+    t =    18.76s     Synthesize event
+    t =    19.05s     Wait for com.apple.mobilesafari to idle
+    t =    20.06s Checking existence of `Any (First Match)`
+[ios] pattern error present: true
+    t =    20.10s Checking existence of `Any (First Match)`
+    t =    20.23s Tear Down
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' passed (20.475 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari]' started.
+    t =     0.00s Start Test at 2026-10-04 06:06:18.716
+    t =     0.02s Set Up
+    t =     0.02s     Open com.apple.mobilesafari
+    t =     0.02s         Launch com.apple.mobilesafari
+    t =     0.02s             Terminate com.apple.mobilesafari:44908
+    t =     1.21s             Setting up automation session
+    t =     1.63s             Wait for com.apple.mobilesafari to idle
+    t =     3.23s     Wait for com.apple.mobilesafari to become Running Foreground
+    t =     3.23s Opening default application for URL http://127.0.0.1:53174/?t=1791129981948#/create
+    t =     3.24s     Wait for com.apple.mobilesafari to idle
+    t =     7.97s Waiting 10.0s for "Session name" TextField to exist
+    t =     8.99s     Checking `Expect predicate `existsNoRetry == 1` for object "Session name" TextField`
+    t =     9.00s         Checking existence of `"Session name" TextField`
+    t =     9.06s Tap "Session name" TextField
+    t =     9.06s     Wait for com.apple.mobilesafari to idle
+    t =     9.06s     Find the "Session name" TextField
+    t =     9.08s     Check for interrupting elements affecting "Session name" TextField
+    t =     9.11s     Synthesize event
+    t =     9.40s     Wait for com.apple.mobilesafari to idle
+    t =    10.45s Type 'iOS Audit' into "Session name" TextField
+    t =    10.45s     Wait for com.apple.mobilesafari to idle
+    t =    10.46s     Find the "Session name" TextField
+    t =    10.51s     Check for interrupting elements affecting "Session name" TextField
+    t =    10.54s     Synthesize event
+    t =    10.89s     Wait for com.apple.mobilesafari to idle
+    t =    10.90s Waiting 10.0s for "Passphrase" TextField to exist
+    t =    11.95s     Checking `Expect predicate `existsNoRetry == 1` for object "Passphrase" TextField`
+    t =    11.95s         Checking existence of `"Passphrase" TextField`
+    t =    11.99s Tap "Passphrase" TextField
+    t =    11.99s     Wait for com.apple.mobilesafari to idle
+    t =    11.99s     Find the "Passphrase" TextField
+    t =    12.02s     Check for interrupting elements affecting "Passphrase" TextField
+    t =    12.05s     Synthesize event
+    t =    12.34s     Wait for com.apple.mobilesafari to idle
+    t =    13.38s Type 'audit-pass-1' into "Passphrase" TextField
+    t =    13.38s     Wait for com.apple.mobilesafari to idle
+    t =    13.39s     Find the "Passphrase" TextField
+    t =    13.42s     Check for interrupting elements affecting "Passphrase" TextField
+    t =    13.45s     Synthesize event
+    t =    13.85s     Wait for com.apple.mobilesafari to idle
+    t =    13.85s Waiting 10.0s for "Your display name" TextField to exist
+    t =    14.91s     Checking `Expect predicate `existsNoRetry == 1` for object "Your display name" TextField`
+    t =    14.91s         Checking existence of `"Your display name" TextField`
+    t =    14.96s Tap "Your display name" TextField
+    t =    14.96s     Wait for com.apple.mobilesafari to idle
+    t =    14.96s     Find the "Your display name" TextField
+    t =    14.99s     Check for interrupting elements affecting "Your display name" TextField
+    t =    15.02s     Synthesize event
+    t =    15.31s     Wait for com.apple.mobilesafari to idle
+    t =    16.10s Type 'Gamemaster' into "Your display name" TextField
+    t =    16.10s     Wait for com.apple.mobilesafari to idle
+    t =    16.10s     Find the "Your display name" TextField
+    t =    16.14s     Check for interrupting elements affecting "Your display name" TextField
+    t =    16.17s     Synthesize event
+    t =    16.55s     Wait for com.apple.mobilesafari to idle
+    t =    16.67s Find the Button (First Match)
+    t =    16.71s Tap "CREATE SESSION" Button
+    t =    16.71s     Wait for com.apple.mobilesafari to idle
+    t =    16.71s     Find the "CREATE SESSION" Button
+    t =    16.74s     Check for interrupting elements affecting "CREATE SESSION" Button
+    t =    16.77s     Synthesize event
+    t =    17.06s     Wait for com.apple.mobilesafari to idle
+    t =    18.25s Waiting 30.0s for Any (First Match) to exist
+    t =    19.28s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    19.28s         Checking existence of `Any (First Match)`
+    t =    19.45s Waiting 5.0s for Any (First Match) to exist
+    t =    20.51s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    20.51s         Checking existence of `Any (First Match)`
+    t =    20.55s Find the Any (First Match)
+[ios] room code captured: yes
+    t =    20.57s Find the Any (First Match)
+    t =    20.60s Tap "I have written these down" Switch
+    t =    20.60s     Wait for com.apple.mobilesafari to idle
+    t =    20.61s     Find the "I have written these down" Switch
+    t =    20.63s     Check for interrupting elements affecting "I have written these down" Switch
+    t =    20.66s     Synthesize event
+    t =    20.94s     Wait for com.apple.mobilesafari to idle
+    t =    20.95s Find the Button (First Match)
+    t =    20.98s Tap "I'M READY — CONTINUE" Button
+    t =    20.98s     Wait for com.apple.mobilesafari to idle
+    t =    20.99s     Find the "I'M READY — CONTINUE" Button
+    t =    21.01s     Check for interrupting elements affecting "I'M READY — CONTINUE" Button
+    t =    21.03s     Synthesize event
+    t =    21.32s     Wait for com.apple.mobilesafari to idle
+    t =    21.32s Waiting 20.0s for Button (First Match) to exist
+    t =    22.38s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    22.38s         Checking existence of `Button (First Match)`
+    t =    22.41s Find the Button (First Match)
+    t =    22.43s Tap "OPEN THE DIRECTOR CONSOLE" Button
+    t =    22.43s     Wait for com.apple.mobilesafari to idle
+    t =    22.43s     Find the "OPEN THE DIRECTOR CONSOLE" Button
+    t =    22.45s     Check for interrupting elements affecting "OPEN THE DIRECTOR CONSOLE" Button
+    t =    22.47s     Synthesize event
+    t =    22.76s     Wait for com.apple.mobilesafari to idle
+    t =    23.70s Waiting 30.0s for Any (First Match) to exist
+    t =    24.73s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    24.73s         Checking existence of `Any (First Match)`
+    t =    24.79s Find the Button (First Match)
+    t =    24.85s Swipe up WebView (First Match)
+    t =    24.85s     Wait for com.apple.mobilesafari to idle
+    t =    24.85s     Find the WebView (First Match)
+    t =    24.86s     Check for interrupting elements affecting "WebView" WebView
+    t =    24.89s     Synthesize event
+    t =    25.40s     Wait for com.apple.mobilesafari to idle
+    t =    27.99s Find the "LOAD SCENE" Button
+    t =    28.05s Tap "LOAD SCENE" Button
+    t =    28.05s     Wait for com.apple.mobilesafari to idle
+    t =    28.06s     Find the "LOAD SCENE" Button
+    t =    28.10s     Check for interrupting elements affecting "LOAD SCENE" Button
+    t =    28.14s     Synthesize event
+    t =    28.43s     Wait for com.apple.mobilesafari to idle
+    t =    28.43s Waiting 30.0s for Button (First Match) to exist
+    t =    29.48s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    29.48s         Checking existence of `Button (First Match)`
+    t =    29.54s         Capturing element debug description
+    t =    30.45s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    30.45s         Checking existence of `Button (First Match)`
+    t =    30.50s         Capturing element debug description
+    t =    31.46s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    31.46s         Checking existence of `Button (First Match)`
+    t =    31.51s         Capturing element debug description
+    t =    32.46s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    32.46s         Checking existence of `Button (First Match)`
+    t =    32.51s         Capturing element debug description
+    t =    33.45s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    33.45s         Checking existence of `Button (First Match)`
+    t =    33.50s         Capturing element debug description
+    t =    34.51s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    34.51s         Checking existence of `Button (First Match)`
+    t =    34.56s         Capturing element debug description
+    t =    35.51s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    35.51s         Checking existence of `Button (First Match)`
+    t =    35.55s         Capturing element debug description
+    t =    36.50s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    36.50s         Checking existence of `Button (First Match)`
+    t =    36.55s         Capturing element debug description
+    t =    37.51s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    37.51s         Checking existence of `Button (First Match)`
+    t =    37.56s         Capturing element debug description
+    t =    38.53s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    38.53s         Checking existence of `Button (First Match)`
+    t =    38.58s         Capturing element debug description
+    t =    39.49s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    39.49s         Checking existence of `Button (First Match)`
+    t =    39.54s         Capturing element debug description
+    t =    40.49s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    40.49s         Checking existence of `Button (First Match)`
+    t =    40.54s         Capturing element debug description
+    t =    41.47s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    41.47s         Checking existence of `Button (First Match)`
+    t =    41.53s         Capturing element debug description
+    t =    42.46s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    42.46s         Checking existence of `Button (First Match)`
+    t =    42.52s         Capturing element debug description
+    t =    43.46s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    43.46s         Checking existence of `Button (First Match)`
+    t =    43.51s         Capturing element debug description
+    t =    44.46s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    44.46s         Checking existence of `Button (First Match)`
+    t =    44.51s         Capturing element debug description
+    t =    45.46s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    45.46s         Checking existence of `Button (First Match)`
+    t =    45.51s         Capturing element debug description
+    t =    46.47s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    46.47s         Checking existence of `Button (First Match)`
+    t =    46.52s         Capturing element debug description
+    t =    47.44s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    47.44s         Checking existence of `Button (First Match)`
+    t =    47.52s         Capturing element debug description
+    t =    48.48s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    48.48s         Checking existence of `Button (First Match)`
+    t =    48.53s         Capturing element debug description
+    t =    49.49s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    49.49s         Checking existence of `Button (First Match)`
+    t =    49.55s         Capturing element debug description
+    t =    50.49s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    50.49s         Checking existence of `Button (First Match)`
+    t =    50.56s         Capturing element debug description
+    t =    51.49s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    51.49s         Checking existence of `Button (First Match)`
+    t =    51.55s         Capturing element debug description
+    t =    52.50s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    52.50s         Checking existence of `Button (First Match)`
+    t =    52.55s         Capturing element debug description
+    t =    53.48s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    53.48s         Checking existence of `Button (First Match)`
+    t =    53.55s         Capturing element debug description
+    t =    54.49s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    54.49s         Checking existence of `Button (First Match)`
+    t =    54.54s         Capturing element debug description
+    t =    55.49s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    55.49s         Checking existence of `Button (First Match)`
+    t =    55.54s         Capturing element debug description
+    t =    56.48s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    56.48s         Checking existence of `Button (First Match)`
+    t =    56.54s         Capturing element debug description
+    t =    57.48s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    57.48s         Checking existence of `Button (First Match)`
+    t =    57.52s         Capturing element debug description
+    t =    58.44s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    58.44s         Checking existence of `Button (First Match)`
+    t =    58.52s     Checking existence of `Button (First Match)`
+    t =    58.70s Opening default application for URL http://localhost:53174/?t=1791130037420#/join
+    t =    58.72s     Wait for com.apple.mobilesafari to idle
+    t =    61.81s Waiting 10.0s for "Room code" TextField to exist
+    t =    62.86s     Checking `Expect predicate `existsNoRetry == 1` for object "Room code" TextField`
+    t =    62.86s         Checking existence of `"Room code" TextField`
+    t =    62.90s Tap "Room code" TextField
+    t =    62.90s     Wait for com.apple.mobilesafari to idle
+    t =    62.91s     Find the "Room code" TextField
+    t =    62.93s     Check for interrupting elements affecting "Room code" TextField
+    t =    62.95s     Synthesize event
+    t =    63.24s     Wait for com.apple.mobilesafari to idle
+    t =    64.35s Type '3VDR4-CZC3U' into "Room code" TextField
+    t =    64.35s     Wait for com.apple.mobilesafari to idle
+    t =    64.35s     Find the "Room code" TextField
+    t =    64.38s     Check for interrupting elements affecting "Room code" TextField
+    t =    64.41s     Synthesize event
+    t =    64.79s     Wait for com.apple.mobilesafari to idle
+    t =    64.79s Waiting 10.0s for "Passphrase" TextField to exist
+    t =    65.85s     Checking `Expect predicate `existsNoRetry == 1` for object "Passphrase" TextField`
+    t =    65.85s         Checking existence of `"Passphrase" TextField`
+    t =    65.88s Tap "Passphrase" TextField
+    t =    65.88s     Wait for com.apple.mobilesafari to idle
+    t =    65.88s     Find the "Passphrase" TextField
+    t =    65.91s     Check for interrupting elements affecting "Passphrase" TextField
+    t =    65.94s     Synthesize event
+    t =    66.23s     Wait for com.apple.mobilesafari to idle
+    t =    67.33s Type 'audit-pass-1' into "Passphrase" TextField
+    t =    67.34s     Wait for com.apple.mobilesafari to idle
+    t =    67.34s     Find the "Passphrase" TextField
+    t =    67.37s     Check for interrupting elements affecting "Passphrase" TextField
+    t =    67.40s     Synthesize event
+    t =    67.80s     Wait for com.apple.mobilesafari to idle
+    t =    67.81s Waiting 10.0s for "Your display name" TextField to exist
+    t =    68.86s     Checking `Expect predicate `existsNoRetry == 1` for object "Your display name" TextField`
+    t =    68.86s         Checking existence of `"Your display name" TextField`
+    t =    68.90s Tap "Your display name" TextField
+    t =    68.90s     Wait for com.apple.mobilesafari to idle
+    t =    68.90s     Find the "Your display name" TextField
+    t =    68.93s     Check for interrupting elements affecting "Your display name" TextField
+    t =    68.96s     Synthesize event
+    t =    69.25s     Wait for com.apple.mobilesafari to idle
+    t =    70.13s Type 'Ada' into "Your display name" TextField
+    t =    70.13s     Wait for com.apple.mobilesafari to idle
+    t =    70.14s     Find the "Your display name" TextField
+    t =    70.18s     Check for interrupting elements affecting "Your display name" TextField
+    t =    70.21s     Synthesize event
+    t =    70.46s     Wait for com.apple.mobilesafari to idle
+    t =    70.46s Find the Button (First Match)
+    t =    70.51s Tap "JOIN SESSION" Button
+    t =    70.51s     Wait for com.apple.mobilesafari to idle
+    t =    70.52s     Find the "JOIN SESSION" Button
+    t =    70.55s     Check for interrupting elements affecting "JOIN SESSION" Button
+    t =    70.58s     Synthesize event
+    t =    70.86s     Wait for com.apple.mobilesafari to idle
+    t =    72.00s Waiting 30.0s for Button (First Match) to exist
+    t =    73.04s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    73.04s         Checking existence of `Button (First Match)`
+    t =    73.07s Find the Button (First Match)
+    t =    73.11s Tap "I WROTE IT DOWN — PICK A CHARACTER" Button
+    t =    73.11s     Wait for com.apple.mobilesafari to idle
+    t =    73.11s     Find the "I WROTE IT DOWN — PICK A CHARACTER" Button
+    t =    73.13s     Check for interrupting elements affecting "I WROTE IT DOWN — PICK A CHARACTER" Button
+    t =    73.15s     Synthesize event
+    t =    73.44s     Wait for com.apple.mobilesafari to idle
+    t =    74.37s Waiting 30.0s for Button (First Match) to exist
+    t =    75.40s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    75.40s         Checking existence of `Button (First Match)`
+    t =    75.57s Find the Button (First Match)
+    t =    75.63s Tap "CLAIM" Button
+    t =    75.63s     Wait for com.apple.mobilesafari to idle
+    t =    75.63s     Find the "CLAIM" Button
+    t =    75.67s     Check for interrupting elements affecting "CLAIM" Button
+    t =    75.72s     Synthesize event
+    t =    76.00s     Wait for com.apple.mobilesafari to idle
+    t =    76.88s Find the Button (First Match)
+    t =    76.94s Swipe up WebView (First Match)
+    t =    76.94s     Wait for com.apple.mobilesafari to idle
+    t =    76.95s     Find the WebView (First Match)
+    t =    76.96s     Check for interrupting elements affecting "WebView" WebView
+    t =    76.99s     Synthesize event
+    t =    77.50s     Wait for com.apple.mobilesafari to idle
+    t =    79.46s Find the "CONTINUE TO YOUR DASHBOARD" Button
+    t =    79.52s Swipe up WebView (First Match)
+    t =    79.52s     Wait for com.apple.mobilesafari to idle
+    t =    79.53s     Find the WebView (First Match)
+    t =    79.54s     Check for interrupting elements affecting "WebView" WebView
+    t =    79.57s     Synthesize event
+    t =    80.08s     Wait for com.apple.mobilesafari to idle
+    t =    82.64s Find the "CONTINUE TO YOUR DASHBOARD" Button
+    t =    82.70s Swipe up WebView (First Match)
+    t =    82.70s     Wait for com.apple.mobilesafari to idle
+    t =    82.70s     Find the WebView (First Match)
+    t =    82.71s     Check for interrupting elements affecting "WebView" WebView
+    t =    82.74s     Synthesize event
+    t =    83.25s     Wait for com.apple.mobilesafari to idle
+    t =    85.00s Find the "CONTINUE TO YOUR DASHBOARD" Button
+    t =    85.05s Tap "CONTINUE TO YOUR DASHBOARD" Button
+    t =    85.05s     Wait for com.apple.mobilesafari to idle
+    t =    85.05s     Find the "CONTINUE TO YOUR DASHBOARD" Button
+    t =    85.09s     Check for interrupting elements affecting "CONTINUE TO YOUR DASHBOARD" Button
+    t =    85.13s     Synthesize event
+    t =    85.41s     Wait for com.apple.mobilesafari to idle
+    t =    85.89s Waiting 30.0s for Any (First Match) to exist
+    t =    86.94s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    86.94s         Checking existence of `Any (First Match)`
+    t =    89.16s Find the Button (First Match)
+[ios] compose dock at top (panel below the fold, expected off screen): hittable=false
+    t =    89.21s Swipe up WebView (First Match)
+    t =    89.21s     Wait for com.apple.mobilesafari to idle
+    t =    89.22s     Find the WebView (First Match)
+    t =    89.23s     Check for interrupting elements affecting "WebView" WebView
+    t =    89.26s     Synthesize event
+    t =    89.77s     Wait for com.apple.mobilesafari to idle
+    t =    92.84s Find the WebView (First Match)
+    t =    92.85s Find the "DECLARE ACTION" Button
+    t =    92.91s Find the "DECLARE ACTION" Button
+    t =    92.96s Checking existence of `"DECLARE ACTION" Button`
+[ios] compose dock after scroll 1: frame=(34.0, 754.0, 334.0, 50.0) web=(0.0, 0.0, 402.0, 874.0) hittable=true exists=true
+    t =    93.01s Checking existence of `"DECLARE ACTION" Button`
+    t =    93.05s Find the "DECLARE ACTION" Button
+    t =    93.10s Swipe up WebView (First Match)
+    t =    93.10s     Wait for com.apple.mobilesafari to idle
+    t =    93.10s     Find the WebView (First Match)
+    t =    93.11s     Check for interrupting elements affecting "WebView" WebView
+    t =    93.15s     Synthesize event
+    t =    93.66s     Wait for com.apple.mobilesafari to idle
+    t =    96.74s Find the WebView (First Match)
+    t =    96.77s Find the "DECLARE ACTION" Button
+    t =    96.86s Find the "DECLARE ACTION" Button
+    t =    97.03s Checking existence of `"DECLARE ACTION" Button`
+[ios] compose dock after scroll 2: frame=(34.0, 754.0, 334.0, 49.0) web=(0.0, 0.0, 402.0, 874.0) hittable=true exists=true
+    t =    97.08s Checking existence of `"DECLARE ACTION" Button`
+    t =    97.12s Find the "DECLARE ACTION" Button
+    t =    97.18s Swipe up WebView (First Match)
+    t =    97.18s     Wait for com.apple.mobilesafari to idle
+    t =    97.18s     Find the WebView (First Match)
+    t =    97.19s     Check for interrupting elements affecting "WebView" WebView
+    t =    97.23s     Synthesize event
+    t =    97.75s     Wait for com.apple.mobilesafari to idle
+    t =   100.80s Find the WebView (First Match)
+    t =   100.81s Find the "DECLARE ACTION" Button
+    t =   100.87s Find the "DECLARE ACTION" Button
+    t =   100.92s Checking existence of `"DECLARE ACTION" Button`
+[ios] compose dock after scroll 3: frame=(34.0, 753.0, 334.0, 50.0) web=(0.0, 0.0, 402.0, 874.0) hittable=true exists=true
+    t =   100.97s Checking existence of `"DECLARE ACTION" Button`
+    t =   101.01s Find the "DECLARE ACTION" Button
+    t =   101.06s Swipe up WebView (First Match)
+    t =   101.06s     Wait for com.apple.mobilesafari to idle
+    t =   101.07s     Find the WebView (First Match)
+    t =   101.08s     Check for interrupting elements affecting "WebView" WebView
+    t =   101.11s     Synthesize event
+    t =   101.51s     Wait for com.apple.mobilesafari to idle
+    t =   102.08s Swipe up WebView (First Match)
+    t =   102.08s     Wait for com.apple.mobilesafari to idle
+    t =   102.08s     Find the WebView (First Match)
+    t =   102.09s     Check for interrupting elements affecting "WebView" WebView
+    t =   102.13s     Synthesize event
+    t =   102.54s     Wait for com.apple.mobilesafari to idle
+    t =   103.02s Swipe up WebView (First Match)
+    t =   103.02s     Wait for com.apple.mobilesafari to idle
+    t =   103.02s     Find the WebView (First Match)
+    t =   103.04s     Check for interrupting elements affecting "WebView" WebView
+    t =   103.08s     Synthesize event
+    t =   103.49s     Wait for com.apple.mobilesafari to idle
+    t =   103.99s Swipe up WebView (First Match)
+    t =   103.99s     Wait for com.apple.mobilesafari to idle
+    t =   103.99s     Find the WebView (First Match)
+    t =   104.01s     Check for interrupting elements affecting "WebView" WebView
+    t =   104.04s     Synthesize event
+    t =   104.45s     Wait for com.apple.mobilesafari to idle
+    t =   104.95s Swipe up WebView (First Match)
+    t =   104.95s     Wait for com.apple.mobilesafari to idle
+    t =   104.95s     Find the WebView (First Match)
+    t =   104.96s     Check for interrupting elements affecting "WebView" WebView
+    t =   105.00s     Synthesize event
+    t =   105.41s     Wait for com.apple.mobilesafari to idle
+    t =   105.91s Swipe up WebView (First Match)
+    t =   105.91s     Wait for com.apple.mobilesafari to idle
+    t =   105.91s     Find the WebView (First Match)
+    t =   105.92s     Check for interrupting elements affecting "WebView" WebView
+    t =   105.95s     Synthesize event
+    t =   106.36s     Wait for com.apple.mobilesafari to idle
+    t =   106.86s Swipe up WebView (First Match)
+    t =   106.86s     Wait for com.apple.mobilesafari to idle
+    t =   106.86s     Find the WebView (First Match)
+    t =   106.87s     Check for interrupting elements affecting "WebView" WebView
+    t =   106.91s     Synthesize event
+    t =   107.33s     Wait for com.apple.mobilesafari to idle
+    t =   107.83s Swipe up WebView (First Match)
+    t =   107.83s     Wait for com.apple.mobilesafari to idle
+    t =   107.84s     Find the WebView (First Match)
+    t =   107.85s     Check for interrupting elements affecting "WebView" WebView
+    t =   107.89s     Synthesize event
+    t =   108.31s     Wait for com.apple.mobilesafari to idle
+    t =   108.81s Swipe up WebView (First Match)
+    t =   108.81s     Wait for com.apple.mobilesafari to idle
+    t =   108.82s     Find the WebView (First Match)
+    t =   108.83s     Check for interrupting elements affecting "WebView" WebView
+    t =   108.86s     Synthesize event
+    t =   109.26s     Wait for com.apple.mobilesafari to idle
+    t =   109.78s Swipe up WebView (First Match)
+    t =   109.78s     Wait for com.apple.mobilesafari to idle
+    t =   109.78s     Find the WebView (First Match)
+    t =   109.79s     Check for interrupting elements affecting "WebView" WebView
+    t =   109.83s     Synthesize event
+    t =   110.24s     Wait for com.apple.mobilesafari to idle
+    t =   110.75s Swipe up WebView (First Match)
+    t =   110.75s     Wait for com.apple.mobilesafari to idle
+    t =   110.75s     Find the WebView (First Match)
+    t =   110.76s     Check for interrupting elements affecting "WebView" WebView
+    t =   110.79s     Synthesize event
+    t =   111.21s     Wait for com.apple.mobilesafari to idle
+    t =   111.71s Swipe up WebView (First Match)
+    t =   111.71s     Wait for com.apple.mobilesafari to idle
+    t =   111.72s     Find the WebView (First Match)
+    t =   111.73s     Check for interrupting elements affecting "WebView" WebView
+    t =   111.76s     Synthesize event
+    t =   112.18s     Wait for com.apple.mobilesafari to idle
+    t =   113.82s Find the WebView (First Match)
+    t =   113.83s Find the "DECLARE ACTION" Button
+    t =   113.88s Find the "DECLARE ACTION" Button
+    t =   113.93s Checking existence of `"DECLARE ACTION" Button`
+[ios] compose dock at page bottom: frame=(34.0, 672.0, 334.0, 49.0) web=(0.0, 0.0, 402.0, 874.0) hittable=true exists=true
+    t =   113.97s Checking existence of `"DECLARE ACTION" Button`
+    t =   114.02s Find the "DECLARE ACTION" Button
+    t =   114.07s Swipe down WebView (First Match)
+    t =   114.07s     Wait for com.apple.mobilesafari to idle
+    t =   114.08s     Find the WebView (First Match)
+    t =   114.08s     Check for interrupting elements affecting "WebView" WebView
+    t =   114.12s     Synthesize event
+    t =   114.53s     Wait for com.apple.mobilesafari to idle
+    t =   116.75s Swipe down WebView (First Match)
+    t =   116.75s     Wait for com.apple.mobilesafari to idle
+    t =   116.75s     Find the WebView (First Match)
+    t =   116.77s     Check for interrupting elements affecting "WebView" WebView
+    t =   116.81s     Synthesize event
+    t =   117.23s     Wait for com.apple.mobilesafari to idle
+    t =   119.44s Swipe down WebView (First Match)
+    t =   119.45s     Wait for com.apple.mobilesafari to idle
+    t =   119.45s     Find the WebView (First Match)
+    t =   119.46s     Check for interrupting elements affecting "WebView" WebView
+    t =   119.50s     Synthesize event
+    t =   119.91s     Wait for com.apple.mobilesafari to idle
+    t =   120.46s Swipe down WebView (First Match)
+    t =   120.46s     Wait for com.apple.mobilesafari to idle
+    t =   120.47s     Find the WebView (First Match)
+    t =   120.48s     Check for interrupting elements affecting "WebView" WebView
+    t =   120.51s     Synthesize event
+    t =   120.93s     Wait for com.apple.mobilesafari to idle
+    t =   121.43s Swipe down WebView (First Match)
+    t =   121.43s     Wait for com.apple.mobilesafari to idle
+    t =   121.43s     Find the WebView (First Match)
+    t =   121.44s     Check for interrupting elements affecting "WebView" WebView
+    t =   121.48s     Synthesize event
+    t =   121.88s     Wait for com.apple.mobilesafari to idle
+    t =   122.40s Swipe down WebView (First Match)
+    t =   122.40s     Wait for com.apple.mobilesafari to idle
+    t =   122.40s     Find the WebView (First Match)
+    t =   122.41s     Check for interrupting elements affecting "WebView" WebView
+    t =   122.45s     Synthesize event
+    t =   122.86s     Wait for com.apple.mobilesafari to idle
+    t =   123.36s Swipe down WebView (First Match)
+    t =   123.36s     Wait for com.apple.mobilesafari to idle
+    t =   123.37s     Find the WebView (First Match)
+    t =   123.39s     Check for interrupting elements affecting "WebView" WebView
+    t =   123.44s     Synthesize event
+    t =   123.85s     Wait for com.apple.mobilesafari to idle
+    t =   124.34s Swipe down WebView (First Match)
+    t =   124.34s     Wait for com.apple.mobilesafari to idle
+    t =   124.35s     Find the WebView (First Match)
+    t =   124.36s     Check for interrupting elements affecting "WebView" WebView
+    t =   124.39s     Synthesize event
+    t =   124.81s     Wait for com.apple.mobilesafari to idle
+    t =   125.32s Swipe down WebView (First Match)
+    t =   125.32s     Wait for com.apple.mobilesafari to idle
+    t =   125.32s     Find the WebView (First Match)
+    t =   125.34s     Check for interrupting elements affecting "WebView" WebView
+    t =   125.38s     Synthesize event
+    t =   125.79s     Wait for com.apple.mobilesafari to idle
+    t =   126.29s Swipe down WebView (First Match)
+    t =   126.29s     Wait for com.apple.mobilesafari to idle
+    t =   126.29s     Find the WebView (First Match)
+    t =   126.30s     Check for interrupting elements affecting "WebView" WebView
+    t =   126.34s     Synthesize event
+    t =   126.74s     Wait for com.apple.mobilesafari to idle
+    t =   127.24s Swipe down WebView (First Match)
+    t =   127.24s     Wait for com.apple.mobilesafari to idle
+    t =   127.25s     Find the WebView (First Match)
+    t =   127.27s     Check for interrupting elements affecting "WebView" WebView
+    t =   127.30s     Synthesize event
+    t =   127.71s     Wait for com.apple.mobilesafari to idle
+    t =   128.21s Swipe down WebView (First Match)
+    t =   128.21s     Wait for com.apple.mobilesafari to idle
+    t =   128.22s     Find the WebView (First Match)
+    t =   128.23s     Check for interrupting elements affecting "WebView" WebView
+    t =   128.27s     Synthesize event
+    t =   128.68s     Wait for com.apple.mobilesafari to idle
+    t =   130.19s Setting device orientation to Landscape Left
+    t =   130.20s     Device orientation changed to Landscape Left
+    t =   130.34s     Interface orientation changed to Landscape Right
+    t =   130.34s     Wait for com.apple.mobilesafari to idle
+    t =   133.55s Checking existence of `Any (First Match)`
+[ios] landscape at top (chrome expanded): no overlay
+    t =   133.60s Find the Any (First Match)
+    t =   133.66s Swipe up WebView (First Match)
+    t =   133.66s     Wait for com.apple.mobilesafari to idle
+    t =   133.67s     Find the WebView (First Match)
+    t =   133.68s     Check for interrupting elements affecting "WebView" WebView
+    t =   133.73s     Synthesize event
+    t =   134.24s     Wait for com.apple.mobilesafari to idle
+    t =   136.18s Find the "Brawl ( 2 )" Other
+    t =   136.26s Swipe up WebView (First Match)
+    t =   136.26s     Wait for com.apple.mobilesafari to idle
+    t =   136.26s     Find the WebView (First Match)
+    t =   136.27s     Check for interrupting elements affecting "WebView" WebView
+    t =   136.30s     Synthesize event
+    t =   136.81s     Wait for com.apple.mobilesafari to idle
+    t =   138.75s Find the "Brawl ( 2 )" Other
+    t =   139.98s Checking existence of `Any (First Match)`
+[ios] landscape with the panel on screen: no overlay
+    t =   140.03s Find the "Brawl ( 2 )" Other
+    t =   140.09s Find the WebView (First Match)
+    t =   140.09s Find the "DECLARE ACTION" Button
+    t =   140.14s Find the "DECLARE ACTION" Button
+    t =   140.19s Checking existence of `"DECLARE ACTION" Button`
+[ios] landscape dock, panel on screen (bars collapsed on iPhone): frame=(541.0, 324.0, 185.0, 50.0) web=(0.0, 0.0, 874.0, 402.0) hittable=true exists=true
+    t =   140.23s Checking existence of `"DECLARE ACTION" Button`
+    t =   140.27s Find the "DECLARE ACTION" Button
+    t =   140.32s Press WebView (First Match)[0.50, 0.45] for 0.1 seconds, then drag to WebView (First Match)[0.50, 0.60] with velocity of 500.00 pixels per second, and then hold for 0.0 seconds 
+    t =   140.32s     Wait for com.apple.mobilesafari to idle
+    t =   140.33s     Find the WebView (First Match)
+    t =   140.33s     Check for interrupting elements affecting "WebView" WebView
+    t =   140.36s     Synthesize event
+    t =   140.36s         Find the "WebView" WebView
+    t =   140.37s         Find the "WebView" WebView
+    t =   140.38s         Find the WebView (First Match)
+    t =   140.39s         Find the "WebView" WebView
+    t =   140.41s         Find the "WebView" WebView
+    t =   140.88s     Wait for com.apple.mobilesafari to idle
+    t =   143.69s Find the "Brawl ( 2 )" Other
+    t =   143.87s Checking existence of `Any (First Match)`
+[ios] landscape, scrolled up again (bars showing on iPhone): no overlay
+    t =   143.93s Find the "Brawl ( 2 )" Other
+    t =   143.99s Find the WebView (First Match)
+    t =   144.00s Find the "DECLARE ACTION" Button
+    t =   144.05s Find the "DECLARE ACTION" Button
+    t =   144.11s Checking existence of `"DECLARE ACTION" Button`
+[ios] landscape dock, panel on screen (bars showing on iPhone): frame=(541.0, 326.0, 185.0, 49.0) web=(0.0, 0.0, 874.0, 402.0) hittable=true exists=true
+    t =   144.15s Checking existence of `"DECLARE ACTION" Button`
+    t =   144.19s Find the "DECLARE ACTION" Button
+    t =   144.24s Setting device orientation to Portrait
+    t =   144.24s     Device orientation changed to Portrait
+    t =   144.29s     Interface orientation changed to Portrait
+    t =   144.29s     Wait for com.apple.mobilesafari to idle
+    t =   146.41s Swipe up WebView (First Match)
+    t =   146.41s     Wait for com.apple.mobilesafari to idle
+    t =   146.42s     Find the WebView (First Match)
+    t =   146.43s     Check for interrupting elements affecting "WebView" WebView
+    t =   146.48s     Synthesize event
+    t =   146.99s     Wait for com.apple.mobilesafari to idle
+    t =   148.93s Swipe up WebView (First Match)
+    t =   148.93s     Wait for com.apple.mobilesafari to idle
+    t =   148.94s     Find the WebView (First Match)
+    t =   148.95s     Check for interrupting elements affecting "WebView" WebView
+    t =   148.99s     Synthesize event
+    t =   149.50s     Wait for com.apple.mobilesafari to idle
+    t =   151.44s Swipe up WebView (First Match)
+    t =   151.44s     Wait for com.apple.mobilesafari to idle
+    t =   151.45s     Find the WebView (First Match)
+    t =   151.46s     Check for interrupting elements affecting "WebView" WebView
+    t =   151.50s     Synthesize event
+    t =   152.02s     Wait for com.apple.mobilesafari to idle
+    t =   153.50s Find the WebView (First Match)
+    t =   153.52s Find the "DECLARE ACTION" Button
+    t =   153.59s Find the "DECLARE ACTION" Button
+    t =   153.64s Checking existence of `"DECLARE ACTION" Button`
+[ios] compose dock after rotating back: frame=(34.0, 712.0, 334.0, 49.0) web=(0.0, 0.0, 402.0, 874.0) hittable=true exists=true
+    t =   153.69s Checking existence of `"DECLARE ACTION" Button`
+    t =   153.73s Find the "DECLARE ACTION" Button
+    t =   153.79s Find the "DECLARE ACTION" Button
+    t =   153.83s Tap "DECLARE ACTION" Button
+    t =   153.83s     Wait for com.apple.mobilesafari to idle
+    t =   153.83s     Find the "DECLARE ACTION" Button
+    t =   153.88s     Check for interrupting elements affecting "DECLARE ACTION" Button
+    t =   153.91s     Synthesize event
+    t =   154.19s     Wait for com.apple.mobilesafari to idle
+    t =   154.20s Waiting 30.0s for Any (First Match) to exist
+    t =   155.23s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =   155.23s         Checking existence of `Any (First Match)`
+    t =   155.40s Opening default application for URL http://127.0.0.1:53174/?t=1791130134116#/
+    t =   155.44s     Wait for com.apple.mobilesafari to idle
+    t =   158.61s Waiting 20.0s for Button (First Match) to exist
+    t =   159.67s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =   159.67s         Checking existence of `Button (First Match)`
+    t =   159.70s Find the Button (First Match)
+    t =   159.74s Tap "RESUME SESSION" Button
+    t =   159.74s     Wait for com.apple.mobilesafari to idle
+    t =   159.74s     Find the "RESUME SESSION" Button
+    t =   159.76s     Check for interrupting elements affecting "RESUME SESSION" Button
+    t =   159.79s     Synthesize event
+    t =   160.08s     Wait for com.apple.mobilesafari to idle
+    t =   161.35s Waiting 30.0s for Button (First Match) to exist
+    t =   162.39s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =   162.39s         Checking existence of `Button (First Match)`
+    t =   162.59s Find the Button (First Match)
+    t =   162.66s Swipe up WebView (First Match)
+    t =   162.66s     Wait for com.apple.mobilesafari to idle
+    t =   162.66s     Find the WebView (First Match)
+    t =   162.67s     Check for interrupting elements affecting "WebView" WebView
+    t =   162.71s     Synthesize event
+    t =   163.22s     Wait for com.apple.mobilesafari to idle
+    t =   165.95s Find the "ROLL IT" Button
+    t =   166.02s Swipe up WebView (First Match)
+    t =   166.02s     Wait for com.apple.mobilesafari to idle
+    t =   166.03s     Find the WebView (First Match)
+    t =   166.03s     Check for interrupting elements affecting "WebView" WebView
+    t =   166.08s     Synthesize event
+    t =   166.58s     Wait for com.apple.mobilesafari to idle
+    t =   168.87s Find the "ROLL IT" Button
+    t =   168.95s Swipe up WebView (First Match)
+    t =   168.95s     Wait for com.apple.mobilesafari to idle
+    t =   168.95s     Find the WebView (First Match)
+    t =   168.96s     Check for interrupting elements affecting "WebView" WebView
+    t =   169.00s     Synthesize event
+    t =   169.51s     Wait for com.apple.mobilesafari to idle
+    t =   171.45s Find the "ROLL IT" Button
+    t =   172.67s Find the WebView (First Match)
+    t =   172.68s Find the "ROLL IT" Button
+    t =   172.74s Find the "ROLL IT" Button
+    t =   172.81s Checking existence of `"ROLL IT" Button`
+[ios] GM pending dock: frame=(52.0, 754.0, 302.0, 50.0) web=(0.0, 0.0, 402.0, 874.0) hittable=true exists=true
+    t =   172.87s Checking existence of `"ROLL IT" Button`
+    t =   172.92s Find the "ROLL IT" Button
+    t =   172.99s Tap "ROLL IT" Button
+    t =   172.99s     Wait for com.apple.mobilesafari to idle
+    t =   173.00s     Find the "ROLL IT" Button
+    t =   173.05s     Check for interrupting elements affecting "ROLL IT" Button
+    t =   173.10s     Synthesize event
+    t =   173.39s     Wait for com.apple.mobilesafari to idle
+    t =   176.28s Tear Down
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari]' passed (177.345 seconds).
+Test Suite 'SafariFlowUITests' failed at 2026-10-04 06:09:16.062.
+	 Executed 3 tests, with 1 failure (0 unexpected) in 293.830 (293.834) seconds
+Test Suite 'IosPlaytestUITests.xctest' failed at 2026-10-04 06:09:16.062.
+	 Executed 3 tests, with 1 failure (0 unexpected) in 293.830 (293.834) seconds
+Test Suite 'All tests' failed at 2026-10-04 06:09:16.062.
+	 Executed 3 tests, with 1 failure (0 unexpected) in 293.830 (293.835) seconds

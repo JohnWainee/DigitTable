@@ -1,0 +1,13 @@
+pre-tap Session name: frame=(16.0, 224.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=667.0 inScreen=true aboveKeyboard=true hittable=true
+tap Session name: frame=(16.0, 139.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+pre-tap Passphrase: frame=(16.0, 250.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+tap Passphrase: frame=(16.0, 139.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+pre-tap Your display name: frame=(16.0, 310.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+tap Your display name: frame=(16.0, 370.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=667.0 inScreen=true aboveKeyboard=true hittable=true
+[ios] pre-tap Session name: frame=(16.0, 224.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=667.0 inScreen=true aboveKeyboard=true hittable=true
+[ios] tap Session name: frame=(16.0, 139.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+[ios] pre-tap Passphrase: frame=(16.0, 250.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+[ios] tap Passphrase: frame=(16.0, 139.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+[ios] pre-tap Your display name: frame=(16.0, 310.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+[ios] tap Your display name: frame=(16.0, 370.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=667.0 inScreen=true aboveKeyboard=true hittable=true
+/tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:71: error: -[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari] : Failed to synthesize event: Neither element nor any descendant has keyboard focus. Event dispatch snapshot: TextField, {{16.0, 370.0}, {343.0, 49.0}}, label: 'Your display name'

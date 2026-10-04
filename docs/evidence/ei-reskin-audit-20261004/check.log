@@ -1,0 +1,58 @@
+
+> digitable@0.0.0 lint
+> eslint .
+
+
+/private/tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/apps/web/test/playtest/auditHarnessContract.test.ts
+  395:42  warning  Missing return type on function  @typescript-eslint/explicit-function-return-type
+
+✖ 1 problem (0 errors, 1 warning)
+
+
+> digitable@0.0.0 typecheck
+> npm run typecheck --workspaces --if-present
+
+
+> @digitable/contracts@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @digitable/engine@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @digitable/testing@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @digitable/template-eat-the-reich@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @digitable/functions@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @digitable/web@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> digitable@0.0.0 test
+> vitest run
+
+
+ RUN  v5.0.0 /private/tmp/digitable-sonnet-ei-reskin-orchestrated-20261004
+
+--tolerance must be a non-negative number
+--min-elements must be a non-negative number
+--allow-skip needs a state name (for example join-form)
+
+ Test Files  80 passed | 1 skipped (81)
+      Tests  829 passed | 11 todo (840)
+   Start at  06:02:05
+   Duration  5.65s (tests 49%, environment 20%, setup 12%, transform 10%, import 8%)
+
+    Isolate  81 workers spawned · ~193ms startup each (spawn + environment, per file)
+             at least ~1.23s faster with isolate: false — reuses workers across files instead of one per file
+
+exit 0

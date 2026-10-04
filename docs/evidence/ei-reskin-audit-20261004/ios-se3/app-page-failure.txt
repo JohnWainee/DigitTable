@@ -1,0 +1,14 @@
+pre-tap Session name: frame=(16.0, 243.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=667.0 inScreen=true aboveKeyboard=true hittable=true
+tap Session name: frame=(16.0, 139.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+pre-tap Passphrase: frame=(16.0, 230.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+tap Passphrase: frame=(16.0, 152.0, 343.0, 50.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+pre-tap Your display name: frame=(16.0, 292.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+tap Your display name: frame=(16.0, 350.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=667.0 inScreen=true aboveKeyboard=true hittable=true
+[ios] pre-tap Session name: frame=(16.0, 243.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=667.0 inScreen=true aboveKeyboard=true hittable=true
+[ios] tap Session name: frame=(16.0, 139.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+[ios] pre-tap Passphrase: frame=(16.0, 230.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+[ios] tap Passphrase: frame=(16.0, 152.0, 343.0, 50.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+[ios] pre-tap Your display name: frame=(16.0, 292.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=451.0 inScreen=true aboveKeyboard=true hittable=true
+[ios] tap Your display name: frame=(16.0, 350.0, 343.0, 49.0) screen=(0.0, 0.0, 375.0, 667.0) keyboardTop=667.0 inScreen=true aboveKeyboard=true hittable=true
+/tmp/digitable-sonnet-ei-reskin-orchestrated-20261004/scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:74: error: -[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari] : Failed to synthesize event: Neither element nor any descendant has keyboard focus. Event dispatch snapshot: TextField, {{16.0, 350.0}, {343.0, 49.0}}, label: 'Your display name'
+2026-10-04 05:59:57.471 xcodebuild[30086:7477134] [MT] IDETesting: Result bundle saving failed with error: Error Domain=IDEFoundationErrorDomain Code=12 "The result bundle could not be saved due to multiple errors: failed to import activity log, underlying error: fileSystemFailure(reason: "mkstemp: No such file or directory"), The operation couldn’t be completed. (XCResultKit_CASDB.FileBackedCASDatabase.Error error 0

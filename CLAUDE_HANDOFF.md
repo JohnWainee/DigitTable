@@ -3,7 +3,7 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-10-04 by Claude (`sonnet-eg`) after the large-text legibility fix, the landscape-dock cherry-pick and independent review; the sourcebook roster and staging deployment state above are as of 2026-09-19
+- **Last updated:** 2026-10-04 by Claude (`sonnet-ei`, evidence-only audit on top of `sonnet-eg`'s candidate `a0e8f36`; before that `sonnet-eg` after the large-text legibility fix, the landscape-dock cherry-pick and independent review); the sourcebook roster and staging deployment state above are as of 2026-09-19
 
 ## Mission
 
@@ -451,6 +451,13 @@ When pausing or finishing a material unit:
 4. Do not call a non-trivial change complete until independently reviewed.
 
 ## Integrated verification and next action
+
+### 2026-10-04: pop-out audit on `a0e8f36`, iPhone SE failure resolved to the rig, no source change (`sonnet-ei/reskin-orchestrated-20261004`)
+
+- **Base:** `a0e8f36`. Evidence and docs only; not merged, not deployed; staging touched read-only (three GETs).
+- **Finding:** the iPhone SE (3rd gen) Simulator failure `sonnet-eg` left undetermined (keyboard gone after tapping the create form's third field) reproduces on a bare static control page with the app's exact viewport meta and no app CSS/JS, and no create-form code blurs or scrolls on focus. Not attributable to app code on this rig; still open for a physical SE-class phone. No pop-out defect found; no source change.
+- **Gates:** `npm run check` equivalent (prettier clean, lint, typecheck, 829 passed, 11 todo); builds; `ui-audit.mjs` 288 states / 0 control, overflow, axe, contrast failures, same 6 known gear-option word-break findings at 150-200% text (exit 1); `two-device-smoke.mjs --reload` passed; emulator suites 18 + 86 + 4 (clone, ports 57xxx); real Mobile Safari iPhone 17 Pro: join and dock passed, sheet test failed once at "scene loaded" and passed on a rerun alone (flake unconfirmed). A twin session in this worktree reproduced check/smoke/audit independently. Record: `docs/evidence/ei-reskin-audit-20261004/`; review `docs/reviews/2026-10-04-ei-reskin-audit-independent-review.md` (approve with fixes, applied).
+- **Still open:** as the `sonnet-eg` entry, plus a physical SE-class phone for the create-form keyboard behaviour.
 
 ### 2026-10-04: large-text legibility fix, landscape-dock cherry-pick and a wider audit (`sonnet-eg/reskin-orchestrated-20261004`)
 
