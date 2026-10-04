@@ -2043,9 +2043,11 @@ h1 {
 }
 
 .landing-screen h1 {
-  /* 16vw: the widest 7-letter word ("SESSION") is about 5em even in a wide fallback face, so it fits the
-     288px column of a 320px phone at 200% text; the 14vw middle term is the default-size result. */
-  font-size: min(clamp(2.75rem, 14vw, 5rem), 16vw);
+  /* Held to its own default-size width term (14vw, the clamp's middle): the headings here carry words up to
+     nine letters ("CHARACTER"), which fit a 320-412px phone in a Roboto-class fallback face at that size but
+     not at the 16vw this rule once allowed at 150-200% text. A heading that is already large does not need to
+     grow with the text size; the default-size result is unchanged. */
+  font-size: min(clamp(2.75rem, 14vw, 5rem), 14vw);
   letter-spacing: 0.01em;
 }
 
