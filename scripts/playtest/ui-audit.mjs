@@ -259,6 +259,10 @@ async function applyViewport(device, vp) {
     { enabled: vp.mobile },
     device.sessionId,
   );
+  // A page that overflowed (the large-text passes on the unfixed layout) leaves Chrome's mobile emulation at
+  // a page scale other than 1 (1.14 was measured), and every later screenshot then maps CSS px to pixels
+  // wrongly. Start every viewport from a 1:1 view.
+  await device.cdp.send("Emulation.setPageScaleFactor", { pageScaleFactor: 1 }, device.sessionId);
   device.vp = vp;
   await sleep(200);
 }
@@ -452,7 +456,11 @@ const WORD_BREAK_AUDIT = `(() => {
   return broken;
 })()`;
 
-/** In-page: `path|x|y|w|h` (CSS px, rounded, page coordinates) for every rendered element, in DOM order. */
+/**
+ * In-page: `path|x|y|w|h|t` for every rendered element, in DOM order: CSS px, rounded, page coordinates,
+ * and `t`, a short hash of the element's own text (empty when it has none) so layout-diff.mjs can tell a
+ * moved element from one whose content differs between two runs (a room code is random).
+ */
 const LAYOUT_DUMP_EXPRESSION = `(() => {
   const out = [];
   const path = (el) => {
@@ -462,12 +470,18 @@ const LAYOUT_DUMP_EXPRESSION = `(() => {
     }
     return parts.reverse().join(">");
   };
+  const hash = (text) => {
+    let h = 5381;
+    for (let i = 0; i < text.length; i += 1) h = ((h * 33) ^ text.charCodeAt(i)) >>> 0;
+    return text ? h.toString(36) : "";
+  };
   for (const el of document.body.querySelectorAll("*")) {
     if (el.closest("svg") && el.tagName.toLowerCase() !== "svg") continue;
     const cs = getComputedStyle(el);
     if (cs.display === "none") continue;
     const r = el.getBoundingClientRect();
-    out.push(path(el) + "|" + Math.round(r.left + scrollX) + "|" + Math.round(r.top + scrollY) + "|" + Math.round(r.width) + "|" + Math.round(r.height));
+    const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.nodeValue.replace(/\\s+/g, " ").trim()).join(" ").trim();
+    out.push(path(el) + "|" + Math.round(r.left + scrollX) + "|" + Math.round(r.top + scrollY) + "|" + Math.round(r.width) + "|" + Math.round(r.height) + "|" + hash(own));
   }
   return out;
 })()`;
@@ -605,6 +619,27 @@ async function auditPixelContrast(device, state) {
       const { boxes, occluded } = await ev(device, TEXT_BOXES_EXPRESSION);
       const background = await captureViewportPng(device, GLYPHS_TRANSPARENT_CSS);
       const glyphs = await captureViewportPng(device, GLYPHS_MAGENTA_CSS);
+      // The measurement maps a text box's CSS px to a screenshot pixel, which holds only at a 1:1 view:
+      // a page wider than its viewport, a stray pinch scale or a device pixel ratio other than 1 would
+      // shift every box and read as a bogus contrast failure. Say so instead of scoring it.
+      const view = await ev(
+        device,
+        `({ iw: innerWidth, ih: innerHeight, cw: document.documentElement.clientWidth, sw: document.documentElement.scrollWidth, scale: window.visualViewport ? window.visualViewport.scale : 1, dpr: devicePixelRatio })`,
+      );
+      if (
+        background.width !== Math.round(view.iw) ||
+        background.height !== Math.round(view.ih) ||
+        Math.abs(view.scale - 1) > 0.01 ||
+        view.dpr !== 1 ||
+        view.sw > view.cw + 1
+      ) {
+        entry.invalid = (entry.invalid ?? 0) + 1;
+        fail(
+          scope,
+          `contrast not measured at scrollY ${Math.round(y)}: screenshot ${background.width}x${background.height} vs viewport ${view.iw}x${view.ih}, page scale ${view.scale}, dpr ${view.dpr}, scrollWidth ${view.sw} vs clientWidth ${view.cw}`,
+        );
+        continue;
+      }
       const results = evaluateBoxes(boxes, background, glyphs);
       entry.slices += 1;
       entry.occluded += occluded;
@@ -1946,6 +1981,7 @@ async function main() {
       contrastBoxesMeasured: report.contrast.reduce((n, c) => n + c.measured, 0),
       contrastBoxesInsufficient: report.contrast.reduce((n, c) => n + c.insufficient, 0),
       contrastFailures: report.contrast.reduce((n, c) => n + c.failures.length, 0),
+      contrastInvalidSlices: report.contrast.reduce((n, c) => n + (c.invalid ?? 0), 0),
       textScaleStates: report.textScale.length,
       textScaleControls: report.textScale.reduce((n, s) => n + s.controls, 0),
       textScaleOverflowStates: report.textScale.filter((s) => s.overflowPx > 1).length,

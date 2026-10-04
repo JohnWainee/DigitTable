@@ -7,7 +7,8 @@
 //   node scripts/playtest/layout-diff.mjs before.json after.json [--tolerance 1] [--show 8]
 //
 // A state is "comparable" when both runs rendered the same element paths (the same DOM); states whose
-// DOM differs between runs (a random roll, a different number of dice) are listed, not compared. Exits
+// DOM differs between runs (a random roll, a different number of dice) are listed, not compared; an
+// element whose own text differs between runs (a random room code) is counted, not compared. Exits
 // 1 when any comparable state has an element off by more than the tolerance (default 1 CSS px, to
 // absorb sub-pixel rounding), or when nothing was comparable (a vacuous pass is a failure).
 
@@ -36,14 +37,16 @@ const [before, after] = files.map((f) => JSON.parse(readFileSync(f, "utf8")));
 
 const parse = (line) => {
   const parts = line.split("|");
-  const [x, y, w, h] = parts.slice(-4).map(Number);
-  return { path: parts.slice(0, -4).join("|"), x, y, w, h };
+  const text = parts[parts.length - 1];
+  const [x, y, w, h] = parts.slice(-5, -1).map(Number);
+  return { path: parts.slice(0, -5).join("|"), x, y, w, h, text };
 };
 
 let comparable = 0;
 let identical = 0;
 let skipped = 0;
 let elements = 0;
+let contentVaried = 0;
 const moved = [];
 for (const key of Object.keys(before)) {
   if (!(key in after)) continue;
@@ -56,9 +59,18 @@ for (const key of Object.keys(before)) {
   }
   comparable += 1;
   elements += a.length;
+  // An element whose own text differs between the runs (a random room code) may legitimately be wider or
+  // narrower: it is counted, not compared.
   const diffs = a
     .map((el, i) => ({ el, to: b[i] }))
-    .filter(({ el, to }) => ["x", "y", "w", "h"].some((k) => Math.abs(el[k] - to[k]) > TOLERANCE));
+    .filter(({ el, to }) => {
+      const off = ["x", "y", "w", "h"].some((k) => Math.abs(el[k] - to[k]) > TOLERANCE);
+      if (off && el.text !== to.text) {
+        contentVaried += 1;
+        return false;
+      }
+      return off;
+    });
   if (diffs.length === 0) {
     identical += 1;
     continue;
@@ -75,7 +87,7 @@ for (const m of moved) {
   }
 }
 console.log(
-  `${comparable} comparable state/viewport pairs (${elements} elements), ${identical} identical, ${moved.length} differ, ${skipped} not comparable`,
+  `${comparable} comparable state/viewport pairs (${elements} elements), ${identical} identical, ${moved.length} differ, ${skipped} not comparable, ${contentVaried} element boxes differ only where their own text differs`,
 );
 if (comparable === 0) {
   console.log("LAYOUT DIFF FAILED: nothing was comparable");

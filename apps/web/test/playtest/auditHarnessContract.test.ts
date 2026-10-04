@@ -300,23 +300,37 @@ describe("layout-diff.mjs (proves a CSS change leaves the default-size layout id
       return { code: e.status, out: e.stdout };
     }
   }
-  const page = ["main:1|0|0|320|600", "main:1>h1:1|16|16|288|50", "main:1>button:2|16|100|288|48"];
+  const page = [
+    "main:1|0|0|320|600|",
+    "main:1>h1:1|16|16|288|50|abc",
+    "main:1>button:2|16|100|288|48|xyz",
+  ];
 
   it("passes identical layouts, and ignores sub-pixel rounding", () => {
-    const nudged = page.map((line) => line.replace("|288|50", "|289|50"));
+    const nudged = page.map((line) => line.replace("|288|50|", "|289|50|"));
     expect(run({ "gm/x@phone": page }, { "gm/x@phone": page }).code).toBe(0);
     expect(run({ "gm/x@phone": page }, { "gm/x@phone": nudged }).code).toBe(0);
   });
 
   it("fails when an element moved or resized, and names it", () => {
-    const moved = page.map((line) => line.replace("|16|100|288|48", "|16|100|288|96"));
+    const moved = page.map((line) => line.replace("|16|100|288|48|", "|16|100|288|96|"));
     const result = run({ "gm/x@phone": page }, { "gm/x@phone": moved });
     expect(result.code).toBe(1);
     expect(result.out).toContain("button:2: 16,100 288x48 -> 16,100 288x96");
   });
 
+  it("does not blame the CSS for an element whose own text differs between runs (a random room code)", () => {
+    const other = page.map((line) => line.replace("|288|50|abc", "|300|50|zzz"));
+    const result = run({ "gm/x@phone": page }, { "gm/x@phone": other });
+    expect(result.code).toBe(0);
+    expect(result.out).toContain("1 element boxes differ only where their own text differs");
+    // The same box change with the same text is a real layout change.
+    const same = page.map((line) => line.replace("|288|50|abc", "|300|50|abc"));
+    expect(run({ "gm/x@phone": page }, { "gm/x@phone": same }).code).toBe(1);
+  });
+
   it("does not compare different DOMs, and fails a vacuous run", () => {
-    const extra = [...page, "main:1>p:3|16|160|288|20"];
+    const extra = [...page, "main:1>p:3|16|160|288|20|"];
     const result = run({ "gm/x@phone": page }, { "gm/x@phone": extra });
     expect(result.out).toContain("not comparable (different DOM)");
     expect(result.code).toBe(1); // nothing comparable is a failure, not a pass
