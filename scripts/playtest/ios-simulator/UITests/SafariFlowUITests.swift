@@ -11,6 +11,7 @@ final class SafariFlowUITests: XCTestCase {
     let tag = ProcessInfo.processInfo.environment["DIGITABLE_TAG"] ?? "iphone"
     var web: XCUIElement { safari.webViews.firstMatch }
     var logLines: [String] = []
+    var roomCode = ""
 
     override func setUpWithError() throws {
         continueAfterFailure = true
@@ -34,11 +35,15 @@ final class SafariFlowUITests: XCTestCase {
         try? s.pngRepresentation.write(to: URL(fileURLWithPath: "\(out)/\(tag)-\(name).png"))
     }
 
-    func open(_ hash: String) {
+    func open(_ hash: String, origin: String? = nil) {
         // A fresh query string forces a full page load, so a rebuilt bundle is never masked by the tab's old one.
-        XCUIDevice.shared.system.open(URL(string: "\(base)/?t=\(Int(Date().timeIntervalSince1970 * 1000))\(hash)")!)
+        XCUIDevice.shared.system.open(URL(string: "\(origin ?? base)/?t=\(Int(Date().timeIntervalSince1970 * 1000))\(hash)")!)
         sleep(3)
     }
+
+    /// The second browser identity: `localhost` is a different origin from `127.0.0.1`, so it has its own
+    /// anonymous-auth storage and Safari keeps both sessions side by side in the one Simulator.
+    var playerOrigin: String { base.replacingOccurrences(of: "127.0.0.1", with: "localhost") }
 
     func el(_ label: String, _ type: XCUIElement.ElementType = .any) -> XCUIElement {
         web.descendants(matching: type).matching(NSPredicate(format: "label ==[c] %@", label)).firstMatch
@@ -113,6 +118,11 @@ final class SafariFlowUITests: XCTestCase {
         create.tap()
         XCTAssertTrue(containing("Write these down").waitForExistence(timeout: 30), "secrets reveal")
         shot("create-secrets")
+        // The room code is the only element whose label looks like XXXXX-XXXXX.
+        let codeEl = web.descendants(matching: .any).matching(NSPredicate(format: "label MATCHES %@", "[A-Z0-9]{4,}-[A-Z0-9]{4,}")).firstMatch
+        if codeEl.waitForExistence(timeout: 5) { roomCode = codeEl.label }
+        if roomCode.isEmpty { log("reveal labels: " + web.descendants(matching: .any).allElementsBoundByIndex.prefix(60).map { "\($0.elementType.rawValue):\($0.label)" }.joined(separator: " | ")) }
+        log("room code captured: \(roomCode.isEmpty ? "NO" : "yes")")
         let wrote = containing("written these down")
         scrollTo(wrote)
         wrote.tap()
@@ -249,5 +259,135 @@ final class SafariFlowUITests: XCTestCase {
         sleep(1)
         shot("sheet-closed")
         log("sheet closed: \(!heading.exists)")
+    }
+
+    // MARK: signed-in surfaces
+
+    /// A bottom-pinned control must lie fully inside the web view's visible area and be tappable
+    /// without scrolling, whatever state Safari's toolbar is in.
+    func expectPinned(_ name: String, _ e: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
+        let visible = web.frame
+        let f = e.frame
+        log("\(name): frame=\(f) web=\(visible) hittable=\(e.isHittable) exists=\(e.exists)")
+        XCTAssertTrue(e.exists, "\(name) exists", file: file, line: line)
+        XCTAssertTrue(f.minY >= visible.minY - 0.5 && f.maxY <= visible.maxY + 0.5, "\(name) is outside the visible web area \(visible): \(f)", file: file, line: line)
+        XCTAssertTrue(e.isHittable, "\(name) is not hittable", file: file, line: line)
+    }
+
+    /// Logs the throwaway debug overlay when a build carries one (innerHeight, visual viewport, dock state).
+    func logViewport(_ name: String) {
+        let o = containing("iH=")
+        log("\(name): " + (o.exists ? o.label : "no overlay"))
+    }
+
+    func joinAsPlayerAndClaim() {
+        open("#/join", origin: playerOrigin)
+        tapField("Room code", roomCode)
+        tapField("Passphrase", "audit-pass-1")
+        tapField("Your display name", "Ada")
+        let join = el("Join session", .button)
+        scrollTo(join)
+        join.tap()
+        let wrote = containing("wrote it down", .button)
+        XCTAssertTrue(wrote.waitForExistence(timeout: 30), "player recovery reveal")
+        scrollTo(wrote)
+        wrote.tap()
+        let claim = el("Claim", .button)
+        XCTAssertTrue(claim.waitForExistence(timeout: 30), "roster")
+        shot("player-roster")
+        scrollTo(claim)
+        claim.tap()
+        let cont = containing("Continue to your dashboard", .button)
+        scrollTo(cont)
+        cont.tap()
+        XCTAssertTrue(containing("Choose an action").waitForExistence(timeout: 30), "compose step")
+    }
+
+    func testSignedInDockInRealSafari() throws {
+        createSessionAndOpenConsole()
+        XCTAssertFalse(roomCode.isEmpty, "room code captured")
+        joinAsPlayerAndClaim()
+        sleep(2)
+        shot("player-compose-top")
+
+        // The Declare dock at the top of a ~2,600px page, then mid-page, then after Safari's toolbar has collapsed.
+        let declare = el("Declare action", .button)
+        // At the top the dock's panel is still below the fold, so the dock is correctly not on screen yet.
+        log("compose dock at top (panel below the fold, expected off screen): hittable=\(declare.isHittable)")
+        for step in 1...3 {
+            web.swipeUp(velocity: .slow)
+            sleep(1)
+            shot("player-compose-scroll-\(step)")
+            expectPinned("compose dock after scroll \(step)", declare)
+        }
+        for _ in 0..<12 { web.swipeUp(velocity: .fast) }
+        sleep(1)
+        shot("player-compose-bottom")
+        expectPinned("compose dock at page bottom", declare)
+        for _ in 0..<12 { web.swipeDown(velocity: .fast) }
+        sleep(1)
+
+        // Rotate: the dock must stay on screen in landscape too.
+        XCUIDevice.shared.orientation = .landscapeLeft
+        sleep(2)
+        shot("player-compose-landscape")
+        logViewport("landscape at top (chrome expanded)")
+        // Scroll until the Compose panel's own rows are on screen: the dock must now be pinned and tappable.
+        // On the iPhone, landscape with Safari's tab bar and address bar showing leaves 292 CSS px, and the
+        // `max-height` media query keeps reading 292 even after scrolling collapses the bars (innerHeight 402).
+        // The dock used to be released under 320px, so Declare action sat at the end of the form (hittable false).
+        let firstStat = containing("Brawl (")
+        var swipes = 0
+        while !firstStat.isHittable && swipes < 40 { web.swipeUp(velocity: .slow); swipes += 1 }
+        XCTAssertGreaterThan(swipes, 0, "the Compose rows were reached by scrolling, not already on screen at the top")
+        sleep(1)
+        shot("player-compose-landscape-scrolled")
+        logViewport("landscape with the panel on screen")
+        XCTAssertTrue(firstStat.isHittable, "landscape: the Compose rows are on screen")
+        expectPinned("landscape dock, panel on screen (bars collapsed on iPhone)", declare)
+        // Scrolling back up brings the bars back on iPhone (292px visible). A short drag (a full swipe would carry
+        // the panel off screen) re-centres on the panel; the dock must not be released there either. On iPad there
+        // are no such bars, so this is simply a second pinned position.
+        func drag(_ fromY: CGFloat, _ toY: CGFloat) {
+            web.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: fromY))
+                .press(forDuration: 0.1, thenDragTo: web.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: toY)))
+            sleep(1)
+        }
+        drag(0.45, 0.6)
+        // If that carried the rows out of view (iPad, no bars to restore), nudge back the other way.
+        var nudges = 0
+        while !firstStat.isHittable && nudges < 4 { drag(0.6, 0.45); nudges += 1 }
+        shot("player-compose-landscape-bars-back")
+        logViewport("landscape, scrolled up again (bars showing on iPhone)")
+        XCTAssertTrue(firstStat.isHittable, "landscape (bars showing): the Compose rows are still on screen")
+        expectPinned("landscape dock, panel on screen (bars showing on iPhone)", declare)
+        XCUIDevice.shared.orientation = .portrait
+        sleep(2)
+        // Back in the middle of the panel after rotating back.
+        for _ in 0..<3 { web.swipeUp(velocity: .slow) }
+        sleep(1)
+        expectPinned("compose dock after rotating back", declare)
+
+        // Declare, then the GM's pending card and its dock.
+        XCTAssertTrue(declare.isEnabled, "declare enabled")
+        declare.tap()
+        XCTAssertTrue(containing("Declared").waitForExistence(timeout: 30), "declared state")
+        shot("player-declared")
+
+        open("#/", origin: base)
+        let resume = containing("Resume session", .button)
+        XCTAssertTrue(resume.waitForExistence(timeout: 20), "GM resume")
+        scrollTo(resume)
+        resume.tap()
+        let roll = el("Roll it", .button)
+        XCTAssertTrue(roll.waitForExistence(timeout: 30), "GM pending card")
+        shot("gm-pending")
+        scrollTo(roll)
+        sleep(1)
+        shot("gm-pending-scrolled")
+        expectPinned("GM pending dock", roll)
+        roll.tap()
+        sleep(2)
+        shot("gm-after-roll-tap")
     }
 }

@@ -1248,8 +1248,8 @@ const DOCK_AUDIT = `(async () => {
     const cs = getComputedStyle(dock);
     const sticky = cs.position === "sticky";
     const entry = { status: (dock.querySelector(".action-dock-status")?.textContent || "").trim(), sticky, innerHeight, dockHeight: Math.round(dock.getBoundingClientRect().height), problems: [], controls: 0 };
-    // Under 20rem of height the stylesheet deliberately returns the dock to the page flow.
-    const shortViewport = innerHeight < 20 * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16);
+    // Under 15rem of height the stylesheet deliberately returns the dock to the page flow.
+    const shortViewport = innerHeight <= 15 * 16; // a media-query rem is the browser initial 16px, not the root font size
     if (!sticky && !shortViewport) entry.problems.push("dock is not pinned (position " + cs.position + ") at a " + innerHeight + "px viewport");
     if (sticky && dock.getBoundingClientRect().height > innerHeight * 0.45 + 1) entry.problems.push("dock is " + entry.dockHeight + "px of a " + innerHeight + "px viewport (cap is 45%)");
     // Every button names its status line, and that line carries visible text.
@@ -1322,6 +1322,10 @@ const DOCK_AUDIT = `(async () => {
 const DOCK_VIEWPORTS = [
   ...VIEWPORTS,
   { name: "tablet-narrow", width: 600, height: 900, mobile: true },
+  // Real Mobile Safari, iPhone 17 Pro landscape with the tab bar and address bar showing: 874x292 visible, and
+  // it does not grow while scrolling. The dock must stay pinned there (it used to be released under 320px).
+  { name: "phone-landscape-bars", width: 874, height: 292, mobile: true },
+  { name: "phone-se-landscape-bars", width: 667, height: 250, mobile: true },
 ];
 
 async function auditActionDock(device, state) {

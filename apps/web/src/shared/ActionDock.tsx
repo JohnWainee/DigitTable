@@ -43,12 +43,18 @@ function useActionDockInset(ref: RefObject<HTMLElement | null>): void {
 }
 
 /**
- * Below this visible height (CSS px) a pinned bar leaves too little page: see `.action-dock[data-unpinned]`.
- * Deliberately NOT scaled by the root font size: it mirrors `@media (max-height: 20rem)`, where rem is the
- * browser's initial 16px. Scaling it would unpin the dock for every phone at 200% text, which is exactly
- * where the capped, internally scrolled dock (`data-clipped`) is meant to stay pinned.
+ * At or below this visible height (CSS px) a pinned bar leaves too little page: see `.action-dock[data-unpinned]`.
+ * 240px is 15rem at the default 16px root, the line `useVisualViewportBox` uses for the sheet's compact mode
+ * (that one scales with the root font size; this one deliberately does not). It was 320 until a real Mobile
+ * Safari run (iPhone 17 Pro, landscape, tab bar plus address bar showing) measured 292px: `clientHeight` and so
+ * the `max-height` media query stay at 292 even after scrolling collapses the bars (`innerHeight` then reads 402),
+ * so the dock was released and "Declare action" sat at the very end of a 2,400px form. A compact dock is about
+ * 66-87px, so 292px still leaves 200px of page and 240px leaves 150px.
+ * Inclusive, to agree with `@media (max-height: 15rem)` (which also matches at exactly 15rem), whose rem is the
+ * browser's initial 16px. Not scaled by the root font size: scaling it would unpin the dock for every phone at
+ * 200% text, which is exactly where the capped, internally scrolled dock (`data-clipped`) is meant to stay pinned.
  */
-export const UNPIN_BELOW_PX = 320;
+export const UNPIN_BELOW_PX = 240;
 /** Pinch-zoom beyond this scale unpins the dock (1 plus the engines' rounding noise). */
 export const UNPIN_ABOVE_SCALE = 1.05;
 
@@ -64,7 +70,7 @@ export function shouldUnpinDock(input: {
   readonly layoutHeight: number;
 }): boolean {
   const visibleHeight = Math.min(input.visualHeight, input.layoutHeight);
-  return input.scale > UNPIN_ABOVE_SCALE || visibleHeight < UNPIN_BELOW_PX;
+  return input.scale > UNPIN_ABOVE_SCALE || visibleHeight <= UNPIN_BELOW_PX;
 }
 
 /** Mirrors `shouldUnpinDock` onto `data-unpinned` while the visual viewport is zoomed or short. A no-op without `visualViewport`. */

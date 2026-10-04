@@ -2,6 +2,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
+import { UNPIN_BELOW_PX } from "../../src/shared/ActionDock.js";
 
 /**
  * A static contract over the reskin's stylesheet and document head. jsdom does no layout, so the
@@ -573,8 +574,12 @@ describe("reskin stylesheet contract", () => {
     it("keeps a focused control clear of the dock (WCAG 2.2 SC 2.4.11) and gives the room back when short", () => {
       const rule = rulesFor(/^html:has\(\.action-dock\)$/);
       expect(declaration(rule, "scroll-padding-bottom")[0]).toContain("var(--action-dock-height");
-      // Under 20rem of height a pinned bar would leave almost no page: it falls back into the flow.
-      const short = mediaBlock("(max-height: 20rem)");
+      // Under 15rem of height (the sheet's compact line) a pinned bar would leave almost no page: it falls
+      // back into the flow. Not 20rem: a landscape iPhone with Safari's bars showing is 292px tall.
+      expect(css).not.toContain("(max-height: 20rem)");
+      // The hook's px line and the media query's rem line (16px initial root) are one threshold, not two.
+      expect(UNPIN_BELOW_PX).toBe(15 * 16);
+      const short = mediaBlock("(max-height: 15rem)");
       expect(short).toMatch(/\.action-dock\s*\{[^}]*position:\s*static/);
       expect(short).toMatch(/scroll-padding-bottom:\s*0/);
     });

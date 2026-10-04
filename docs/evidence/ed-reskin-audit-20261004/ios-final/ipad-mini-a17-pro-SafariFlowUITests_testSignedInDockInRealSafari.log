@@ -1,0 +1,13 @@
+room code captured: yes
+compose dock at top (panel below the fold, expected off screen): hittable=true
+compose dock after scroll 1: frame=(490.0, 1052.4541015625, 184.0, 49.0489501953125) web=(0.0, 0.0, 744.0, 1133.0) hittable=true exists=true
+compose dock after scroll 2: frame=(490.0, 1051.0, 184.0, 49.0) web=(0.0, 0.0, 744.0, 1133.0) hittable=true exists=true
+compose dock after scroll 3: frame=(490.0, 1009.0, 184.0, 49.0) web=(0.0, 0.0, 744.0, 1133.0) hittable=true exists=true
+compose dock at page bottom: frame=(490.0, 1009.0, 184.0, 49.0) web=(0.0, 0.0, 744.0, 1133.0) hittable=true exists=true
+landscape at top (chrome expanded): no overlay
+landscape with the panel on screen: no overlay
+landscape dock, panel on screen (bars collapsed on iPhone): frame=(716.0, 662.0, 185.0, 49.0) web=(0.0, 0.0, 1133.0, 744.0) hittable=true exists=true
+landscape, scrolled up again (bars showing on iPhone): no overlay
+landscape dock, panel on screen (bars showing on iPhone): frame=(716.0, 663.0791015625, 185.0, 49.0489501953125) web=(0.0, 0.0, 1133.0, 744.0) hittable=true exists=true
+compose dock after rotating back: frame=(490.0, 1009.0, 184.0, 49.0) web=(0.0, 0.0, 744.0, 1133.0) hittable=true exists=true
+GM pending dock: frame=(602.0, 1052.9521484375, 95.0, 49.0489501953125) web=(0.0, 0.0, 744.0, 1133.0) hittable=true exists=true

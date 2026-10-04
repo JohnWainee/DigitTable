@@ -1,0 +1,6 @@
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (68.086 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (70.080 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' passed (18.597 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' passed (18.847 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari]' passed (123.130 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari]' passed (173.441 seconds).
