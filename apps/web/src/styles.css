@@ -424,8 +424,9 @@ button {
   font-family: var(--font-display);
   font-weight: 700;
   font-synthesis-weight: none;
-  /* Grows with the text size, but not past what keeps "DECLARE" whole on a narrow phone. */
-  font-size: min(1.15rem, 9vw);
+  /* Grows with the text size, but not past what keeps an 8-letter label ("REASSIGN") whole on a 320px phone
+     even in the widest fallback face. 7.5vw is above 1.15rem from 246px up, so the default size is unchanged. */
+  font-size: min(1.15rem, 7.5vw);
   line-height: 1.1;
   letter-spacing: 0.08em;
   text-transform: uppercase;

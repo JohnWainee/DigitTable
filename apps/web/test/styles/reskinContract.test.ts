@@ -783,6 +783,14 @@ describe("reskin stylesheet contract", () => {
       ).toEqual(["anywhere"]);
     });
 
+    it("holds button type to the width from 246px up, so an 8-letter label stays whole and 100% text is untouched", () => {
+      const size = declaration(rulesFor(/^\.primary-action,\s*\.secondary-action$/s), "font-size");
+      expect(size).toContain("min(1.15rem, 7.5vw)");
+      for (let width = 320; width <= 1920; width += 10) {
+        expect((7.5 * width) / 100).toBeGreaterThanOrEqual(1.15 * 16);
+      }
+    });
+
     it("keeps a row's own action whole: it never shrinks below its word and drops under the label instead", () => {
       // `min-width: var(--tap)` is an explicit minimum, so as a flex item the button shrank to 77px and
       // "REVEAL" broke in the middle at the default text size on every phone width.
