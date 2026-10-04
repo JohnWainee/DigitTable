@@ -55,6 +55,49 @@ function mediaBlock(query: string): string {
   throw new Error("unbalanced braces");
 }
 
+/**
+ * Every rule, at any depth, whose selector touches a fieldset, an option row (`.gear-option`,
+ * `.form-field--checkbox`, `.gear-item`) or its text (`.option-text`) and that sets a layout property
+ * (display, flex*, align-*, width/height limits, overflow*, word-break, white-space, float, position, grid*).
+ * One line per rule, `[at-rule prelude(s) :: ]selector -> property:value | …`, in source order, so a rule
+ * inside `@media`/`@supports` is distinguishable from a top-level one. `css` has its comments stripped.
+ */
+function optionRowLayoutRules(source: string): string[] {
+  const touches =
+    /(^|[\s,>+~(])(fieldset|label|input|legend)\b|\.gear-option|\.form-field--checkbox|\.option-text|\.gear-item|\.stat-icon/;
+  const layout =
+    /(?:^|;|\s)(display|flex[a-z-]*|align-[a-z-]*|justify-[a-z-]*|(?:min-|max-)?(?:width|height)|overflow[a-z-]*|word-break|word-wrap|text-wrap[a-z-]*|hyphens|line-break|white-space|order|gap|(?:min-|max-)?(?:inline|block)-size|zoom|float|position|grid[a-z-]*|writing-mode)\s*:\s*([^;]+)/g;
+  const out: string[] = [];
+  const walk = (text: string, atRules: string[]): void => {
+    let i = 0;
+    while (i < text.length) {
+      const open = text.indexOf("{", i);
+      if (open < 0) return;
+      let depth = 1;
+      let close = open + 1;
+      for (; close < text.length && depth > 0; close += 1) {
+        if (text[close] === "{") depth += 1;
+        else if (text[close] === "}") depth -= 1;
+      }
+      const prelude = text.slice(i, open).replace(/\s+/g, " ").trim();
+      const body = text.slice(open + 1, close - 1);
+      if (body.includes("{")) {
+        walk(body, [...atRules, prelude]);
+      } else if (touches.test(prelude)) {
+        const props = [...body.matchAll(layout)].map((m) => `${m[1]!}:${m[2]!.trim()}`);
+        if (props.length > 0) {
+          out.push(
+            `${atRules.length > 0 ? `${atRules.join(" ")} :: ` : ""}${prelude} -> ${props.join(" | ")}`,
+          );
+        }
+      }
+      i = close;
+    }
+  };
+  walk(source, []);
+  return out;
+}
+
 function token(name: string): string {
   const match = new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{6})`).exec(css);
   if (!match) throw new Error(`token --${name} not a hex colour in :root`);
@@ -859,6 +902,52 @@ describe("reskin stylesheet contract", () => {
       expect(css.indexOf("fieldset:has(.gear-option) {")).toBeGreaterThan(
         css.indexOf("fieldset {"),
       );
+    });
+
+    it("has no late or narrow rule (at the top level or in an at-rule) that changes how an option row lays out", () => {
+      // The padding allow-list above does not see `flex-wrap: nowrap` (or a `flex`, `display`, `min-width` or
+      // `overflow-wrap` change) in a later rule or an `@media (max-width: …)` block, which would put the cut
+      // words back at 320px/200% text without touching a padding. Every layout declaration on these boxes
+      // is listed with the at-rule it sits in; a new one has to be added here on purpose.
+      expect(optionRowLayoutRules(css)).toEqual([
+        "fieldset -> min-width:0 | display:flex | flex-direction:column | gap:0.5rem",
+        "legend -> max-width:100% | overflow-wrap:anywhere",
+        'input:not([type="checkbox"]):not([type="radio"]), select, textarea -> display:block | width:100% | max-width:100% | min-width:0 | min-height:var(--tap)',
+        'input[type="checkbox"], input[type="radio"] -> flex:none | display:inline-grid | width:min(1.65rem, 26.4px) | height:min(1.65rem, 26.4px)',
+        'input[type="checkbox"]::after -> width:min(0.95rem, 15.2px) | height:min(0.95rem, 15.2px)',
+        'input[type="radio"]::after -> width:min(0.75rem, 12px) | height:min(0.75rem, 12px)',
+        ".gear-option, .form-field--checkbox -> display:flex | flex-wrap:wrap | align-items:center | gap:var(--gutter-sm) | min-height:var(--tap) | overflow-wrap:anywhere",
+        ".form-field--checkbox -> flex-direction:row",
+        ".option-text -> flex:1 1 0% | flex:1 1 min-content | min-width:0 | max-width:100% | overflow-wrap:break-word",
+        ".gear-item -> display:flex | flex-direction:column | align-items:flex-start | gap:0.35rem",
+        ".gear-item > .gear-option -> align-self:stretch",
+        ".gear-item > .secondary-action -> max-width:calc(100% - var(--gutter-xs-fit))",
+        ".gear-option:has(> .secondary-action) -> flex-wrap:wrap",
+        ".gear-option > .secondary-action -> flex:none | max-width:100%",
+        ".gear-option:has(> .secondary-action) > span -> flex:0 1 auto | min-width:0",
+        ".pending-action-card .gear-option -> gap:min(0.85rem, 12px) | overflow-wrap:anywhere",
+      ]);
+      // Whatever else changes, no such rule may switch off the wrapping or the word break.
+      expect(
+        optionRowLayoutRules(css).filter((rule) => /nowrap|pre\b|break-all/.test(rule)),
+      ).toEqual([]);
+    });
+
+    it("notices a late or narrow rule that would undo the option-row stacking (the guard is not vacuous)", () => {
+      const sneaky = `${css}
+        @media (max-width: 400px) { .gear-option { flex-wrap: nowrap; } .step label { flex-wrap: nowrap; } :is(fieldset, .x) { white-space: nowrap; } .option-text { word-wrap: normal; } }
+        .step .option-text { flex: 1 1 auto; white-space: nowrap; }
+        .gear-option, .form-field--checkbox { flex-flow: row nowrap; }`;
+      const found = optionRowLayoutRules(sneaky);
+      expect(found).toContain("@media (max-width: 400px) :: .gear-option -> flex-wrap:nowrap");
+      expect(found).toContain(".step .option-text -> flex:1 1 auto | white-space:nowrap");
+      expect(found).toContain(".gear-option, .form-field--checkbox -> flex-flow:row nowrap");
+      expect(found.filter((rule) => /nowrap/.test(rule))).toHaveLength(5);
+      expect(found).toContain("@media (max-width: 400px) :: .step label -> flex-wrap:nowrap");
+      expect(found).toContain(
+        "@media (max-width: 400px) :: :is(fieldset, .x) -> white-space:nowrap",
+      );
+      expect(found).toContain("@media (max-width: 400px) :: .option-text -> word-wrap:normal");
     });
 
     it("gives the padding back only to fieldsets of option rows, and keeps every other fieldset as it was", () => {
