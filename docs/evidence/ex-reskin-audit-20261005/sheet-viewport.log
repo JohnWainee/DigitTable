@@ -1,0 +1,10 @@
+(node:28045) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS phone-landscape 844x390: one live sheet keeps state, containment, reachable actions, focus
+PASS tablet 768x1024: one live sheet keeps state, containment, reachable actions, focus
+PASS desktop 1280x800: one live sheet keeps state, containment, reachable actions, focus
+PASS table 1920x1080: one live sheet keeps state, containment, reachable actions, focus
+PASS phone-small 320x568: one live sheet keeps state, containment, reachable actions, focus
+PASS phone 390x844: one live sheet keeps state, containment, reachable actions, focus
+PASS F. Back with the sheet open closes only the sheet (console still mounted, same route)
+PASS E. Escape closes the sheet; the very next Back leaves the route (no dead entry)
