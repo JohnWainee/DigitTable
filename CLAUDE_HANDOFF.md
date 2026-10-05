@@ -14,6 +14,12 @@ Branch `sonnet-fa/reskin-orchestrated-20261005` (from `main` `b599abd`). Present
 - **Not done / owed:** (1) **no staging playthrough** — running this build against staging needs the Firebase web key, which is not in the repo, and fetching it from the public bundle was blocked by the permission classifier, so it was not pursued; (2) iOS Safari on-screen keyboard and swipe-back, physical devices, screen readers, real Windows High Contrast were not exercised (only real-WebKit rendering of the sheet/rows/landing was captured); (3) rendered-pixel text contrast over the new grain was not measured (axe reports it "incomplete"); (4) the option-row action button still lives inside its `<label>` (pre-existing nested-interactive; follow-up).
 - **Next action:** John (or an approved session) builds this branch with the staging web configuration, runs `node scripts/playtest/two-device-smoke.mjs --reload` against it, then decides on merge/deploy. Merge/deploy authority is John's.
 
+### Automation staging re-verification (2026-10-05 UTC)
+
+- The named `digitable-staging-playthrough` Claude session is absent. Its October 5 outcome is therefore not inferred from process state: the committed `e83a57a` record says it was blocked by local port contention, and this run repeated the smoke directly.
+- `node scripts/playtest/two-device-smoke.mjs --base https://digitable.signal-bleed.com --out /private/tmp/digitable-staging-playthrough-20261005-hourly-1655 --reload --port 9590` ran from 2026-10-05T16:59:05Z to 16:59:52Z with `report.ok: true` and **17/17** steps passing. GM, phone-player, and table contexts had zero browser-console errors and zero failed requests. The responsive sweep found no positive horizontal overflow at 375/768/1024/1280/1920 px (the table's -15 px is spare width).
+- This is independently repeatable evidence for the **currently deployed staging build only**. It neither deploys nor validates this unmerged reskin candidate. The untracked raw report/screenshots contain an ephemeral room code; a redacted durable summary is committed at `docs/evidence/dt-staging-playthrough-20261005-hourly/README.md`.
+
 ## Mission
 
 Build DigiTable as a reusable narrative-RPG play surface, with *Eat the Reich* as the first template and Signal Bleed as a behavioral reference.
