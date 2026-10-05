@@ -1,0 +1,2 @@
+FAIL A. Back with the sheet open closes only the sheet (same route, console still mounted, no hashchange) {"afterA":{"hash":"#/create","dialog":false,"console":false,"reason":null},"hashChanges":1}
+negative control: failed as intended

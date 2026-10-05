@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { useBackDismiss } from "./useBackDismiss.js";
 import { useVisualViewportBox } from "./useVisualViewportBox.js";
 
 const FOCUSABLE_SELECTOR =
@@ -77,6 +78,8 @@ export interface SheetDialogProps {
  *   scrolled back into view when the keyboard appears.
  * - Focus moves to the heading on open and returns to the trigger on close;
  *   Escape closes; Tab and Shift+Tab cycle inside the dialog.
+ * - The browser's Back action (Android system Back, an iOS edge swipe) closes it instead of leaving
+ *   the page (`useBackDismiss`).
  *
  * Presentation only: it holds no domain state and never changes what data a
  * viewer is sent.
@@ -93,6 +96,7 @@ export function SheetDialog({
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   useVisualViewportBox(backdropRef);
+  useBackDismiss(onClose);
 
   // Focus, inert background, and root scroll lock share one lifecycle so the
   // restore order is deterministic: un-inert first, then return focus (an

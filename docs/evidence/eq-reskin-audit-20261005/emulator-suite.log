@@ -1,0 +1,174 @@
+
+> @digitable/functions@0.0.0 build
+> esbuild src/index.ts --bundle --platform=node --target=node22 --format=esm --outfile=dist/index.js --external:firebase-admin --external:firebase-admin/* --external:firebase-functions --external:firebase-functions/*
+
+
+  dist/index.js  216.6kb
+
+⚡ Done in 7ms
+(node:3297) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3314) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+    at warnOnDeactivatedColors (node:internal/tty:112:13)
+    at Object.getColorDepth (node:internal/tty:137:9)
+    at Object.shouldColorize (node:internal/util/colors:20:32)
+    at Object.refresh (node:internal/util/colors:27:24)
+    at node:internal/util/colors:51:16
+    at BuiltinModule.compileForInternalLoader (node:internal/bootstrap/realm:398:7)
+    at requireBuiltin (node:internal/bootstrap/realm:429:14)
+    at node:internal/assert/assertion_error:23:16
+    at BuiltinModule.compileForInternalLoader (node:internal/bootstrap/realm:398:7)
+    at requireBuiltin (node:internal/bootstrap/realm:429:14)
+i  emulators: Starting emulators: auth, functions, firestore, database
+i  emulators: Detected demo project ID "demo-digitable-eq", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 61081.
+i  database: Database Emulator logging to database-debug.log
+i  functions: Watching "/private/tmp/digitable-eq-iso/apps/functions" for Cloud Functions...
+⚠  functions: Your requested "node" version "22" doesn't match your global version "24". Using node@24 from host.
+Serving at port 8632
+
+✔  functions: Loaded functions definitions from source: admitMember, claimSeat, createRoom, recoverSeat, submitRoomCommand.
+✔  functions[us-west1-admitMember]: http function initialized (http://127.0.0.1:61001/demo-digitable-eq/us-west1/admitMember).
+✔  functions[us-west1-claimSeat]: http function initialized (http://127.0.0.1:61001/demo-digitable-eq/us-west1/claimSeat).
+✔  functions[us-west1-createRoom]: http function initialized (http://127.0.0.1:61001/demo-digitable-eq/us-west1/createRoom).
+✔  functions[us-west1-recoverSeat]: http function initialized (http://127.0.0.1:61001/demo-digitable-eq/us-west1/recoverSeat).
+✔  functions[us-west1-submitRoomCommand]: http function initialized (http://127.0.0.1:61001/demo-digitable-eq/us-west1/submitRoomCommand).
+i  Running script: npm run test:emulator --workspaces --if-present
+
+> @digitable/testing@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+(node:3505) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v5.0.0 /private/tmp/digitable-eq-iso/packages/testing
+
+(node:3506) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3507) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+⚠  Multiple projectIds are not recommended in single project mode. Requested project ID demo-digitable, but the emulator is configured for demo-digitable-eq. To opt-out of single project mode add/set the '"singleProjectMode"' false' property in the firebase.json emulators config.
+
+ Test Files  2 passed (2)
+      Tests  18 passed (18)
+   Start at  17:34:54
+   Duration  2.46s (tests 95%, import 4%, transform 1%)
+
+
+> @digitable/functions@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+(node:3542) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v5.0.0 /private/tmp/digitable-eq-iso/apps/functions
+
+(node:3548) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3546) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3547) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3545) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3548) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+(node:3546) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+(node:3547) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+(node:3545) MetadataLookupWarning: received unexpected error = All promises were rejected code = ETIMEDOUT, ENOTFOUND
+
+ Test Files  4 passed (4)
+      Tests  86 passed (86)
+   Start at  17:34:57
+   Duration  22.89s (tests 98%, import 1%, transform 1%)
+
+
+> @digitable/web@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+(node:4668) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v5.0.0 /private/tmp/digitable-eq-iso/apps/web
+
+(node:4673) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+>  (node:4678) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+>  (Use `node --trace-warnings ...` to show where the warning was created)
+i  functions: Beginning execution of "us-west1-createRoom"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"createRoom","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-createRoom" in 95.954625ms
+>  (node:4679) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+>  (Use `node --trace-warnings ...` to show where the warning was created)
+i  functions: Beginning execution of "us-west1-admitMember"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"admitMember","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-admitMember" in 111.145417ms
+>  (node:4683) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+>  (Use `node --trace-warnings ...` to show where the warning was created)
+i  functions: Beginning execution of "us-west1-submitRoomCommand"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"submitRoomCommand","severity":"INFO","message":"gameCommand.appCheckMissing"}
+>  {"commandId":"070a7291-c80b-4bf6-8a40-73820442fa40","roomIdHash":"9faf3221cee11e12","status":"accepted","code":"accepted","latencyMs":"72","severity":"INFO","message":"gameCommand.result"}
+i  functions: Finished "us-west1-submitRoomCommand" in 76.832375ms
+i  functions: Beginning execution of "us-west1-submitRoomCommand"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"submitRoomCommand","severity":"INFO","message":"gameCommand.appCheckMissing"}
+>  {"commandId":"5465275d-c6ba-4f78-a05d-23f530c598cc","roomIdHash":"9faf3221cee11e12","status":"accepted","code":"accepted","latencyMs":"18","severity":"INFO","message":"gameCommand.result"}
+i  functions: Finished "us-west1-submitRoomCommand" in 19.808208ms
+i  functions: Beginning execution of "us-west1-submitRoomCommand"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"submitRoomCommand","severity":"INFO","message":"gameCommand.appCheckMissing"}
+>  {"commandId":"567ffe6b-3929-48d6-94dc-48b4984af763","roomIdHash":"9faf3221cee11e12","status":"accepted","code":"accepted","latencyMs":"17","severity":"INFO","message":"gameCommand.result"}
+i  functions: Finished "us-west1-submitRoomCommand" in 18.604958ms
+i  functions: Beginning execution of "us-west1-admitMember"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"admitMember","severity":"WARNING","message":"admission.appCheckMissing"}
+>  {"function":"admitMember","code":"ROOM_NOT_FOUND","severity":"INFO","message":"admission.denied"}
+i  functions: Finished "us-west1-admitMember" in 35.984417ms
+i  functions: Beginning execution of "us-west1-createRoom"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"createRoom","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-createRoom" in 43.432667ms
+i  functions: Beginning execution of "us-west1-admitMember"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"admitMember","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-admitMember" in 54.131875ms
+>  (node:4689) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+>  (Use `node --trace-warnings ...` to show where the warning was created)
+i  functions: Beginning execution of "us-west1-recoverSeat"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"recoverSeat","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-recoverSeat" in 128.670709ms
+i  functions: Beginning execution of "us-west1-recoverSeat"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"recoverSeat","severity":"WARNING","message":"admission.appCheckMissing"}
+>  {"function":"recoverSeat","code":"INVALID_RECOVERY_CODE","severity":"INFO","message":"admission.denied"}
+i  functions: Finished "us-west1-recoverSeat" in 71.705042ms
+i  functions: Beginning execution of "us-west1-createRoom"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"createRoom","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-createRoom" in 35.320834ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  17:35:20
+   Duration  3.19s (tests 93%, import 4%, transform 3%)
+
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  functions: Stopping Functions Emulator
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  auth: Stopping Authentication Emulator
+i  eventarc: Stopping Eventarc Emulator
+i  tasks: Stopping Cloud Tasks Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+emulator-suite exit=0
+
+[exited with code 0]
