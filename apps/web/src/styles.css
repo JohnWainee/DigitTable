@@ -71,6 +71,11 @@
   --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffe600' d='M3 8h18l-9 10z'/%3E%3C/svg%3E");
 
   --tap: 3rem;
+
+  /* Gutters ease with the viewport: identical to 1rem / 0.85rem from about 372px up at 100% text, but
+     they give way on a narrow screen so 150-200% text keeps a usable column (WCAG 1.4.4). */
+  --gut: min(1rem, 4.3vw);
+  --gut-sm: min(0.85rem, 3.6vw);
 }
 
 * {
@@ -132,7 +137,8 @@ h3 {
 }
 
 h1 {
-  font-size: clamp(2.6rem, 12vw, 4.75rem);
+  /* The viewport cap only bites when text is enlarged: at 100% the clamp is already smaller. */
+  font-size: min(clamp(2.6rem, 12vw, 4.75rem), 14vw);
   color: var(--paper);
   text-shadow:
     3px 3px 0 var(--riot),
@@ -142,7 +148,7 @@ h1 {
 }
 
 h2 {
-  font-size: clamp(1.65rem, 7vw, 2.4rem);
+  font-size: min(clamp(1.65rem, 7vw, 2.4rem), 9vw);
   padding-left: 0.7rem;
   border-left: 0.6rem solid var(--acid);
   color: var(--paper);
@@ -212,7 +218,7 @@ li + li {
 .gm-screen,
 .table-screen {
   margin: 0 auto;
-  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
+  padding: max(var(--gut), env(safe-area-inset-top)) max(var(--gut), env(safe-area-inset-right))
     max(2.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
   display: flex;
   flex-direction: column;
@@ -251,7 +257,7 @@ li + li {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1.25rem 1rem 1.25rem;
+  padding: 1.25rem var(--gut) 1.25rem;
   background:
     var(--grain),
     linear-gradient(180deg, var(--ink-2), var(--ink-1)) padding-box;
@@ -348,7 +354,7 @@ li + li {
 fieldset {
   min-width: 0;
   margin: 0;
-  padding: 1.1rem 0.85rem 0.85rem;
+  padding: 1.1rem var(--gut-sm) 0.85rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -360,11 +366,11 @@ legend {
   /* At large text sizes a long legend must wrap inside its fieldset, not push the page wider. */
   max-width: 100%;
   overflow-wrap: anywhere;
-  padding: 0.15rem 0.65rem;
+  padding: 0.15rem min(0.65rem, 2.8vw);
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: min(0.8rem, 4.2vw);
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-0);
   background: var(--cyan);
@@ -377,7 +383,7 @@ legend {
 .roster-card {
   border: 2px solid var(--rule);
   background: rgba(5, 5, 6, 0.55);
-  padding: 0.85rem;
+  padding: 0.85rem var(--gut-sm);
 }
 
 .pending-actions-list,
@@ -429,11 +435,12 @@ button {
 
 .primary-action,
 .secondary-action {
-  padding: 0.7rem 1.25rem;
+  padding: 0.7rem min(1.25rem, 3.4vw);
   font-family: var(--font-display);
   font-weight: 700;
   font-synthesis-weight: none;
-  font-size: 1.25rem;
+  /* Capped by viewport width so 200% text on a phone enlarges the label without breaking its words. */
+  font-size: min(1.25rem, 7vw);
   line-height: 1.1;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -668,7 +675,7 @@ input[type="radio"]:disabled {
   align-items: center;
   gap: 0.85rem;
   min-height: var(--tap);
-  padding: 0.4rem 0.65rem;
+  padding: 0.4rem min(0.65rem, 2.8vw);
   border: 2px solid transparent;
   font-family: var(--font-body);
   font-size: 1rem;
@@ -682,15 +689,27 @@ input[type="radio"]:disabled {
   flex-direction: row;
 }
 
-/* An option row that carries its own action (e.g. "Mark and regain Blood"): the label text takes
-   the space beside the box and the action drops below it, full row width, aligned with the text. */
-.gear-option:has(> .gear-option-action) {
+/* An option row that carries its own action ("Mark and regain Blood", "Reveal"): the text takes the
+   space beside the box/icon and the button drops below it when the row is too narrow (large text,
+   small phone) instead of being squeezed until its word breaks. */
+.gear-option:has(> button),
+.gear-option:has(> .option-text) {
   flex-wrap: wrap;
 }
 
-.gear-option > .option-text {
-  flex: 1 1 0;
+.gear-option > span {
+  flex: 1 1 8rem;
   min-width: 0;
+}
+
+.gear-option > .option-text {
+  /* Stack under the box only when the longest word cannot sit beside it. */
+  min-width: min-content;
+}
+
+.gear-option > button {
+  flex: 0 0 auto;
+  max-width: 100%;
 }
 
 .gear-option > .gear-option-action {
@@ -1476,7 +1495,7 @@ details ul {
 
 .sheet-header {
   flex: none;
-  padding: 0.6rem 1rem 0.75rem;
+  padding: 0.6rem var(--gut) 0.75rem;
   border-bottom: 2px solid var(--rule);
 }
 
@@ -1495,7 +1514,7 @@ details ul {
 .sheet-body {
   flex: 1 1 auto;
   min-height: 0;
-  padding: 1rem;
+  padding: var(--gut);
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
@@ -1507,7 +1526,7 @@ details ul {
 
 .sheet-footer {
   flex: none;
-  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  padding: 0.75rem var(--gut) calc(0.75rem + env(safe-area-inset-bottom));
   background: var(--ink-2);
   border-top: 2px solid var(--rule);
   /* Backstop for large text on a small screen: the action row may scroll, but can never take the

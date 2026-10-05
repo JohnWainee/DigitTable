@@ -52,6 +52,17 @@ const LABEL = arg("label", "run");
 const PORT = Number(arg("port", "9350"));
 const SHOTS = !args.includes("--no-shots");
 const TOLERATE = args.includes("--tolerate-baseline");
+// Whole-page text scaling (WCAG 1.4.4): set the root font size in px for every captured state
+// (default 16 = 100%; 24 = 150%; 32 = 200%). Also enables the broken-word detector at any size.
+const ROOT_FONT = Number(arg("root-font", "16"));
+// e.g. --emulate-media forced-colors=active,prefers-color-scheme=light (Windows High Contrast).
+const EMULATE_MEDIA = arg("emulate-media", "")
+  .split(",")
+  .filter(Boolean)
+  .map((pair) => {
+    const [name, value] = pair.split("=");
+    return { name, value };
+  });
 const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (fast iteration on the pop-out)
 const CHROME =
   process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
@@ -169,6 +180,9 @@ async function openDevice(cdp, name, vp) {
   });
   for (const domain of ["Page", "Runtime", "Network"])
     await cdp.send(`${domain}.enable`, {}, sessionId);
+  if (EMULATE_MEDIA.length > 0) {
+    await cdp.send("Emulation.setEmulatedMedia", { features: EMULATE_MEDIA }, sessionId);
+  }
   await applyViewport(device, vp);
   devices.push(device);
   return device;
@@ -314,6 +328,27 @@ const CONTROL_AUDIT = `(() => {
   return { controls: count, overflowPx: de.scrollWidth - de.clientWidth, issues };
 })()`;
 
+/** Words that wrap in the middle of the word (a column too narrow for its longest word). */
+const BROKEN_WORDS = `(() => {
+  const found = [];
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const el = node.parentElement;
+    if (!el || el.closest("script, style, [inert], svg") || getComputedStyle(el).visibility === "hidden") continue;
+    const text = node.textContent;
+    for (const m of text.matchAll(/[A-Za-z]{5,}/g)) {
+      // Opaque identifiers (room codes, command names) are meant to break anywhere.
+      if (/[a-z][A-Z]|^[A-Z]{5,}$/.test(m[0]) || el.closest(".reveal-card dd, .reveal-code")) continue;
+      const range = document.createRange();
+      range.setStart(node, m.index);
+      range.setEnd(node, m.index + m[0].length);
+      const tops = new Set([...range.getClientRects()].filter(r => r.width > 0).map(r => Math.round(r.top)));
+      if (tops.size > 1) found.push(m[0] + " in " + el.tagName.toLowerCase() + (el.className ? "." + String(el.className).split(" ")[0] : ""));
+    }
+  }
+  return found.slice(0, 8);
+})()`;
+
 async function runAxe(device) {
   if (!(await ev(device, `typeof axe !== "undefined"`))) {
     await ev(device, AXE_SOURCE.replace(/\n\/\/# sourceMappingURL=.*$/, ""));
@@ -343,10 +378,21 @@ function isHardAxe(violation) {
 async function captureState(device, state, { axeViewports = ["phone", "tablet", "desktop"] } = {}) {
   if (MODAL_ONLY) return;
   const original = device.vp;
+  // Re-assert per state: a hard navigation (e.g. the GM console reloading) drops the override.
+  if (EMULATE_MEDIA.length > 0) {
+    await device.cdp.send(
+      "Emulation.setEmulatedMedia",
+      { features: EMULATE_MEDIA },
+      device.sessionId,
+    );
+  }
   for (const vp of VIEWPORTS) {
     await applyViewport(device, vp);
+    if (ROOT_FONT !== 16)
+      await ev(device, `document.documentElement.style.fontSize = "${ROOT_FONT}px"`);
     await sleep(250);
     const audit = await ev(device, CONTROL_AUDIT);
+    audit.brokenWords = ROOT_FONT !== 16 || vp.width <= 400 ? await ev(device, BROKEN_WORDS) : [];
     const file = await screenshot(device, `${device.name}-${state}-${vp.name}.jpg`);
     const entry = {
       surface: device.name,
@@ -373,8 +419,30 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
     for (const issue of audit.issues) {
       fail(`${device.name}/${state}@${vp.name}`, `${issue.control}: ${issue.problems.join("; ")}`);
     }
+    if (EMULATE_MEDIA.length > 0) {
+      // A CDP typo is silently accepted: prove the emulation took, and that custom-coloured
+      // decorations survived forced colours (they repaint to Canvas unless they use system colours).
+      const forced = await ev(
+        device,
+        `(() => { const s = document.querySelector("details > summary"); const bg = getComputedStyle(document.body).backgroundColor;
+          return { active: matchMedia("(forced-colors: active)").matches, markerVisible: s ? getComputedStyle(s, "::before").backgroundColor !== bg : null }; })()`,
+      );
+      entry.forcedColors = forced;
+      const wantsForced = EMULATE_MEDIA.some(
+        (m) => m.name === "forced-colors" && m.value === "active",
+      );
+      if (wantsForced && !forced.active)
+        fail(`${device.name}/${state}@${vp.name}`, "forced-colors emulation did not apply");
+      if (wantsForced && forced.markerVisible === false)
+        fail(`${device.name}/${state}@${vp.name}`, "disclosure marker invisible in forced colors");
+    }
+    entry.brokenWords = audit.brokenWords;
+    for (const word of audit.brokenWords) {
+      fail(`${device.name}/${state}@${vp.name}`, `word broken mid-word: ${word}`);
+    }
     report.states.push(entry);
   }
+  if (ROOT_FONT !== 16) await ev(device, `document.documentElement.style.fontSize = ""`);
   await applyViewport(device, original);
 }
 
