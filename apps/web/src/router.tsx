@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { dropStaleSheetEntry } from "./shared/useBackDismiss.js";
 
 /**
  * Minimal hash-based router. No routing library is in `package-lock.json`
@@ -56,7 +57,11 @@ export function replaceRoute(path: string): void {
 export function useRoute(): Route {
   const [route, setRoute] = useState<Route>(() => parseHash(window.location.hash));
   useEffect(() => {
-    const onHashChange = (): void => setRoute(parseHash(window.location.hash));
+    dropStaleSheetEntry();
+    const onHashChange = (): void => {
+      dropStaleSheetEntry();
+      setRoute(parseHash(window.location.hash));
+    };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);

@@ -1,7 +1,7 @@
 {
   "label": "after",
   "base": "http://127.0.0.1:36174",
-  "startedAt": "2026-10-05T14:53:47.656Z",
+  "startedAt": "2026-10-05T15:13:46.557Z",
   "states": [
     {
       "surface": "anon",
@@ -1253,7 +1253,7 @@
       "state": "allocation",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 15,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-small.jpg",
@@ -1264,7 +1264,7 @@
       "state": "allocation",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 15,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone.jpg",
@@ -1276,7 +1276,7 @@
       "state": "allocation",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 15,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-landscape.jpg",
@@ -1287,7 +1287,7 @@
       "state": "allocation",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 15,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-tablet.jpg",
@@ -1299,7 +1299,7 @@
       "state": "allocation",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 15,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-desktop.jpg",
@@ -1311,7 +1311,7 @@
       "state": "allocation",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 15,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-table.jpg",
@@ -1322,7 +1322,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 15,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-small.jpg",
@@ -1333,7 +1333,7 @@
       "state": "allocation-assigned",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 15,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone.jpg",
@@ -1345,7 +1345,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 15,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-landscape.jpg",
@@ -1356,7 +1356,7 @@
       "state": "allocation-assigned",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 15,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-tablet.jpg",
@@ -1367,7 +1367,7 @@
       "state": "allocation-assigned",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 15,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-desktop.jpg",
@@ -1378,7 +1378,7 @@
       "state": "allocation-assigned",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 15,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-table.jpg",
@@ -2333,12 +2333,12 @@
         "stayedOnTheSameRoute": true,
         "consoleStillShown": true,
         "noInertOrScrollLockLeft": true,
-        "cancelLeavesHistoryUnchanged": true
+        "cancelLeavesNoSheetEntry": true
       },
       "notes": [],
       "after": {
         "dialogOpen": false,
-        "hash": "#/room/e7121b8a-e742-407a-a707-680110bcafcd/gm",
+        "hash": "#/room/273a20f8-74b6-49ab-8d4b-0bb510d67a8e/gm",
         "anyInert": false,
         "rootLocked": false,
         "consoleStillShown": true
@@ -2354,7 +2354,7 @@
       },
       "notes": [],
       "scaleBefore": 1,
-      "scaleAfter": 2.0000007152557373,
+      "scaleAfter": 2.000000476837158,
       "informationalChecks": []
     },
     {
@@ -2615,32 +2615,32 @@
           "height": 532
         },
         "apply": {
-          "top": 388,
-          "bottom": 460,
+          "top": 360.8125,
+          "bottom": 464.40625,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
-          "height": 72
+          "height": 103.59375
         },
         "cancel": {
-          "top": 478,
-          "bottom": 550,
+          "top": 482.40625,
+          "bottom": 554.40625,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
           "height": 72
         },
         "reason": {
-          "top": 2086.1875,
-          "bottom": 2158.1875,
+          "top": 2112.109375,
+          "bottom": 2184.109375,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
           "height": 72
         },
         "body": {
-          "scrollHeight": 2042,
-          "clientHeight": 238,
+          "scrollHeight": 2068,
+          "clientHeight": 211,
           "scrollTop": 0,
           "overflowY": "auto"
         },
@@ -2690,12 +2690,12 @@
           "height": 764
         },
         "apply": {
-          "top": 572,
+          "top": 536.71875,
           "bottom": 668,
           "left": 18.125,
           "right": 356.875,
           "width": 338.75,
-          "height": 96
+          "height": 131.28125
         },
         "cancel": {
           "top": 692,
@@ -2706,16 +2706,16 @@
           "height": 96
         },
         "reason": {
-          "top": 3438.265625,
-          "bottom": 3534.265625,
+          "top": 3468.640625,
+          "bottom": 3564.640625,
           "left": 18.125,
           "right": 356.875,
           "width": 338.75,
           "height": 96
         },
         "body": {
-          "scrollHeight": 3378,
-          "clientHeight": 374,
+          "scrollHeight": 3409,
+          "clientHeight": 339,
           "scrollTop": 0,
           "overflowY": "auto"
         },
@@ -2766,30 +2766,30 @@
         },
         "apply": {
           "top": 366.8125,
-          "bottom": 462.8125,
+          "bottom": 485.96875,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
-          "height": 96
+          "height": 119.15625
         },
         "cancel": {
-          "top": 486.8125,
-          "bottom": 582.8125,
+          "top": 509.96875,
+          "bottom": 605.96875,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
           "height": 96
         },
         "reason": {
-          "top": 3655.078125,
-          "bottom": 3751.078125,
+          "top": 3681,
+          "bottom": 3777,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
           "height": 96
         },
         "body": {
-          "scrollHeight": 3548,
+          "scrollHeight": 3574,
           "clientHeight": 124,
           "scrollTop": 0,
           "overflowY": "auto"
@@ -2845,11 +2845,11 @@
       "failedRequests": []
     }
   },
-  "finishedAt": "2026-10-05T14:57:51.115Z",
+  "finishedAt": "2026-10-05T15:17:46.311Z",
   "ok": true,
   "summary": {
     "states": 150,
-    "controlsAudited": 1530,
+    "controlsAudited": 1422,
     "controlIssues": 0,
     "overflowStates": 0,
     "axeHardViolations": 0,

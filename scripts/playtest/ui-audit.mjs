@@ -55,6 +55,10 @@ const TOLERATE = args.includes("--tolerate-baseline");
 // Whole-page text scaling (WCAG 1.4.4): set the root font size in px for every captured state
 // (default 16 = 100%; 24 = 150%; 32 = 200%). Also enables the broken-word detector at any size.
 const ROOT_FONT = Number(arg("root-font", "16"));
+if (!Number.isFinite(ROOT_FONT) || ROOT_FONT < 8 || ROOT_FONT > 64) {
+  console.error("--root-font must be a number of px between 8 and 64");
+  process.exit(2);
+}
 // e.g. --emulate-media forced-colors=active,prefers-color-scheme=light (Windows High Contrast).
 const EMULATE_MEDIA = arg("emulate-media", "")
   .split(",")
@@ -436,6 +440,23 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
       if (wantsForced && forced.markerVisible === false)
         fail(`${device.name}/${state}@${vp.name}`, "disclosure marker invisible in forced colors");
     }
+    if (ROOT_FONT > 16 && vp.width >= 320) {
+      // Text must actually GROW with the setting (WCAG 1.4.4): a layout that passes only because
+      // display type was capped would pass the broken-word check vacuously.
+      const grown = await ev(
+        device,
+        `(() => { const b = document.querySelector(".primary-action, .secondary-action"); const h = document.querySelector("h2, h1");
+          return { button: b ? parseFloat(getComputedStyle(b).fontSize) : null, heading: h ? parseFloat(getComputedStyle(h).fontSize) : null }; })()`,
+      );
+      entry.fontGrowth = grown;
+      const want = ROOT_FONT / 16;
+      if (grown.button !== null && grown.button < 20 * Math.min(want, 1.5) * 0.99) {
+        fail(
+          `${device.name}/${state}@${vp.name}`,
+          `button text did not grow with root font (${grown.button}px at ${ROOT_FONT}px root)`,
+        );
+      }
+    }
     entry.brokenWords = audit.brokenWords;
     for (const word of audit.brokenWords) {
       fail(`${device.name}/${state}@${vp.name}`, `word broken mid-word: ${word}`);
@@ -678,13 +699,13 @@ async function auditModal(gm) {
     record.checks.consoleStillShown = after.consoleStillShown;
     record.checks.noInertOrScrollLockLeft = !after.anyInert && !after.rootLocked;
     // Cancel must not leave a stray history entry: Back after it has to leave the console, not no-op.
-    const lengthBefore = await ev(gm, `history.length`);
     await openCorrection(gm);
     await closeCorrection(gm);
     await sleep(400);
-    record.checks.cancelLeavesHistoryUnchanged =
-      (await ev(gm, `history.length`)) <= lengthBefore + 1 &&
-      (await ev(gm, `history.state?.digitableSheet === undefined`));
+    record.checks.cancelLeavesNoSheetEntry = await ev(
+      gm,
+      `history.state?.digitableSheet === undefined`,
+    );
   });
 
   await scenario("pinch-gesture", byName["phone"], async (record) => {

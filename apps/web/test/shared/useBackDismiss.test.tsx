@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { StrictMode, useState } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import { SheetDialog } from "../../src/shared/SheetDialog.js";
+import { dropStaleSheetEntry } from "../../src/shared/useBackDismiss.js";
 
 /**
  * Android Back / Safari Back with a pop-out open must dismiss the pop-out, not navigate the hash
@@ -100,5 +101,52 @@ describe("useBackDismiss", () => {
     await backAndSettle();
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(window.location.hash).toBe("#/room/abc/gm");
+  });
+
+  it("closes on Escape and leaves no sheet entry behind", async () => {
+    window.location.hash = "#/room/abc/gm";
+    const user = userEvent.setup();
+    render(<Harness />);
+    await user.click(screen.getByRole("button", { name: "Open sheet" }));
+    await user.keyboard("{Escape}");
+    await act(async () => {
+      await tick();
+    });
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(
+      (window.history.state as Record<string, unknown> | null)?.digitableSheet,
+    ).toBeUndefined();
+  });
+
+  it("a second Back after the sheet closed leaves the route, as it would without a sheet", async () => {
+    window.location.hash = "#/room/first";
+    window.location.hash = "#/room/abc/gm";
+    const user = userEvent.setup();
+    render(<Harness />);
+    await user.click(screen.getByRole("button", { name: "Open sheet" }));
+    await backAndSettle();
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(window.location.hash).toBe("#/room/abc/gm");
+    await backAndSettle();
+    expect(window.location.hash).toBe("#/room/first");
+  });
+
+  it("strips a stale sheet marker (route changed while open, then Back) so it is an ordinary entry", async () => {
+    window.location.hash = "#/room/abc/gm";
+    const user = userEvent.setup();
+    const view = render(<Harness />);
+    await user.click(screen.getByRole("button", { name: "Open sheet" }));
+    window.location.hash = "#/join"; // route changes while the sheet is open
+    view.unmount(); // the screen (and its sheet) is gone
+    await act(async () => {
+      await tick();
+    });
+    await backAndSettle(); // back to the entry the dead sheet pushed
+    expect(window.location.hash).toBe("#/room/abc/gm");
+    expect((window.history.state as Record<string, unknown> | null)?.digitableSheet).toBeDefined();
+    dropStaleSheetEntry();
+    expect(
+      (window.history.state as Record<string, unknown> | null)?.digitableSheet,
+    ).toBeUndefined();
   });
 });

@@ -1,7 +1,7 @@
 {
   "label": "fc",
   "base": "http://127.0.0.1:36174",
-  "startedAt": "2026-10-05T14:49:37.421Z",
+  "startedAt": "2026-10-05T15:13:46.557Z",
   "states": [
     {
       "surface": "anon",
@@ -1685,7 +1685,7 @@
       "state": "allocation",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 14,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -1700,7 +1700,7 @@
       "state": "allocation",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 14,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -1716,7 +1716,7 @@
       "state": "allocation",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 14,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -1731,7 +1731,7 @@
       "state": "allocation",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 14,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -1747,7 +1747,7 @@
       "state": "allocation",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 14,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -1763,7 +1763,7 @@
       "state": "allocation",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 14,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -1778,7 +1778,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 14,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -1793,7 +1793,7 @@
       "state": "allocation-assigned",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 14,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -1809,7 +1809,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 14,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -1824,7 +1824,7 @@
       "state": "allocation-assigned",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 14,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -1839,7 +1839,7 @@
       "state": "allocation-assigned",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 14,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -1854,7 +1854,7 @@
       "state": "allocation-assigned",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 14,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -2933,12 +2933,12 @@
         "stayedOnTheSameRoute": true,
         "consoleStillShown": true,
         "noInertOrScrollLockLeft": true,
-        "cancelLeavesHistoryUnchanged": true
+        "cancelLeavesNoSheetEntry": true
       },
       "notes": [],
       "after": {
         "dialogOpen": false,
-        "hash": "#/room/b63aa3a5-bce1-4cb4-a064-fda18a81c063/gm",
+        "hash": "#/room/7dea67c0-b1c6-4fdb-81ee-a30dfcbd9b0d/gm",
         "anyInert": false,
         "rootLocked": false,
         "consoleStillShown": true
@@ -2954,7 +2954,7 @@
       },
       "notes": [],
       "scaleBefore": 1,
-      "scaleAfter": 2.000000238418579,
+      "scaleAfter": 1.999999761581421,
       "informationalChecks": []
     },
     {
@@ -3215,32 +3215,32 @@
           "height": 532
         },
         "apply": {
-          "top": 386,
-          "bottom": 458,
+          "top": 358.8125,
+          "bottom": 462.40625,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
-          "height": 72
+          "height": 103.59375
         },
         "cancel": {
-          "top": 476,
-          "bottom": 548,
+          "top": 480.40625,
+          "bottom": 552.40625,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
           "height": 72
         },
         "reason": {
-          "top": 2086.1875,
-          "bottom": 2158.1875,
+          "top": 2112.109375,
+          "bottom": 2184.109375,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
           "height": 72
         },
         "body": {
-          "scrollHeight": 2042,
-          "clientHeight": 236,
+          "scrollHeight": 2068,
+          "clientHeight": 209,
           "scrollTop": 0,
           "overflowY": "auto"
         },
@@ -3290,12 +3290,12 @@
           "height": 764
         },
         "apply": {
-          "top": 570,
+          "top": 534.71875,
           "bottom": 666,
           "left": 18.125,
           "right": 356.875,
           "width": 338.75,
-          "height": 96
+          "height": 131.28125
         },
         "cancel": {
           "top": 690,
@@ -3306,16 +3306,16 @@
           "height": 96
         },
         "reason": {
-          "top": 3438.265625,
-          "bottom": 3534.265625,
+          "top": 3468.640625,
+          "bottom": 3564.640625,
           "left": 18.125,
           "right": 356.875,
           "width": 338.75,
           "height": 96
         },
         "body": {
-          "scrollHeight": 3378,
-          "clientHeight": 372,
+          "scrollHeight": 3409,
+          "clientHeight": 337,
           "scrollTop": 0,
           "overflowY": "auto"
         },
@@ -3366,30 +3366,30 @@
         },
         "apply": {
           "top": 364.8125,
-          "bottom": 460.8125,
+          "bottom": 483.96875,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
-          "height": 96
+          "height": 119.15625
         },
         "cancel": {
-          "top": 484.8125,
-          "bottom": 580.8125,
+          "top": 507.96875,
+          "bottom": 603.96875,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
           "height": 96
         },
         "reason": {
-          "top": 3655.078125,
-          "bottom": 3751.078125,
+          "top": 3681,
+          "bottom": 3777,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
           "height": 96
         },
         "body": {
-          "scrollHeight": 3548,
+          "scrollHeight": 3574,
           "clientHeight": 122,
           "scrollTop": 0,
           "overflowY": "auto"
@@ -3445,11 +3445,11 @@
       "failedRequests": []
     }
   },
-  "finishedAt": "2026-10-05T14:51:22.662Z",
+  "finishedAt": "2026-10-05T15:15:34.303Z",
   "ok": true,
   "summary": {
     "states": 150,
-    "controlsAudited": 1518,
+    "controlsAudited": 1422,
     "controlIssues": 0,
     "overflowStates": 0,
     "axeHardViolations": 0,

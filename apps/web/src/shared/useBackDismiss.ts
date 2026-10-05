@@ -5,6 +5,8 @@ const STATE_KEY = "digitableSheet";
 /** A pending release of the sheet's history entry, so a synchronous remount can adopt it. */
 let release: { readonly timer: number; readonly id: string } | null = null;
 let nextId = 0;
+/** Sheets currently mounted (only they own a `digitableSheet` history entry). */
+let mounted = 0;
 
 /**
  * Makes the browser/OS Back control dismiss an open pop-out instead of leaving the screen.
@@ -37,6 +39,7 @@ export function useBackDismiss(onClose: () => void): void {
       window.history.pushState({ ...base, [STATE_KEY]: id }, "");
     }
     let popped = false;
+    mounted += 1;
     function onPopState(): void {
       popped = true;
       onCloseRef.current();
@@ -44,6 +47,7 @@ export function useBackDismiss(onClose: () => void): void {
     window.addEventListener("popstate", onPopState);
     return () => {
       window.removeEventListener("popstate", onPopState);
+      mounted -= 1;
       if (popped) return;
       const timer = window.setTimeout(() => {
         release = null;
@@ -59,4 +63,19 @@ export function useBackDismiss(onClose: () => void): void {
       release = { timer, id };
     };
   }, []);
+}
+
+/**
+ * A history entry marked by a sheet that no longer exists (the page was reloaded, or the route
+ * changed while the sheet was open and the person later came Back to it) would make Back a silent
+ * no-op. The router calls this on every navigation and on start-up: with no sheet mounted it
+ * strips the marker so that entry is an ordinary one again.
+ */
+export function dropStaleSheetEntry(): void {
+  const state: unknown = window.history.state;
+  if (mounted > 0 || release || state === null || typeof state !== "object") return;
+  if (!(STATE_KEY in (state as Record<string, unknown>))) return;
+  const { [STATE_KEY]: _marker, ...rest } = state as Record<string, unknown>;
+  void _marker;
+  window.history.replaceState(Object.keys(rest).length > 0 ? rest : null, "");
 }

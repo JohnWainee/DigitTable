@@ -261,16 +261,20 @@ describe("reskin stylesheet contract", () => {
     });
 
     it("caps display type by viewport width so enlarged text never breaks a heading or button word", () => {
-      expect(declaration(rulesFor(/^h1$/), "font-size")[0]).toMatch(/^min\(clamp\(.*\), 14vw\)$/);
-      expect(declaration(rulesFor(/^h2$/), "font-size")[0]).toMatch(/^min\(clamp\(.*\), 9vw\)$/);
+      expect(declaration(rulesFor(/^h1$/), "font-size")[0]).toMatch(/^min\(clamp\(.*\), 17vw\)$/);
+      expect(declaration(rulesFor(/^h2$/), "font-size")[0]).toMatch(/^min\(clamp\(.*\), 12vw\)$/);
       expect(
         declaration(rulesFor(/^\.primary-action,\s*\.secondary-action$/s), "font-size"),
-      ).toContain("min(1.25rem, 7vw)");
+      ).toContain("min(1.25rem, 10vw)");
     });
 
     it("never squeezes an option row's own action: the row wraps and the button keeps its width", () => {
       expect(rulesFor(/^\.gear-option:has\(> button\)/s).join()).toMatch(/flex-wrap:\s*wrap/);
       expect(declaration(rulesFor(/^\.gear-option > button$/), "flex")).toContain("0 0 auto");
+      // The one real action (ComposeStep2) takes its own full-width line under the text.
+      expect(declaration(rulesFor(/^\.gear-option > \.gear-option-action$/), "flex")).toContain(
+        "1 1 100%",
+      );
       expect(declaration(rulesFor(/^\.gear-option > \.option-text$/), "min-width")).toContain(
         "min-content",
       );
@@ -279,6 +283,19 @@ describe("reskin stylesheet contract", () => {
     it("keeps the disclosure marker visible in Windows High Contrast", () => {
       const forced = mediaBlock("(forced-colors: active)");
       expect(forced).toMatch(/summary::before\s*\{[^}]*background:\s*LinkText/);
+      // The decorative cut line and every scuff layer are dropped rather than repainted as borders.
+      expect(forced).toMatch(/outline:\s*none/);
+      for (const panel of ["landing-resume", "reveal-card", "invite-panel"]) {
+        expect(forced).toContain(`.${panel}::after`);
+      }
+    });
+
+    it("paints the scuff layer beneath panel content so it can never tint text or controls", () => {
+      const scuff = rulesFor(/^\.step::after,\s*\.scene-card::after/s);
+      expect(declaration(scuff, "z-index")).toContain("-1");
+      expect(
+        declaration(rulesFor(/^\.step,\s*\.scene-card,\s*\.landing-resume/s), "isolation"),
+      ).toContain("isolate");
     });
 
     it("keeps the grain, hazard rail and scuffs decorative: they never take pointer events", () => {

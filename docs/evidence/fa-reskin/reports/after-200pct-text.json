@@ -1,7 +1,7 @@
 {
   "label": "after-32",
   "base": "http://127.0.0.1:36174",
-  "startedAt": "2026-10-05T14:41:08.615Z",
+  "startedAt": "2026-10-05T15:11:55.830Z",
   "states": [
     {
       "surface": "anon",
@@ -12,6 +12,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -24,6 +28,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -35,6 +43,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -47,6 +59,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -59,6 +75,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 151.8
+      },
       "brokenWords": []
     },
     {
@@ -70,6 +90,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 152
+      },
       "brokenWords": []
     },
     {
@@ -81,6 +105,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -93,6 +121,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -104,6 +136,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -116,6 +152,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -128,6 +168,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 151.8
+      },
       "brokenWords": []
     },
     {
@@ -139,6 +183,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 152
+      },
       "brokenWords": []
     },
     {
@@ -150,6 +198,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -162,6 +214,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -173,6 +229,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -185,6 +245,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -197,6 +261,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 151.8
+      },
       "brokenWords": []
     },
     {
@@ -208,6 +276,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 152
+      },
       "brokenWords": []
     },
     {
@@ -219,6 +291,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -231,6 +307,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -242,6 +322,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -254,6 +338,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -266,6 +354,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 151.8
+      },
       "brokenWords": []
     },
     {
@@ -277,6 +369,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 152
+      },
       "brokenWords": []
     },
     {
@@ -288,6 +384,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": null
+      },
       "brokenWords": []
     },
     {
@@ -313,6 +413,10 @@
           "count": 1
         }
       ],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": null
+      },
       "brokenWords": []
     },
     {
@@ -324,6 +428,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": null
+      },
       "brokenWords": []
     },
     {
@@ -335,6 +443,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": null
+      },
       "brokenWords": []
     },
     {
@@ -346,6 +458,10 @@
       "overflowPx": -15,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": null
+      },
       "brokenWords": []
     },
     {
@@ -357,6 +473,10 @@
       "overflowPx": -15,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": null
+      },
       "brokenWords": []
     },
     {
@@ -368,6 +488,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -380,6 +504,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -391,6 +519,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -402,6 +534,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -413,6 +549,10 @@
       "overflowPx": -15,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 151.8
+      },
       "brokenWords": []
     },
     {
@@ -424,6 +564,10 @@
       "overflowPx": -15,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 152
+      },
       "brokenWords": []
     },
     {
@@ -435,6 +579,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -447,6 +595,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -458,6 +610,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -469,6 +625,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -480,6 +640,10 @@
       "overflowPx": -15,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -491,6 +655,10 @@
       "overflowPx": -15,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -502,6 +670,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -514,6 +686,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -525,6 +701,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -537,6 +717,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -549,6 +733,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 151.8
+      },
       "brokenWords": []
     },
     {
@@ -560,6 +748,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 152
+      },
       "brokenWords": []
     },
     {
@@ -571,6 +763,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -583,6 +779,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -594,6 +794,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -606,6 +810,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -618,6 +826,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 151.8
+      },
       "brokenWords": []
     },
     {
@@ -629,6 +841,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 152
+      },
       "brokenWords": []
     },
     {
@@ -640,6 +856,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -652,6 +872,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -663,6 +887,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -675,6 +903,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -687,6 +919,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 151.8
+      },
       "brokenWords": []
     },
     {
@@ -698,6 +934,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 152
+      },
       "brokenWords": []
     },
     {
@@ -709,6 +949,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -721,6 +965,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -732,6 +980,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -744,6 +996,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -756,6 +1012,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 151.8
+      },
       "brokenWords": []
     },
     {
@@ -767,6 +1027,10 @@
       "overflowPx": -15,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 152
+      },
       "brokenWords": []
     },
     {
@@ -778,6 +1042,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -790,6 +1058,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -801,6 +1073,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -813,6 +1089,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -825,6 +1105,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 151.8
+      },
       "brokenWords": []
     },
     {
@@ -836,6 +1120,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 152
+      },
       "brokenWords": []
     },
     {
@@ -847,6 +1135,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -859,6 +1151,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -870,6 +1166,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -882,6 +1182,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -894,6 +1198,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -905,6 +1213,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -916,6 +1228,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -928,6 +1244,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -939,6 +1259,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -950,6 +1274,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -961,6 +1289,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -972,6 +1304,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -983,6 +1319,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": null,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -995,6 +1335,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": null,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -1006,6 +1350,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": null,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -1018,6 +1366,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": null,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -1030,6 +1382,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": null,
+        "heading": 160
+      },
       "brokenWords": []
     },
     {
@@ -1041,6 +1397,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": null,
+        "heading": 160
+      },
       "brokenWords": []
     },
     {
@@ -1052,6 +1412,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -1064,6 +1428,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -1075,6 +1443,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -1087,6 +1459,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -1099,6 +1475,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 151.8
+      },
       "brokenWords": []
     },
     {
@@ -1110,6 +1490,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 152
+      },
       "brokenWords": []
     },
     {
@@ -1121,6 +1505,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1133,6 +1521,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1144,6 +1536,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1155,6 +1551,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1166,6 +1566,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1177,6 +1581,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1188,6 +1596,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -1200,6 +1612,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -1211,6 +1627,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -1223,6 +1643,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -1235,6 +1659,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 151.8
+      },
       "brokenWords": []
     },
     {
@@ -1246,6 +1674,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 152
+      },
       "brokenWords": []
     },
     {
@@ -1253,10 +1685,14 @@
       "state": "allocation",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 10,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1264,11 +1700,15 @@
       "state": "allocation",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 10,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1276,10 +1716,14 @@
       "state": "allocation",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 10,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1287,11 +1731,15 @@
       "state": "allocation",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 10,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1299,11 +1747,15 @@
       "state": "allocation",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 10,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1311,10 +1763,14 @@
       "state": "allocation",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 10,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1322,10 +1778,14 @@
       "state": "allocation-assigned",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 10,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1333,11 +1793,15 @@
       "state": "allocation-assigned",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 10,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1345,10 +1809,14 @@
       "state": "allocation-assigned",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 10,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1356,10 +1824,14 @@
       "state": "allocation-assigned",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 10,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1367,10 +1839,14 @@
       "state": "allocation-assigned",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 10,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1378,10 +1854,14 @@
       "state": "allocation-assigned",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 10,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1393,6 +1873,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1405,6 +1889,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1416,6 +1904,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1428,6 +1920,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1440,6 +1936,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1451,6 +1951,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1462,6 +1966,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": null,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -1474,6 +1982,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": null,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -1485,6 +1997,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": null,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -1497,6 +2013,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": null,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -1509,6 +2029,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": null,
+        "heading": 160
+      },
       "brokenWords": []
     },
     {
@@ -1520,6 +2044,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": null,
+        "heading": 160
+      },
       "brokenWords": []
     },
     {
@@ -1531,6 +2059,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1543,6 +2075,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1554,6 +2090,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1565,6 +2105,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1576,6 +2120,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1587,6 +2135,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 40
+      },
       "brokenWords": []
     },
     {
@@ -1598,6 +2150,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": null,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -1610,6 +2166,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": null,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -1621,6 +2181,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": null,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -1633,6 +2197,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": null,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -1645,6 +2213,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": null,
+        "heading": 160
+      },
       "brokenWords": []
     },
     {
@@ -1656,6 +2228,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": null,
+        "heading": 160
+      },
       "brokenWords": []
     },
     {
@@ -1667,6 +2243,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 32,
+        "heading": 54.4
+      },
       "brokenWords": []
     },
     {
@@ -1679,6 +2259,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 37.5,
+        "heading": 63.75
+      },
       "brokenWords": []
     },
     {
@@ -1690,6 +2274,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 97.44
+      },
       "brokenWords": []
     },
     {
@@ -1702,6 +2290,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 92.16
+      },
       "brokenWords": []
     },
     {
@@ -1714,6 +2306,10 @@
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
+      "fontGrowth": {
+        "button": 40,
+        "heading": 151.8
+      },
       "brokenWords": []
     },
     {
@@ -1725,6 +2321,10 @@
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
+      "fontGrowth": {
+        "button": 40,
+        "heading": 152
+      },
       "brokenWords": []
     }
   ],
@@ -2333,12 +2933,12 @@
         "stayedOnTheSameRoute": true,
         "consoleStillShown": true,
         "noInertOrScrollLockLeft": true,
-        "cancelLeavesHistoryUnchanged": true
+        "cancelLeavesNoSheetEntry": true
       },
       "notes": [],
       "after": {
         "dialogOpen": false,
-        "hash": "#/room/ca19eb1b-feac-4bda-bf5a-e0afb2eae9d2/gm",
+        "hash": "#/room/18115163-34a3-4656-b526-9c6f86a71eac/gm",
         "anyInert": false,
         "rootLocked": false,
         "consoleStillShown": true
@@ -2354,7 +2954,7 @@
       },
       "notes": [],
       "scaleBefore": 1,
-      "scaleAfter": 1.9999992847442627,
+      "scaleAfter": 1.999999761581421,
       "informationalChecks": []
     },
     {
@@ -2615,32 +3215,32 @@
           "height": 532
         },
         "apply": {
-          "top": 388,
-          "bottom": 460,
+          "top": 360.8125,
+          "bottom": 464.40625,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
-          "height": 72
+          "height": 103.59375
         },
         "cancel": {
-          "top": 478,
-          "bottom": 550,
+          "top": 482.40625,
+          "bottom": 554.40625,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
           "height": 72
         },
         "reason": {
-          "top": 2086.1875,
-          "bottom": 2158.1875,
+          "top": 2112.109375,
+          "bottom": 2184.109375,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
           "height": 72
         },
         "body": {
-          "scrollHeight": 2042,
-          "clientHeight": 238,
+          "scrollHeight": 2068,
+          "clientHeight": 211,
           "scrollTop": 0,
           "overflowY": "auto"
         },
@@ -2690,12 +3290,12 @@
           "height": 764
         },
         "apply": {
-          "top": 572,
+          "top": 536.71875,
           "bottom": 668,
           "left": 18.125,
           "right": 356.875,
           "width": 338.75,
-          "height": 96
+          "height": 131.28125
         },
         "cancel": {
           "top": 692,
@@ -2706,16 +3306,16 @@
           "height": 96
         },
         "reason": {
-          "top": 3438.265625,
-          "bottom": 3534.265625,
+          "top": 3468.640625,
+          "bottom": 3564.640625,
           "left": 18.125,
           "right": 356.875,
           "width": 338.75,
           "height": 96
         },
         "body": {
-          "scrollHeight": 3378,
-          "clientHeight": 374,
+          "scrollHeight": 3409,
+          "clientHeight": 339,
           "scrollTop": 0,
           "overflowY": "auto"
         },
@@ -2766,30 +3366,30 @@
         },
         "apply": {
           "top": 366.8125,
-          "bottom": 462.8125,
+          "bottom": 485.96875,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
-          "height": 96
+          "height": 119.15625
         },
         "cancel": {
-          "top": 486.8125,
-          "bottom": 582.8125,
+          "top": 509.96875,
+          "bottom": 605.96875,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
           "height": 96
         },
         "reason": {
-          "top": 3655.078125,
-          "bottom": 3751.078125,
+          "top": 3681,
+          "bottom": 3777,
           "left": 15.75,
           "right": 304.25,
           "width": 288.5,
           "height": 96
         },
         "body": {
-          "scrollHeight": 3548,
+          "scrollHeight": 3574,
           "clientHeight": 124,
           "scrollTop": 0,
           "overflowY": "auto"
@@ -2845,11 +3445,11 @@
       "failedRequests": []
     }
   },
-  "finishedAt": "2026-10-05T14:42:54.013Z",
+  "finishedAt": "2026-10-05T15:13:40.484Z",
   "ok": true,
   "summary": {
     "states": 150,
-    "controlsAudited": 1470,
+    "controlsAudited": 1422,
     "controlIssues": 0,
     "overflowStates": 0,
     "axeHardViolations": 0,
