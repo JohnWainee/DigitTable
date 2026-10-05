@@ -303,6 +303,53 @@ final class SafariFlowUITests: XCTestCase {
         XCTAssertTrue(containing("Choose an action").waitForExistence(timeout: 30), "compose step")
     }
 
+    /// Safari's Back action with the correction sheet open must dismiss ONLY the sheet. Before `useBackDismiss`
+    /// it navigated the single-page app to the previous hash route, taking the sheet, the typed reason and the
+    /// whole director console with it (measured in headless Chrome by `scripts/playtest/sheet-history-probe.mjs`;
+    /// this is the same check in real Mobile Safari). The trigger is Safari's own Back button. A synthesized
+    /// left-edge swipe is NOT used: XCUITest's drag did not start Safari's system gesture on the unfixed
+    /// build (the page simply stayed put), so it could not prove anything either way.
+    func testBackClosesOnlyTheSheet() throws {
+        createSessionAndOpenConsole()
+        let correct = web.buttons.matching(NSPredicate(format: "label ==[c] 'Correct'")).firstMatch
+        XCTAssertTrue(correct.waitForExistence(timeout: 10), "Correct button")
+        scrollTo(correct)
+        correct.tap()
+        let heading = web.descendants(matching: .staticText).matching(NSPredicate(format: "label CONTAINS[c] 'Correct '")).firstMatch
+        XCTAssertTrue(heading.waitForExistence(timeout: 10), "sheet heading")
+        sleep(1)
+        shot("back-sheet-open")
+
+        // Safari's own Back button (in its toolbar), exactly what a person tapping Back does. The toolbar is
+        // not part of the web view and its element type varies by iOS version, so search every descendant.
+        let backQuery = NSPredicate(format: "label ==[c] 'Back' OR identifier ==[c] 'BackButton' OR identifier ==[c] 'Back'")
+        let backButton = safari.descendants(matching: .any).matching(backQuery).firstMatch
+        if !backButton.exists {
+            // After scrolling, iOS 26 Safari minimizes its toolbar to the address pill, which draws no Back
+            // button. Tapping the pill expands the toolbar again.
+            safari.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.934)).tap()
+            sleep(1)
+            shot("back-toolbar-expanded")
+        }
+        if backButton.waitForExistence(timeout: 5) {
+            backButton.tap()
+            log("back: tapped Safari's Back control (type \(backButton.elementType.rawValue), id '\(backButton.identifier)')")
+        } else {
+            // The floating toolbar is not in the accessibility tree while the page is scrolled or a modal is up.
+            // Tap where the compact toolbar draws its Back button (bottom-left, ~14% across and ~93% down on a
+            // 6.3in iPhone, see the screenshot "back-sheet-open"). Logged, never silent.
+            safari.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.142, dy: 0.934)).tap()
+            log("back: Safari's Back control is not in the accessibility tree; tapped its position by coordinate")
+        }
+        sleep(2)
+        shot("back-after")
+
+        XCTAssertFalse(heading.exists, "the sheet closed")
+        let consoleStillMounted = containing("End round 1", .button).waitForExistence(timeout: 10)
+        XCTAssertTrue(consoleStillMounted, "the director console is still mounted: Back must not leave the route")
+        log("back: sheet closed=\(!heading.exists), console mounted=\(consoleStillMounted)")
+    }
+
     func testSignedInDockInRealSafari() throws {
         createSessionAndOpenConsole()
         XCTAssertFalse(roomCode.isEmpty, "room code captured")

@@ -83,11 +83,23 @@ for device in "${DEVICES[@]}"; do
     BOOTED_HERE+=("$udid")
   fi
   xcrun simctl bootstatus "$udid" >/dev/null 2>&1
-  if TEST_RUNNER_DIGITABLE_BASE="$BASE" TEST_RUNNER_DIGITABLE_OUT="$OUT/$tag" TEST_RUNNER_DIGITABLE_TAG="$tag" \
-    xcodebuild test -project IosPlaytest.xcodeproj -scheme IosPlaytest \
+  # Build first, then test the freshly built bundle. A single `xcodebuild test -only-testing:...` right after a
+  # Swift edit resolved the test names against the PREVIOUS bundle and ran nothing ("Executed 0 tests", exit 0).
+  if xcodebuild build-for-testing -project IosPlaytest.xcodeproj -scheme IosPlaytest \
+      -destination "platform=iOS Simulator,id=$udid" -derivedDataPath "$DERIVED" \
+      CODE_SIGNING_ALLOWED=NO > "$OUT/$tag-xcodebuild.log" 2>&1 &&
+    TEST_RUNNER_DIGITABLE_BASE="$BASE" TEST_RUNNER_DIGITABLE_OUT="$OUT/$tag" TEST_RUNNER_DIGITABLE_TAG="$tag" \
+    xcodebuild test-without-building -project IosPlaytest.xcodeproj -scheme IosPlaytest \
       -destination "platform=iOS Simulator,id=$udid" -derivedDataPath "$DERIVED" ${ONLY[@]+"${ONLY[@]}"} \
-      CODE_SIGNING_ALLOWED=NO > "$OUT/$tag-xcodebuild.log" 2>&1; then
-    echo "   passed"
+      CODE_SIGNING_ALLOWED=NO >> "$OUT/$tag-xcodebuild.log" 2>&1; then
+    # Even so, xcodebuild exits 0 when a mistyped --only name selects NO tests, which would read as a pass.
+    # Require at least one test to have run.
+    if grep -qE 'Executed [1-9][0-9]* tests?' "$OUT/$tag-xcodebuild.log"; then
+      echo "   passed"
+    else
+      echo "   FAILED: no tests were executed (see $OUT/$tag-xcodebuild.log)"
+      STATUS=1
+    fi
   else
     echo "   FAILED (see $OUT/$tag-xcodebuild.log)"
     STATUS=1

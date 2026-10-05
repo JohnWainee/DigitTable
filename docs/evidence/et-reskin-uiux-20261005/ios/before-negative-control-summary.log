@@ -1,0 +1,6 @@
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testBackClosesOnlyTheSheet]' started.
+/tmp/digitable-sonnet-et-reskin-uiux-20261005/scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:349: error: -[IosPlaytestUITests.SafariFlowUITests testBackClosesOnlyTheSheet] : XCTAssertTrue failed - the director console is still mounted: Back must not leave the route
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testBackClosesOnlyTheSheet]' failed (56.666 seconds).
+	 Executed 1 test, with 1 failure (0 unexpected) in 56.666 (56.667) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 56.666 (56.668) seconds
+	 Executed 1 test, with 1 failure (0 unexpected) in 56.666 (56.669) seconds
