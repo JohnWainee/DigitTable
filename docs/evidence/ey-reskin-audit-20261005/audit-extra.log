@@ -1,0 +1,29 @@
+(node:89162) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "states": 612,
+  "controlsAudited": 6783,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "contrastBoxesMeasured": 8380,
+  "contrastBoxesInsufficient": 286,
+  "contrastFailures": 0,
+  "contrastInvalidSlices": 0,
+  "contrastUnparsedBoxes": 0,
+  "contrastTruncatedPages": 5,
+  "textScaleStates": 256,
+  "textScaleControls": 3192,
+  "textScaleOverflowStates": 0,
+  "fontFallback": "sans",
+  "axeHardViolations": 0,
+  "axeBestPractice": [
+    "anon/route-claim-no-such-room@phone: page-has-heading-one"
+  ],
+  "keyboardFocusChecks": 87,
+  "dockFocusChecks": 340,
+  "dockPinchScenarios": 4,
+  "validationScenarios": 8,
+  "sheetCases": 32,
+  "failures": 0
+}
+UI AUDIT PASSED

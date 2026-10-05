@@ -1,3 +1,4 @@
+import UIKit
 import XCTest
 
 /// Drives the REAL Mobile Safari in the iOS Simulator against a locally served DigiTable build backed by
@@ -327,13 +328,20 @@ final class SafariFlowUITests: XCTestCase {
         if !backButton.exists {
             // After scrolling, iOS 26 Safari minimizes its toolbar to the address pill, which draws no Back
             // button. Tapping the pill expands the toolbar again.
-            safari.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.934)).tap()
+            // iPad Safari has no bottom toolbar: its address pill is at the TOP, so the iPhone coordinate lands
+            // on page content (the 2026-10-04 `ew` iPad run never pressed Back for this reason).
+            let pillY: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 0.034 : 0.934
+            safari.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: pillY)).tap()
             sleep(1)
             shot("back-toolbar-expanded")
         }
         if backButton.waitForExistence(timeout: 5) {
             backButton.tap()
             log("back: tapped Safari's Back control (type \(backButton.elementType.rawValue), id '\(backButton.identifier)')")
+        } else if UIDevice.current.userInterfaceIdiom == .pad {
+            // Never tap iPhone coordinates on an iPad (that is not Back and would make a pass or fail meaningless).
+            try? safari.debugDescription.write(toFile: "\(out)/\(tag)-back-hierarchy.txt", atomically: true, encoding: .utf8)
+            XCTFail("iPad Safari's Back control was not found in the accessibility tree; hierarchy written to \(tag)-back-hierarchy.txt")
         } else {
             // The floating toolbar is not in the accessibility tree while the page is scrolled or a modal is up.
             // Tap where the compact toolbar draws its Back button (bottom-left, ~14% across and ~93% down on a

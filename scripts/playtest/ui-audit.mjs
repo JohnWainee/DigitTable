@@ -110,6 +110,39 @@ const VIEWPORTS = [
   { name: "desktop", width: 1280, height: 800, mobile: false },
   { name: "table", width: 1920, height: 1080, mobile: false },
 ];
+// `--extra-viewports name:WxH[:m],...` appends viewports for ONE run (the standard eight miss the 480-720 band,
+// 1024-1366 wide laptops/tablets in landscape and 2560/3840 wide TVs). They join the per-state sweep, the dock and
+// the sheet containment cases of `auditModal`; the keyboard, safe-area, zoom and text-scale scenarios keep their
+// fixed viewports. `:m` = mobile emulation. Strict on purpose: a typo must fail the run, never silently audit less.
+if (args.includes("--extra-viewports") && !arg("extra-viewports", "")) {
+  throw new Error("--extra-viewports needs a value such as w540:540x960:m,tv3840:3840x2160");
+}
+const EXTRA_VIEWPORTS = arg("extra-viewports", "")
+  .split(",")
+  .filter(Boolean)
+  .map((spec) => {
+    const [name, size, flag, ...rest] = spec.split(":");
+    const match = /^(\d+)x(\d+)$/.exec(size ?? "");
+    if (
+      !name ||
+      !/^[A-Za-z0-9_-]+$/.test(name) ||
+      !match ||
+      rest.length > 0 ||
+      (flag !== undefined && flag !== "m")
+    ) {
+      throw new Error(`bad --extra-viewports entry "${spec}"`);
+    }
+    const [width, height] = [Number(match[1]), Number(match[2])];
+    if (width === 0 || height === 0) throw new Error(`bad --extra-viewports entry "${spec}"`);
+    return { name, width, height, mobile: flag === "m" };
+  });
+for (const [index, extra] of EXTRA_VIEWPORTS.entries()) {
+  const taken = [...VIEWPORTS, ...EXTRA_VIEWPORTS.slice(0, index)].some(
+    (v) => v.name === extra.name,
+  );
+  if (taken) throw new Error(`--extra-viewports name "${extra.name}" is already a viewport`);
+}
+VIEWPORTS.push(...EXTRA_VIEWPORTS);
 const byName = Object.fromEntries(VIEWPORTS.map((v) => [v.name, v]));
 
 const report = {
@@ -985,6 +1018,7 @@ async function auditModal(gm) {
     { name: "phone-667x375", width: 667, height: 375, mobile: true },
     { name: "tablet", ...byName["tablet"] },
     { name: "desktop", ...byName["desktop"] },
+    ...EXTRA_VIEWPORTS,
   ];
   for (const vp of cases) await auditSheetCase(gm, vp, 0);
 

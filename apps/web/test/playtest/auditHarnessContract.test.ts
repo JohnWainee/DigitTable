@@ -474,3 +474,31 @@ describe("option-row stress probe", () => {
     expect(stress).toContain("\\p{L}{5,}");
   });
 });
+
+describe("viewport coverage beyond the standard eight", () => {
+  it("lets one audit run add viewports to the state sweep and the sheet containment cases", () => {
+    // The standard set misses the 480-720 band, 1024-1366 landscape tablets and laptops, and 2560/3840 TVs.
+    expect(audit).toContain('arg("extra-viewports"');
+    expect(audit).toContain("VIEWPORTS.push(...EXTRA_VIEWPORTS)");
+    expect(audit).toMatch(/\.\.\.byName\["desktop"\] \},\s*\.\.\.EXTRA_VIEWPORTS,\s*\];/);
+    // A malformed entry is an error, never a silently skipped viewport.
+    expect(audit).toContain("bad --extra-viewports entry");
+    expect(audit).toContain("is already a viewport");
+    expect(audit).toContain("--extra-viewports needs a value");
+  });
+});
+
+describe("iOS Simulator rig: Back on iPad", () => {
+  const rig = readFileSync(
+    join(here, "../../../../scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift"),
+    "utf8",
+  );
+
+  it("expands iPad Safari's TOP toolbar and never taps iPhone bottom-toolbar coordinates on an iPad", () => {
+    // The 2026-10-04 iPad run reported the Back-dismiss test as failed without ever pressing Back: the
+    // iPhone bottom-pill coordinate lands on page content on an iPad (address pill at the top).
+    expect(rig).toContain("UIDevice.current.userInterfaceIdiom == .pad ? 0.034 : 0.934");
+    expect(rig).toContain("} else if UIDevice.current.userInterfaceIdiom == .pad {");
+    expect(rig).toContain("XCTFail(\"iPad Safari's Back control was not found");
+  });
+});
