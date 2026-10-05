@@ -1,0 +1,4 @@
+== iPhone 17e on iOS-27-0 (A89368EC-120E-4BB7-A9A3-5A1FD8E860DA) -> /Users/john/.claude/jobs/c78a3108/tmp/ios2/iphone-17e
+   passed
+== iPad mini (A17 Pro) on iOS-27-0 (7E9862FF-478B-4A12-8C9D-C4CEDE10536D) -> /Users/john/.claude/jobs/c78a3108/tmp/ios2/ipad-mini-a17-pro
+   FAILED (see /Users/john/.claude/jobs/c78a3108/tmp/ios2/ipad-mini-a17-pro-xcodebuild.log)

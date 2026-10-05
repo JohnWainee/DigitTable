@@ -1,0 +1,126 @@
+    at warnOnDeactivatedColors (node:internal/tty:112:13)
+    at Object.getColorDepth (node:internal/tty:137:9)
+    at Object.shouldColorize (node:internal/util/colors:20:32)
+    at Object.refresh (node:internal/util/colors:27:24)
+    at node:internal/util/colors:51:16
+    at BuiltinModule.compileForInternalLoader (node:internal/bootstrap/realm:398:7)
+    at requireBuiltin (node:internal/bootstrap/realm:429:14)
+    at node:internal/assert/assertion_error:23:16
+    at BuiltinModule.compileForInternalLoader (node:internal/bootstrap/realm:398:7)
+    at requireBuiltin (node:internal/bootstrap/realm:429:14)
+i  emulators: Starting emulators: auth, functions, firestore, database
+i  emulators: Detected demo project ID "demo-digitable", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+⚠  emulators: It seems that you are running multiple instances of the emulator suite for project demo-digitable. This may result in unexpected behavior.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 63081.
+i  database: Database Emulator logging to database-debug.log
+i  functions: Watching "/private/tmp/digitable-sonnet-ew-reskin-orchestrated-20261005/apps/functions" for Cloud Functions...
+⚠  functions: Your requested "node" version "22" doesn't match your global version "24". Using node@24 from host.
+Serving at port 8448
+
+✔  functions: Loaded functions definitions from source: admitMember, claimSeat, createRoom, recoverSeat, submitRoomCommand.
+✔  functions[us-west1-admitMember]: http function initialized (http://127.0.0.1:63001/demo-digitable/us-west1/admitMember).
+✔  functions[us-west1-claimSeat]: http function initialized (http://127.0.0.1:63001/demo-digitable/us-west1/claimSeat).
+✔  functions[us-west1-createRoom]: http function initialized (http://127.0.0.1:63001/demo-digitable/us-west1/createRoom).
+✔  functions[us-west1-recoverSeat]: http function initialized (http://127.0.0.1:63001/demo-digitable/us-west1/recoverSeat).
+✔  functions[us-west1-submitRoomCommand]: http function initialized (http://127.0.0.1:63001/demo-digitable/us-west1/submitRoomCommand).
+i  Running script: npm run test:emulator --workspaces --if-present
+
+> @digitable/testing@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+
+ RUN  v5.0.0 /private/tmp/digitable-sonnet-ew-reskin-orchestrated-20261005/packages/testing
+
+
+ Test Files  2 passed (2)
+      Tests  18 passed (18)
+   Start at  22:47:12
+   Duration  2.24s (tests 93%, import 6%, transform 1%)
+
+
+> @digitable/functions@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+
+ RUN  v5.0.0 /private/tmp/digitable-sonnet-ew-reskin-orchestrated-20261005/apps/functions
+
+
+ Test Files  4 passed (4)
+      Tests  86 passed (86)
+   Start at  22:47:15
+   Duration  17.81s (tests 97%, import 2%, transform 1%)
+
+
+> @digitable/web@0.0.0 test:emulator
+> vitest run --config vitest.emulator.config.ts
+
+
+ RUN  v5.0.0 /private/tmp/digitable-sonnet-ew-reskin-orchestrated-20261005/apps/web
+
+i  functions: Beginning execution of "us-west1-createRoom"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"createRoom","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-createRoom" in 88.156875ms
+i  functions: Beginning execution of "us-west1-admitMember"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"admitMember","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-admitMember" in 105.543375ms
+i  functions: Beginning execution of "us-west1-submitRoomCommand"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"submitRoomCommand","severity":"INFO","message":"gameCommand.appCheckMissing"}
+>  {"commandId":"9dfc9d48-842f-44bf-a197-13fe37b9112b","roomIdHash":"8489a8005b9761a4","status":"accepted","code":"accepted","latencyMs":"71","severity":"INFO","message":"gameCommand.result"}
+i  functions: Finished "us-west1-submitRoomCommand" in 75.449458ms
+i  functions: Beginning execution of "us-west1-submitRoomCommand"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"submitRoomCommand","severity":"INFO","message":"gameCommand.appCheckMissing"}
+>  {"commandId":"fb3fb96e-a7ba-4f25-ae35-f4e0c7369380","roomIdHash":"8489a8005b9761a4","status":"accepted","code":"accepted","latencyMs":"20","severity":"INFO","message":"gameCommand.result"}
+i  functions: Finished "us-west1-submitRoomCommand" in 20.959625ms
+i  functions: Beginning execution of "us-west1-submitRoomCommand"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"submitRoomCommand","severity":"INFO","message":"gameCommand.appCheckMissing"}
+>  {"commandId":"ce65c42e-162f-4bcb-bdd4-c54a6a61baa3","roomIdHash":"8489a8005b9761a4","status":"accepted","code":"accepted","latencyMs":"17","severity":"INFO","message":"gameCommand.result"}
+i  functions: Finished "us-west1-submitRoomCommand" in 17.772916ms
+i  functions: Beginning execution of "us-west1-admitMember"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"admitMember","severity":"WARNING","message":"admission.appCheckMissing"}
+>  {"function":"admitMember","code":"ROOM_NOT_FOUND","severity":"INFO","message":"admission.denied"}
+i  functions: Finished "us-west1-admitMember" in 29.441ms
+i  functions: Beginning execution of "us-west1-createRoom"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"createRoom","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-createRoom" in 38.686833ms
+i  functions: Beginning execution of "us-west1-admitMember"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"admitMember","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-admitMember" in 52.452583ms
+i  functions: Beginning execution of "us-west1-recoverSeat"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"recoverSeat","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-recoverSeat" in 120.492ms
+i  functions: Beginning execution of "us-west1-recoverSeat"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"recoverSeat","severity":"WARNING","message":"admission.appCheckMissing"}
+>  {"function":"recoverSeat","code":"INVALID_RECOVERY_CODE","severity":"INFO","message":"admission.denied"}
+i  functions: Finished "us-west1-recoverSeat" in 67.206959ms
+i  functions: Beginning execution of "us-west1-createRoom"
+>  {"verifications":{"app":"MISSING","auth":"VALID"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"DEBUG","message":"Callable request verification passed"}
+>  {"function":"createRoom","severity":"WARNING","message":"admission.appCheckMissing"}
+i  functions: Finished "us-west1-createRoom" in 38.753375ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  22:47:33
+   Duration  2.80s (tests 93%, transform 4%, import 3%)
+
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  functions: Stopping Functions Emulator
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  auth: Stopping Authentication Emulator
+i  eventarc: Stopping Eventarc Emulator
+i  tasks: Stopping Cloud Tasks Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
