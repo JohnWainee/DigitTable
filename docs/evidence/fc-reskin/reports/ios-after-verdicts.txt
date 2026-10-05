@@ -1,0 +1,2 @@
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' started.
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (98.183 seconds).

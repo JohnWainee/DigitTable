@@ -1,6 +1,12 @@
 import { useLayoutEffect, type RefObject } from "react";
 
 /**
+ * Below this visible height (in rem, so it scales with the user's text size) a pinned title, body and
+ * action row cannot all be shown: the sheet is "compact" and scrolls as one page instead.
+ */
+export const COMPACT_BELOW_REM = 15;
+
+/**
  * Mirrors `window.visualViewport` onto CSS custom properties of `ref`'s
  * element (`--vv-top`, `--vv-left`, `--vv-width`, `--vv-height`) whenever the
  * visual viewport differs from the layout viewport: an on-screen keyboard on
@@ -15,6 +21,12 @@ import { useLayoutEffect, type RefObject } from "react";
  * stylesheet's plain `100dvh`/`100%` fallbacks apply and nothing here can
  * disturb ordinary layout (for example a desktop page scrollbar).
  *
+ * It also sets `data-compact` on that element while the visible height is under
+ * `COMPACT_BELOW_REM`. On a landscape phone with the on-screen keyboard up, real iOS
+ * Safari leaves roughly 70-140px (measured in the iOS Simulator): a pinned header and
+ * footer alone need more than that, which overlapped the reason field with the action row.
+ * The stylesheet makes the whole sheet scroll in that state.
+ *
  * Presentation only. No game state, projection, or authorization is read or
  * written here.
  */
@@ -25,6 +37,17 @@ export function useVisualViewportBox(ref: RefObject<HTMLElement | null>): void {
     if (!element || !viewport) return undefined;
     const target: HTMLElement = element;
     const visual: VisualViewport = viewport;
+
+    // Evaluated on mount and on `resize` only: `scroll` fires continuously while panning a zoomed page
+    // and a root font-size read forces a style recalculation. Pinch-zoom past ~4x also lands here
+    // (visible height under 15rem); scrolling the whole sheet as one page is the better layout there too.
+    function applyCompact(): void {
+      // The smaller of the two heights: iOS shrinks only the visual viewport for the keyboard, Chrome
+      // Android (interactive-widget=resizes-content) shrinks both.
+      const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      const visibleHeight = Math.min(visual.height, window.innerHeight);
+      target.toggleAttribute("data-compact", visibleHeight < COMPACT_BELOW_REM * rootFontSize);
+    }
 
     function apply(): void {
       const differs =
@@ -46,10 +69,13 @@ export function useVisualViewportBox(ref: RefObject<HTMLElement | null>): void {
     }
 
     apply();
+    applyCompact();
     visual.addEventListener("resize", apply);
+    visual.addEventListener("resize", applyCompact);
     visual.addEventListener("scroll", apply);
     return () => {
       visual.removeEventListener("resize", apply);
+      visual.removeEventListener("resize", applyCompact);
       visual.removeEventListener("scroll", apply);
     };
   }, [ref]);

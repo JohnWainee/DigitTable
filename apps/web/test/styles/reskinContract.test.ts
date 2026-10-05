@@ -235,6 +235,22 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(rulesFor(/^\.sheet-footer$/), "flex")).toContain("none");
     });
 
+    it("scrolls as one page in compact mode, so a keyboard-shortened sheet never overlaps field and actions", () => {
+      expect(
+        declaration(rulesFor(/^\.sheet-backdrop\[data-compact\] \.sheet$/), "overflow-y"),
+      ).toContain("auto");
+      const body = rulesFor(/^\.sheet-backdrop\[data-compact\] \.sheet-body$/);
+      expect(declaration(body, "overflow")).toContain("visible");
+      expect(declaration(body, "flex")).toContain("none");
+      const footer = rulesFor(/^\.sheet-backdrop\[data-compact\] \.sheet-footer$/);
+      expect(declaration(footer, "overflow")).toContain("visible");
+      expect(declaration(footer, "max-height")).toContain("none");
+      expect(declaration(footer, "padding-bottom")[0]).toContain("env(safe-area-inset-bottom");
+      const backdrop = rulesFor(/^\.sheet-backdrop\[data-compact\]$/);
+      expect(declaration(backdrop, "padding-bottom")).toContain("0");
+      expect(declaration(backdrop, "padding-top")[0]).toContain("env(safe-area-inset-top");
+    });
+
     it("is an edge-attached bottom sheet by default and a centred card from 641px up", () => {
       expect(declaration(rulesFor(/^\.sheet-backdrop$/), "align-items")).toContain("flex-end");
       const wide = mediaBlock("(min-width: 40.0625rem)");

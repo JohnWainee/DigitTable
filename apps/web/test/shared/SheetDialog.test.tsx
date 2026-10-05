@@ -492,6 +492,39 @@ describe("SheetDialog", () => {
       expect(backdrop.style.getPropertyValue("--vv-top")).toBe("");
     });
 
+    it("marks the sheet compact only while too little height is visible (landscape phone + keyboard)", async () => {
+      const viewport = installViewport();
+      const backdrop = await openSheet();
+      expect(backdrop).not.toHaveAttribute("data-compact");
+
+      // Real iOS Safari, landscape, keyboard up: ~70-140px visible. 15rem is 240px at 16px text.
+      act(() => viewport.set({ height: 120, offsetTop: 0 }));
+      expect(backdrop).toHaveAttribute("data-compact");
+
+      act(() => viewport.set({ height: 239, offsetTop: 0 }));
+      expect(backdrop).toHaveAttribute("data-compact");
+      act(() => viewport.set({ height: 240, offsetTop: 0 }));
+      expect(backdrop).not.toHaveAttribute("data-compact");
+
+      // The threshold scales with the user's text size (rem), not pixels.
+      document.documentElement.style.fontSize = "32px";
+      try {
+        act(() => viewport.set({ height: 400, offsetTop: 0 }));
+        expect(backdrop).toHaveAttribute("data-compact");
+      } finally {
+        document.documentElement.style.fontSize = "";
+      }
+    });
+
+    it("uses the smaller of the visual and layout heights for compact mode", async () => {
+      const viewport = installViewport();
+      Object.defineProperty(window, "innerHeight", { configurable: true, value: 200 });
+      const backdrop = await openSheet();
+      // Visual viewport is tall but the layout viewport is short (Chrome Android keyboard): compact.
+      act(() => viewport.set({ height: 812, offsetTop: 0 }));
+      expect(backdrop).toHaveAttribute("data-compact");
+    });
+
     it("follows pinch-zoom (scale != 1) and stops listening once closed", async () => {
       const viewport = installViewport();
       const removeSpy = vi.spyOn(viewport, "removeEventListener");

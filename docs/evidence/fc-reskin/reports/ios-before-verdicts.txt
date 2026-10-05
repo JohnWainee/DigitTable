@@ -1,0 +1,21 @@
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testBackClosesOnlyTheSheet]' started.
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testBackClosesOnlyTheSheet]' passed (78.472 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' started.
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:251: error: -[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker] : XCTAssertLessThanOrEqual failed: ("61.0") is greater than ("44.5") - landscape + keyboard: the field ((135.0, 12.0, 604.0, 49.0)) overlaps the
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' failed (100.870 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' started.
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:161: error: -[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard] : XCTAssertTrue failed - inline error text
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:175: error: -[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard] : XCTAssertTrue failed - pattern error
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' failed (17.600 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari]' started.
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:368: error: -[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari] : XCTAssertTrue failed - compose dock after scroll 1 is outside the visible web area (0.0, 0.0, 402.0, 874.0): (34.0, 2014.0, 334.0, 50.0)
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:368: error: -[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari] : XCTAssertTrue failed - compose dock after scroll 1 is not hittable
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:368: error: -[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari] : XCTAssertTrue failed - compose dock after scroll 2 is outside the visible web area (0.0, 0.0, 402.0, 874.0): (34.0, 1492.0, 334.0, 50.0)
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:368: error: -[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari] : XCTAssertTrue failed - compose dock after scroll 2 is not hittable
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:368: error: -[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari] : XCTAssertTrue failed - compose dock after scroll 3 is outside the visible web area (0.0, 0.0, 402.0, 874.0): (34.0, 977.0, 334.0, 49.0)
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:368: error: -[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari] : XCTAssertTrue failed - compose dock after scroll 3 is not hittable
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:394: error: -[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari] : XCTAssertTrue failed - landscape dock, panel on screen (bars collapsed on iPhone) is outside the visible web area (0.0, 0.0, 874.0, 402.0): (149.0, 1433.0
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:394: error: -[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari] : XCTAssertTrue failed - landscape dock, panel on screen (bars collapsed on iPhone) is not hittable
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:410: error: -[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari] : XCTAssertTrue failed - landscape dock, panel on screen (bars showing on iPhone) is outside the visible web area (0.0, 0.0, 874.0, 402.0): (149.0, 1465.0, 
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:410: error: -[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari] : XCTAssertTrue failed - landscape dock, panel on screen (bars showing on iPhone) is not hittable
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari]' failed (188.170 seconds).

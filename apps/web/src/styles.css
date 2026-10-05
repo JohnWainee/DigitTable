@@ -1601,6 +1601,46 @@ details ul {
   }
 }
 
+/* Compact (useVisualViewportBox sets data-compact under 15rem of visible height): a landscape phone with
+   the on-screen keyboard up leaves roughly 70-140px, measured in real iOS Safari. A pinned title and
+   action row alone need more than that, which clipped the buttons and pushed the title out of view. The
+   whole sheet scrolls as one page instead; nothing is pinned, nothing is clipped, and the focused field
+   is scrolled into view by the sheet itself. */
+.sheet-backdrop[data-compact] {
+  /* Take back the dead band too: the wide-viewport rule below gives the backdrop 1.5rem on every side, and
+     at 60-90px visible that left a 24px strip under a sheet that was already too short to show the
+     focused field (reviewer measurement: field 36/48px visible at 70px). The top notch inset and, through
+     the footer, the home-indicator inset are kept; side insets still come from the base rules. */
+  padding-top: max(env(safe-area-inset-top, 0px), 0.25rem);
+  /* The footer's own bottom padding already carries the home-indicator inset; adding it here as well
+     counted it twice (reviewer: field 33/48px visible at 60px with a 21px inset). */
+  padding-bottom: 0;
+}
+
+.sheet-backdrop[data-compact] .sheet {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.sheet-backdrop[data-compact] .sheet-body {
+  flex: none;
+  overflow: visible;
+}
+
+.sheet-backdrop[data-compact] .sheet-footer {
+  max-height: none;
+  overflow: visible;
+  /* Every pixel counts here: a 48px action button plus the roomy default padding does not fit in the ~54px
+     the sheet shows at 60px visible. */
+  padding-top: 0.25rem;
+  padding-bottom: calc(0.25rem + env(safe-area-inset-bottom, 0px));
+}
+
+.sheet-backdrop[data-compact] .sheet-header {
+  padding-top: 0.25rem;
+  padding-bottom: 0.35rem;
+}
+
 /* ---------- Larger layouts ---------- */
 
 @media (min-width: 48rem) {
