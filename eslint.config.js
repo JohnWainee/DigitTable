@@ -55,6 +55,11 @@ export default tseslint.config(
       "**/node_modules/**",
       ".claude/**",
       "scripts/**",
+      // Audits may preserve a runnable, standalone browser probe alongside their
+      // immutable reports. Those records are evidence, not application source;
+      // linting them with the workspace TypeScript project service makes a clean
+      // evidence commit fail the repository gate.
+      "docs/evidence/**",
       "assets/**",
       "eslint.config.js",
     ],
