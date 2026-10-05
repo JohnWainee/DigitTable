@@ -452,6 +452,12 @@ When pausing or finishing a material unit:
 
 ## Integrated verification and next action
 
+### 2026-10-05 UTC: deployed staging playthrough rerun (`sonnet-dt/reskin-hourly-20261003`)
+
+- **Outcome confirmed:** the absent `digitable-staging-playthrough` session was blocked by local port contention, not a completed run. Its recovery evidence was already committed as `9ee8aa5`; this fresh rerun avoids inferring success from the missing process.
+- **Fresh deployment evidence:** `node scripts/playtest/two-device-smoke.mjs --base https://digitable.signal-bleed.com --out /private/tmp/digitable-staging-playthrough-20261005 --reload --port 9365` completed **17/17** steps with `report.ok: true`. It covered GM session/scene creation, phone player and table admission, character claim, cross-device declaration and resolution/allocation, pause/resume, scene advance, role guidance, direct resume, and reload recovery. The three contexts captured no console errors or failed requests and no positive horizontal overflow at 375/768/1024/1280/1920px.
+- **Boundary:** no deploy or source modification occurred; this validates only the current deployed staging build, which predates the unmerged visual-viewport and reskin candidates. Machine-local screenshots/report deliberately remain untracked because the report contains an ephemeral room code; the durable record is `docs/evidence/dt-staging-playthrough-20261005/README.md`.
+
 ### 2026-10-04 UTC: deployed staging playthrough rerun (`sonnet-dt/reskin-hourly-20261003`)
 
 - **Recovered evidence:** the missing `digitable-staging-playthrough` Sonnet session was not a successful or failed application run: it was blocked by local port contention and left only untracked scratch output. The later harness repair is recorded in `docs/reviews/2026-10-02-df-reskin-verification-review.md`; no product fix was needed during this rerun.
