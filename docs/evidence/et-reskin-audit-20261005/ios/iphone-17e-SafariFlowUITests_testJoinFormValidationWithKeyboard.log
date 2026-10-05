@@ -1,0 +1,5 @@
+join room-code field with keyboard up: frame=(16.0, 220.17401123046875, 358.0, 49.04899597167969) screen=(0.0, 0.0, 390.0, 844.0) keyboardTop=560.0 inScreen=true aboveKeyboard=true hittable=true
+inline room-code error present: true
+room-code error text: frame=(98.0, 282.23602294921875, 168.0, 20.020004272460938) screen=(0.0, 0.0, 390.0, 844.0) keyboardTop=560.0 inScreen=true aboveKeyboard=true hittable=true
+room-code field after failed submit: frame=(16.0, 220.17401123046875, 358.0, 49.04899597167969) screen=(0.0, 0.0, 390.0, 844.0) keyboardTop=560.0 inScreen=true aboveKeyboard=true hittable=true
+pattern error present: true
