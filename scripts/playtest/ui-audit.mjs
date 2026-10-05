@@ -82,6 +82,30 @@ if (FONT_FALLBACK && !FONT_STACKS[FONT_FALLBACK]) {
   console.error(`--font-fallback must be one of: ${Object.keys(FONT_STACKS).join(", ")}`);
   process.exit(2);
 }
+// `--emulate-media forced-colors=active,prefers-contrast=more`: run the whole audit under those CSS media
+// features (CDP Emulation.setEmulatedMedia, applied to every device and kept across the reduced-motion
+// probe). `forced-colors=active` is Chrome's engine-level Windows High Contrast behaviour: colours,
+// backgrounds, shadows and gradients are overridden by the UA, so only borders, outlines, text and system
+// colours can carry meaning. The pixel-contrast pass is skipped there (the UA owns the palette, and its
+// glyph-recolouring technique is itself overridden); axe, geometry, overflow and word-break audits still run.
+// `--text-spacing`: WCAG 1.4.12 Text Spacing. Injects the standard override (line-height 1.5, letter-spacing
+// .12em, word-spacing .16em, paragraph spacing 2em, all !important) before every page script, and adds an
+// audit for text that is clipped by an `overflow: hidden|clip` ancestor (loss of content, not just overflow).
+const EMULATED_MEDIA = arg("emulate-media", "")
+  .split(",")
+  .filter(Boolean)
+  .map((pair) => {
+    const [name, value] = pair.split("=");
+    if (!name || !value) {
+      console.error(`--emulate-media entries must look like name=value, got "${pair}"`);
+      process.exit(2);
+    }
+    return { name, value };
+  });
+const FORCED_COLORS = EMULATED_MEDIA.some(
+  (f) => f.name === "forced-colors" && f.value === "active",
+);
+const TEXT_SPACING = args.includes("--text-spacing");
 const CHROME =
   process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 mkdirSync(OUT, { recursive: true });
@@ -121,6 +145,8 @@ const report = {
   contrast: [],
   layouts: {},
   fontFallback: FONT_FALLBACK || null,
+  emulatedMedia: EMULATED_MEDIA,
+  textSpacing: TEXT_SPACING,
   modal: [],
   keyboard: [],
   docks: [],
@@ -232,6 +258,36 @@ async function openDevice(cdp, name, vp) {
         root.style.setProperty("--font-body", ${JSON.stringify(stack.body)}, "important");`
             : ""
         }
+        return true;
+      };
+      if (!apply()) new MutationObserver((_, observer) => { if (apply()) observer.disconnect(); }).observe(document, { childList: true });
+    })()`;
+    await cdp.send("Page.addScriptToEvaluateOnNewDocument", { source }, sessionId);
+  }
+  if (EMULATED_MEDIA.length > 0) {
+    await cdp.send("Emulation.setEmulatedMedia", { features: EMULATED_MEDIA }, sessionId);
+    // Positive control: CDP accepts any feature name or value without complaint (a misspelt
+    // `forced-colours=active` silently emulates nothing), so prove each one is really in effect.
+    for (const feature of EMULATED_MEDIA) {
+      const query = `(${feature.name}: ${feature.value})`;
+      if (!(await ev(device, `matchMedia(${JSON.stringify(query)}).matches`))) {
+        // Thrown (not process.exit) so main's cleanup still closes the browser it launched.
+        throw new Error(`--emulate-media ${feature.name}=${feature.value} did not take effect`);
+      }
+    }
+  }
+  if (TEXT_SPACING) {
+    // The WCAG 1.4.12 override a user stylesheet or bookmarklet applies. `!important` on the universal
+    // selector beats every author rule, which is exactly what a user's own style sheet does.
+    const source = `(() => {
+      const css = "*, *::before, *::after { line-height: 1.5 !important; letter-spacing: 0.12em !important; word-spacing: 0.16em !important; } p { margin-bottom: 2em !important; }";
+      const apply = () => {
+        const root = document.documentElement;
+        if (!root) return false;
+        const style = document.createElement("style");
+        style.setAttribute("data-wcag-1412", "");
+        style.textContent = css;
+        root.appendChild(style);
         return true;
       };
       if (!apply()) new MutationObserver((_, observer) => { if (apply()) observer.disconnect(); }).observe(document, { childList: true });
@@ -457,6 +513,79 @@ const WORD_BREAK_AUDIT = `(() => {
 })()`;
 
 /**
+ * In-page (WCAG 1.4.12 Text Spacing, run with `--text-spacing`): text-bearing elements whose own box clips
+ * their content, i.e. `overflow: hidden|clip` on an axis where the content is larger than the box. That is
+ * loss of content, which a geometry or overflow check cannot see (nothing leaves the page, it is just cut
+ * off). A native `<select>` ellipsises its closed value by design and has its own echo audit, so it is
+ * skipped; a box that only clips a decorative child (no text of its own) reports nothing.
+ */
+const TEXT_CLIP_AUDIT = `(() => {
+  const clipped = [];
+  for (const el of document.body.querySelectorAll("*")) {
+    if (el.matches("select, option, optgroup") || el.closest("svg, script, style, [inert]")) continue;
+    const cs = getComputedStyle(el);
+    if (cs.display === "none" || cs.visibility === "hidden") continue;
+    const clipY = cs.overflowY === "hidden" || cs.overflowY === "clip";
+    const clipX = cs.overflowX === "hidden" || cs.overflowX === "clip";
+    if (!clipX && !clipY) continue;
+    const overY = clipY && el.scrollHeight > el.clientHeight + 1;
+    const overX = clipX && el.scrollWidth > el.clientWidth + 1;
+    if (!overX && !overY) continue;
+    // A 1px box (a visually-hidden label) clips its text by design.
+    const box = el.getBoundingClientRect();
+    if (box.width <= 1 || box.height <= 1) continue;
+    const text = (el.textContent || "").replace(/\\s+/g, " ").trim();
+    if (!text) continue;
+    const cls = typeof el.className === "string" && el.className ? "." + el.className.trim().split(/\\s+/)[0] : "";
+    clipped.push(el.tagName.toLowerCase() + cls + ' "' + text.slice(0, 40) + '" (' + (overX ? "x " + el.scrollWidth + ">" + el.clientWidth : "") + (overY ? "y " + el.scrollHeight + ">" + el.clientHeight : "") + ")");
+  }
+  return clipped;
+})()`;
+
+/**
+ * In-page (forced colors only, `--emulate-media forced-colors=active`): a `::before`/`::after` box drawn as
+ * a solid background (a disclosure triangle, an X, a tape strip) is recoloured by the UA to the same Canvas
+ * as the surface under it, so it disappears unless the author gave it a system colour or a border. This
+ * lists every such generated box whose forced background equals its host's and that has no visible border,
+ * so a person can decide whether it carried meaning (an affordance or state) or was decoration. It is a
+ * diagnostic, not a gate: much of the list is intentionally decorative (photocopy tape, halftone).
+ */
+const FORCED_INVISIBLE_PSEUDO_AUDIT = `(() => {
+  const found = [];
+  const solid = (c) => c && c !== "rgba(0, 0, 0, 0)" && c !== "transparent";
+  for (const el of document.body.querySelectorAll("*")) {
+    if (el.closest("svg, script, style, [inert]")) continue;
+    const host = getComputedStyle(el);
+    if (host.display === "none" || host.visibility === "hidden") continue;
+    for (const which of ["::before", "::after"]) {
+      const cs = getComputedStyle(el, which);
+      if (cs.content === "none" || cs.content === "normal") continue;
+      // Text content (a label) is recoloured, not removed; only an empty generated box can vanish.
+      if (cs.content !== '""') continue;
+      if (cs.display === "none" || parseFloat(cs.width) === 0 || parseFloat(cs.height) === 0) continue;
+      const bg = cs.backgroundColor;
+      if (!solid(bg)) continue;
+      const hasBorder = ["Top", "Right", "Bottom", "Left"].some((s) => parseFloat(cs["border" + s + "Width"]) > 0 && cs["border" + s + "Style"] !== "none");
+      if (hasBorder) continue;
+      // The colour behind it: the nearest ancestor-or-self with a painted background. Compared by RGB only: a
+      // translucent panel over a Canvas page is still Canvas to the eye, and an exact string match missed the
+      // disclosure triangle (rgb(0, 0, 0) on rgba(0, 0, 0, 0.5)).
+      const rgb = (c) => (c.match(/[\\d.]+/g) || []).slice(0, 3).join(",");
+      let behind = "";
+      for (let p = el; p; p = p.parentElement) {
+        const c = getComputedStyle(p).backgroundColor;
+        if (solid(c)) { behind = c; break; }
+      }
+      if (rgb(bg) === rgb(behind)) {
+        const cls = typeof el.className === "string" && el.className ? "." + el.className.trim().split(/\\s+/)[0] : "";
+        found.push(el.tagName.toLowerCase() + cls + which + " (" + bg + ")");
+      }
+    }
+  }
+  return found;
+})()`;
+
+/**
  * In-page: `path|x|y|w|h|t` for every rendered element, in DOM order: CSS px, rounded, page coordinates,
  * and `t`, a short hash of the element's own text (empty when it has none) so layout-diff.mjs can tell a
  * moved element from one whose content differs between two runs (a room code is random).
@@ -504,7 +633,11 @@ async function runAxe(device) {
 }
 
 function isHardAxe(violation) {
-  // Best-practice rules are reported but only WCAG rules fail the run.
+  // Best-practice rules are reported but only WCAG rules fail the run. Under emulated forced colors the UA
+  // owns the palette and axe reads the authored colours (it reported #050506 text on #000 for buttons that
+  // render white on black), so its colour-contrast result is not evidence there: skipped, and the rendered
+  // screenshots are the record.
+  if (FORCED_COLORS && violation.id === "color-contrast") return false;
   return violation.tags.some((t) => t.startsWith("wcag"));
 }
 
@@ -555,6 +688,16 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
     for (const word of entry.brokenWords) {
       fail(`${device.name}/${state}@${vp.name}`, `word broken across lines: ${word}`);
     }
+    if (FORCED_COLORS) {
+      // Informational (see the expression's note); collected into report.forcedInvisible, never a failure.
+      entry.forcedInvisible = await ev(device, FORCED_INVISIBLE_PSEUDO_AUDIT);
+    }
+    if (TEXT_SPACING) {
+      entry.textClips = await ev(device, TEXT_CLIP_AUDIT);
+      for (const clip of entry.textClips) {
+        fail(`${device.name}/${state}@${vp.name}`, `text clipped by its own box: ${clip}`);
+      }
+    }
     report.states.push(entry);
   }
   await applyViewport(device, original);
@@ -591,7 +734,7 @@ async function captureViewportPng(device, css) {
 }
 
 async function auditPixelContrast(device, state) {
-  if (MODAL_ONLY || LAYOUT_ONLY) return;
+  if (MODAL_ONLY || LAYOUT_ONLY || FORCED_COLORS) return;
   const original = device.vp;
   const names = device.name === "table" ? ["table"] : CONTRAST_VIEWPORTS;
   for (const name of names) {
@@ -1242,17 +1385,18 @@ async function auditReducedMotion(gm) {
   }
   await gm.cdp.send(
     "Emulation.setEmulatedMedia",
-    { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] },
+    { features: [...EMULATED_MEDIA, { name: "prefers-reduced-motion", value: "no-preference" }] },
     gm.sessionId,
   );
   result.allowed = await probe();
   await gm.cdp.send(
     "Emulation.setEmulatedMedia",
-    { features: [{ name: "prefers-reduced-motion", value: "reduce" }] },
+    { features: [...EMULATED_MEDIA, { name: "prefers-reduced-motion", value: "reduce" }] },
     gm.sessionId,
   );
   result.reduced = await probe();
-  await gm.cdp.send("Emulation.setEmulatedMedia", { features: [] }, gm.sessionId);
+  // Back to whatever --emulate-media asked for (an empty list when it was not used).
+  await gm.cdp.send("Emulation.setEmulatedMedia", { features: EMULATED_MEDIA }, gm.sessionId);
   report.reducedMotion = result;
   if (result.allowed.matches) fail("reduced-motion", "no-preference was not emulated");
   // Positive control: with motion allowed the entrance animation must exist (else the reduced check proves nothing).
@@ -1568,9 +1712,10 @@ async function auditInlineValidation(device, config) {
       else if (hit.message.length < 4) fail(scope, `empty #${id} has no visible error text`);
     }
     // An invalid field must LOOK invalid: a heavier border in the error colour (computed, so a
-    // specificity slip that leaves the border grey is caught).
+    // specificity slip that leaves the border grey is caught). Under emulated forced colors the UA owns
+    // every border colour, so only the heavier border (the channel that survives) is asserted there.
     for (const f of empty.flagged) {
-      if (f.borderColor !== empty.riot || f.borderWidth < 3) {
+      if ((!FORCED_COLORS && f.borderColor !== empty.riot) || f.borderWidth < 3) {
         fail(
           scope,
           `#${f.id} is flagged but its border is ${f.borderWidth}px ${f.borderColor}, not 3px ${empty.riot}`,
@@ -1997,6 +2142,10 @@ async function main() {
       textScaleControls: report.textScale.reduce((n, s) => n + s.controls, 0),
       textScaleOverflowStates: report.textScale.filter((s) => s.overflowPx > 1).length,
       fontFallback: FONT_FALLBACK || null,
+      emulatedMedia: EMULATED_MEDIA.map((f) => `${f.name}=${f.value}`),
+      pixelContrastSkipped: FORCED_COLORS,
+      textSpacing: TEXT_SPACING,
+      forcedInvisible: [...new Set(report.states.flatMap((s) => s.forcedInvisible ?? []))],
       axeHardViolations: report.states.reduce(
         (n, s) => n + (s.axe ?? []).filter(isHardAxe).length,
         0,

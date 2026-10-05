@@ -1,0 +1,106 @@
+{
+  "label": "text-spacing",
+  "base": "http://127.0.0.1:48173",
+  "emulatedMedia": [],
+  "textSpacing": true,
+  "startedAt": "2026-10-05T11:11:38.968Z",
+  "finishedAt": "2026-10-05T11:24:00.387Z",
+  "summary": {
+    "states": 288,
+    "controlsAudited": 3336,
+    "controlIssues": 0,
+    "overflowStates": 0,
+    "contrastBoxesMeasured": 8505,
+    "contrastBoxesInsufficient": 297,
+    "contrastFailures": 0,
+    "contrastInvalidSlices": 0,
+    "contrastUnparsedBoxes": 0,
+    "contrastTruncatedPages": 6,
+    "textScaleStates": 256,
+    "textScaleControls": 3336,
+    "textScaleOverflowStates": 0,
+    "fontFallback": null,
+    "emulatedMedia": [],
+    "textSpacing": true,
+    "axeHardViolations": 0,
+    "axeBestPractice": [
+      "anon/route-claim-no-such-room@phone: page-has-heading-one"
+    ],
+    "keyboardFocusChecks": 87,
+    "dockFocusChecks": 385,
+    "dockPinchScenarios": 4,
+    "validationScenarios": 8,
+    "sheetCases": 23,
+    "failures": 17
+  },
+  "failures": [
+    {
+      "scope": "gm/console-scene-loaded@phone-small+text200",
+      "message": "word broken across lines: p.select-echo \"Abandoned\""
+    },
+    {
+      "scope": "gm/console-edit-target@phone-small+text200",
+      "message": "word broken across lines: p.select-echo \"Abandoned\""
+    },
+    {
+      "scope": "gm/console-pending@phone-small+text200",
+      "message": "word broken across lines: p.select-echo \"Abandoned\""
+    },
+    {
+      "scope": "modal-keyboard@phone-small",
+      "message": "actionsVisible failed"
+    },
+    {
+      "scope": "modal-tight-keyboard-phone-667x375-60px",
+      "message": "titleReachableByScrollingSheet failed"
+    },
+    {
+      "scope": "modal-tight-keyboard-phone-landscape-60px",
+      "message": "titleReachableByScrollingSheet failed"
+    },
+    {
+      "scope": "modal-tight-keyboard-phone-667x375-60px-insets",
+      "message": "titleReachableByScrollingSheet failed"
+    },
+    {
+      "scope": "modal-tight-keyboard-phone-landscape-60px-insets",
+      "message": "titleReachableByScrollingSheet failed"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small+text200",
+      "message": "word broken across lines: p.select-echo \"Occupier's\""
+    },
+    {
+      "scope": "player3/compose@phone-small+text200",
+      "message": "word broken across lines: span.option-text \"Phantasmagoria\""
+    },
+    {
+      "scope": "player5/compose@phone-small+text200",
+      "message": "word broken across lines: span.option-text \"Fragmentation\""
+    },
+    {
+      "scope": "gm/console-full-roster@phone-small+text200",
+      "message": "word broken across lines: p.select-echo \"Occupier's\""
+    },
+    {
+      "scope": "modal-keyboard@phone-small#1",
+      "message": "actionsVisible failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-small#2",
+      "message": "actionsVisible failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-small#3",
+      "message": "actionsVisible failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-small#4",
+      "message": "actionsVisible failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-small#5",
+      "message": "actionsVisible failed"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+default phone-small 320x568        compact=n hdr=69 bodyVisible=339 footer=134 apply visible=y reach=y (h48) cancel visible=y reach=y (h48) reason=ok overflowX=0
+default phone-small kb 320x312     compact=n hdr=48 bodyVisible=130 footer=125 apply visible=y reach=y (h48) cancel visible=y reach=y (h48) reason=ok overflowX=0
+default phone 375x812              compact=n hdr=69 bodyVisible=624 footer=93 apply visible=y reach=y (h67) cancel visible=y reach=y (h67) reason=ok overflowX=0
+default phone kb 375x447           compact=n hdr=48 bodyVisible=305 footer=85 apply visible=y reach=y (h67) cancel visible=y reach=y (h67) reason=ok overflowX=0
+default phone-390 kb 390x464       compact=n hdr=48 bodyVisible=322 footer=85 apply visible=y reach=y (h67) cancel visible=y reach=y (h67) reason=ok overflowX=0
+default phone-412 kb 412x503       compact=n hdr=48 bodyVisible=360 footer=85 apply visible=y reach=y (h67) cancel visible=y reach=y (h67) reason=ok overflowX=0
+default phone-landscape 812x375    compact=n hdr=56 bodyVisible=217 footer=66 apply visible=y reach=y (h48) cancel visible=y reach=y (h48) reason=ok overflowX=0
+default phone-landscape kb 812x206 compact=Y hdr=49 bodyVisible=206 footer=58 apply visible=n reach=y (h48) cancel visible=n reach=y (h48) reason=ok overflowX=0
+default tablet kb 768x563          compact=n hdr=61 bodyVisible=376 footer=74 apply visible=y reach=y (h48) cancel visible=y reach=y (h48) reason=ok overflowX=0
+SPACING phone-small 320x568        compact=n hdr=80 bodyVisible=316 footer=146 apply visible=y reach=y (h54) cancel visible=y reach=y (h54) reason=ok overflowX=0
+SPACING phone-small kb 320x312     compact=n hdr=59 bodyVisible=118 footer=125(scrolls) apply visible=y reach=y (h54) cancel visible=n reach=y (h54) reason=ok overflowX=0
+SPACING phone 375x812              compact=n hdr=80 bodyVisible=598 footer=108 apply visible=y reach=y (h82) cancel visible=y reach=y (h82) reason=ok overflowX=0
+SPACING phone kb 375x447           compact=n hdr=59 bodyVisible=279 footer=100 apply visible=y reach=y (h82) cancel visible=y reach=y (h82) reason=ok overflowX=0
+SPACING phone-390 kb 390x464       compact=n hdr=59 bodyVisible=296 footer=100 apply visible=y reach=y (h82) cancel visible=y reach=y (h82) reason=ok overflowX=0
+SPACING phone-412 kb 412x503       compact=n hdr=59 bodyVisible=334 footer=100 apply visible=y reach=y (h82) cancel visible=y reach=y (h82) reason=ok overflowX=0
+SPACING phone-landscape 812x375    compact=n hdr=71 bodyVisible=196 footer=72 apply visible=y reach=y (h54) cancel visible=y reach=y (h54) reason=ok overflowX=0
+SPACING phone-landscape kb 812x206 compact=Y hdr=64 bodyVisible=206 footer=64 apply visible=n reach=y (h54) cancel visible=n reach=y (h54) reason=ok overflowX=0
+SPACING tablet kb 768x563          compact=n hdr=76 bodyVisible=355 footer=80 apply visible=y reach=y (h54) cancel visible=y reach=y (h54) reason=ok overflowX=0
+PASS phone-small 320x568: with text spacing Apply and Cancel are both reachable and nothing overflows the page
+PASS phone-small kb 320x312: with text spacing Apply and Cancel are both reachable and nothing overflows the page (the footer scrolls)
+PASS phone 375x812: with text spacing Apply and Cancel are both reachable and nothing overflows the page
+PASS phone kb 375x447: with text spacing Apply and Cancel are both reachable and nothing overflows the page
+PASS phone-390 kb 390x464: with text spacing Apply and Cancel are both reachable and nothing overflows the page
+PASS phone-412 kb 412x503: with text spacing Apply and Cancel are both reachable and nothing overflows the page
+PASS phone-landscape 812x375: with text spacing Apply and Cancel are both reachable and nothing overflows the page
+PASS phone-landscape kb 812x206: with text spacing Apply and Cancel are both reachable and nothing overflows the page (compact: the whole sheet scrolls)
+PASS tablet kb 768x563: with text spacing Apply and Cancel are both reachable and nothing overflows the page

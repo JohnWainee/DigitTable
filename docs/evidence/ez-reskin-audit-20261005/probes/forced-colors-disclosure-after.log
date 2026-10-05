@@ -1,0 +1,8 @@
+dark  candidate=none         label=rgb(255, 255, 0) marker(before candidate)=rgb(255, 255, 0) marker(with candidate)=rgb(255, 255, 0)
+dark  candidate=CanvasText   label=rgb(255, 255, 0) marker(before candidate)=rgb(255, 255, 0) marker(with candidate)=rgb(255, 255, 255)
+dark  candidate=LinkText     label=rgb(255, 255, 0) marker(before candidate)=rgb(255, 255, 0) marker(with candidate)=rgb(255, 255, 0)
+dark  candidate=currentcolor label=rgb(255, 255, 0) marker(before candidate)=rgb(255, 255, 0) marker(with candidate)=rgb(0, 0, 0)
+light candidate=none         label=rgb(0, 0, 159) marker(before candidate)=rgb(0, 0, 159) marker(with candidate)=rgb(0, 0, 159)
+light candidate=CanvasText   label=rgb(0, 0, 159) marker(before candidate)=rgb(0, 0, 159) marker(with candidate)=rgb(0, 0, 0)
+light candidate=LinkText     label=rgb(0, 0, 159) marker(before candidate)=rgb(0, 0, 159) marker(with candidate)=rgb(0, 0, 159)
+light candidate=currentcolor label=rgb(0, 0, 159) marker(before candidate)=rgb(0, 0, 159) marker(with candidate)=rgb(255, 255, 255)

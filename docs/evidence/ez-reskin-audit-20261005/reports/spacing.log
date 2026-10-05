@@ -1,0 +1,46 @@
+FAIL gm/console-scene-loaded@phone-small+text200: word broken across lines: p.select-echo "Abandoned"
+FAIL gm/console-edit-target@phone-small+text200: word broken across lines: p.select-echo "Abandoned"
+FAIL gm/console-pending@phone-small+text200: word broken across lines: p.select-echo "Abandoned"
+FAIL modal-keyboard@phone-small: actionsVisible failed
+FAIL modal-tight-keyboard-phone-667x375-60px: titleReachableByScrollingSheet failed
+FAIL modal-tight-keyboard-phone-landscape-60px: titleReachableByScrollingSheet failed
+FAIL modal-tight-keyboard-phone-667x375-60px-insets: titleReachableByScrollingSheet failed
+FAIL modal-tight-keyboard-phone-landscape-60px-insets: titleReachableByScrollingSheet failed
+FAIL gm/console-next-scene@phone-small+text200: word broken across lines: p.select-echo "Occupier's"
+FAIL player3/compose@phone-small+text200: word broken across lines: span.option-text "Phantasmagoria"
+FAIL player5/compose@phone-small+text200: word broken across lines: span.option-text "Fragmentation"
+FAIL gm/console-full-roster@phone-small+text200: word broken across lines: p.select-echo "Occupier's"
+FAIL modal-keyboard@phone-small#1: actionsVisible failed
+FAIL modal-keyboard@phone-small#2: actionsVisible failed
+FAIL modal-keyboard@phone-small#3: actionsVisible failed
+FAIL modal-keyboard@phone-small#4: actionsVisible failed
+FAIL modal-keyboard@phone-small#5: actionsVisible failed
+{
+  "states": 288,
+  "controlsAudited": 3336,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "contrastBoxesMeasured": 8505,
+  "contrastBoxesInsufficient": 297,
+  "contrastFailures": 0,
+  "contrastInvalidSlices": 0,
+  "contrastUnparsedBoxes": 0,
+  "contrastTruncatedPages": 6,
+  "textScaleStates": 256,
+  "textScaleControls": 3336,
+  "textScaleOverflowStates": 0,
+  "fontFallback": null,
+  "emulatedMedia": [],
+  "textSpacing": true,
+  "axeHardViolations": 0,
+  "axeBestPractice": [
+    "anon/route-claim-no-such-room@phone: page-has-heading-one"
+  ],
+  "keyboardFocusChecks": 87,
+  "dockFocusChecks": 385,
+  "dockPinchScenarios": 4,
+  "validationScenarios": 8,
+  "sheetCases": 23,
+  "failures": 17
+}
+UI AUDIT FOUND PROBLEMS

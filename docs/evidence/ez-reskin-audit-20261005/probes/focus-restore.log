@@ -1,0 +1,6 @@
+PASS T1 Cancel returns focus to the Correct trigger
+PASS T2a Back closes sheet; console stays; focus returns to trigger
+PASS T2b Forward does not resurrect sheet
+PASS T3 Apply closes sheet and focus is not lost to <body>
+PASS T4 two rapid Backs (informational)
+{"h0":4,"h1":5,"sheetHistory":6}

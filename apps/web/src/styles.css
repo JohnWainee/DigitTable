@@ -2293,6 +2293,16 @@ fieldset:nth-of-type(3n) > legend {
     background: HighlightText;
   }
 
+  /* The "Why?" disclosure marker is a clip-path triangle filled with a plain background. Forced colors
+     repaints that to Canvas, the same colour as the summary behind it, so the open/closed marker vanished
+     (measured: rgb(0, 0, 0) on rgb(0, 0, 0), and white on white in the light palette). Only a system
+     colour survives the override (`currentcolor` does not). LinkText is the colour Chrome gives the
+     summary label (measured in both palettes), so there the marker and its label stay one unit; in an
+     engine that colours the label differently the marker is still visible, only a different shade. */
+  summary::before {
+    background: LinkText;
+  }
+
   .sheet {
     border: 2px solid CanvasText;
   }

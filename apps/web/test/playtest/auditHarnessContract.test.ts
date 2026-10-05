@@ -226,6 +226,75 @@ describe("ui-audit viewport matrix", () => {
   });
 });
 
+describe("ui-audit media-feature (forced colors) and WCAG 1.4.12 text-spacing modes", () => {
+  const spacingProbe = script("sheet-text-spacing-probe.mjs");
+  // The W3C text-spacing override: line height 1.5x, letter spacing 0.12em, word spacing 0.16em, paragraph
+  // spacing 2em. Both tools must inject exactly this, or "passes text spacing" means two different things.
+  const OVERRIDE =
+    "*, *::before, *::after { line-height: 1.5 !important; letter-spacing: 0.12em !important; word-spacing: 0.16em !important; } p { margin-bottom: 2em !important; }";
+
+  it("can run the whole audit under emulated media features and keeps them through the reduced-motion probe", () => {
+    expect(audit).toContain('arg("emulate-media"');
+    // A malformed entry is an error, never a silently dropped media feature.
+    expect(audit).toContain("--emulate-media entries must look like name=value");
+    expect(audit).toContain(
+      '"Emulation.setEmulatedMedia", { features: EMULATED_MEDIA }, sessionId',
+    );
+    // The reduced-motion probe adds to the requested features and restores them; it must never clear them.
+    expect(audit).toContain("features: [...EMULATED_MEDIA, {");
+    expect(audit).not.toMatch(/setEmulatedMedia",\s*\{ features: \[\] \}/);
+  });
+
+  it("does not take axe's colour-contrast or the glyph-recolouring pass as evidence under forced colors", () => {
+    // Measured: axe reported #050506 on #000000 (1.03:1) for buttons Chrome renders white on black, so its
+    // result there is an artefact of reading authored colours; the pixel pass recolours glyphs, which the
+    // UA overrides. Both are skipped, and the rendered screenshots are the record.
+    expect(audit).toContain('FORCED_COLORS && violation.id === "color-contrast"');
+    expect(audit).toMatch(
+      /async function auditPixelContrast\(device, state\) \{\s*if \(MODAL_ONLY \|\| LAYOUT_ONLY \|\| FORCED_COLORS\) return;/,
+    );
+  });
+
+  it("asserts only the heavier border of an invalid field under forced colors, where the UA owns border colours", () => {
+    expect(audit).toContain(
+      "(!FORCED_COLORS && f.borderColor !== empty.riot) || f.borderWidth < 3",
+    );
+  });
+
+  it("lists generated boxes a forced palette would blank out, so a glyph that carries meaning cannot vanish unseen", () => {
+    expect(audit).toContain("FORCED_INVISIBLE_PSEUDO_AUDIT");
+    expect(audit).toContain(
+      "entry.forcedInvisible = await ev(device, FORCED_INVISIBLE_PSEUDO_AUDIT)",
+    );
+    expect(audit).toContain("forcedInvisible: [...new Set(");
+    // The expression lives in a template literal, where a single `\d` silently becomes the letter "d" (the
+    // first version compared colours with /[d.]+/ and found nothing); the escape must be doubled.
+    expect(audit).toContain("c.match(/[\\\\d.]+/g)");
+    expect(audit).toContain("replace(/\\\\s+/g");
+    expect(audit).toContain("split(/\\\\s+/)");
+    // A mistyped feature name is rejected, not silently emulated as nothing.
+    expect(audit).toContain("did not take effect");
+  });
+
+  it("injects the exact WCAG 1.4.12 override and fails text clipped by its own box", () => {
+    expect(audit).toContain('args.includes("--text-spacing")');
+    expect(audit).toContain(OVERRIDE);
+    expect(audit).toContain("TEXT_CLIP_AUDIT");
+    expect(audit).toContain("text clipped by its own box");
+  });
+
+  it("probes one live correction sheet under the same override, with the keyboard up, and checks both actions", () => {
+    expect(spacingProbe).toContain(OVERRIDE);
+    expect(spacingProbe).toContain("phone-small kb 320x312");
+    expect(spacingProbe).toContain("apply correction");
+    expect(spacingProbe).toContain("data-compact");
+    // 1.4.12 asks for no loss of functionality, not for every control on screen without scrolling (the compact
+    // sheet and a scrolling footer are by design), so what is asserted is REACHABLE after scrolling it into view.
+    expect(spacingProbe).toContain('scrollIntoView({ block: "nearest" })');
+    expect(spacingProbe).toContain("m.reach.apply && m.reach.cancel");
+  });
+});
+
 describe("ui-audit whole-page text scaling, font fallback and rendered-pixel contrast", () => {
   it("audits every signed-in and signed-out page at 150% and 200% text on the small phones and in landscape", () => {
     // Only the correction sheet used to be audited at these sizes.

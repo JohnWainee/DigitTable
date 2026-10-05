@@ -39,20 +39,37 @@ function declaration(ruleBodies: string[], property: string): string[] {
   );
 }
 
-/** The text of the first `@media (…query…) { … }` block, found by brace matching. */
-function mediaBlock(query: string): string {
-  const start = css.indexOf(`@media ${query}`);
-  if (start < 0) throw new Error(`no @media ${query}`);
-  const open = css.indexOf("{", start);
-  let depth = 0;
-  for (let i = open; i < css.length; i += 1) {
-    if (css[i] === "{") depth += 1;
-    if (css[i] === "}") {
-      depth -= 1;
-      if (depth === 0) return css.slice(open + 1, i);
+/** The text of every `@media (…query…) { … }` block, in source order, found by brace matching. */
+function mediaBlocks(query: string): string[] {
+  const blocks: string[] = [];
+  for (let from = 0; ;) {
+    const start = css.indexOf(`@media ${query}`, from);
+    if (start < 0) break;
+    const open = css.indexOf("{", start);
+    let depth = 0;
+    let end = -1;
+    for (let i = open; i < css.length; i += 1) {
+      if (css[i] === "{") depth += 1;
+      if (css[i] === "}") {
+        depth -= 1;
+        if (depth === 0) {
+          end = i;
+          break;
+        }
+      }
     }
+    if (end < 0) throw new Error("unbalanced braces");
+    blocks.push(css.slice(open + 1, end));
+    from = end;
   }
-  throw new Error("unbalanced braces");
+  return blocks;
+}
+
+/** The text of the first `@media (…query…) { … }` block. */
+function mediaBlock(query: string): string {
+  const first = mediaBlocks(query)[0];
+  if (first === undefined) throw new Error(`no @media ${query}`);
+  return first;
 }
 
 /**
@@ -535,6 +552,31 @@ describe("reskin stylesheet contract", () => {
 
     it("drops the photocopy texture for visitors who ask for more contrast", () => {
       expect(mediaBlock("(prefers-contrast: more)")).toMatch(/body::before\s*\{\s*display:\s*none/);
+    });
+
+    it("keeps the disclosure marker and the checked mark visible in forced-colors", () => {
+      // Forced colors (Windows High Contrast) repaints `background-color` to Canvas, the same colour as the
+      // surface under a glyph that is drawn as a coloured clip-path box, so the glyph vanishes. Measured in
+      // Chrome with forced-colors emulated: the "Why?" disclosure triangle computed rgb(0, 0, 0) on rgb(0, 0, 0)
+      // (rgb(255, 255, 255) on white in the light palette). Only a system colour survives the override, so
+      // every such glyph needs one in a forced-colors block. `currentcolor` does NOT survive (measured).
+      const forced = mediaBlocks("(forced-colors: active)").join("\n");
+      const glyphs: [string, RegExp][] = [
+        [
+          "the disclosure marker",
+          /summary::before\s*\{[^}]*background(?:-color)?:\s*(?:LinkText|CanvasText|ButtonText)\s*;/,
+        ],
+        [
+          "the checked mark of a check box or radio",
+          /input\[type="checkbox"\]:checked::after,\s*input\[type="radio"\]:checked::after\s*\{[^}]*background:\s*HighlightText\s*;/,
+        ],
+      ];
+      for (const [name, pattern] of glyphs) expect(forced, name).toMatch(pattern);
+      // The base rules this guards really are solid-background clip-path glyphs (so the premise holds).
+      expect(declaration(rulesFor(/^summary::before$/), "clip-path").join("")).toContain(
+        "polygon(",
+      );
+      expect(declaration(rulesFor(/^summary::before$/), "background")).toContain("var(--cyan)");
     });
 
     it("never recolours a disabled landing button", () => {

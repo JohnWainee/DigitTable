@@ -1,0 +1,3 @@
+PASS A. Back with the sheet open closes only the sheet (same route, console still mounted, no hashchange)
+PASS B. The sheet reopens and closes with Back again
+PASS C. After Cancel the very next Back leaves the route (no dead entry swallowed it)

@@ -1,0 +1,385 @@
+{
+  "label": "forced-colors",
+  "base": "http://127.0.0.1:48173",
+  "emulatedMedia": [
+    {
+      "name": "forced-colors",
+      "value": "active"
+    }
+  ],
+  "textSpacing": false,
+  "startedAt": "2026-10-05T11:08:33.212Z",
+  "finishedAt": "2026-10-05T11:26:16.092Z",
+  "summary": {
+    "states": 288,
+    "controlsAudited": 3400,
+    "controlIssues": 0,
+    "overflowStates": 0,
+    "contrastBoxesMeasured": 0,
+    "contrastBoxesInsufficient": 0,
+    "contrastFailures": 0,
+    "contrastInvalidSlices": 0,
+    "contrastUnparsedBoxes": 0,
+    "contrastTruncatedPages": 0,
+    "textScaleStates": 256,
+    "textScaleControls": 3400,
+    "textScaleOverflowStates": 0,
+    "fontFallback": null,
+    "emulatedMedia": [
+      "forced-colors=active"
+    ],
+    "textSpacing": false,
+    "axeHardViolations": 77,
+    "axeBestPractice": [
+      "anon/route-claim-no-such-room@phone: page-has-heading-one"
+    ],
+    "keyboardFocusChecks": 87,
+    "dockFocusChecks": 473,
+    "dockPinchScenarios": 4,
+    "validationScenarios": 8,
+    "sheetCases": 23,
+    "failures": 85
+  },
+  "failures": [
+    {
+      "scope": "anon/landing@phone",
+      "message": "axe color-contrast (serious) x2: .primary-action:nth-child(1) ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/landing@tablet",
+      "message": "axe color-contrast (serious) x2: .primary-action:nth-child(1) ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/landing@desktop",
+      "message": "axe color-contrast (serious) x2: .primary-action:nth-child(1) ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/create-form@phone",
+      "message": "axe color-contrast (serious) x1: button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/create-form@tablet",
+      "message": "axe color-contrast (serious) x1: button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/create-form@desktop",
+      "message": "axe color-contrast (serious) x1: button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/create-validation@phone-small",
+      "message": "#session-name is flagged but its border is 3px rgba(0, 230, 255, 0.8), not 3px rgb(255, 255, 255)"
+    },
+    {
+      "scope": "anon/create-validation@phone",
+      "message": "#session-name is flagged but its border is 3px rgba(0, 230, 255, 0.8), not 3px rgb(255, 255, 255)"
+    },
+    {
+      "scope": "anon/join-form@phone",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/join-form@tablet",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/join-form@desktop",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/join-validation@phone-small",
+      "message": "#room-code is flagged but its border is 3px rgba(0, 230, 255, 0.8), not 3px rgb(255, 255, 255)"
+    },
+    {
+      "scope": "anon/join-validation@phone",
+      "message": "#room-code is flagged but its border is 3px rgba(0, 230, 255, 0.8), not 3px rgb(255, 255, 255)"
+    },
+    {
+      "scope": "anon/table-join-form@phone",
+      "message": "axe color-contrast (serious) x1: button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/table-join-form@tablet",
+      "message": "axe color-contrast (serious) x1: button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/table-join-form@desktop",
+      "message": "axe color-contrast (serious) x1: button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/table-join-validation@phone-small",
+      "message": "#table-room-code is flagged but its border is 3px rgba(0, 230, 255, 0.8), not 3px rgb(255, 255, 255)"
+    },
+    {
+      "scope": "anon/table-join-validation@phone",
+      "message": "#table-room-code is flagged but its border is 3px rgba(0, 230, 255, 0.8), not 3px rgb(255, 255, 255)"
+    },
+    {
+      "scope": "anon/route-claim-no-such-room@phone",
+      "message": "axe color-contrast (serious) x1: button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/route-room-no-such-room-gm@phone",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/route-room-no-such-room-player@phone",
+      "message": "axe color-contrast (serious) x1: button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/recover-form@phone",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/recover-form@tablet",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/recover-form@desktop",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/recover-validation@phone-small",
+      "message": "#recover-room-code is flagged but its border is 3px rgba(0, 230, 255, 0.8), not 3px rgb(255, 255, 255)"
+    },
+    {
+      "scope": "anon/recover-validation@phone",
+      "message": "#recover-room-code is flagged but its border is 3px rgba(0, 230, 255, 0.8), not 3px rgb(255, 255, 255)"
+    },
+    {
+      "scope": "anon/recover-rejected@phone",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "gm/secrets-reveal@phone",
+      "message": "axe color-contrast (serious) x1: #reveal-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "gm/secrets-reveal@tablet",
+      "message": "axe color-contrast (serious) x1: #reveal-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 24.0pt (32px), font weight: bold). Expected "
+    },
+    {
+      "scope": "gm/secrets-reveal@desktop",
+      "message": "axe color-contrast (serious) x1: #reveal-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 24.0pt (32px), font weight: bold). Expected "
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "axe color-contrast (serious) x6: #gm-invite-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "gm/console-empty@tablet",
+      "message": "axe color-contrast (serious) x3: section[aria-labelledby=\"scene-director-heading\"] > fieldset > legend ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 9.6pt (12.8px), font weight: bold). Expected"
+    },
+    {
+      "scope": "gm/console-empty@desktop",
+      "message": "axe color-contrast (serious) x6: section[aria-labelledby=\"scene-director-heading\"] > fieldset > legend ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 9.6pt (12.8px), font weight: bold). Expected"
+    },
+    {
+      "scope": "player/join-filled@phone",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/join-filled@tablet",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/join-filled@desktop",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/join-reveal@phone",
+      "message": "axe color-contrast (serious) x2: #join-reveal-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player/join-reveal@tablet",
+      "message": "axe color-contrast (serious) x1: button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/join-reveal@desktop",
+      "message": "axe color-contrast (serious) x1: button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/claim-roster@phone",
+      "message": "axe color-contrast (serious) x6: .roster-card:nth-child(1) > button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/claim-roster@tablet",
+      "message": "axe color-contrast (serious) x6: .roster-card:nth-child(1) > button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/claim-roster@desktop",
+      "message": "axe color-contrast (serious) x6: .roster-card:nth-child(1) > button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/compose@phone",
+      "message": "axe color-contrast (serious) x3: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player/compose@tablet",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/compose@desktop",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/compose-why-open@phone",
+      "message": "axe color-contrast (serious) x3: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "table/idle@phone",
+      "message": "axe color-contrast (serious) x1: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "table/idle@desktop",
+      "message": "axe color-contrast (serious) x1: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 24.0pt (32px), font weight: bold). Expected "
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "axe color-contrast (serious) x6: #gm-invite-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "gm/console-scene-loaded@tablet",
+      "message": "axe color-contrast (serious) x3: fieldset:nth-child(6) > legend ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 9.6pt (12.8px), font weight: bold). Expected"
+    },
+    {
+      "scope": "gm/console-scene-loaded@desktop",
+      "message": "axe color-contrast (serious) x7: fieldset:nth-child(6) > legend ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 9.6pt (12.8px), font weight: bold). Expected"
+    },
+    {
+      "scope": "gm/console-edit-target@phone",
+      "message": "axe color-contrast (serious) x6: #gm-invite-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player/declared@phone",
+      "message": "axe color-contrast (serious) x1: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "axe color-contrast (serious) x7: #gm-invite-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "gm/console-pending@tablet",
+      "message": "axe color-contrast (serious) x3: fieldset:nth-child(6) > legend ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 9.6pt (12.8px), font weight: bold). Expected"
+    },
+    {
+      "scope": "gm/console-pending@desktop",
+      "message": "axe color-contrast (serious) x10: fieldset:nth-child(6) > legend ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 9.6pt (12.8px), font weight: bold). Expected"
+    },
+    {
+      "scope": "player/allocation@phone",
+      "message": "axe color-contrast (serious) x9: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player/allocation@tablet",
+      "message": "axe color-contrast (serious) x5: .die-chip--success.die-chip:nth-child(2) ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 12.6pt (16.8px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/allocation@desktop",
+      "message": "axe color-contrast (serious) x5: .die-chip--success.die-chip:nth-child(2) ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 12.6pt (16.8px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/allocation-assigned@phone",
+      "message": "axe color-contrast (serious) x10: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player/resolved@phone",
+      "message": "axe color-contrast (serious) x2: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player/resolved@tablet",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "player/resolved@desktop",
+      "message": "axe color-contrast (serious) x1: .primary-action ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "table/after-roll@phone",
+      "message": "axe color-contrast (serious) x1: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "table/after-roll@desktop",
+      "message": "axe color-contrast (serious) x1: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 24.0pt (32px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player/paused@phone",
+      "message": "axe color-contrast (serious) x2: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "table/next-scene@phone",
+      "message": "axe color-contrast (serious) x1: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "axe color-contrast (serious) x6: #gm-invite-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "gm/console-next-scene@tablet",
+      "message": "axe color-contrast (serious) x3: fieldset:nth-child(7) > legend ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 9.6pt (12.8px), font weight: bold). Expected"
+    },
+    {
+      "scope": "gm/console-next-scene@desktop",
+      "message": "axe color-contrast (serious) x7: fieldset:nth-child(7) > legend ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 9.6pt (12.8px), font weight: bold). Expected"
+    },
+    {
+      "scope": "player2/compose@phone-small",
+      "message": "axe color-contrast (serious) x3: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player2/compose@phone",
+      "message": "axe color-contrast (serious) x3: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player3/compose@phone-small",
+      "message": "axe color-contrast (serious) x3: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player3/compose@phone",
+      "message": "axe color-contrast (serious) x3: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player4/compose@phone-small",
+      "message": "axe color-contrast (serious) x3: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player4/compose@phone",
+      "message": "axe color-contrast (serious) x3: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player5/compose@phone-small",
+      "message": "axe color-contrast (serious) x3: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player5/compose@phone",
+      "message": "axe color-contrast (serious) x3: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player6/compose@phone-small",
+      "message": "axe color-contrast (serious) x3: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "player6/compose@phone",
+      "message": "axe color-contrast (serious) x3: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "gm/console-full-roster@phone",
+      "message": "axe color-contrast (serious) x6: #gm-invite-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "table/full-party@phone",
+      "message": "axe color-contrast (serious) x1: #scene-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "anon/recover-reveal@phone",
+      "message": "axe color-contrast (serious) x2: #recover-reveal-heading ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 18.0pt (24px), font weight: bold). Expected "
+    },
+    {
+      "scope": "anon/recover-reveal@tablet",
+      "message": "axe color-contrast (serious) x1: button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    },
+    {
+      "scope": "anon/recover-reveal@desktop",
+      "message": "axe color-contrast (serious) x1: button ::   Element has insufficient color contrast of 1.03 (foreground color: #050506, background color: #000000, font size: 13.8pt (18.4px), font weight: bold). Expecte"
+    }
+  ]
+}
