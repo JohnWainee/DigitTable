@@ -100,7 +100,12 @@ describe("reskin stylesheet contract", () => {
     });
 
     it("covers every styled <button> in the app: each className token is one the tap rule names", () => {
-      const covered = new Set(["primary-action", "secondary-action", "link-button"]);
+      const covered = new Set([
+        "primary-action",
+        "secondary-action",
+        "link-button",
+        "gear-option-action",
+      ]);
       const uncovered: string[] = [];
       for (const file of sourceFiles(join(here, "../../src"))) {
         const source = readFileSync(file, "utf8");

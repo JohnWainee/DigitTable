@@ -26,11 +26,11 @@
   color-scheme: dark;
 
   /* Ink (surfaces) */
-  --ink-0: #050506;
-  --ink-1: #0d0d10;
-  --ink-2: #16161c;
-  --ink-3: #20202a;
-  --rule: #4a4a56;
+  --ink-0: #010102;
+  --ink-1: #060608;
+  --ink-2: #0c0c10;
+  --ink-3: #15151c;
+  --rule: #55555f;
 
   /* Paper (text). --dim/--mute keep >= 6:1 on --ink-2. */
   --paper: #f3ecda;
@@ -40,10 +40,10 @@
   /* Punk accents. Each is >= 4.6:1 against --ink-2 (or is used as a fill
      carrying --ink-0 text at >= 5.6:1). */
   --acid: #ffe600;
-  --riot: #ff3348;
-  --riot-deep: #c8102e;
+  --riot: #ff2d4a;
+  --riot-deep: #d3102f;
   --cyan: #22e6ff;
-  --pink: #ff3fae;
+  --pink: #ff3fb4;
   --volt: #c6ff1a;
 
   /* Legacy token names kept so older rules and tests still resolve. */
@@ -66,7 +66,7 @@
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   /* Procedural print grain: one fractal-noise tile, white speckle at low alpha. */
-  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
   --halftone: radial-gradient(rgba(243, 236, 218, 0.07) 1px, transparent 1.6px);
   --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffe600' d='M3 8h18l-9 10z'/%3E%3C/svg%3E");
 
@@ -94,15 +94,16 @@ body {
   min-height: 100vh;
   background-color: var(--ink-0);
   background-image:
-    radial-gradient(ellipse 80% 100% at 15% 0%, rgba(255, 51, 72, 0.2), transparent 70%),
-    radial-gradient(ellipse 70% 100% at 100% 8%, rgba(34, 230, 255, 0.1), transparent 70%),
-    var(--grain), var(--halftone);
+    repeating-linear-gradient(-45deg, var(--acid) 0 0.7rem, var(--ink-0) 0.7rem 1.4rem),
+    radial-gradient(ellipse 70% 100% at 0% 0%, rgba(255, 45, 74, 0.11), transparent 70%),
+    radial-gradient(ellipse 60% 100% at 100% 0%, rgba(255, 63, 180, 0.07), transparent 70%),
+    var(--grain);
   background-size:
-    100% 34rem,
-    100% 34rem,
-    180px 180px,
-    7px 7px;
-  background-repeat: no-repeat, no-repeat, repeat, repeat;
+    100% 0.45rem,
+    100% 28rem,
+    100% 28rem,
+    180px 180px;
+  background-repeat: repeat-x, no-repeat, no-repeat, repeat;
   color: var(--paper);
   font-family: var(--font-body);
   font-size: 1rem;
@@ -131,17 +132,19 @@ h3 {
 }
 
 h1 {
-  font-size: clamp(2.4rem, 11vw, 4.25rem);
+  font-size: clamp(2.6rem, 12vw, 4.75rem);
   color: var(--paper);
-  text-shadow: 3px 3px 0 var(--riot-deep);
+  text-shadow:
+    3px 3px 0 var(--riot),
+    6px 6px 0 var(--ink-0);
   transform: rotate(-0.6deg);
   transform-origin: left center;
 }
 
 h2 {
-  font-size: clamp(1.5rem, 6vw, 2rem);
-  padding-left: 0.65rem;
-  border-left: 0.5rem solid var(--acid);
+  font-size: clamp(1.65rem, 7vw, 2.4rem);
+  padding-left: 0.7rem;
+  border-left: 0.6rem solid var(--acid);
   color: var(--paper);
 }
 
@@ -256,7 +259,42 @@ li + li {
     180px 180px,
     auto;
   border: 2px solid var(--paper);
-  box-shadow: 6px 6px 0 var(--riot-deep);
+  border-top-width: 0.5rem;
+  border-top-color: var(--riot);
+  box-shadow:
+    6px 6px 0 var(--ink-0),
+    7px 7px 0 var(--rule);
+  /* A dashed "cut line" just inside the edge: zine / photocopy feel, purely decorative. */
+  outline: 1px dashed rgba(243, 236, 218, 0.22);
+  outline-offset: -8px;
+}
+
+/* Scuffs and a hot corner: diagonal scratches plus a faint ink-bleed. Decorative, never interactive. */
+.step::after,
+.scene-card::after,
+.landing-resume::after,
+.reveal-card::after,
+.invite-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      103deg,
+      transparent 0 13px,
+      rgba(243, 236, 218, 0.035) 13px 14px,
+      transparent 14px 37px
+    ),
+    radial-gradient(circle at 96% 4%, rgba(255, 45, 74, 0.16), transparent 38%);
+}
+
+.scene-card {
+  border-top-color: var(--pink);
+}
+
+.gm-screen .step {
+  border-top-color: var(--cyan);
 }
 
 /* Masking-tape strip: purely decorative, clipped to the card so it can never overflow. */
@@ -279,12 +317,14 @@ li + li {
 .invite-panel,
 .reveal-card {
   border-color: var(--acid);
-  box-shadow: 6px 6px 0 var(--riot-deep);
+  border-top-color: var(--acid);
+  box-shadow: 6px 6px 0 var(--riot);
   background-color: var(--ink-1);
 }
 
 .landing-resume {
   border-color: var(--cyan);
+  border-top-color: var(--cyan);
   box-shadow: 6px 6px 0 rgba(34, 230, 255, 0.35);
 }
 
@@ -393,7 +433,7 @@ button {
   font-family: var(--font-display);
   font-weight: 700;
   font-synthesis-weight: none;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   line-height: 1.1;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -406,7 +446,7 @@ button {
 .primary-action {
   background: var(--acid);
   color: var(--ink-0);
-  box-shadow: 4px 4px 0 var(--riot);
+  box-shadow: 5px 5px 0 var(--riot);
 }
 
 .secondary-action {
@@ -640,6 +680,22 @@ input[type="radio"]:disabled {
 
 .form-field--checkbox {
   flex-direction: row;
+}
+
+/* An option row that carries its own action (e.g. "Mark and regain Blood"): the label text takes
+   the space beside the box and the action drops below it, full row width, aligned with the text. */
+.gear-option:has(> .gear-option-action) {
+  flex-wrap: wrap;
+}
+
+.gear-option > .option-text {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.gear-option > .gear-option-action {
+  flex: 1 1 100%;
+  margin-left: calc(1.65rem + 0.85rem);
 }
 
 .gear-option:has(:checked) {
@@ -1559,7 +1615,8 @@ details ul {
   }
 
   /* See .table-screen below: an absolutely positioned decoration can be fragmented into the wrong column. */
-  .gm-screen .step::before {
+  .gm-screen .step::before,
+  .gm-screen .step::after {
     display: none;
   }
 }
@@ -1595,7 +1652,8 @@ details ul {
 
   /* An absolutely positioned decoration can be fragmented into the wrong
      column by multi-column layout, so the display surface goes without it. */
-  .table-screen .scene-card::before {
+  .table-screen .scene-card::before,
+  .table-screen .scene-card::after {
     display: none;
   }
 }
@@ -1695,5 +1753,17 @@ details ul {
 
   .sheet {
     border: 2px solid CanvasText;
+  }
+
+  /* Custom colours are repainted to Canvas in forced colors; only system colours survive on a fill. */
+  summary::before {
+    background: LinkText;
+  }
+
+  .step::before,
+  .step::after,
+  .scene-card::before,
+  .scene-card::after {
+    display: none;
   }
 }

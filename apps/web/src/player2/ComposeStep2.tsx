@@ -147,16 +147,22 @@ export function ComposeStep2({
                 disabled={item.usesRemaining <= 0 || item.poolEligible === false}
                 onChange={() => toggleClaimable(itemIds, item.id, setItemIds)}
               />
-              {item.name} ({item.usesRemaining}/{item.maxUses} uses)
-              {item.usesRemaining <= 0 ? " — no uses left" : ""}
-              {item.useEffect?.kind === "gainBlood"
-                ? ` — mark to regain ${item.useEffect.amount} Blood`
-                : ""}
-              {item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
-                ? " — mark to ignore an Injury or being Downed; then destroy the hat"
-                : ""}
+              <span className="option-text">
+                {item.name} ({item.usesRemaining}/{item.maxUses} uses)
+                {item.usesRemaining <= 0 ? " — no uses left" : ""}
+                {item.useEffect?.kind === "gainBlood"
+                  ? ` — mark to regain ${item.useEffect.amount} Blood`
+                  : ""}
+                {item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
+                  ? " — mark to ignore an Injury or being Downed; then destroy the hat"
+                  : ""}
+              </span>
               {item.useEffect?.kind === "gainBlood" && item.usesRemaining > 0 ? (
-                <button type="button" onClick={() => onUseUtilityItem(item.id)}>
+                <button
+                  type="button"
+                  className="secondary-action gear-option-action"
+                  onClick={() => onUseUtilityItem(item.id)}
+                >
                   Mark and regain Blood
                 </button>
               ) : null}

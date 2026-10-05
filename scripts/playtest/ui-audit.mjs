@@ -419,8 +419,9 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  // Roster-agnostic: the first character row's Correct button (the roster is content, not contract).
+  const finder = `[...document.querySelectorAll(".roster-panel-list li button")].find(b => /^correct$/i.test(b.textContent.trim()))`;
+  await waitFor(gm, finder, 20000, "a character's Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
@@ -588,6 +589,34 @@ async function auditModal(gm) {
     record.checks.dialogInsideVisualViewportWhenZoomed = within(zoom.dialog, frame, 2);
     record.checks.actionsInsideVisualViewportWhenZoomed =
       within(zoom.apply, frame, 2) && within(zoom.cancel, frame, 2);
+  });
+
+  // Browser/OS Back with the pop-out open must close ONLY the pop-out (Android system Back, Safari
+  // Back, trackpad swipe). Before useBackDismiss it navigated the hash router away, losing the console.
+  await scenario("browser-back", byName["phone"], async (record) => {
+    const routeBefore = await ev(gm, `location.hash`);
+    await openCorrection(gm);
+    await ev(gm, `document.querySelector("#correction-reason").focus()`);
+    await gm.cdp.send("Input.insertText", { text: "typed before Back" }, gm.sessionId);
+    await ev(gm, `history.back()`);
+    await sleep(500);
+    const after = await ev(
+      gm,
+      `({ dialogOpen: Boolean(document.querySelector('[role="dialog"]')), hash: location.hash, anyInert: [...document.body.children].some(c => c.hasAttribute("inert")), rootLocked: document.documentElement.classList.contains("sheet-open"), consoleStillShown: document.body.textContent.includes("Scene director") })`,
+    );
+    record.after = after;
+    record.checks.backClosedTheSheet = !after.dialogOpen;
+    record.checks.stayedOnTheSameRoute = after.hash === routeBefore;
+    record.checks.consoleStillShown = after.consoleStillShown;
+    record.checks.noInertOrScrollLockLeft = !after.anyInert && !after.rootLocked;
+    // Cancel must not leave a stray history entry: Back after it has to leave the console, not no-op.
+    const lengthBefore = await ev(gm, `history.length`);
+    await openCorrection(gm);
+    await closeCorrection(gm);
+    await sleep(400);
+    record.checks.cancelLeavesHistoryUnchanged =
+      (await ev(gm, `history.length`)) <= lengthBefore + 1 &&
+      (await ev(gm, `history.state?.digitableSheet === undefined`));
   });
 
   await scenario("pinch-gesture", byName["phone"], async (record) => {
