@@ -1,0 +1,2861 @@
+{
+  "label": "after-24",
+  "base": "http://127.0.0.1:36174",
+  "startedAt": "2026-10-05T14:37:12.407Z",
+  "states": [
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 4,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 5,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 3,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 2,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 2,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 2,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 5,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 7,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [],
+      "brokenWords": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "brokenWords": []
+    }
+  ],
+  "modal": [
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 568,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 544
+        },
+        "apply": {
+          "top": 447.25,
+          "bottom": 495.625,
+          "left": 15.75,
+          "right": 304.25,
+          "width": 288.5,
+          "height": 48.375
+        },
+        "cancel": {
+          "top": 507.625,
+          "bottom": 556,
+          "left": 15.75,
+          "right": 304.25,
+          "width": 288.5,
+          "height": 48.375
+        },
+        "reason": {
+          "top": 1367.921875,
+          "bottom": 1415.921875,
+          "left": 15.75,
+          "right": 304.25,
+          "width": 288.5,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1342,
+          "clientHeight": 345,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(6, 6, 8)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "320x312",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 788
+        },
+        "apply": {
+          "top": 729.625,
+          "bottom": 800,
+          "left": 18,
+          "right": 181.5,
+          "width": 163.5,
+          "height": 70.375
+        },
+        "cancel": {
+          "top": 729.625,
+          "bottom": 800,
+          "left": 193.5,
+          "right": 357,
+          "width": 163.5,
+          "height": 70.375
+        },
+        "reason": {
+          "top": 1370.171875,
+          "bottom": 1418.171875,
+          "left": 18,
+          "right": 357,
+          "width": 339,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1346,
+          "clientHeight": 628,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(6, 6, 8)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "375x447",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 86,
+          "right": 726,
+          "width": 640,
+          "height": 343
+        },
+        "apply": {
+          "top": 292.625,
+          "bottom": 341,
+          "left": 104,
+          "right": 400,
+          "width": 296,
+          "height": 48.375
+        },
+        "cancel": {
+          "top": 292.625,
+          "bottom": 341,
+          "left": 412,
+          "right": 708,
+          "width": 296,
+          "height": 48.375
+        },
+        "reason": {
+          "top": 1296.59375,
+          "bottom": 1344.59375,
+          "left": 104,
+          "right": 708,
+          "width": 604,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1298,
+          "clientHeight": 224,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(6, 6, 8)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "812x206",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 375,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 24,
+          "right": 643,
+          "width": 619,
+          "height": 343
+        },
+        "apply": {
+          "top": 292.625,
+          "bottom": 341,
+          "left": 42,
+          "right": 327.5,
+          "width": 285.5,
+          "height": 48.375
+        },
+        "cancel": {
+          "top": 292.625,
+          "bottom": 341,
+          "left": 339.5,
+          "right": 625,
+          "width": 285.5,
+          "height": 48.375
+        },
+        "reason": {
+          "top": 1296.59375,
+          "bottom": 1344.59375,
+          "left": 42,
+          "right": 625,
+          "width": 583,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1298,
+          "clientHeight": 224,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(6, 6, 8)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "667x206",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "tablet",
+      "size": "768x1024",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 768,
+          "innerHeight": 1024,
+          "clientWidth": 768
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 768,
+          "height": 1024,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 160,
+          "bottom": 864,
+          "left": 64,
+          "right": 704,
+          "width": 640,
+          "height": 704
+        },
+        "apply": {
+          "top": 801.625,
+          "bottom": 850,
+          "left": 82,
+          "right": 378,
+          "width": 296,
+          "height": 48.375
+        },
+        "cancel": {
+          "top": 801.625,
+          "bottom": 850,
+          "left": 390,
+          "right": 686,
+          "width": 296,
+          "height": 48.375
+        },
+        "reason": {
+          "top": 1474.1875,
+          "bottom": 1522.1875,
+          "left": 82,
+          "right": 686,
+          "width": 604,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1322,
+          "clientHeight": 572,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(6, 6, 8)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "768x563",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "desktop",
+      "size": "1280x800",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 1280,
+          "innerHeight": 800,
+          "clientWidth": 1280
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 1280,
+          "height": 800,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 752,
+          "left": 312.5,
+          "right": 952.5,
+          "width": 640,
+          "height": 704
+        },
+        "apply": {
+          "top": 689.625,
+          "bottom": 738,
+          "left": 330.5,
+          "right": 626.5,
+          "width": 296,
+          "height": 48.375
+        },
+        "cancel": {
+          "top": 689.625,
+          "bottom": 738,
+          "left": 638.5,
+          "right": 934.5,
+          "width": 296,
+          "height": 48.375
+        },
+        "reason": {
+          "top": 1362.1875,
+          "bottom": 1410.1875,
+          "left": 330.5,
+          "right": 919.5,
+          "width": 589,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1322,
+          "clientHeight": 572,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": -15,
+        "animationName": "sheet-rise",
+        "background": "rgb(6, 6, 8)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "zoom-emulated",
+      "checks": {
+        "pageScaleApplied": true,
+        "dialogInsideVisualViewportWhenZoomed": true,
+        "actionsInsideVisualViewportWhenZoomed": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 234.375,
+          "height": 507.5,
+          "scale": 1.600000023841858
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 507.5,
+          "left": 0,
+          "right": 234.375,
+          "width": 234.375,
+          "height": 483.5
+        },
+        "apply": {
+          "top": 364.75,
+          "bottom": 435.125,
+          "left": 18,
+          "right": 216.375,
+          "width": 198.375,
+          "height": 70.375
+        },
+        "cancel": {
+          "top": 447.125,
+          "bottom": 495.5,
+          "left": 18,
+          "right": 216.375,
+          "width": 198.375,
+          "height": 48.375
+        },
+        "reason": {
+          "top": 1672.546875,
+          "bottom": 1720.546875,
+          "left": 18,
+          "right": 216.375,
+          "width": 198.375,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1649,
+          "clientHeight": 263,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(6, 6, 8)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "browser-back",
+      "checks": {
+        "backClosedTheSheet": true,
+        "stayedOnTheSameRoute": true,
+        "consoleStillShown": true,
+        "noInertOrScrollLockLeft": true,
+        "cancelLeavesHistoryUnchanged": true
+      },
+      "notes": [],
+      "after": {
+        "dialogOpen": false,
+        "hash": "#/room/cf375e6f-0df5-4dd3-99b2-cc576e0e2691/gm",
+        "anyInert": false,
+        "rootLocked": false,
+        "consoleStillShown": true
+      },
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "pinch-gesture",
+      "checks": {
+        "pinchZoomStillWorksWithSheetOpen": true
+      },
+      "notes": [],
+      "scaleBefore": 1,
+      "scaleAfter": 2.000000238418579,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "scenario": "safe-area-landscape-constrained",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfLeftInset": true,
+        "sheetClearOfRightInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 375,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 47,
+          "right": 620,
+          "width": 573,
+          "height": 343
+        },
+        "apply": {
+          "top": 271.625,
+          "bottom": 320,
+          "left": 65,
+          "right": 327.5,
+          "width": 262.5,
+          "height": 48.375
+        },
+        "cancel": {
+          "top": 271.625,
+          "bottom": 320,
+          "left": 339.5,
+          "right": 602,
+          "width": 262.5,
+          "height": 48.375
+        },
+        "reason": {
+          "top": 1296.59375,
+          "bottom": 1344.59375,
+          "left": 65,
+          "right": 602,
+          "width": 537,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1298,
+          "clientHeight": 203,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(6, 6, 8)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 29,
+      "sheetWidth": 573,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "scenario": "safe-area-landscape-812",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfLeftInset": true,
+        "sheetClearOfRightInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 86,
+          "right": 726,
+          "width": 640,
+          "height": 343
+        },
+        "apply": {
+          "top": 271.625,
+          "bottom": 320,
+          "left": 104,
+          "right": 400,
+          "width": 296,
+          "height": 48.375
+        },
+        "cancel": {
+          "top": 271.625,
+          "bottom": 320,
+          "left": 412,
+          "right": 708,
+          "width": 296,
+          "height": 48.375
+        },
+        "reason": {
+          "top": 1296.59375,
+          "bottom": 1344.59375,
+          "left": 104,
+          "right": 708,
+          "width": 604,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1298,
+          "clientHeight": 203,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(6, 6, 8)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 29,
+      "sheetWidth": 640,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "safe-area-portrait",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfTopInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 47,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 765
+        },
+        "apply": {
+          "top": 695.625,
+          "bottom": 766,
+          "left": 18,
+          "right": 181.5,
+          "width": 163.5,
+          "height": 70.375
+        },
+        "cancel": {
+          "top": 695.625,
+          "bottom": 766,
+          "left": 193.5,
+          "right": 357,
+          "width": 163.5,
+          "height": 70.375
+        },
+        "reason": {
+          "top": 1393.171875,
+          "bottom": 1441.171875,
+          "left": 18,
+          "right": 357,
+          "width": 339,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1346,
+          "clientHeight": 571,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(6, 6, 8)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 46,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "text-150-phone-small",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 36,
+          "bottom": 568,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 532
+        },
+        "apply": {
+          "top": 388,
+          "bottom": 460,
+          "left": 15.75,
+          "right": 304.25,
+          "width": 288.5,
+          "height": 72
+        },
+        "cancel": {
+          "top": 478,
+          "bottom": 550,
+          "left": 15.75,
+          "right": 304.25,
+          "width": 288.5,
+          "height": 72
+        },
+        "reason": {
+          "top": 2112.109375,
+          "bottom": 2184.109375,
+          "left": 15.75,
+          "right": 304.25,
+          "width": 288.5,
+          "height": 72
+        },
+        "body": {
+          "scrollHeight": 2068,
+          "clientHeight": 238,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(6, 6, 8)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 24,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "text-200-phone",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 764
+        },
+        "apply": {
+          "top": 531.21875,
+          "bottom": 668,
+          "left": 18.125,
+          "right": 356.875,
+          "width": 338.75,
+          "height": 136.78125
+        },
+        "cancel": {
+          "top": 692,
+          "bottom": 788,
+          "left": 18.125,
+          "right": 356.875,
+          "width": 338.75,
+          "height": 96
+        },
+        "reason": {
+          "top": 3482.5625,
+          "bottom": 3578.5625,
+          "left": 18.125,
+          "right": 356.875,
+          "width": 338.75,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 3423,
+          "clientHeight": 333,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(6, 6, 8)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "text-200-phone-small",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 568,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 520
+        },
+        "apply": {
+          "top": 366.8125,
+          "bottom": 503.59375,
+          "left": 15.75,
+          "right": 304.25,
+          "width": 288.5,
+          "height": 136.78125
+        },
+        "cancel": {
+          "top": 527.59375,
+          "bottom": 623.59375,
+          "left": 15.75,
+          "right": 304.25,
+          "width": 288.5,
+          "height": 96
+        },
+        "reason": {
+          "top": 3709.78125,
+          "bottom": 3805.78125,
+          "left": 15.75,
+          "right": 304.25,
+          "width": 288.5,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 3603,
+          "clientHeight": 124,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(6, 6, 8)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": null,
+      "informationalChecks": [
+        "dialogInsideViewport",
+        "noPageOverflow"
+      ]
+    }
+  ],
+  "reducedMotion": {
+    "allowed": {
+      "sheetAnimation": "sheet-rise",
+      "sheetDuration": "0.18s",
+      "backdropAnimation": "sheet-fade",
+      "anyLongTransition": true,
+      "matches": false
+    },
+    "reduced": {
+      "sheetAnimation": "none",
+      "sheetDuration": "1e-06s",
+      "backdropAnimation": "none",
+      "anyLongTransition": false,
+      "matches": true
+    }
+  },
+  "routes": [],
+  "failures": [],
+  "console": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  },
+  "finishedAt": "2026-10-05T14:38:59.513Z",
+  "ok": true,
+  "summary": {
+    "states": 150,
+    "controlsAudited": 1434,
+    "controlIssues": 0,
+    "overflowStates": 0,
+    "axeHardViolations": 0,
+    "axeBestPractice": [
+      "anon/route-claim-no-such-room@phone: page-has-heading-one"
+    ],
+    "failures": 0
+  }
+}

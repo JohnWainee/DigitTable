@@ -251,6 +251,45 @@ describe("reskin stylesheet contract", () => {
     });
   });
 
+  describe("large text, option rows and forced colors (second reskin pass)", () => {
+    it("lets gutters give way on a narrow viewport so 150-200% text keeps a usable column", () => {
+      expect(css).toMatch(/--gut:\s*min\(1rem,\s*4\.3vw\)/);
+      expect(css).toMatch(/--gut-sm:\s*min\(0\.85rem,\s*3\.6vw\)/);
+      const panel = rulesFor(/^\.step,\s*\.scene-card/s).join("\n");
+      expect(panel).toContain("var(--gut)");
+      expect(declaration(rulesFor(/^fieldset$/), "padding")[0]).toContain("var(--gut-sm)");
+    });
+
+    it("caps display type by viewport width so enlarged text never breaks a heading or button word", () => {
+      expect(declaration(rulesFor(/^h1$/), "font-size")[0]).toMatch(/^min\(clamp\(.*\), 14vw\)$/);
+      expect(declaration(rulesFor(/^h2$/), "font-size")[0]).toMatch(/^min\(clamp\(.*\), 9vw\)$/);
+      expect(
+        declaration(rulesFor(/^\.primary-action,\s*\.secondary-action$/s), "font-size"),
+      ).toContain("min(1.25rem, 7vw)");
+    });
+
+    it("never squeezes an option row's own action: the row wraps and the button keeps its width", () => {
+      expect(rulesFor(/^\.gear-option:has\(> button\)/s).join()).toMatch(/flex-wrap:\s*wrap/);
+      expect(declaration(rulesFor(/^\.gear-option > button$/), "flex")).toContain("0 0 auto");
+      expect(declaration(rulesFor(/^\.gear-option > \.option-text$/), "min-width")).toContain(
+        "min-content",
+      );
+    });
+
+    it("keeps the disclosure marker visible in Windows High Contrast", () => {
+      const forced = mediaBlock("(forced-colors: active)");
+      expect(forced).toMatch(/summary::before\s*\{[^}]*background:\s*LinkText/);
+    });
+
+    it("keeps the grain, hazard rail and scuffs decorative: they never take pointer events", () => {
+      const decorative = rulesFor(/::after/).filter((body) => /content:\s*""/.test(body));
+      expect(decorative.length).toBeGreaterThan(0);
+      for (const body of decorative) {
+        if (/position:\s*absolute/.test(body)) expect(body).toMatch(/pointer-events:\s*none/);
+      }
+    });
+  });
+
   describe("reduced motion", () => {
     it("declares every keyframe animation only inside prefers-reduced-motion: no-preference", () => {
       const allowed = mediaBlock("(prefers-reduced-motion: no-preference)");

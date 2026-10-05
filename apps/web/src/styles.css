@@ -846,6 +846,7 @@ details ul {
 .fixture-banner::before {
   content: "";
   position: absolute;
+  pointer-events: none;
   inset: 0 0 auto 0;
   height: 0.35rem;
   background: repeating-linear-gradient(-45deg, var(--acid) 0 0.6rem, var(--ink-0) 0.6rem 1.2rem);
@@ -1216,6 +1217,7 @@ details ul {
 .threat-token-cross::after {
   content: "";
   position: absolute;
+  pointer-events: none;
   top: 50%;
   left: 8%;
   right: 8%;
