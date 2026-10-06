@@ -271,6 +271,96 @@ final class SafariFlowUITests: XCTestCase {
         log("sheet closed: \(!heading.exists)")
     }
 
+    // MARK: text-entry attributes (lane sonnet-fi)
+
+    func fieldValue(_ f: XCUIElement) -> String { (f.value as? String) ?? "" }
+
+    /// Types by TAPPING the on-screen keys. `XCUIElement.typeText` synthesises the characters directly and
+    /// bypasses the keyboard's auto-capitalisation and auto-correction (measured: the baseline build kept
+    /// "cowboy-hat" verbatim under `typeText`), so only key taps reproduce what a person on a phone gets.
+    /// Letters and the space bar only (no digit or punctuation layer).
+    func tapKeys(_ text: String, file: StaticString = #filePath, line: UInt = #line) {
+        for ch in text {
+            let key = ch == " "
+                ? safari.keyboards.keys["space"]
+                : safari.keyboards.keys.matching(NSPredicate(format: "label ==[c] %@", String(ch))).firstMatch
+            guard key.waitForExistence(timeout: 4) else {
+                XCTFail("no on-screen key for \"\(ch)\"", file: file, line: line)
+                return
+            }
+            key.tap()
+        }
+    }
+
+    /// The first letter key shows as a capital when the keyboard has auto-shifted for the field.
+    var keyboardIsShifted: Bool { safari.keyboards.keys["Q"].exists }
+
+    /// Focuses the named field, taps `text` out on the soft keyboard and fails unless the field then holds
+    /// exactly `expected` with the keyboard in the `shifted` state it opened in. iOS applies
+    /// auto-capitalisation and auto-correction to a plain `<input type="text">`: a case-sensitive secret
+    /// ("river stone" -> "River stone"), a recovery code drawn from an UPPERCASE-only alphabet typed in
+    /// lowercase, or a GM-typed item id are silently altered, so a correct entry is rejected.
+    func expectTyped(_ label: String, typing text: String, becomes expected: String, keyboardOpensShifted shifted: Bool,
+                     file: StaticString = #filePath, line: UInt = #line) {
+        let f = web.textFields[label]
+        XCTAssertTrue(f.waitForExistence(timeout: 10), "field \(label)", file: file, line: line)
+        if !f.isHittable { scrollTo(f) }
+        f.tap()
+        // The very first software keyboard of a cold Simulator takes a while to appear; if a tap landed
+        // while the page was still settling (the previous keyboard sliding away), scroll and tap again.
+        if !safari.keyboards.firstMatch.waitForExistence(timeout: 8) {
+            scrollTo(f)
+            f.tap()
+        }
+        XCTAssertTrue(safari.keyboards.firstMatch.waitForExistence(timeout: 20), "software keyboard for \(label)", file: file, line: line)
+        sleep(1)
+        // A field below the fold must have been scrolled clear of the keyboard that just rose.
+        expectAboveKeyboard("\(label) after focus", f)
+        let opened = keyboardIsShifted
+        tapKeys(text, file: file, line: line)
+        let got = fieldValue(f)
+        log("\(label): keyboard opened shifted=\(opened) (expected \(shifted)); tapped \"\(text)\": value is \"\(got)\" (expected \"\(expected)\")")
+        XCTAssertEqual(opened, shifted, "\(label): keyboard shift state on focus", file: file, line: line)
+        XCTAssertEqual(got, expected, "\(label): tapped \"\(text)\" but the field holds \"\(got)\"", file: file, line: line)
+        dismissKeyboard()
+    }
+
+    /// The join, recover, create and table-display forms. `teh` is the classic auto-correction target
+    /// ("the"); the capitalisation checks need no dictionary at all.
+    func testCodeAndSecretFieldsKeepTypedTextVerbatim() throws {
+        open("#/join")
+        expectTyped("Room code", typing: "tehabc", becomes: "TEHABC", keyboardOpensShifted: true)
+        expectTyped("Passphrase", typing: "teh river stone", becomes: "teh river stone", keyboardOpensShifted: false)
+        shot("join-typed")
+
+        // Recover mode: the recovery code alphabet is uppercase only and compared exactly.
+        open("#/join")
+        let recover = containing("Recover your seat", .button)
+        XCTAssertTrue(recover.waitForExistence(timeout: 10), "recover button")
+        scrollTo(recover)
+        recover.tap()
+        expectTyped("Room code", typing: "tehabc", becomes: "TEHABC", keyboardOpensShifted: true)
+        expectTyped("Recovery code", typing: "abcdefghjkmn", becomes: "ABCDEFGHJKMN", keyboardOpensShifted: true)
+        shot("recover-typed")
+
+        open("#/create")
+        expectTyped("Passphrase", typing: "teh river stone", becomes: "teh river stone", keyboardOpensShifted: false)
+        shot("create-typed")
+
+        open("#/table")
+        expectTyped("Room code", typing: "tehabc", becomes: "TEHABC", keyboardOpensShifted: true)
+        expectTyped("Table code", typing: "abcdefg", becomes: "ABCDEFG", keyboardOpensShifted: true)
+        shot("table-typed")
+    }
+
+    /// GM tools: free-text ids that are matched exactly by the engine.
+    func testGmIdFieldsKeepTypedTextVerbatim() throws {
+        createSessionAndOpenConsole()
+        expectTyped("Item id", typing: "cowboyhat", becomes: "cowboyhat", keyboardOpensShifted: false)
+        expectTyped("New member id (blank to unassign)", typing: "teh member", becomes: "teh member", keyboardOpensShifted: false)
+        shot("gm-ids-typed")
+    }
+
     // MARK: signed-in surfaces
 
     /// A bottom-pinned control must lie fully inside the web view's visible area and be tappable

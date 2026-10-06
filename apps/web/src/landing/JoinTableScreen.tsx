@@ -10,6 +10,7 @@ import { joinRoom } from "../session/roomClient.js";
 import type { RoomAdmissionAccepted, SessionRequestState } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
 import { newUuid } from "../shared/uuid.js";
+import { CODE_TEXT } from "../shared/textEntry.js";
 
 /**
  * docs/ETR_SESSION_FLOW.md section 4.4: `/table` — join a shared display.
@@ -68,6 +69,7 @@ export function JoinTableScreen(): JSX.Element {
               id="table-room-code"
               type="text"
               required
+              {...CODE_TEXT}
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value)}
             />
@@ -78,6 +80,7 @@ export function JoinTableScreen(): JSX.Element {
               id="table-code"
               type="text"
               required
+              {...CODE_TEXT}
               value={tableCode}
               onChange={(e) => setTableCode(e.target.value)}
             />

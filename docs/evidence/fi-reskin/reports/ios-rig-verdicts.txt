@@ -1,0 +1,7 @@
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCodeAndSecretFieldsKeepTypedTextVerbatim]' passed (171.544 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testGmIdFieldsKeepTypedTextVerbatim]' passed (112.549 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCodeAndSecretFieldsKeepTypedTextVerbatim]' failed (164.215 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testGmIdFieldsKeepTypedTextVerbatim]' failed (83.743 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCodeAndSecretFieldsKeepTypedTextVerbatim]' passed (162.246 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (65.008 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testGmIdFieldsKeepTypedTextVerbatim]' passed (76.990 seconds).
