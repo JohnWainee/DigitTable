@@ -573,6 +573,25 @@ async function auditModal(gm) {
 
   const frameOf = (vp) => ({ left: 0, top: 0, right: vp.width, bottom: vp.height });
 
+  // Browser Back (Android system Back, iOS edge swipe) must dismiss the sheet and leave the route
+  // and the console behind it alone; unfixed, it navigated the hash router away from the screen.
+  await scenario("back-dismiss", byName["phone"], async (record) => {
+    const hashBefore = await ev(gm, `location.hash`);
+    await openCorrection(gm);
+    await ev(gm, `history.back()`);
+    await sleep(500);
+    record.checks.backClosedSheet = await ev(gm, `!document.querySelector('[role="dialog"]')`);
+    record.checks.routeUnchanged = (await ev(gm, `location.hash`)) === hashBefore;
+    record.checks.consoleStillMounted = await ev(
+      gm,
+      `Boolean(document.querySelector(".roster-panel-list"))`,
+    );
+    record.checks.backgroundNotInert = await ev(
+      gm,
+      `![...document.body.children].some(c => c.hasAttribute("inert"))`,
+    );
+  });
+
   await scenario("zoom-emulated", byName["phone"], async (record) => {
     await openCorrection(gm);
     await gm.cdp.send("Emulation.setPageScaleFactor", { pageScaleFactor: 1.6 }, gm.sessionId);
