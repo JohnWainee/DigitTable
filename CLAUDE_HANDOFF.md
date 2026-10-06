@@ -16,7 +16,7 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
 - **Playable staging candidate is online:** Firebase Hosting, Firestore/RTDB rules, and the five `us-west1` callable Functions (`createRoom`, `admitMember`, `claimSeat`, `submitRoomCommand`, `recoverSeat`) are deployed to project `powerglove-1cd23`. Cloud Run invoker bindings were explicitly verified/repaired to permit unauthenticated transport to the callable boundary; every operation still requires and validates Firebase Auth inside the callable pipeline.
 - **Sourcebook roster is production-ready in source:** all six supplied character sheets replace the placeholder roster while preserving stable character IDs for saved-room compatibility. Cigarettes and Cowboy Hat have player-facing marked-use mechanics, and Corpse Eater uses the printed any-1 trigger. Complete roster snapshot coverage and focused mechanics tests protect the source fields.
 - **Live release verification passes:** on 2026-09-19, `two-device-smoke.mjs --reload` again passed all 17 GM/player/table steps against staging: create, isolated player/table admission, claim, opposed action, pause/resume, scene advance, role guidance, direct resume, reload recovery, original-art loading, zero console/request errors, and no horizontal overflow at 375/768/1024/1280/1920 px. Temporary report/screenshots: `/private/tmp/digitable-hourly-staging-20260919/`. The deeper `ui-audit.mjs` run audited 150 states and 1,344 controls with zero control issues, overflow states, hard axe violations, or failures. One best-practice heading warning remains on the intentional nonexistent-room route; the documented 320 px + 200% text geometry limit remains non-gating.
-- **fq reskin lane (2026-10-06):** branch `worktree-digitable-sonnet-fq-reskin-uiux-20261006` (pushed, unmerged, undeployed) layers a blacker, louder reskin and pop-out hardening on `b599abd`; see "fq reskin and pop-out lane" below. John decides whether to merge it and in what order relative to the other reskin lineages.
+- **fq reskin lane (2026-10-06):** branch `worktree-digitable-sonnet-fq-reskin-uiux-20261006` (pushed, unmerged, undeployed) layers a blacker, louder reskin and pop-out hardening on `b599abd`; its post-review hook fixes are now independently verified at `9c6d254` (see the final review record below). John decides whether to merge it and in what order relative to the other reskin lineages.
 - **Next action:** Rerun the live GM/player/table smoke against <https://digitable.signal-bleed.com>, then have John conduct the complete flow on two physical devices. Do not promote to a separate production Firebase project without explicit direction.
 
 ## Claude takeover checkpoint
@@ -486,3 +486,18 @@ Branch `worktree-digitable-sonnet-fq-reskin-uiux-20261006` from `b599abd`; prese
 - **Commands and results (APFS clone `/private/tmp/dt-fq`):** `npm run check` — format, lint, typecheck, **714 tests passed, 11 todo** (74 files; baseline 690). `npm run build` passed. `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **18 rules, 86 Functions, 4 web** passed. `ui-audit.mjs` (150 states × 6 viewports, 1,470 controls): 0 control issues, 0 overflow states, 0 axe hard violations; all pop-out scenarios pass incl. new Back and short-visible ones. `two-device-smoke.mjs --reload` against a local build + emulators: 17/17. Same smoke against the **deployed** staging build and live backend: 17/17 (does not include this branch).
 - **Not done:** a staging playthrough of *this* build (needs the staging web API key; the session was denied reading it, correctly — build with the RUNBOOK step 4 command, serve locally, run the smoke with `--base`); real iOS Safari / Android keyboard, screen-reader, Windows High Contrast and physical-device passes.
 - **Decisions for John:** (1) merge order/choice between this lineage and `ec2b96a`/`7595ce7`; (2) whether sheets should take the GM's pink (they currently stay acid/cyan because they portal outside the screen); (3) staging redeploy after a staging playthrough.
+
+### Final independent verification (2026-10-06)
+
+`9c6d254`, the post-review hook/evidence revision, received a fresh independent code review and
+full local verification in an isolated APFS worktree. The reviewer found no blocker in the
+history-stack handling, responsive sheet behavior, accessibility, privacy, or presentation scope.
+`npm run check` passed with **714 tests and 11 todo**; build passed with only the existing chunk-size
+warning; the emulator suite passed **18 rules/testing + 86 Functions + 4 web**; `ui-audit.mjs`
+passed **150 states, 1,494 controls, and 17 modal scenarios** with zero hard failures; and the local
+emulator `two-device-smoke.mjs --reload` passed **17/17**. See
+[`docs/reviews/2026-10-06-fq-reskin-final-independent-review.md`](docs/reviews/2026-10-06-fq-reskin-final-independent-review.md).
+
+This is still an integration candidate, not a deployed build. The open physical-device / AT / Windows
+High Contrast and candidate-against-staging evidence limits above remain real; do not represent the
+deployed build's smoke result as proof for this branch.
