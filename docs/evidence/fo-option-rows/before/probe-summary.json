@@ -1,0 +1,650 @@
+[
+ {
+  "surface": "player-compose",
+  "viewport": "phone-small",
+  "textScale": 100,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 210,
+     "y": 263,
+     "w": 48,
+     "h": 99
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "player-compose",
+  "viewport": "phone-small",
+  "textScale": 150,
+  "pageOverflowPx": 29,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 277,
+     "y": 1770,
+     "w": 72,
+     "h": 149
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "player-compose",
+  "viewport": "phone-small",
+  "textScale": 200,
+  "pageOverflowPx": 143,
+  "overflowWithoutRows": 47,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 367,
+     "y": 2239,
+     "w": 96,
+     "h": 198
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "player-compose",
+  "viewport": "phone",
+  "textScale": 100,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 265,
+     "y": 60,
+     "w": 48,
+     "h": 99
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "player-compose",
+  "viewport": "phone",
+  "textScale": 150,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 277,
+     "y": 1565,
+     "w": 72,
+     "h": 149
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "player-compose",
+  "viewport": "phone",
+  "textScale": 200,
+  "pageOverflowPx": 88,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 367,
+     "y": 2036,
+     "w": 96,
+     "h": 198
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "player-compose",
+  "viewport": "tablet",
+  "textScale": 100,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 574,
+     "y": 383,
+     "w": 116,
+     "h": 58
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "player-compose",
+  "viewport": "tablet",
+  "textScale": 150,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 573,
+     "y": 1261,
+     "w": 105,
+     "h": 118
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "player-compose",
+  "viewport": "tablet",
+  "textScale": 200,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 554,
+     "y": 1119,
+     "w": 96,
+     "h": 198
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "player-compose",
+  "viewport": "desktop",
+  "textScale": 100,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 823,
+     "y": 159,
+     "w": 116,
+     "h": 58
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "player-compose",
+  "viewport": "desktop",
+  "textScale": 150,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 919,
+     "y": 1172,
+     "w": 175,
+     "h": 86
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "player-compose",
+  "viewport": "desktop",
+  "textScale": 200,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 956,
+     "y": 1159,
+     "w": 191,
+     "h": 115
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "player-compose",
+  "viewport": "table",
+  "textScale": 100,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 1143,
+     "y": 439,
+     "w": 116,
+     "h": 58
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "player-compose",
+  "viewport": "table",
+  "textScale": 150,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 1239,
+     "y": 1312,
+     "w": 175,
+     "h": 86
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "player-compose",
+  "viewport": "table",
+  "textScale": 200,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "Cigarettes taken from the pockets of han",
+    "button": "Mark and regain Blood",
+    "buttonBox": {
+     "x": 1336,
+     "y": 1299,
+     "w": 234,
+     "h": 115
+    },
+    "insideLabel": true
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "phone-small",
+  "textScale": 100,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [
+   "Reveal"
+  ],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 197,
+     "y": -2381,
+     "w": 77,
+     "h": 67
+    },
+    "insideLabel": false
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "phone-small",
+  "textScale": 150,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [
+   "Reveal"
+  ],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 174,
+     "y": 1591,
+     "w": 78,
+     "h": 220
+    },
+    "insideLabel": false
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "phone-small",
+  "textScale": 200,
+  "pageOverflowPx": 6,
+  "overflowWithoutRows": 0,
+  "brokenWords": [
+   "Reveal"
+  ],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 230,
+     "y": 735,
+     "w": 96,
+     "h": 292
+    },
+    "insideLabel": false
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "phone",
+  "textScale": 100,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [
+   "Reveal"
+  ],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 242,
+     "y": -2600,
+     "w": 87,
+     "h": 67
+    },
+    "insideLabel": false
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "phone",
+  "textScale": 150,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [
+   "Reveal"
+  ],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 212,
+     "y": 1510,
+     "w": 95,
+     "h": 129
+    },
+    "insideLabel": false
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "phone",
+  "textScale": 200,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [
+   "Reveal"
+  ],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 230,
+     "y": 2063,
+     "w": 96,
+     "h": 292
+    },
+    "insideLabel": false
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "tablet",
+  "textScale": 100,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 313,
+     "y": -2291,
+     "w": 104,
+     "h": 48
+    },
+    "insideLabel": false
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "tablet",
+  "textScale": 150,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 445,
+     "y": 1049,
+     "w": 154,
+     "h": 72
+    },
+    "insideLabel": false
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "tablet",
+  "textScale": 200,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [
+   "Reveal"
+  ],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 498,
+     "y": 1063,
+     "w": 181,
+     "h": 130
+    },
+    "insideLabel": false
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "desktop",
+  "textScale": 100,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 401,
+     "y": -651,
+     "w": 104,
+     "h": 48
+    },
+    "insideLabel": false
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "desktop",
+  "textScale": 150,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [
+   "Reveal"
+  ],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 413,
+     "y": 998,
+     "w": 146,
+     "h": 98
+    },
+    "insideLabel": false
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "desktop",
+  "textScale": 200,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [
+   "Reveal"
+  ],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 384,
+     "y": 1182,
+     "w": 152,
+     "h": 130
+    },
+    "insideLabel": false
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "table",
+  "textScale": 100,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 721,
+     "y": -673,
+     "w": 104,
+     "h": 48
+    },
+    "insideLabel": false
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "table",
+  "textScale": 150,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 581,
+     "y": 997,
+     "w": 154,
+     "h": 72
+    },
+    "insideLabel": false
+   }
+  ]
+ },
+ {
+  "surface": "gm-console",
+  "viewport": "table",
+  "textScale": 200,
+  "pageOverflowPx": 0,
+  "overflowWithoutRows": 0,
+  "brokenWords": [],
+  "rows": [
+   {
+    "text": "The Enforcer (hidden from players)Reveal",
+    "button": "Reveal",
+    "buttonBox": {
+     "x": 590,
+     "y": 1106,
+     "w": 204,
+     "h": 96
+    },
+    "insideLabel": false
+   }
+  ]
+ }
+]

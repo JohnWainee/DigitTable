@@ -642,6 +642,72 @@ input[type="radio"]:disabled {
   flex-direction: row;
 }
 
+/* A plain row that carries its own action (the GM's "Reveal" beside a threat name): the text takes
+   the space and the button drops to its own line when the row is too narrow (a phone, large text)
+   instead of being squeezed until its word breaks ("REVE/AL"). */
+.gear-option:has(> button) {
+  flex-wrap: wrap;
+}
+
+.gear-option:has(> button) > span {
+  flex: 1 1 8rem;
+  min-width: 0;
+}
+
+.gear-option > button {
+  flex: 0 0 auto;
+  max-width: 100%;
+}
+
+/* An option row whose action cannot live inside the checkbox label ("Mark and regain Blood"): the
+   label and the button are siblings in a `.gear-option--row` wrapper. The label carries the row's
+   padding (so the whole row stays the checkbox's tap target), keeps the box and its text together
+   (stacking under the box only when the longest word cannot sit beside it), and the action always
+   takes its own full line below, so neither is squeezed or leaves the viewport. */
+.gear-option--row {
+  flex-wrap: wrap;
+  gap: 0;
+  padding: 0;
+}
+
+.gear-option--row > .gear-option-label {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex: 1 1 min-content;
+  min-width: min-content;
+  /* The row already has a 2px border on each side: 48px in all. */
+  min-height: calc(var(--tap) - 4px);
+  padding: 0.4rem 0.65rem;
+  /* Keep the row's own type and (muted, when disabled) colour, not the global label style. */
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gear-option--row > .gear-option-label > .option-text {
+  flex: 1 1 0;
+  min-width: min-content;
+}
+
+/* Under the text: row padding + checkbox + gap (capped so a phone at large text keeps room). */
+.gear-option--row > .gear-option-action {
+  flex: 1 1 100%;
+  margin-left: min(calc(0.65rem + 1.65rem + 0.85rem), 9vw);
+  margin-right: 0.65rem;
+}
+
+/* The not-allowed cursor belongs to the disabled label only, not the row or its live action. */
+.gear-option.gear-option--row:has(:disabled) {
+  cursor: default;
+}
+
+.gear-option.gear-option--row:has(:disabled) > .gear-option-label {
+  cursor: not-allowed;
+}
+
 .gear-option:has(:checked) {
   border-color: var(--acid);
   background: rgba(255, 230, 0, 0.1);

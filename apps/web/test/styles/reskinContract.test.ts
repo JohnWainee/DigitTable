@@ -138,14 +138,20 @@ describe("reskin stylesheet contract", () => {
 
     it("covers every styled <button> in the app: each className token is one the tap rule names", () => {
       const covered = new Set(["primary-action", "secondary-action", "link-button"]);
+      // Layout-only hooks (the item action's own line in an option row) are fine on a button that
+      // also carries a covered class, and never on their own.
+      const layoutHooks = new Set(["gear-option-action"]);
       const uncovered: string[] = [];
       for (const file of sourceFiles(join(here, "../../src"))) {
         const source = readFileSync(file, "utf8");
         for (const match of source.matchAll(
           /<button\b[^>]*?className=(?:"([^"]*)"|\{`([^`]*)`\})/gs,
         )) {
-          for (const token of (match[1] ?? match[2] ?? "").split(/\s+/).filter(Boolean)) {
-            if (!covered.has(token)) uncovered.push(`${file.split("/src/")[1]}: ${token}`);
+          const tokens = (match[1] ?? match[2] ?? "").split(/\s+/).filter(Boolean);
+          const hasCovered = tokens.some((token) => covered.has(token));
+          for (const token of tokens) {
+            if (covered.has(token) || (layoutHooks.has(token) && hasCovered)) continue;
+            uncovered.push(`${file.split("/src/")[1]}: ${token}`);
           }
         }
       }
@@ -191,6 +197,49 @@ describe("reskin stylesheet contract", () => {
         declaration(rulesFor(/^\.gear-option,\s*\.form-field--checkbox$/), "min-height"),
       ).toContain("var(--tap)");
       expect(declaration(rulesFor(/^summary$/), "min-height")).toContain("var(--tap)");
+    });
+
+    it("never squeezes an option row's own action: the row wraps and the button keeps its width", () => {
+      // GM "Reveal" beside a threat name (a plain `.gear-option` that holds a button).
+      expect(rulesFor(/^\.gear-option:has\(> button\)$/).join()).toMatch(/flex-wrap:\s*wrap/);
+      expect(declaration(rulesFor(/^\.gear-option > button$/), "flex")).toContain("0 0 auto");
+      expect(declaration(rulesFor(/^\.gear-option > button$/), "max-width")).toContain("100%");
+      expect(
+        declaration(rulesFor(/^\.gear-option:has\(> button\) > span$/), "min-width"),
+      ).toContain("0");
+      // "Mark and regain Blood": the action is a sibling of the checkbox label, on its own line.
+      expect(declaration(rulesFor(/^\.gear-option--row$/), "flex-wrap")).toContain("wrap");
+      // The label carries the padding, so the whole row stays the checkbox's tap target.
+      expect(declaration(rulesFor(/^\.gear-option--row$/), "padding")).toContain("0");
+      expect(
+        declaration(rulesFor(/^\.gear-option--row > \.gear-option-action$/), "flex"),
+      ).toContain("1 1 100%");
+    });
+
+    it("keeps the checkbox label in an option row a >= tap-size target that stacks only when its longest word cannot sit beside the box", () => {
+      const label = rulesFor(/^\.gear-option--row > \.gear-option-label$/);
+      expect(declaration(label, "min-height")).toContain("calc(var(--tap) - 4px)");
+      expect(declaration(label, "padding")).toContain("0.4rem 0.65rem");
+      expect(declaration(label, "min-width")).toContain("min-content");
+      expect(
+        declaration(
+          rulesFor(/^\.gear-option--row > \.gear-option-label > \.option-text$/),
+          "min-width",
+        ),
+      ).toContain("min-content");
+      // The not-allowed cursor stays on the disabled label, not the row (which would outrank it).
+      expect(
+        declaration(rulesFor(/^\.gear-option\.gear-option--row:has\(:disabled\)$/), "cursor"),
+      ).toContain("default");
+      expect(
+        declaration(
+          rulesFor(/^\.gear-option\.gear-option--row:has\(:disabled\) > \.gear-option-label$/),
+          "cursor",
+        ),
+      ).toContain("not-allowed");
+      // The global `label` mono/0.85rem style must not leak into the row's own type.
+      expect(declaration(label, "font")).toContain("inherit");
+      expect(declaration(label, "color")).toContain("inherit");
     });
 
     it("draws a >= 3px focus ring on every focusable element", () => {

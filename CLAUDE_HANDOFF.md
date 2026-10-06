@@ -3,7 +3,40 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-10-06 by Codex on `codex/reskin-fi-integration-20261006`; the reviewed Back-dismiss fix remains at `2cad086`, and the deployed-staging smoke was independently rerun at 11:12Z. No merge to `main` or deployment was made.
+- **Last updated:** 2026-10-06 by sonnet-fo on `sonnet-fo/reskin-orchestrated-20261006` (option-row fix on top of `6f5896e`, below); earlier the same day by Codex on `codex/reskin-fi-integration-20261006`; the reviewed Back-dismiss fix remains at `2cad086`, and the deployed-staging smoke was independently rerun at 11:12Z. No merge to `main` or deployment was made.
+
+## Option rows with an action (2026-10-06, sonnet-fo) — unmerged, on `6f5896e`
+
+Fresh audit of the integration's select/menu/disclosure/option/text-entry controls in real Chrome
+(emulators, Vite preview) found two defects the existing 150-state audit passed: the GM **Reveal**
+button split mid-word (`REVE`/`AL`) at default text on 320-375px phones, and the player **Mark and
+regain Blood** button (nested inside the item's checkbox label) was a 48px sliver at 375px and sat
+off-screen at 200% text. Fix is presentation only (`ComposeStep2.tsx` sibling layout + `styles.css`);
+no engine, contracts, template, authorization, projection, Firebase or dependency change. This lane
+re-implements the option-row idea of sibling `sonnet-fh` (`66f4071`, unmerged, different lineage) on
+this lineage instead of merging it; it does not touch the Back-dismiss hook or the correction-sheet
+viewport work. Detail, before/after crops at 320/375/768/1280/1920px and probe summaries:
+[`docs/evidence/fo-option-rows/`](docs/evidence/fo-option-rows/README.md); review:
+[`docs/reviews/2026-10-06-fo-option-rows-independent-review.md`](docs/reviews/2026-10-06-fo-option-rows-independent-review.md).
+
+- Tests: `ComposeOptionRows.a11y.test.tsx` (6) + 2 stylesheet-contract tests; mutation check: **4 fail**
+  with `ComposeStep2.tsx`/`styles.css` reverted to `6f5896e`, 0 with the fix.
+- Real-Chrome `ui-audit.mjs` (new `auditOptionRows`, 5 viewports x 100/150/200% text): fixed build
+  **150 states, 1,482 controls, 0 failures**; `6f5896e` build **41 failures** (all `option-rows/*`).
+- `npm run check`: **710 tests passed** (11 todo; +8). `npm run build`: passed (existing chunk
+  advisory). `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator`: **18 + 86 + 4 passed**
+  (`demo-digitable`; own emulators only, no peer process touched).
+- Independent review: approve with fixes (2 P2, 5 P3), all fixed or recorded; author re-verification
+  after the fixes, no third review.
+- Limitations: at 200% text on a 320-375px phone `REVEAL` still splits (column narrower than the
+  word; audit records it as informational) and the 320px/200% player page keeps 47px page overflow
+  that exists with these rows hidden (stacked rem gutters, separate issue). Headless Chrome only: no
+  real iOS Safari / physical device / assistive-technology pass.
+
+**Next action:** John decides how to reconcile the unmerged sibling lanes (`sonnet-fh` option rows,
+`sonnet-fn` correction-sheet viewport, forced-colors, iPad compact, landscape keyboard) with this
+integration lineage; this lane's option-row change overlaps `66f4071`/`f0e5d7c` (pick one, not both).
+Do not merge or deploy without John's direction.
 
 ## Text-entry-hint integration candidate (2026-10-06) — unmerged, emulator follow-up required
 

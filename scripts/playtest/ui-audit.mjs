@@ -88,6 +88,7 @@ const report = {
   states: [],
   modal: [],
   reducedMotion: null,
+  optionRows: [],
   routes: [],
   failures: [],
   console: {},
@@ -723,6 +724,80 @@ async function auditModal(gm) {
   await applyViewport(gm, byName["desktop"]);
 }
 
+/**
+ * Option rows that carry their own action (the player's "Mark and regain Blood" beside an item's
+ * checkbox; the GM's "Reveal" beside a hidden threat). They used to be squeezed to a sliver on a
+ * phone (the button read "REVE/AL" at DEFAULT text, "Mark and regain Blood" was a 48px column) and
+ * the item's button sat inside its checkbox label. Checks every such row on screen at each viewport
+ * and at 100/150/200% root text: the action is not inside a label, the checkbox's accessible name
+ * excludes it, no word is split across lines, the row stays inside the viewport and the action keeps
+ * the tap size. 200% text on a 320-375px phone leaves a column narrower than "REVEAL" itself, so
+ * only the geometry (not the broken word) is gated there; that residual is recorded, not hidden.
+ */
+const OPTION_ROW_PROBE = `(() => {
+  const vw = document.documentElement.clientWidth;
+  const rows = [...document.querySelectorAll(".gear-option")].filter((row) => row.querySelector("button"));
+  const broken = [];
+  for (const row of rows) {
+    const walker = document.createTreeWalker(row, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      for (const m of node.data.matchAll(/\\S+/g)) {
+        const range = document.createRange();
+        range.setStart(node, m.index);
+        range.setEnd(node, m.index + m[0].length);
+        if (new Set([...range.getClientRects()].map((q) => Math.round(q.top))).size > 1) broken.push(m[0]);
+      }
+    }
+  }
+  const issues = [];
+  for (const row of rows) {
+    const button = row.querySelector("button");
+    const r = button.getBoundingClientRect();
+    const name = button.textContent.trim();
+    if (button.closest("label")) issues.push(name + ": action is inside a label");
+    const box = row.querySelector('input[type="checkbox"]');
+    if (row.classList.contains("gear-option--row") && !box) issues.push(name + ": item row has no checkbox");
+    if (box && box.labels && [...box.labels].some((l) => l.textContent.includes(name))) issues.push(name + ": checkbox accessible name swallows the action");
+    if (r.left < -0.5 || r.right > vw + 0.5) issues.push(name + ": action outside viewport (" + Math.round(r.left) + ".." + Math.round(r.right) + " of " + vw + ")");
+    if (Math.min(r.width, r.height) < 43.5) issues.push(name + ": action target " + Math.round(r.width) + "x" + Math.round(r.height));
+    const rr = row.getBoundingClientRect();
+    if (rr.left < -0.5 || rr.right > vw + 0.5) issues.push(name + ": row outside viewport");
+  }
+  return { rows: rows.length, broken, issues };
+})()`;
+
+async function auditOptionRows(device, label) {
+  const original = device.vp;
+  try {
+    for (const vpName of ["phone-small", "phone", "tablet", "desktop", "table"]) {
+      for (const scale of [100, 150, 200]) {
+        await applyViewport(device, byName[vpName]);
+        await ev(device, `document.documentElement.style.fontSize = "${scale}%"`);
+        await sleep(200);
+        const result = await ev(device, OPTION_ROW_PROBE);
+        const narrow = scale === 200 && byName[vpName].width < 500;
+        const record = { device: label, viewport: vpName, textScale: scale, ...result, narrow };
+        report.optionRows.push(record);
+        const scope = `option-rows/${label}@${vpName}x${scale}%`;
+        if (result.rows === 0) fail(scope, "no option row with an action was on screen");
+        for (const issue of result.issues) fail(scope, issue);
+        if (result.broken.length > 0) {
+          if (narrow)
+            console.log(
+              `INFO ${scope}: broken word(s) ${result.broken.join(",")} (recorded, not gating)`,
+            );
+          else fail(scope, `word(s) split across lines: ${result.broken.join(", ")}`);
+        }
+      }
+    }
+  } catch (error) {
+    fail(`option-rows/${label}`, `scenario threw: ${error.message}`);
+  } finally {
+    await ev(device, `document.documentElement.style.fontSize = ""`).catch(() => {});
+    await applyViewport(device, original);
+  }
+}
+
 async function auditReducedMotion(gm) {
   const result = { allowed: {}, reduced: {} };
   async function probe() {
@@ -862,6 +937,7 @@ async function main() {
       "compose",
     );
     await captureState(player, "compose");
+    await auditOptionRows(player, "player-compose");
 
     // Disclosure: "Why?" opened.
     await ev(player, `document.querySelector("details summary").click()`);
@@ -942,6 +1018,7 @@ async function main() {
     );
     await captureState(table, "next-scene");
     await captureState(gm, "console-next-scene");
+    await auditOptionRows(gm, "gm-hidden-threat");
   } catch (error) {
     fail("flow", String(error.message));
   } finally {
@@ -969,6 +1046,7 @@ async function main() {
           .filter((v) => !isHardAxe(v))
           .map((v) => `${s.surface}/${s.state}@${s.viewport}: ${v.id}`),
       ),
+      optionRowCases: report.optionRows.length,
       failures: report.failures.length,
     };
     writeFileSync(join(OUT, "report.json"), JSON.stringify(report, null, 2) + "\n");
