@@ -251,12 +251,20 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(backdrop, "padding-top")[0]).toContain("env(safe-area-inset-top");
     });
 
-    it("dims the page outside a visual-viewport-sized backdrop too (no bright seam under the keyboard)", () => {
-      const shadow = declaration(rulesFor(/^\.sheet-backdrop$/), "box-shadow");
-      expect(shadow.join()).toMatch(/0 0 0 100vmax rgba\(3, 3, 4, 0\.82\)/);
-      // Same colour as the backdrop's own fill, or the seam would just move.
-      expect(declaration(rulesFor(/^\.sheet-backdrop$/), "background")).toContain(
-        "rgba(3, 3, 4, 0.82)",
+    it("dims the page itself, and only the page, while a sheet is open (no seam under the keyboard)", () => {
+      // A backdrop sized to the visual viewport is clipped there by WebKit, so a dimming backdrop leaves a
+      // bright seam beside the keyboard. One source of dimming, on the page, cannot.
+      const dim = declaration(rulesFor(/^html\.sheet-open #root$/), "opacity");
+      expect(dim).toHaveLength(1);
+      expect(Number(dim[0])).toBeGreaterThan(0.1);
+      expect(Number(dim[0])).toBeLessThanOrEqual(0.25);
+      expect(declaration(rulesFor(/^\.sheet-backdrop$/), "background")[0]).toBe("transparent");
+      expect(declaration(rulesFor(/^html\.sheet-open body$/), "background-image")).toEqual([
+        "none",
+      ]);
+      // High contrast: the backdrop is an explicit system Canvas, never transparent.
+      expect(mediaBlock("(forced-colors: active)")).toMatch(
+        /\.sheet-backdrop\s*\{[^}]*background:\s*Canvas/,
       );
     });
 

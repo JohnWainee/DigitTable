@@ -572,6 +572,9 @@ async function closeCorrection(gm) {
   await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 10000, "dialog closed");
 }
 
+// NOTE: no axe pass runs while a sheet is open. `html.sheet-open #root` is dimmed (opacity) and inert, so axe's
+// colour-contrast rule would read the whole page behind the sheet at that opacity. The page states are
+// audited with the sheet closed (captureState), where contrast is real.
 async function auditModal(gm) {
   await applyViewport(gm, byName["desktop"]);
   const cases = [

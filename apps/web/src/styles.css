@@ -94,6 +94,21 @@ html.sheet-open {
   overflow: hidden;
 }
 
+/* ...and it is dimmed on the page itself, which is the ONLY dimming: the sheet's backdrop is transparent. The
+   backdrop is only as big as the VISUAL viewport and WebKit clips fixed layers to it, so with the iOS keyboard
+   (and its accessory bar) up a dimming backdrop left the page full-bright between the sheet and the keyboard,
+   with a hard seam (real iPhone Safari, landscape; a spread box-shadow is clipped the same way). One source
+   of dimming means no seam wherever the backdrop ends. The page behind is inert, so its own contrast does not
+   matter while it is covered (an axe pass with a sheet open would read it at this opacity). */
+html.sheet-open #root {
+  opacity: 0.18;
+}
+
+/* The hazard rail and grain live on <body>, outside #root: drop them with the page so nothing stays bright. */
+html.sheet-open body {
+  background-image: none;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -1461,14 +1476,7 @@ details ul {
   /* A strip of backdrop stays visible above the sheet so it reads as a sheet, not a page. */
   padding: max(env(safe-area-inset-top), 1.5rem) env(safe-area-inset-right) 0
     env(safe-area-inset-left);
-  background: rgba(3, 3, 4, 0.82);
-  /* The backdrop is only as big as the VISUAL viewport. With the iOS keyboard (and its accessory bar) up,
-     or while pinch-zoomed, that is smaller than the layout viewport and the page showed through undimmed
-     beside and below the sheet, with a hard seam (real iPhone Safari, landscape, keyboard up). A spread
-     shadow dims everything outside the box in the same colour; it takes no layout space and adds no
-     scrollable overflow. Forced colors (Windows High Contrast) drops shadows, so there the seam remains;
-     the fill itself is repainted by the system, which is the intended high-contrast behaviour. */
-  box-shadow: 0 0 0 100vmax rgba(3, 3, 4, 0.82);
+  background: transparent;
   overscroll-behavior: contain;
   /* Deliberately unrestricted. An ancestor's touch-action cannot be re-enabled by a descendant, so
      `none` here would disable pinch-zoom for the whole page while a sheet is open (WCAG 1.4.4), and
@@ -1746,6 +1754,11 @@ details ul {
     animation: sheet-fade 0.18s ease-out;
   }
 
+  /* The page dims on the same curve the backdrop used to fade in on. */
+  html.sheet-open #root {
+    transition: opacity 0.18s ease-out;
+  }
+
   .hero-art-image,
   .scene-card-art-image,
   .portrait-image,
@@ -1823,6 +1836,11 @@ details ul {
 
   .sheet {
     border: 2px solid CanvasText;
+  }
+
+  /* Custom colours are repainted anyway; say it, so a transparent backdrop never lets the page show through. */
+  .sheet-backdrop {
+    background: Canvas;
   }
 
   /* Custom colours are repainted to Canvas in forced colors; only system colours survive on a fill. */

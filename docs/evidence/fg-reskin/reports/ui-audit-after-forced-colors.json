@@ -1,7 +1,7 @@
 {
   "label": "forced",
   "base": "http://127.0.0.1:47173",
-  "startedAt": "2026-10-06T00:18:29.204Z",
+  "startedAt": "2026-10-06T00:40:05.031Z",
   "states": [
     {
       "surface": "anon",
@@ -2369,7 +2369,7 @@
       "state": "allocation",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 10,
+      "controls": 19,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -2384,7 +2384,7 @@
       "state": "allocation",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 10,
+      "controls": 19,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -2403,7 +2403,7 @@
             ".party-member-name ::   Element has insufficient color contrast of 1.17 (foreground color: #f3ecda, background color: #ffffff, font size: 12.0pt (16px), font weight: bold). Expected ",
             ".party-member-stats ::   Element has insufficient color contrast of 2.22 (foreground color: #b4ad9f, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected"
           ],
-          "count": 6
+          "count": 4
         }
       ],
       "forcedColors": {
@@ -2417,7 +2417,7 @@
       "state": "allocation",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 10,
+      "controls": 19,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -2432,7 +2432,7 @@
       "state": "allocation",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 10,
+      "controls": 19,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -2451,7 +2451,7 @@
             ".party-member-name ::   Element has insufficient color contrast of 1.17 (foreground color: #f3ecda, background color: #ffffff, font size: 12.0pt (16px), font weight: bold). Expected ",
             ".party-member-stats ::   Element has insufficient color contrast of 2.22 (foreground color: #b4ad9f, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected"
           ],
-          "count": 6
+          "count": 4
         }
       ],
       "forcedColors": {
@@ -2465,7 +2465,7 @@
       "state": "allocation",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 10,
+      "controls": 19,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -2484,7 +2484,7 @@
             ".party-member-name ::   Element has insufficient color contrast of 1.17 (foreground color: #f3ecda, background color: #ffffff, font size: 12.0pt (16px), font weight: bold). Expected ",
             ".party-member-stats ::   Element has insufficient color contrast of 2.22 (foreground color: #b4ad9f, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected"
           ],
-          "count": 6
+          "count": 4
         }
       ],
       "forcedColors": {
@@ -2498,7 +2498,7 @@
       "state": "allocation",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 10,
+      "controls": 19,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -2513,7 +2513,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 10,
+      "controls": 19,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -2528,7 +2528,7 @@
       "state": "allocation-assigned",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 10,
+      "controls": 19,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -2547,7 +2547,7 @@
             ".party-member-name ::   Element has insufficient color contrast of 1.17 (foreground color: #f3ecda, background color: #ffffff, font size: 12.0pt (16px), font weight: bold). Expected ",
             ".party-member-stats ::   Element has insufficient color contrast of 2.22 (foreground color: #b4ad9f, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected"
           ],
-          "count": 6
+          "count": 4
         }
       ],
       "forcedColors": {
@@ -2561,7 +2561,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 10,
+      "controls": 19,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -2576,7 +2576,7 @@
       "state": "allocation-assigned",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 10,
+      "controls": 19,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -2591,7 +2591,7 @@
       "state": "allocation-assigned",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 10,
+      "controls": 19,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -2606,7 +2606,7 @@
       "state": "allocation-assigned",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 10,
+      "controls": 19,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -4115,7 +4115,7 @@
       "notes": [],
       "after": {
         "dialogOpen": false,
-        "hash": "#/room/f716ca7c-42e5-4fee-bacf-e469affd48b7/gm",
+        "hash": "#/room/f6098d99-c8f1-4769-95a8-8ac6b2063f74/gm",
         "anyInert": false,
         "rootLocked": false,
         "consoleStillShown": true
@@ -4131,7 +4131,7 @@
       },
       "notes": [],
       "scaleBefore": 1,
-      "scaleAfter": 1.999999761581421,
+      "scaleAfter": 2.0000007152557373,
       "informationalChecks": []
     },
     {
@@ -7758,19 +7758,19 @@
     },
     {
       "scope": "player/allocation@phone",
-      "message": "axe color-contrast (serious) x6: .connection-status ::   Element has insufficient color contrast of 1.51 (foreground color: #22e6ff, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected"
+      "message": "axe color-contrast (serious) x4: .connection-status ::   Element has insufficient color contrast of 1.51 (foreground color: #22e6ff, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected"
     },
     {
       "scope": "player/allocation@tablet",
-      "message": "axe color-contrast (serious) x6: .connection-status ::   Element has insufficient color contrast of 1.51 (foreground color: #22e6ff, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected"
+      "message": "axe color-contrast (serious) x4: .connection-status ::   Element has insufficient color contrast of 1.51 (foreground color: #22e6ff, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected"
     },
     {
       "scope": "player/allocation@desktop",
-      "message": "axe color-contrast (serious) x6: .connection-status ::   Element has insufficient color contrast of 1.51 (foreground color: #22e6ff, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected"
+      "message": "axe color-contrast (serious) x4: .connection-status ::   Element has insufficient color contrast of 1.51 (foreground color: #22e6ff, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected"
     },
     {
       "scope": "player/allocation-assigned@phone",
-      "message": "axe color-contrast (serious) x6: .connection-status ::   Element has insufficient color contrast of 1.51 (foreground color: #22e6ff, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected"
+      "message": "axe color-contrast (serious) x4: .connection-status ::   Element has insufficient color contrast of 1.51 (foreground color: #22e6ff, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected"
     },
     {
       "scope": "player/resolved@phone",
@@ -7843,11 +7843,11 @@
       "failedRequests": []
     }
   },
-  "finishedAt": "2026-10-06T00:20:52.491Z",
+  "finishedAt": "2026-10-06T00:42:28.354Z",
   "ok": false,
   "summary": {
     "states": 150,
-    "controlsAudited": 1470,
+    "controlsAudited": 1578,
     "controlIssues": 0,
     "overflowStates": 0,
     "axeHardViolations": 61,

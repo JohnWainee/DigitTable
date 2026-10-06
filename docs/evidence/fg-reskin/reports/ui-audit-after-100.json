@@ -1,7 +1,7 @@
 {
-  "label": "text150",
+  "label": "after",
   "base": "http://127.0.0.1:47173",
-  "startedAt": "2026-10-06T00:13:41.371Z",
+  "startedAt": "2026-10-06T00:30:29.236Z",
   "states": [
     {
       "surface": "anon",
@@ -11,11 +11,7 @@
       "controls": 3,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 54.4
-      },
+      "screenshot": "anon-landing-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -26,12 +22,8 @@
       "controls": 3,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-landing-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -42,11 +34,7 @@
       "controls": 3,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 97.44
-      },
+      "screenshot": "anon-landing-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -57,12 +45,8 @@
       "controls": 3,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-landing-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -71,14 +55,10 @@
       "viewport": "desktop",
       "size": "1280x800",
       "controls": 3,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-landing-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
       "brokenWords": []
     },
     {
@@ -87,13 +67,9 @@
       "viewport": "table",
       "size": "1920x1080",
       "controls": 3,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "anon-landing-table.jpg",
       "brokenWords": []
     },
     {
@@ -104,11 +80,7 @@
       "controls": 4,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 54.4
-      },
+      "screenshot": "anon-create-form-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -119,12 +91,8 @@
       "controls": 4,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-create-form-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -135,11 +103,7 @@
       "controls": 4,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 97.44
-      },
+      "screenshot": "anon-create-form-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -150,12 +114,8 @@
       "controls": 4,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-create-form-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -164,14 +124,10 @@
       "viewport": "desktop",
       "size": "1280x800",
       "controls": 4,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-create-form-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
       "brokenWords": []
     },
     {
@@ -182,11 +138,7 @@
       "controls": 4,
       "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "anon-create-form-table.jpg",
       "brokenWords": []
     },
     {
@@ -197,11 +149,7 @@
       "controls": 5,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 54.4
-      },
+      "screenshot": "anon-join-form-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -212,12 +160,8 @@
       "controls": 5,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-join-form-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -228,11 +172,7 @@
       "controls": 5,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 97.44
-      },
+      "screenshot": "anon-join-form-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -243,12 +183,8 @@
       "controls": 5,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-join-form-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -257,14 +193,10 @@
       "viewport": "desktop",
       "size": "1280x800",
       "controls": 5,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-join-form-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
       "brokenWords": []
     },
     {
@@ -275,11 +207,7 @@
       "controls": 5,
       "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "anon-join-form-table.jpg",
       "brokenWords": []
     },
     {
@@ -290,11 +218,7 @@
       "controls": 3,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 54.4
-      },
+      "screenshot": "anon-table-join-form-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -305,12 +229,8 @@
       "controls": 3,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-table-join-form-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -321,11 +241,7 @@
       "controls": 3,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 97.44
-      },
+      "screenshot": "anon-table-join-form-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -336,12 +252,8 @@
       "controls": 3,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-table-join-form-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -350,14 +262,10 @@
       "viewport": "desktop",
       "size": "1280x800",
       "controls": 3,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-table-join-form-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
       "brokenWords": []
     },
     {
@@ -368,11 +276,7 @@
       "controls": 3,
       "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "anon-table-join-form-table.jpg",
       "brokenWords": []
     },
     {
@@ -383,11 +287,7 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 54.4
-      },
+      "screenshot": "anon-route-claim-no-such-room-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -398,12 +298,8 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-route-claim-no-such-room-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -414,11 +310,7 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 97.44
-      },
+      "screenshot": "anon-route-claim-no-such-room-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -429,11 +321,7 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 92.16
-      },
+      "screenshot": "anon-route-claim-no-such-room-tablet.jpg",
       "brokenWords": []
     },
     {
@@ -444,11 +332,7 @@
       "controls": 1,
       "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "anon-route-claim-no-such-room-desktop.jpg",
       "brokenWords": []
     },
     {
@@ -459,11 +343,7 @@
       "controls": 1,
       "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "anon-route-claim-no-such-room-table.jpg",
       "brokenWords": []
     },
     {
@@ -474,11 +354,7 @@
       "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 54.4
-      },
+      "screenshot": "anon-route-room-no-such-room-gm-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -489,12 +365,8 @@
       "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-route-room-no-such-room-gm-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -505,11 +377,7 @@
       "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 97.44
-      },
+      "screenshot": "anon-route-room-no-such-room-gm-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -520,11 +388,7 @@
       "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 92.16
-      },
+      "screenshot": "anon-route-room-no-such-room-gm-tablet.jpg",
       "brokenWords": []
     },
     {
@@ -535,11 +399,7 @@
       "controls": 2,
       "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "anon-route-room-no-such-room-gm-desktop.jpg",
       "brokenWords": []
     },
     {
@@ -550,11 +410,7 @@
       "controls": 2,
       "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "anon-route-room-no-such-room-gm-table.jpg",
       "brokenWords": []
     },
     {
@@ -565,11 +421,7 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "anon-route-room-no-such-room-player-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -580,12 +432,8 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "anon-route-room-no-such-room-player-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
       "brokenWords": []
     },
     {
@@ -596,11 +444,7 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "anon-route-room-no-such-room-player-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -611,11 +455,7 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "anon-route-room-no-such-room-player-tablet.jpg",
       "brokenWords": []
     },
     {
@@ -626,11 +466,7 @@
       "controls": 1,
       "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "anon-route-room-no-such-room-player-desktop.jpg",
       "brokenWords": []
     },
     {
@@ -641,11 +477,7 @@
       "controls": 1,
       "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "anon-route-room-no-such-room-player-table.jpg",
       "brokenWords": []
     },
     {
@@ -656,11 +488,7 @@
       "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 54.4
-      },
+      "screenshot": "gm-secrets-reveal-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -671,12 +499,8 @@
       "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-secrets-reveal-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -687,11 +511,7 @@
       "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 97.44
-      },
+      "screenshot": "gm-secrets-reveal-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -702,12 +522,8 @@
       "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-secrets-reveal-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -716,14 +532,10 @@
       "viewport": "desktop",
       "size": "1280x800",
       "controls": 2,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-secrets-reveal-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
       "brokenWords": []
     },
     {
@@ -734,11 +546,7 @@
       "controls": 2,
       "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "gm-secrets-reveal-table.jpg",
       "brokenWords": []
     },
     {
@@ -749,11 +557,7 @@
       "controls": 27,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 54.4
-      },
+      "screenshot": "gm-console-empty-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -764,12 +568,8 @@
       "controls": 27,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-console-empty-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -780,11 +580,7 @@
       "controls": 27,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 97.44
-      },
+      "screenshot": "gm-console-empty-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -795,12 +591,8 @@
       "controls": 27,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-console-empty-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -811,12 +603,8 @@
       "controls": 27,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-console-empty-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
       "brokenWords": []
     },
     {
@@ -827,11 +615,7 @@
       "controls": 27,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "gm-console-empty-table.jpg",
       "brokenWords": []
     },
     {
@@ -842,11 +626,7 @@
       "controls": 5,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 54.4
-      },
+      "screenshot": "player-join-filled-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -857,12 +637,8 @@
       "controls": 5,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-join-filled-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -873,11 +649,7 @@
       "controls": 5,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 97.44
-      },
+      "screenshot": "player-join-filled-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -888,12 +660,8 @@
       "controls": 5,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-join-filled-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -902,14 +670,10 @@
       "viewport": "desktop",
       "size": "1280x800",
       "controls": 5,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-join-filled-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
       "brokenWords": []
     },
     {
@@ -920,11 +684,7 @@
       "controls": 5,
       "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "player-join-filled-table.jpg",
       "brokenWords": []
     },
     {
@@ -935,11 +695,7 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 54.4
-      },
+      "screenshot": "player-join-reveal-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -950,12 +706,8 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-join-reveal-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -966,11 +718,7 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 97.44
-      },
+      "screenshot": "player-join-reveal-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -981,12 +729,8 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-join-reveal-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -997,12 +741,8 @@
       "controls": 1,
       "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-join-reveal-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
       "brokenWords": []
     },
     {
@@ -1013,11 +753,7 @@
       "controls": 1,
       "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "player-join-reveal-table.jpg",
       "brokenWords": []
     },
     {
@@ -1028,11 +764,7 @@
       "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 54.4
-      },
+      "screenshot": "player-claim-roster-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -1043,12 +775,8 @@
       "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-claim-roster-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -1059,11 +787,7 @@
       "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 97.44
-      },
+      "screenshot": "player-claim-roster-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -1074,12 +798,8 @@
       "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-claim-roster-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -1090,12 +810,8 @@
       "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-claim-roster-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
       "brokenWords": []
     },
     {
@@ -1106,11 +822,7 @@
       "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "player-claim-roster-table.jpg",
       "brokenWords": []
     },
     {
@@ -1121,11 +833,7 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-compose-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -1136,12 +844,8 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-compose-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
       "brokenWords": []
     },
     {
@@ -1152,11 +856,7 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-compose-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -1167,12 +867,8 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-compose-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
       "brokenWords": []
     },
     {
@@ -1183,12 +879,8 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-compose-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
       "brokenWords": []
     },
     {
@@ -1199,11 +891,7 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-compose-table.jpg",
       "brokenWords": []
     },
     {
@@ -1214,11 +902,7 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-compose-why-open-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -1229,12 +913,8 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-compose-why-open-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
       "brokenWords": []
     },
     {
@@ -1245,11 +925,7 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-compose-why-open-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -1260,11 +936,7 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-compose-why-open-tablet.jpg",
       "brokenWords": []
     },
     {
@@ -1275,11 +947,7 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-compose-why-open-desktop.jpg",
       "brokenWords": []
     },
     {
@@ -1290,11 +958,7 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-compose-why-open-table.jpg",
       "brokenWords": []
     },
     {
@@ -1305,11 +969,7 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": null,
-        "heading": 54.4
-      },
+      "screenshot": "table-idle-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -1320,12 +980,8 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "table-idle-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": null,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -1336,11 +992,7 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": null,
-        "heading": 97.44
-      },
+      "screenshot": "table-idle-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -1351,12 +1003,8 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "table-idle-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": null,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -1367,12 +1015,8 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "table-idle-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": null,
-        "heading": 120
-      },
       "brokenWords": []
     },
     {
@@ -1381,13 +1025,9 @@
       "viewport": "table",
       "size": "1920x1080",
       "controls": 0,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": null,
-        "heading": 120
-      },
+      "screenshot": "table-idle-table.jpg",
       "brokenWords": []
     },
     {
@@ -1398,11 +1038,7 @@
       "controls": 32,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 54.4
-      },
+      "screenshot": "gm-console-scene-loaded-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -1413,12 +1049,8 @@
       "controls": 32,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-console-scene-loaded-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -1429,11 +1061,7 @@
       "controls": 32,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 97.44
-      },
+      "screenshot": "gm-console-scene-loaded-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -1444,12 +1072,8 @@
       "controls": 32,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-console-scene-loaded-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -1460,12 +1084,8 @@
       "controls": 32,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-console-scene-loaded-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
       "brokenWords": []
     },
     {
@@ -1476,11 +1096,7 @@
       "controls": 32,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "gm-console-scene-loaded-table.jpg",
       "brokenWords": []
     },
     {
@@ -1491,11 +1107,7 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-declared-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -1506,12 +1118,8 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-declared-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
       "brokenWords": []
     },
     {
@@ -1522,11 +1130,7 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-declared-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -1537,11 +1141,7 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-declared-tablet.jpg",
       "brokenWords": []
     },
     {
@@ -1552,11 +1152,7 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-declared-desktop.jpg",
       "brokenWords": []
     },
     {
@@ -1567,11 +1163,7 @@
       "controls": 1,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-declared-table.jpg",
       "brokenWords": []
     },
     {
@@ -1582,11 +1174,7 @@
       "controls": 37,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 54.4
-      },
+      "screenshot": "gm-console-pending-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -1597,12 +1185,8 @@
       "controls": 37,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-console-pending-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -1613,11 +1197,7 @@
       "controls": 37,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 97.44
-      },
+      "screenshot": "gm-console-pending-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -1628,12 +1208,8 @@
       "controls": 37,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-console-pending-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -1644,12 +1220,8 @@
       "controls": 37,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-console-pending-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
       "brokenWords": []
     },
     {
@@ -1660,11 +1232,7 @@
       "controls": 37,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "gm-console-pending-table.jpg",
       "brokenWords": []
     },
     {
@@ -1672,14 +1240,10 @@
       "state": "allocation",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-allocation-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -1687,15 +1251,11 @@
       "state": "allocation",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-allocation-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
       "brokenWords": []
     },
     {
@@ -1703,14 +1263,10 @@
       "state": "allocation",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-allocation-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -1718,15 +1274,11 @@
       "state": "allocation",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-allocation-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
       "brokenWords": []
     },
     {
@@ -1734,15 +1286,11 @@
       "state": "allocation",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-allocation-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
       "brokenWords": []
     },
     {
@@ -1750,14 +1298,10 @@
       "state": "allocation",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-allocation-table.jpg",
       "brokenWords": []
     },
     {
@@ -1765,14 +1309,10 @@
       "state": "allocation-assigned",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-allocation-assigned-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -1780,15 +1320,11 @@
       "state": "allocation-assigned",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-allocation-assigned-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
       "brokenWords": []
     },
     {
@@ -1796,14 +1332,10 @@
       "state": "allocation-assigned",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-allocation-assigned-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -1811,14 +1343,10 @@
       "state": "allocation-assigned",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-allocation-assigned-tablet.jpg",
       "brokenWords": []
     },
     {
@@ -1826,14 +1354,10 @@
       "state": "allocation-assigned",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-allocation-assigned-desktop.jpg",
       "brokenWords": []
     },
     {
@@ -1841,14 +1365,10 @@
       "state": "allocation-assigned",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-allocation-assigned-table.jpg",
       "brokenWords": []
     },
     {
@@ -1859,11 +1379,7 @@
       "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-resolved-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -1874,12 +1390,8 @@
       "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-resolved-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
       "brokenWords": []
     },
     {
@@ -1890,11 +1402,7 @@
       "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-resolved-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -1905,12 +1413,8 @@
       "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-resolved-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
       "brokenWords": []
     },
     {
@@ -1921,12 +1425,8 @@
       "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-resolved-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
       "brokenWords": []
     },
     {
@@ -1937,11 +1437,7 @@
       "controls": 2,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-resolved-table.jpg",
       "brokenWords": []
     },
     {
@@ -1952,11 +1448,7 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": null,
-        "heading": 54.4
-      },
+      "screenshot": "table-after-roll-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -1967,12 +1459,8 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "table-after-roll-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": null,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -1983,11 +1471,7 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": null,
-        "heading": 97.44
-      },
+      "screenshot": "table-after-roll-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -1998,12 +1482,8 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "table-after-roll-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": null,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -2014,12 +1494,8 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "table-after-roll-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": null,
-        "heading": 120
-      },
       "brokenWords": []
     },
     {
@@ -2028,13 +1504,9 @@
       "viewport": "table",
       "size": "1920x1080",
       "controls": 0,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": null,
-        "heading": 120
-      },
+      "screenshot": "table-after-roll-table.jpg",
       "brokenWords": []
     },
     {
@@ -2045,11 +1517,7 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-paused-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -2060,12 +1528,8 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "player-paused-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
       "brokenWords": []
     },
     {
@@ -2076,11 +1540,7 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-paused-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -2091,11 +1551,7 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-paused-tablet.jpg",
       "brokenWords": []
     },
     {
@@ -2106,11 +1562,7 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-paused-desktop.jpg",
       "brokenWords": []
     },
     {
@@ -2121,11 +1573,7 @@
       "controls": 20,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 30
-      },
+      "screenshot": "player-paused-table.jpg",
       "brokenWords": []
     },
     {
@@ -2136,11 +1584,7 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": null,
-        "heading": 54.4
-      },
+      "screenshot": "table-next-scene-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -2151,12 +1595,8 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "table-next-scene-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": null,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -2167,11 +1607,7 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": null,
-        "heading": 97.44
-      },
+      "screenshot": "table-next-scene-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -2182,12 +1618,8 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "table-next-scene-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": null,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -2198,12 +1630,8 @@
       "controls": 0,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "table-next-scene-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": null,
-        "heading": 120
-      },
       "brokenWords": []
     },
     {
@@ -2212,13 +1640,9 @@
       "viewport": "table",
       "size": "1920x1080",
       "controls": 0,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": null,
-        "heading": 120
-      },
+      "screenshot": "table-next-scene-table.jpg",
       "brokenWords": []
     },
     {
@@ -2229,11 +1653,7 @@
       "controls": 33,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 54.4
-      },
+      "screenshot": "gm-console-next-scene-phone-small.jpg",
       "brokenWords": []
     },
     {
@@ -2244,12 +1664,8 @@
       "controls": 33,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-console-next-scene-phone.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 62.4
-      },
       "brokenWords": []
     },
     {
@@ -2260,11 +1676,7 @@
       "controls": 33,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 97.44
-      },
+      "screenshot": "gm-console-next-scene-phone-landscape.jpg",
       "brokenWords": []
     },
     {
@@ -2275,12 +1687,8 @@
       "controls": 33,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-console-next-scene-tablet.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 92.16
-      },
       "brokenWords": []
     },
     {
@@ -2291,12 +1699,8 @@
       "controls": 33,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
+      "screenshot": "gm-console-next-scene-desktop.jpg",
       "axe": [],
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
       "brokenWords": []
     },
     {
@@ -2307,11 +1711,7 @@
       "controls": 33,
       "overflowPx": 0,
       "controlIssues": [],
-      "screenshot": null,
-      "fontGrowth": {
-        "button": 30,
-        "heading": 114
-      },
+      "screenshot": "gm-console-next-scene-table.jpg",
       "brokenWords": []
     }
   ],
@@ -2418,7 +1818,7 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
-      "screenshot": null,
+      "screenshot": "gm-correction-sheet-phone-small.jpg",
       "keyboard": {
         "size": "320x312",
         "checks": {
@@ -2428,7 +1828,7 @@
           "actionsVisible": true
         },
         "compact": false,
-        "screenshot": null
+        "screenshot": "gm-correction-keyboard-phone-small.jpg"
       },
       "afterClose": {
         "focusOnTrigger": true,
@@ -2538,7 +1938,7 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
-      "screenshot": null,
+      "screenshot": "gm-correction-sheet-phone.jpg",
       "keyboard": {
         "size": "375x447",
         "checks": {
@@ -2548,7 +1948,7 @@
           "actionsVisible": true
         },
         "compact": false,
-        "screenshot": null
+        "screenshot": "gm-correction-keyboard-phone.jpg"
       },
       "afterClose": {
         "focusOnTrigger": true,
@@ -2658,7 +2058,7 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
-      "screenshot": null,
+      "screenshot": "gm-correction-sheet-phone-landscape.jpg",
       "keyboard": {
         "size": "812x206",
         "checks": {
@@ -2669,7 +2069,7 @@
           "actionsReachableByScrollingSheet": true
         },
         "compact": true,
-        "screenshot": null
+        "screenshot": "gm-correction-keyboard-phone-landscape.jpg"
       },
       "afterClose": {
         "focusOnTrigger": true,
@@ -2779,7 +2179,7 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
-      "screenshot": null,
+      "screenshot": "gm-correction-sheet-phone-667x375.jpg",
       "keyboard": {
         "size": "667x206",
         "checks": {
@@ -2790,7 +2190,7 @@
           "actionsReachableByScrollingSheet": true
         },
         "compact": true,
-        "screenshot": null
+        "screenshot": "gm-correction-keyboard-phone-667x375.jpg"
       },
       "afterClose": {
         "focusOnTrigger": true,
@@ -2900,7 +2300,7 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
-      "screenshot": null,
+      "screenshot": "gm-correction-sheet-tablet.jpg",
       "keyboard": {
         "size": "768x563",
         "checks": {
@@ -2910,7 +2310,7 @@
           "actionsVisible": true
         },
         "compact": false,
-        "screenshot": null
+        "screenshot": "gm-correction-keyboard-tablet.jpg"
       },
       "afterClose": {
         "focusOnTrigger": true,
@@ -3020,7 +2420,7 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
-      "screenshot": null,
+      "screenshot": "gm-correction-sheet-desktop.jpg",
       "afterClose": {
         "focusOnTrigger": true,
         "anyInert": false,
@@ -3142,7 +2542,7 @@
       "notes": [],
       "after": {
         "dialogOpen": false,
-        "hash": "#/room/8f96221c-22cb-4a16-b8c7-c278a6ac98f9/gm",
+        "hash": "#/room/2489b842-6be3-49aa-8f96-8dd2cd5090f6/gm",
         "anyInert": false,
         "rootLocked": false,
         "consoleStillShown": true
@@ -3158,7 +2558,7 @@
       },
       "notes": [],
       "scaleBefore": 1,
-      "scaleAfter": 1.9999996423721313,
+      "scaleAfter": 1.9999998807907104,
       "informationalChecks": []
     },
     {
@@ -3263,7 +2663,7 @@
       },
       "footerPaddingBottom": 29,
       "sheetWidth": 573,
-      "screenshot": null,
+      "screenshot": "gm-correction-safe-area-landscape-constrained.jpg",
       "informationalChecks": []
     },
     {
@@ -3368,7 +2768,7 @@
       },
       "footerPaddingBottom": 29,
       "sheetWidth": 640,
-      "screenshot": null,
+      "screenshot": "gm-correction-safe-area-landscape-812.jpg",
       "informationalChecks": []
     },
     {
@@ -3471,7 +2871,7 @@
         "activeIsInside": true
       },
       "footerPaddingBottom": 46,
-      "screenshot": null,
+      "screenshot": "gm-correction-safe-area-portrait.jpg",
       "informationalChecks": []
     },
     {
@@ -3576,7 +2976,7 @@
         "activeIsInside": true
       },
       "textPx": 24,
-      "screenshot": null,
+      "screenshot": "gm-correction-text-150-phone-small.jpg",
       "informationalChecks": []
     },
     {
@@ -3681,7 +3081,7 @@
         "activeIsInside": true
       },
       "textPx": 32,
-      "screenshot": null,
+      "screenshot": "gm-correction-text-200-phone.jpg",
       "informationalChecks": []
     },
     {
@@ -3786,7 +3186,7 @@
         "activeIsInside": true
       },
       "textPx": 32,
-      "screenshot": null,
+      "screenshot": "gm-correction-text-200-phone-small.jpg",
       "informationalChecks": [
         "dialogInsideViewport",
         "noPageOverflow"
@@ -3894,7 +3294,7 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
-      "screenshot": null,
+      "screenshot": "gm-correction-tight-keyboard-phone-667x375.jpg",
       "informationalChecks": []
     },
     {
@@ -3999,7 +3399,7 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
-      "screenshot": null,
+      "screenshot": "gm-correction-tight-keyboard-phone-landscape.jpg",
       "informationalChecks": []
     },
     {
@@ -6070,7 +5470,7 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
-      "screenshot": null,
+      "screenshot": "gm-correction-medium-keyboard-ipad-landscape.jpg",
       "informationalChecks": []
     },
     {
@@ -6625,11 +6025,11 @@
       "failedRequests": []
     }
   },
-  "finishedAt": "2026-10-06T00:16:05.412Z",
+  "finishedAt": "2026-10-06T00:35:16.631Z",
   "ok": true,
   "summary": {
     "states": 150,
-    "controlsAudited": 1422,
+    "controlsAudited": 1470,
     "controlIssues": 0,
     "overflowStates": 0,
     "axeHardViolations": 0,

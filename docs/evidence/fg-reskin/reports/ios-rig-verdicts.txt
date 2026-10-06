@@ -1,0 +1,26 @@
+# iOS rig verdicts (xcodebuild Test Case lines)
+
+## BEFORE (4a91dd2 bundle, new iPad assertions added to the rig)
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:260: error: -[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker] : XCTAssertLessThanOrEqual failed: ("210.0") is greater than ("209.5") - landscape + keyboard: the field ((264.0, 153.0, 605.0, 49.0)) is flush against the action row ((264.0, 209.0, 297.0, 50.0)); its border is clipped
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' failed (65.108 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (70.087 seconds).
+
+## AFTER (final source)
+-- iphone-17-pro
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testBackClosesOnlyTheSheet]' passed (46.370 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (70.903 seconds).
+-- ipad-mini-a17-pro
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:357: error: -[IosPlaytestUITests.SafariFlowUITests testBackClosesOnlyTheSheet] : XCTAssertFalse failed - the sheet closed
+scripts/playtest/ios-simulator/UITests/SafariFlowUITests.swift:359: error: -[IosPlaytestUITests.SafariFlowUITests testBackClosesOnlyTheSheet] : XCTAssertTrue failed - the director console is still mounted: Back must not leave the route
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testBackClosesOnlyTheSheet]' failed (54.872 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (95.636 seconds).
+
+## FIRST rig run on the 4a91dd2 bundle (all four tests, before any change)
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testBackClosesOnlyTheSheet]' passed (76.324 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (98.982 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' failed (16.974 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari]' failed (156.021 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testBackClosesOnlyTheSheet]' failed (54.815 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (64.370 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' failed (20.705 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testSignedInDockInRealSafari]' failed (129.959 seconds).

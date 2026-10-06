@@ -1,7 +1,7 @@
 {
-  "label": "text200",
+  "label": "text150",
   "base": "http://127.0.0.1:47173",
-  "startedAt": "2026-10-06T00:16:05.486Z",
+  "startedAt": "2026-10-06T00:35:16.791Z",
   "states": [
     {
       "surface": "anon",
@@ -13,7 +13,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
+        "button": 30,
         "heading": 54.4
       },
       "brokenWords": []
@@ -29,8 +29,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 63.75
+        "button": 30,
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -44,7 +44,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 97.44
       },
       "brokenWords": []
@@ -60,7 +60,7 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 92.16
       },
       "brokenWords": []
@@ -76,8 +76,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 151.8
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -91,8 +91,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 152
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -106,7 +106,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
+        "button": 30,
         "heading": 54.4
       },
       "brokenWords": []
@@ -122,8 +122,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 63.75
+        "button": 30,
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -137,7 +137,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 97.44
       },
       "brokenWords": []
@@ -153,7 +153,7 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 92.16
       },
       "brokenWords": []
@@ -169,8 +169,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 151.8
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -180,12 +180,12 @@
       "viewport": "table",
       "size": "1920x1080",
       "controls": 4,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 152
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -199,7 +199,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
+        "button": 30,
         "heading": 54.4
       },
       "brokenWords": []
@@ -215,8 +215,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 63.75
+        "button": 30,
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -230,7 +230,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 97.44
       },
       "brokenWords": []
@@ -246,7 +246,7 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 92.16
       },
       "brokenWords": []
@@ -262,8 +262,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 151.8
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -273,12 +273,12 @@
       "viewport": "table",
       "size": "1920x1080",
       "controls": 5,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 152
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -292,7 +292,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
+        "button": 30,
         "heading": 54.4
       },
       "brokenWords": []
@@ -308,8 +308,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 63.75
+        "button": 30,
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -323,7 +323,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 97.44
       },
       "brokenWords": []
@@ -339,7 +339,7 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 92.16
       },
       "brokenWords": []
@@ -355,8 +355,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 151.8
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -366,12 +366,12 @@
       "viewport": "table",
       "size": "1920x1080",
       "controls": 3,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 152
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -385,7 +385,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
+        "button": 30,
         "heading": 54.4
       },
       "brokenWords": []
@@ -401,8 +401,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 63.75
+        "button": 30,
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -416,7 +416,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 97.44
       },
       "brokenWords": []
@@ -431,7 +431,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 92.16
       },
       "brokenWords": []
@@ -442,12 +442,12 @@
       "viewport": "desktop",
       "size": "1280x800",
       "controls": 1,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 151.8
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -461,8 +461,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 152
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -476,7 +476,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
+        "button": 30,
         "heading": 54.4
       },
       "brokenWords": []
@@ -492,8 +492,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 63.75
+        "button": 30,
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -507,7 +507,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 97.44
       },
       "brokenWords": []
@@ -522,7 +522,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 92.16
       },
       "brokenWords": []
@@ -537,8 +537,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 151.8
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -552,8 +552,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 152
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -567,8 +567,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -583,8 +583,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -598,8 +598,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -613,8 +613,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -628,8 +628,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -643,8 +643,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -658,7 +658,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
+        "button": 30,
         "heading": 54.4
       },
       "brokenWords": []
@@ -674,8 +674,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 63.75
+        "button": 30,
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -689,7 +689,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 97.44
       },
       "brokenWords": []
@@ -705,7 +705,7 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 92.16
       },
       "brokenWords": []
@@ -721,8 +721,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 151.8
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -732,12 +732,12 @@
       "viewport": "table",
       "size": "1920x1080",
       "controls": 2,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 152
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -751,7 +751,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
+        "button": 30,
         "heading": 54.4
       },
       "brokenWords": []
@@ -767,8 +767,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 63.75
+        "button": 30,
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -782,7 +782,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 97.44
       },
       "brokenWords": []
@@ -798,7 +798,7 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 92.16
       },
       "brokenWords": []
@@ -814,8 +814,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 151.8
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -829,8 +829,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 152
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -844,7 +844,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
+        "button": 30,
         "heading": 54.4
       },
       "brokenWords": []
@@ -860,8 +860,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 63.75
+        "button": 30,
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -875,7 +875,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 97.44
       },
       "brokenWords": []
@@ -891,7 +891,7 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 92.16
       },
       "brokenWords": []
@@ -907,8 +907,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 151.8
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -918,12 +918,12 @@
       "viewport": "table",
       "size": "1920x1080",
       "controls": 5,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 152
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -937,7 +937,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
+        "button": 30,
         "heading": 54.4
       },
       "brokenWords": []
@@ -953,8 +953,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 63.75
+        "button": 30,
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -968,7 +968,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 97.44
       },
       "brokenWords": []
@@ -984,7 +984,7 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 92.16
       },
       "brokenWords": []
@@ -995,13 +995,13 @@
       "viewport": "desktop",
       "size": "1280x800",
       "controls": 1,
-      "overflowPx": 0,
+      "overflowPx": -15,
       "controlIssues": [],
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 151.8
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -1015,8 +1015,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 152
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -1030,7 +1030,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
+        "button": 30,
         "heading": 54.4
       },
       "brokenWords": []
@@ -1046,8 +1046,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 63.75
+        "button": 30,
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -1061,7 +1061,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 97.44
       },
       "brokenWords": []
@@ -1077,7 +1077,7 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 92.16
       },
       "brokenWords": []
@@ -1093,8 +1093,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 151.8
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -1108,8 +1108,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 152
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -1123,8 +1123,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1139,8 +1139,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1154,8 +1154,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1170,8 +1170,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1186,8 +1186,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1201,8 +1201,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1216,8 +1216,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1232,8 +1232,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1247,8 +1247,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1262,8 +1262,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1277,8 +1277,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1292,8 +1292,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1324,7 +1324,7 @@
       "axe": [],
       "fontGrowth": {
         "button": null,
-        "heading": 63.75
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -1371,7 +1371,7 @@
       "axe": [],
       "fontGrowth": {
         "button": null,
-        "heading": 160
+        "heading": 120
       },
       "brokenWords": []
     },
@@ -1386,7 +1386,7 @@
       "screenshot": null,
       "fontGrowth": {
         "button": null,
-        "heading": 160
+        "heading": 120
       },
       "brokenWords": []
     },
@@ -1400,7 +1400,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
+        "button": 30,
         "heading": 54.4
       },
       "brokenWords": []
@@ -1416,8 +1416,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 63.75
+        "button": 30,
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -1431,7 +1431,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 97.44
       },
       "brokenWords": []
@@ -1447,7 +1447,7 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 92.16
       },
       "brokenWords": []
@@ -1463,8 +1463,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 151.8
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -1478,8 +1478,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 152
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -1493,8 +1493,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1509,8 +1509,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1524,8 +1524,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1539,8 +1539,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1554,8 +1554,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1569,8 +1569,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1584,7 +1584,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
+        "button": 30,
         "heading": 54.4
       },
       "brokenWords": []
@@ -1600,8 +1600,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 63.75
+        "button": 30,
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -1615,7 +1615,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 97.44
       },
       "brokenWords": []
@@ -1631,7 +1631,7 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 92.16
       },
       "brokenWords": []
@@ -1647,8 +1647,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 151.8
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -1662,8 +1662,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 152
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -1677,8 +1677,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1693,8 +1693,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1708,8 +1708,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1724,8 +1724,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1740,8 +1740,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1755,8 +1755,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1770,8 +1770,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1786,8 +1786,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1801,8 +1801,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1816,8 +1816,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1831,8 +1831,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1846,8 +1846,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1861,8 +1861,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1877,8 +1877,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1892,8 +1892,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1908,8 +1908,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1924,8 +1924,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1939,8 +1939,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -1971,7 +1971,7 @@
       "axe": [],
       "fontGrowth": {
         "button": null,
-        "heading": 63.75
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -2018,7 +2018,7 @@
       "axe": [],
       "fontGrowth": {
         "button": null,
-        "heading": 160
+        "heading": 120
       },
       "brokenWords": []
     },
@@ -2033,7 +2033,7 @@
       "screenshot": null,
       "fontGrowth": {
         "button": null,
-        "heading": 160
+        "heading": 120
       },
       "brokenWords": []
     },
@@ -2047,8 +2047,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -2063,8 +2063,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -2078,8 +2078,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -2093,8 +2093,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -2108,8 +2108,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -2123,8 +2123,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 40
+        "button": 30,
+        "heading": 30
       },
       "brokenWords": []
     },
@@ -2155,7 +2155,7 @@
       "axe": [],
       "fontGrowth": {
         "button": null,
-        "heading": 63.75
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -2202,7 +2202,7 @@
       "axe": [],
       "fontGrowth": {
         "button": null,
-        "heading": 160
+        "heading": 120
       },
       "brokenWords": []
     },
@@ -2217,7 +2217,7 @@
       "screenshot": null,
       "fontGrowth": {
         "button": null,
-        "heading": 160
+        "heading": 120
       },
       "brokenWords": []
     },
@@ -2231,7 +2231,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 32,
+        "button": 30,
         "heading": 54.4
       },
       "brokenWords": []
@@ -2247,8 +2247,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 37.5,
-        "heading": 63.75
+        "button": 30,
+        "heading": 62.4
       },
       "brokenWords": []
     },
@@ -2262,7 +2262,7 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 97.44
       },
       "brokenWords": []
@@ -2278,7 +2278,7 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
+        "button": 30,
         "heading": 92.16
       },
       "brokenWords": []
@@ -2294,8 +2294,8 @@
       "screenshot": null,
       "axe": [],
       "fontGrowth": {
-        "button": 40,
-        "heading": 151.8
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     },
@@ -2309,8 +2309,8 @@
       "controlIssues": [],
       "screenshot": null,
       "fontGrowth": {
-        "button": 40,
-        "heading": 152
+        "button": 30,
+        "heading": 114
       },
       "brokenWords": []
     }
@@ -3142,7 +3142,7 @@
       "notes": [],
       "after": {
         "dialogOpen": false,
-        "hash": "#/room/922797d9-b28e-41d6-b815-47ade52934c2/gm",
+        "hash": "#/room/8205a74a-4180-45e1-a3f0-1dd7eb680fbd/gm",
         "anyInert": false,
         "rootLocked": false,
         "consoleStillShown": true
@@ -3158,7 +3158,7 @@
       },
       "notes": [],
       "scaleBefore": 1,
-      "scaleAfter": 2.0000007152557373,
+      "scaleAfter": 2.000000238418579,
       "informationalChecks": []
     },
     {
@@ -6625,7 +6625,7 @@
       "failedRequests": []
     }
   },
-  "finishedAt": "2026-10-06T00:18:29.127Z",
+  "finishedAt": "2026-10-06T00:37:41.185Z",
   "ok": true,
   "summary": {
     "states": 150,
