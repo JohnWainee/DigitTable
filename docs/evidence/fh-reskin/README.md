@@ -23,3 +23,9 @@ The automated Chrome audit drives phone (375×812 and 320×568), tablet (768×10
 | Final after | 150 | 0 |
 
 The current probe intentionally omits a text-field check because this component has no text-entry control, and scopes containment to the horizontal axis. `baseline-current/` and `final/` contain comparable phone, tablet, desktop, and table screenshots at 100% and 200% text. The raw JSON reports are deterministic audit output; no room code, account, or player data is present.
+
+## Second-pass additions (lane `sonnet-fh`)
+
+- After the Reveal-row correction (see the review file) the same probe re-ran: 150 checks, 0 failures; final screenshots refreshed.
+- Emulator suites in a port-remapped APFS clone: 18 + 86 + 4 passed. Local `two-device-smoke.mjs --reload` against that build: 17/17 steps passed.
+- **Not completed:** the whole-app `ui-audit.mjs` sweep stalled (no emulator traffic for 25 minutes at the GM flow, killed) on this machine, so no all-control audit was recorded for this change; the parent `sonnet-fg` audits remain the all-control evidence. The probe does not exercise the GM "Reveal" row in a browser; it is protected by the restored (unchanged) CSS rules and a contract test. Real Safari, physical devices and screen readers were not exercised.

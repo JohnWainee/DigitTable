@@ -706,6 +706,23 @@ input[type="radio"]:disabled {
   flex-direction: row;
 }
 
+/* A plain row that carries its own action (the GM's "Reveal" next to a threat name): the text takes
+   the space and the button drops below it when the row is too narrow (large text, small phone)
+   instead of being squeezed until its word breaks. */
+.gear-option:has(> button) {
+  flex-wrap: wrap;
+}
+
+.gear-option > span {
+  flex: 1 1 8rem;
+  min-width: 0;
+}
+
+.gear-option > button {
+  flex: 0 0 auto;
+  max-width: 100%;
+}
+
 /* An option row that carries its own action ("Mark and regain Blood"): a `.gear-option--row`
    wrapper holds the checkbox label and the button as siblings (a button inside a label is a
    nested-interactive). The label takes the space beside the edge and the button drops to its own
@@ -740,6 +757,10 @@ input[type="radio"]:disabled {
 .gear-option--row > .gear-option-action {
   flex: 1 1 100%;
   margin-left: min(calc(1.65rem + 0.85rem), 9vw);
+}
+
+.gear-option--row:has(:disabled) {
+  cursor: default;
 }
 
 .gear-option--row:has(:disabled) > .gear-option-label {

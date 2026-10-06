@@ -302,6 +302,10 @@ describe("reskin stylesheet contract", () => {
     });
 
     it("never squeezes an option row's own action: the row wraps and the button keeps its width", () => {
+      // A plain row with a button (the GM's "Reveal") keeps the generic wrap/no-squeeze rules.
+      expect(rulesFor(/^\.gear-option:has\(> button\)/s).join()).toMatch(/flex-wrap:\s*wrap/);
+      expect(declaration(rulesFor(/^\.gear-option > button$/), "flex")).toContain("0 0 auto");
+      expect(declaration(rulesFor(/^\.gear-option > span$/), "min-width")).toContain("0");
       // The action is a sibling of the checkbox label (never nested in it), inside `.gear-option--row`.
       expect(declaration(rulesFor(/^\.gear-option--row$/), "flex-wrap")).toContain("wrap");
       expect(declaration(rulesFor(/^\.gear-option--row > button$/), "flex")).toContain("0 0 auto");
