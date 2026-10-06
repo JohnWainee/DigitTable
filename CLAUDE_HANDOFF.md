@@ -3,7 +3,7 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-10-06 by Codex on `codex/reskin-fi-integration-20261006`: integrated and independently revalidated the short-visible-height correction-sheet fix as `957b40c`; reran all required local gates and a deployed staging smoke at 14:23Z. No merge to `main` or deployment was made.
+- **Last updated:** 2026-10-06 by Codex on `codex/reskin-uiux-followup-20261006`: independently reran the deployed staging smoke at 15:16Z after the named Sonnet session's control socket was unavailable. No merge to `main` or deployment was made. A fresh Sonnet lane could not be launched because `claude auth status` reports `loggedIn: false`.
 
 ## Latest automation verification (2026-10-06, `957b40c`)
 
@@ -32,6 +32,32 @@ height.
 No main merge, deployment, production resource, secret exposure, or architecture/privacy change
 occurred. Claude OAuth is currently unavailable; no fresh Sonnet lane was started. Physical iOS/
 Android keyboard and assistive-technology evidence remains the release gap.
+
+## Automation staging-playthrough rerun (2026-10-06)
+
+The historical `digitable-staging-playthrough` session can no longer be read: its control socket
+at `/tmp/cc-daemon-501/e88de350/control.sock` refuses connections. This run therefore did not infer
+completion from the missing process. It ran the deployed smoke directly instead:
+
+```sh
+node scripts/playtest/two-device-smoke.mjs \
+  --base https://digitable.signal-bleed.com \
+  --out /private/tmp/digitable-staging-playthrough-20261006-hourly-1420 \
+  --reload --no-images --port 9596
+```
+
+The run completed from 2026-10-06T15:16:03Z to 2026-10-06T15:16:48Z with **17/17** GM/player/table
+steps passing: fresh room creation, player/table admission, claim, declaration, opposition,
+allocation, pause/resume, scene advancement, direct resume, reload recovery, and the
+375/768/1024/1280/1920px overflow sweep. All three browser contexts reported zero console errors;
+the responsive-overflow probe reported no positive overflow. `--no-images` deliberately blocked
+the original-art network requests, so those entries are expected. The raw report remains outside
+Git because it contains an ephemeral room code:
+`/private/tmp/digitable-staging-playthrough-20261006-hourly-1420/report.json`.
+
+This is fresh evidence for the already deployed build only. It neither validates the unmerged
+reskin candidate nor changes deployment. Claude OAuth remains unavailable (`loggedIn: false`), so
+this branch is an isolated handoff/evidence continuation rather than a newly launched Sonnet lane.
 
 ## Short-visible-height sheet fix (2026-10-06, sonnet-fp) — integrated from `7595ce7`
 
