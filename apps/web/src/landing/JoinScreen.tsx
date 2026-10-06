@@ -17,6 +17,7 @@ import type { RoomAdmissionAccepted, SessionRequestState } from "@digitable/cont
 import { LiveRegion } from "../accessibility/LiveRegion.js";
 import { newUuid } from "../shared/uuid.js";
 import { resumeRoute } from "./resumeRoute.js";
+import { CODE_TEXT, SECRET_TEXT } from "../shared/textEntry.js";
 
 type JoinMode = "join" | "recover";
 
@@ -112,7 +113,7 @@ export function JoinScreen(): JSX.Element {
                 id="recover-room-code"
                 type="text"
                 required
-                autoCapitalize="characters"
+                {...CODE_TEXT}
                 pattern="[A-Za-z0-9-]+"
                 value={recoveryRoomCode}
                 onChange={(event) => setRecoveryRoomCode(event.target.value)}
@@ -124,7 +125,7 @@ export function JoinScreen(): JSX.Element {
                 id="recovery-code"
                 type="text"
                 required
-                autoComplete="off"
+                {...CODE_TEXT}
                 value={recoveryCode}
                 onChange={(event) => setRecoveryCode(event.target.value)}
               />
@@ -212,7 +213,7 @@ export function JoinScreen(): JSX.Element {
               id="room-code"
               type="text"
               required
-              autoCapitalize="characters"
+              {...CODE_TEXT}
               pattern="[A-Za-z0-9-]+"
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value)}
@@ -224,7 +225,7 @@ export function JoinScreen(): JSX.Element {
               id="join-passphrase"
               type="text"
               required
-              autoComplete="off"
+              {...SECRET_TEXT}
               value={passphrase}
               onChange={(e) => setPassphrase(e.target.value)}
             />

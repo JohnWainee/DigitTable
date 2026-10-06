@@ -1,0 +1,3 @@
+room code captured: yes
+Item id: keyboard opened shifted=true (expected false); tapped "cowboyhat": value is "Cowboyhat" (expected "cowboyhat")
+New member id (blank to unassign): keyboard opened shifted=true (expected false); tapped "teh member": value is "Teh member" (expected "teh member")

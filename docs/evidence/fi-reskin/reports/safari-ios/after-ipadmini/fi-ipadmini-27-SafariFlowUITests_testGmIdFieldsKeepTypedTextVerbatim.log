@@ -1,0 +1,5 @@
+room code captured: yes
+Item id after focus: frame=(49.0, 402.774169921875, 646.0, 49.049072265625) screen=(0.0, 0.0, 744.0, 1133.0) keyboardTop=848.0 inScreen=true aboveKeyboard=true hittable=true
+Item id: keyboard opened shifted=false (expected false); tapped "cowboyhat": value is "cowboyhat" (expected "cowboyhat")
+New member id (blank to unassign) after focus: frame=(49.0, 403.84423828125, 646.0, 49.048828125) screen=(0.0, 0.0, 744.0, 1133.0) keyboardTop=848.0 inScreen=true aboveKeyboard=true hittable=true
+New member id (blank to unassign): keyboard opened shifted=false (expected false); tapped "teh member": value is "teh member" (expected "teh member")

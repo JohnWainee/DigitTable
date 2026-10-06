@@ -3,7 +3,17 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-25 by Codex after integrating the fifth independent mobile pop-out review and reproducing the full local gate; no product source or deployment changed (see "Fifth independent review of the mobile pop-out defect" below).
+- **Last updated:** 2026-10-06 by Codex on `codex/reskin-fi-integration-20261006`; no merge or deployment was made.
+
+## Text-entry-hint integration candidate (2026-10-06) — unmerged, emulator follow-up required
+
+This isolated branch applies the focused exact-text-entry change from reviewed source commit `c5ec6b0` to `factory/today-integration` (`e7efe29`): secret/passphrase fields disable iOS prose correction and capitalization; room/table/recovery codes request uppercase without correction; GM item/member IDs disable prose rewriting. It does not alter submit handlers, server verification, engine, projection, authorization, privacy, or stored values.
+
+- Exact integration checks: `TextEntryHints.test.tsx` **6/6**, then `npm run check` passed format, lint, typecheck, and **698 tests** (11 todo); `npm run build` passed with the existing non-blocking large-chunk advisory.
+- The complete `sonnet-fi` source lane remains independently reviewed and pushed at `c5ec6b0`; [`docs/evidence/fi-reskin/`](docs/evidence/fi-reskin/README.md) now explicitly labels its iOS/browser screenshots and 18 + 86 + 4 emulator result as source-lane evidence. This integration has no iOS simulator rig, so those Safari results are not claimed as rerun here.
+- The fresh integration emulator attempt started and passed the **18** rules tests, but the Functions portion repeatedly hit the known local Firestore transaction-lock timeout (including a single-worker retry); no Functions, rules, contracts, or engine code changed. A new independent review found no P0/P1 code issue and required the evidence/handoff distinction now recorded in [`docs/reviews/2026-10-06-fi-integration-independent-review.md`](docs/reviews/2026-10-06-fi-integration-independent-review.md).
+
+**Next action:** Rerun the full emulator suite in a clean/remapped local environment, then capture integration-specific browser/device evidence before considering this branch for deployment. Do not merge or deploy without John’s direction.
 
 ## Mission
 
