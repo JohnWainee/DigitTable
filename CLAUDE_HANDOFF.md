@@ -3,7 +3,36 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-10-06 by sonnet-fo on `sonnet-fo/reskin-orchestrated-20261006` (option-row fix on top of `6f5896e`, below); earlier the same day by Codex on `codex/reskin-fi-integration-20261006`; the reviewed Back-dismiss fix remains at `2cad086`, and the deployed-staging smoke was independently rerun at 11:12Z. No merge to `main` or deployment was made.
+- **Last updated:** 2026-10-06 by Codex on `codex/reskin-fi-integration-20261006`: fast-forwarded the independently reviewed option-row fix `875b69b`, reran all required local gates, and reran the deployed staging smoke at 12:15Z. No merge to `main` or deployment was made.
+
+## Automation integration follow-up (2026-10-06, `875b69b`)
+
+The named `digitable-staging-playthrough` Sonnet session was absent from the Claude roster and its
+control socket was unavailable, so no outcome was inferred from process state. Its completed,
+pushed worktree was instead inspected directly: `875b69b` is a presentation-only option-row fix
+on top of `6f5896e`, with before/after 320/375/768/1280/1920px crops, a regression suite, and the
+independent review at
+[`docs/reviews/2026-10-06-fo-option-rows-independent-review.md`](docs/reviews/2026-10-06-fo-option-rows-independent-review.md).
+The integration branch fast-forwarded to that exact commit; no sibling lane was merged.
+
+- `npm run check` — format, lint, all workspace typechecks, and **710 tests passed | 11 todo**.
+- `npm run build` — passed; the existing Vite >500kB chunk advisory remains non-blocking.
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — passed: **18** testing,
+  **86** Functions, and **4** web emulator tests.
+- Deployed smoke at `https://digitable.signal-bleed.com` from 2026-10-06T12:15:11Z to
+  12:15:56Z — **17/17** GM/player/table steps passed, including fresh session creation,
+  admission, action resolution, pause/resume, scene advancement, reload recovery, and the
+  375/768/1024/1280/1920px overflow sweep (**0** overflow states, **0** console errors). The
+  run used `--no-images`, so its 5/44/17 recorded failed requests on GM/player/table are the
+  deliberately blocked image loads, not application failures. Raw report with the ephemeral room
+  code remains outside Git at
+  `/private/tmp/digitable-staging-playthrough-20261006-hourly-1200/report.json`.
+
+Claude CLI authentication is currently unavailable (`claude auth status`: `loggedIn: false`), so a
+fresh Sonnet worktree was not claimed or credited. DeepSeek and Qwen lanes remain clean and
+unchanged. Remaining release evidence is physical iOS/Android and assistive-technology testing;
+do not treat a headless-Chrome pass as that evidence, and do not merge or deploy without John's
+authorization.
 
 ## Option rows with an action (2026-10-06, sonnet-fo) — unmerged, on `6f5896e`
 
