@@ -1,0 +1,3 @@
+(node:99324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+FAIL A. Back with the sheet open closes only the sheet (same route, console still mounted, no hashchange) {"afterA":{"hash":"#/create","dialog":false,"console":false,"reason":null},"hashChanges":1}

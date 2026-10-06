@@ -3,7 +3,7 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-10-06 by Codex on `codex/reskin-fi-integration-20261006`; no merge or deployment was made.
+- **Last updated:** 2026-10-06 by Claude (lane sonnet-fj) on top of the Codex fi integration candidate; no merge or deployment was made.
 
 ## Text-entry-hint integration candidate (2026-10-06) — unmerged, emulator follow-up required
 
@@ -14,6 +14,16 @@ This isolated branch applies the focused exact-text-entry change from reviewed s
 - The fresh integration emulator attempt started and passed the **18** rules tests, but the Functions portion repeatedly hit the known local Firestore transaction-lock timeout (including a single-worker retry); no Functions, rules, contracts, or engine code changed. A new independent review found no P0/P1 code issue and required the evidence/handoff distinction now recorded in [`docs/reviews/2026-10-06-fi-integration-independent-review.md`](docs/reviews/2026-10-06-fi-integration-independent-review.md).
 
 **Next action:** Rerun the full emulator suite in a clean/remapped local environment, then capture integration-specific browser/device evidence before considering this branch for deployment. Do not merge or deploy without John’s direction.
+
+## Integration-candidate audit and missing-fix finding (2026-10-06, lane `sonnet-fj`) — docs/evidence only
+
+Branch `worktree-digitable-sonnet-fj-reskin-hourly-20261006` (`45770b1` plus this docs commit). No source change. Full record: [`docs/evidence/fj-reskin/README.md`](docs/evidence/fj-reskin/README.md).
+
+- **Emulator gap closed:** `npm run test:emulator` on free default loopback ports passed **18 + 86 + 4, exit 0**, no lock timeouts (the earlier failure was environmental). `npm run check` **698 passed / 11 todo**; `npm run build` passes; `ui-audit.mjs` 150 states / 1,434 controls, 0 control, overflow or hard axe issues (one best-practice `page-has-heading-one` on the nonexistent-room route); deployed-staging `two-device-smoke.mjs --reload` **17/17** (that is the deployed `5e8907b`, not this candidate).
+- **Regression found:** this candidate contains only the single `c5ec6b0` text-entry change, not the 11 reviewed commits beneath it (`22dad04`…`f0e5d7c`: Back-dismiss, option-row semantics, landscape-keyboard sheet, iPad compact, page dimming, route `h1`s). Reproduced here: with the GM correction sheet open, Back lands on `#/create` and the console is lost (`sheet-history-probe.mjs` FAIL A; `sheet-viewport-probe.mjs` FAIL F; everything else in the viewport probe passes).
+- **Blocked:** my merge of `origin/sonnet-fi/reskin-orchestrated-20261006` was denied by the permission classifier (another lane's unmerged branch, not authorized), so I made no fix, no "after" evidence and no code review.
+
+**Next action:** John decides: merge the fi tip (expect handoff and duplicated text-entry conflicts; `218bfea` and `1409e59` are not in it) or direct a re-implementation of only the Back-dismiss fix. Then rerun check, build, emulator suite, `ui-audit.mjs` and both probes (A and F must pass), get an independent review, and only then consider deployment. Nothing was merged or deployed.
 
 ## Mission
 
