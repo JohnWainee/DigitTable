@@ -487,6 +487,7 @@ const MODAL_GEOMETRY = `(() => {
     apply: box(apply),
     cancel: box(cancel),
     reason: box(reason),
+    reasonLabel: box(dialog.querySelector('label[for="correction-reason"]')),
     bodyRect: box(body),
     heading: box(dialog.querySelector('h2')),
     compact: dialog.parentElement.hasAttribute('data-compact'),
@@ -851,20 +852,39 @@ async function auditModal(gm) {
             `(() => { const w = document.documentElement.clientWidth; return [...document.querySelectorAll("body *")].filter(e => (e.getBoundingClientRect().right > w + 1 || e.scrollWidth > e.clientWidth + 1) && getComputedStyle(e).display !== "none").slice(0, 10).map(e => e.tagName.toLowerCase() + (e.className && typeof e.className === "string" ? "." + e.className.split(" ").join(".") : "") + " right=" + Math.round(e.getBoundingClientRect().right) + " sw=" + e.scrollWidth + "/" + e.clientWidth + " :: " + (e.textContent || "").trim().slice(0, 30)); })()`,
           );
         }
-        record.checks.bodyKeepsRoom = geo.body.clientHeight >= 96;
-        // The action row may scroll on its own at this size, but its buttons must be reachable.
-        await ev(
-          gm,
-          `(() => { const f = document.querySelector(".sheet-footer"); f.scrollTop = f.scrollHeight; })()`,
-        );
-        const end = await ev(gm, MODAL_GEOMETRY);
-        record.checks.actionsReachable = within(end.apply, frame) && within(end.cancel, frame);
-        await ev(
-          gm,
-          `(() => { const b = document.querySelector(".sheet-body"); b.scrollTop = b.scrollHeight; })()`,
-        );
-        const bottom = await ev(gm, MODAL_GEOMETRY);
-        record.checks.reasonReachable = within(bottom.reason, frame);
+        if (geo.compact) {
+          // 200% text on a 320x568 phone is under 18rem tall (576px): the whole sheet scrolls as one page
+          // (compact), so nothing is pinned and the reason field and both actions are reached by
+          // scrolling the sheet itself.
+          record.checks.compactSheetScrolls =
+            geo.sheetScroll.overflowY === "auto" &&
+            geo.sheetScroll.scrollHeight > geo.sheetScroll.clientHeight;
+          const reasonGeo = await geometryRevealing(gm, "reason");
+          const applyGeo = await geometryRevealing(gm, "apply");
+          const cancelGeo = await geometryRevealing(gm, "cancel");
+          record.checks.reasonReachable = within(
+            reasonGeo.reason,
+            intersect(frame, reasonGeo.dialog),
+          );
+          record.checks.actionsReachable =
+            within(applyGeo.apply, intersect(frame, applyGeo.dialog)) &&
+            within(cancelGeo.cancel, intersect(frame, cancelGeo.dialog));
+        } else {
+          record.checks.bodyKeepsRoom = geo.body.clientHeight >= 96;
+          // The action row may scroll on its own at this size, but its buttons must be reachable.
+          await ev(
+            gm,
+            `(() => { const f = document.querySelector(".sheet-footer"); f.scrollTop = f.scrollHeight; })()`,
+          );
+          const end = await ev(gm, MODAL_GEOMETRY);
+          record.checks.actionsReachable = within(end.apply, frame) && within(end.cancel, frame);
+          await ev(
+            gm,
+            `(() => { const b = document.querySelector(".sheet-body"); b.scrollTop = b.scrollHeight; })()`,
+          );
+          const bottom = await ev(gm, MODAL_GEOMETRY);
+          record.checks.reasonReachable = within(bottom.reason, frame);
+        }
         record.textPx = px;
         record.screenshot = await screenshot(
           gm,
@@ -930,6 +950,58 @@ async function auditModal(gm) {
           }
         });
       }
+    }
+  }
+  // The case between "plenty" and "tight": real iOS Safari on an iPad in landscape with the keyboard up
+  // leaves ~266px of visible height. The pinned title and action row (plus the card's own padding) leave
+  // the body about 70px, less than the reason label and field need, so the label was half-cut by the
+  // title bar and the field's border was clipped by the action row (found in the iOS Simulator; the
+  // 90/70/60px scenarios above never reached it, and the check "the field is inside the body" passes
+  // while its label is clipped). Whatever mode the sheet picks, the focused field AND its label must be
+  // fully visible inside what the sheet shows.
+  for (const visibleHeight of [360, 330, 300, 266, 240]) {
+    for (const vp of [
+      { name: "ipad-landscape", width: 1133, height: 744, mobile: true },
+      { name: "phone-667x375", width: 667, height: 375, mobile: true },
+      byName["phone-small"],
+    ]) {
+      if (visibleHeight >= vp.height) continue;
+      // A home-indicator inset of 20px (an iPad's, in landscape): the footer adds it to its own padding.
+      const name = `medium-keyboard-${vp.name}-${visibleHeight}px`;
+      await scenario(name, vp, async (record) => {
+        await gm.cdp.send(
+          "Emulation.setSafeAreaInsetsOverride",
+          { insets: { top: 0, left: 0, right: 0, bottom: 20 } },
+          gm.sessionId,
+        );
+        await openCorrection(gm);
+        await ev(gm, `document.querySelector("#correction-reason").focus()`);
+        const shrunk = { ...vp, height: visibleHeight };
+        await applyViewport(gm, shrunk);
+        await sleep(500);
+        const frame = frameOf(shrunk);
+        const geo = await ev(gm, MODAL_GEOMETRY);
+        record.geometry = geo;
+        const region = visibleRegion(geo, frame);
+        record.checks.dialogInsideViewport = within(geo.dialog, frame);
+        record.checks.focusedFieldVisibleInSheet = within(geo.reason, region);
+        record.checks.focusedLabelVisibleInSheet = within(geo.reasonLabel, region);
+        record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+        if (!geo.compact) {
+          record.checks.actionsVisible = within(geo.apply, frame) && within(geo.cancel, frame);
+        } else {
+          const applyGeo = await geometryRevealing(gm, "apply");
+          record.checks.actionsReachableByScrollingSheet = within(
+            applyGeo.apply,
+            intersect(frame, applyGeo.dialog),
+          );
+        }
+        if (visibleHeight === 266 && vp.name === "ipad-landscape") {
+          record.screenshot = await screenshot(gm, `gm-correction-medium-keyboard-${vp.name}.jpg`, {
+            fullPage: false,
+          });
+        }
+      });
     }
   }
   await applyViewport(gm, byName["desktop"]);

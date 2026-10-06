@@ -1,0 +1,2 @@
+SafariFlowUITests.swift:260: error: -[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker] : XCTAssertLessThanOrEqual failed: ("210.0") is greater than ("209.5") - landscape + keyboard: the field ((264.0, 153.0, 605.0, 49.0)) is flush against the action row ((264.0, 209.0, 297.0, 50.0)); its border is clipped
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' failed (65.108 seconds).

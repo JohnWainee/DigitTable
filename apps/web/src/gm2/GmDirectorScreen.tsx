@@ -67,6 +67,7 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
       <main className="gm-screen">
         <ConnectionStatusStrip state={connection} />
         <FixtureModeBanner />
+        <h1>Director console</h1>
         <p role="alert">This session has ended, or fixture mode lost it on reload.</p>
         <button type="button" className="primary-action" onClick={() => navigate("/")}>
           Back to start
@@ -80,6 +81,7 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
       <main className="gm-screen">
         <ConnectionStatusStrip state={connection} />
         <FixtureModeBanner />
+        <h1>Director console</h1>
         <p>Loading&hellip;</p>
       </main>
     );

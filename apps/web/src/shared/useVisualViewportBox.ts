@@ -2,9 +2,13 @@ import { useLayoutEffect, type RefObject } from "react";
 
 /**
  * Below this visible height (in rem, so it scales with the user's text size) a pinned title, body and
- * action row cannot all be shown: the sheet is "compact" and scrolls as one page instead.
+ * action row cannot all be shown with the focused field's label and border clear of them: the sheet is
+ * "compact" and scrolls as one page instead. The sum is title (~3rem) + action row (~4.3rem, ~5.5rem with
+ * a home-indicator inset) + the wide card's own 3rem of padding + a text field with its label and
+ * padding (~6.5rem) = about 17rem; real iPad Safari, landscape, keyboard up (~266px visible) clipped the
+ * label under the title and the field under the action row at the earlier 15rem.
  */
-export const COMPACT_BELOW_REM = 15;
+export const COMPACT_BELOW_REM = 18;
 
 /**
  * Mirrors `window.visualViewport` onto CSS custom properties of `ref`'s
@@ -40,7 +44,7 @@ export function useVisualViewportBox(ref: RefObject<HTMLElement | null>): void {
 
     // Evaluated on mount and on `resize` only: `scroll` fires continuously while panning a zoomed page
     // and a root font-size read forces a style recalculation. Pinch-zoom past ~4x also lands here
-    // (visible height under 15rem); scrolling the whole sheet as one page is the better layout there too.
+    // (visible height under 18rem); scrolling the whole sheet as one page is the better layout there too.
     function applyCompact(): void {
       // The smaller of the two heights: iOS shrinks only the visual viewport for the keyboard, Chrome
       // Android (interactive-widget=resizes-content) shrinks both.

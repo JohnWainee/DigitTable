@@ -251,6 +251,15 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(backdrop, "padding-top")[0]).toContain("env(safe-area-inset-top");
     });
 
+    it("dims the page outside a visual-viewport-sized backdrop too (no bright seam under the keyboard)", () => {
+      const shadow = declaration(rulesFor(/^\.sheet-backdrop$/), "box-shadow");
+      expect(shadow.join()).toMatch(/0 0 0 100vmax rgba\(3, 3, 4, 0\.82\)/);
+      // Same colour as the backdrop's own fill, or the seam would just move.
+      expect(declaration(rulesFor(/^\.sheet-backdrop$/), "background")).toContain(
+        "rgba(3, 3, 4, 0.82)",
+      );
+    });
+
     it("is an edge-attached bottom sheet by default and a centred card from 641px up", () => {
       expect(declaration(rulesFor(/^\.sheet-backdrop$/), "align-items")).toContain("flex-end");
       const wide = mediaBlock("(min-width: 40.0625rem)");

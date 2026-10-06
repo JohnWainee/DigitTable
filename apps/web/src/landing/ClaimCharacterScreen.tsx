@@ -48,6 +48,7 @@ export function ClaimCharacterScreen({ roomId }: ClaimCharacterScreenProps): JSX
       <main className="landing-screen">
         <ConnectionStatusStrip state={connection} />
         <FixtureModeBanner />
+        <h1>Pick your character</h1>
         <p role="alert">You need to join this session before picking a character.</p>
         <button type="button" className="primary-action" onClick={() => navigate("/join")}>
           Go to join
@@ -61,6 +62,7 @@ export function ClaimCharacterScreen({ roomId }: ClaimCharacterScreenProps): JSX
       <main className="landing-screen">
         <ConnectionStatusStrip state={connection} />
         <FixtureModeBanner />
+        <h1>Pick your character</h1>
         <p role="alert">
           This session has ended, or fixture mode lost it on reload. Create or join a new one.
         </p>

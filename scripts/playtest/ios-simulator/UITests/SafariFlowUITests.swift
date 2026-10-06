@@ -249,6 +249,16 @@ final class SafariFlowUITests: XCTestCase {
         // scrolling the sheet or dismissing the keyboard.
         expectAboveKeyboard("landscape reason", reason)
         expectNoOverlap("landscape + keyboard", field: reason, actions: apply)
+        // The field's own label must not be clipped by the sheet's pinned title (real iPad Safari,
+        // landscape, keyboard up: ~266px visible, the label was half hidden under the title bar and
+        // the field's border under the action row while the two checks above still passed).
+        let reasonLabel = web.descendants(matching: .staticText).matching(NSPredicate(format: "label == 'Reason (required)'")).firstMatch
+        XCTAssertTrue(reasonLabel.exists, "the reason label is exposed to accessibility")
+        report("landscape reason label", reasonLabel)
+        XCTAssertGreaterThanOrEqual(reasonLabel.frame.minY, heading.frame.maxY - 0.5,
+            "landscape + keyboard: the reason label (\(reasonLabel.frame)) is under the sheet title (\(heading.frame))")
+        XCTAssertLessThanOrEqual(reason.frame.maxY + 8, apply.frame.minY + 0.5,
+            "landscape + keyboard: the field (\(reason.frame)) is flush against the action row (\(apply.frame)); its border is clipped")
         report("landscape apply (scrolls)", apply)
         report("landscape cancel (scrolls)", cancel)
         XCUIDevice.shared.orientation = .portrait

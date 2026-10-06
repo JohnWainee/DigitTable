@@ -1462,6 +1462,13 @@ details ul {
   padding: max(env(safe-area-inset-top), 1.5rem) env(safe-area-inset-right) 0
     env(safe-area-inset-left);
   background: rgba(3, 3, 4, 0.82);
+  /* The backdrop is only as big as the VISUAL viewport. With the iOS keyboard (and its accessory bar) up,
+     or while pinch-zoomed, that is smaller than the layout viewport and the page showed through undimmed
+     beside and below the sheet, with a hard seam (real iPhone Safari, landscape, keyboard up). A spread
+     shadow dims everything outside the box in the same colour; it takes no layout space and adds no
+     scrollable overflow. Forced colors (Windows High Contrast) drops shadows, so there the seam remains;
+     the fill itself is repainted by the system, which is the intended high-contrast behaviour. */
+  box-shadow: 0 0 0 100vmax rgba(3, 3, 4, 0.82);
   overscroll-behavior: contain;
   /* Deliberately unrestricted. An ancestor's touch-action cannot be re-enabled by a descendant, so
      `none` here would disable pinch-zoom for the whole page while a sheet is open (WCAG 1.4.4), and
@@ -1601,7 +1608,7 @@ details ul {
   }
 }
 
-/* Compact (useVisualViewportBox sets data-compact under 15rem of visible height): a landscape phone with
+/* Compact (useVisualViewportBox sets data-compact under 18rem of visible height): a landscape phone with
    the on-screen keyboard up leaves roughly 70-140px, measured in real iOS Safari. A pinned title and
    action row alone need more than that, which clipped the buttons and pushed the title out of view. The
    whole sheet scrolls as one page instead; nothing is pinned, nothing is clipped, and the focused field

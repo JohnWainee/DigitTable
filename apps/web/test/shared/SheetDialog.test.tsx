@@ -497,19 +497,26 @@ describe("SheetDialog", () => {
       const backdrop = await openSheet();
       expect(backdrop).not.toHaveAttribute("data-compact");
 
-      // Real iOS Safari, landscape, keyboard up: ~70-140px visible. 15rem is 240px at 16px text.
+      // Real iOS Safari, landscape, keyboard up: ~70-140px visible. 18rem is 288px at 16px text.
       act(() => viewport.set({ height: 120, offsetTop: 0 }));
       expect(backdrop).toHaveAttribute("data-compact");
 
-      act(() => viewport.set({ height: 239, offsetTop: 0 }));
+      // iPad landscape with the keyboard up (~266px) is compact too: a pinned title and action row left
+      // its reason label and field clipped there.
+      act(() => viewport.set({ height: 266, offsetTop: 0 }));
       expect(backdrop).toHaveAttribute("data-compact");
-      act(() => viewport.set({ height: 240, offsetTop: 0 }));
+      act(() => viewport.set({ height: 287, offsetTop: 0 }));
+      expect(backdrop).toHaveAttribute("data-compact");
+      act(() => viewport.set({ height: 288, offsetTop: 0 }));
+      expect(backdrop).not.toHaveAttribute("data-compact");
+      // iPhone landscape with Safari's bars showing (292px, measured) keeps the pinned layout.
+      act(() => viewport.set({ height: 292, offsetTop: 0 }));
       expect(backdrop).not.toHaveAttribute("data-compact");
 
       // The threshold scales with the user's text size (rem), not pixels.
       document.documentElement.style.fontSize = "32px";
       try {
-        act(() => viewport.set({ height: 400, offsetTop: 0 }));
+        act(() => viewport.set({ height: 500, offsetTop: 0 }));
         expect(backdrop).toHaveAttribute("data-compact");
       } finally {
         document.documentElement.style.fontSize = "";

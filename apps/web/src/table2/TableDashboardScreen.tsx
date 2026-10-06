@@ -48,6 +48,7 @@ export function TableDashboardScreen({ roomId }: TableDashboardScreenProps): JSX
       <main className="table-screen">
         <ConnectionStatusStrip state={connection} />
         <FixtureModeBanner />
+        <h1>Eat the Reich</h1>
         <p role="alert">This display isn&rsquo;t connected to a room.</p>
         <button type="button" className="secondary-action" onClick={() => navigate("/")}>
           Back to start
@@ -61,6 +62,7 @@ export function TableDashboardScreen({ roomId }: TableDashboardScreenProps): JSX
       <main className="table-screen">
         <ConnectionStatusStrip state={connection} />
         <FixtureModeBanner />
+        <h1>Eat the Reich</h1>
         <p role="alert">This session has ended, or fixture mode lost it on reload.</p>
         <button type="button" className="secondary-action" onClick={() => navigate("/")}>
           Back to start
@@ -74,6 +76,7 @@ export function TableDashboardScreen({ roomId }: TableDashboardScreenProps): JSX
       <main className="table-screen">
         <ConnectionStatusStrip state={connection} />
         <FixtureModeBanner />
+        <h1>Eat the Reich</h1>
         <p>Loading&hellip;</p>
       </main>
     );
