@@ -1364,8 +1364,9 @@ details ul {
    keyboard, pinch-zoom or dynamic browser chrome makes it differ from the
    layout viewport; otherwise the 100dvh fallback applies), the sheet never
    exceeds it, and only the body scrolls, so the title and the action row stay
-   on screen and reachable. Safe-area insets keep it clear of notches, rounded
-   corners and the home indicator. */
+   on screen and reachable (below ~18rem of visible height the whole sheet scrolls
+   as one page instead, see `@container sheet-box` below). Safe-area insets keep
+   it clear of notches, rounded corners and the home indicator. */
 
 .sheet-backdrop {
   position: fixed;
@@ -1519,6 +1520,40 @@ details ul {
   .sheet-footer {
     padding-top: 0.5rem;
     padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Very little visible height: a landscape phone with the on-screen keyboard up. iOS Safari shrinks
+   only the VISUAL viewport for the keyboard (a real iPhone leaves roughly 70-140px), so no media
+   query can see it, but the backdrop is sized from that viewport (--vv-height), which makes it a
+   fixed-size container whose own height is the honest "how much can the person see". Pinned
+   header and footer alone need more than that, so the body was squeezed to its padding and the
+   action row was clipped by the sheet's `overflow: hidden`, out of reach of any touch. Below this
+   height the whole sheet scrolls as one page instead (title, fields, then the action row), and the
+   scroll is confined to the sheet. `rem`, so large text reaches this layout sooner. Engines
+   without size container queries keep the pinned layout. */
+.sheet-backdrop {
+  container-type: size;
+  container-name: sheet-box;
+}
+
+@container sheet-box (max-height: 18rem) {
+  .sheet {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    /* A field scrolled into view keeps its label and some air, as in the body's own scroller. */
+    scroll-padding-block: 1rem;
+  }
+
+  .sheet-body {
+    flex: none;
+    overflow: visible;
+  }
+
+  .sheet-footer {
+    max-height: none;
+    overflow: visible;
   }
 }
 

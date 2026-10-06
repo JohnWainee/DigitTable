@@ -55,6 +55,24 @@ function mediaBlock(query: string): string {
   throw new Error("unbalanced braces");
 }
 
+/** The body of the first `@container <name> (…query…) { … }` block, found by brace matching. */
+function containerBlock(name: string): { query: string; body: string } {
+  const start = css.indexOf(`@container ${name} `);
+  if (start < 0) throw new Error(`no @container ${name}`);
+  const open = css.indexOf("{", start);
+  let depth = 0;
+  for (let i = open; i < css.length; i += 1) {
+    if (css[i] === "{") depth += 1;
+    if (css[i] === "}") {
+      depth -= 1;
+      if (depth === 0) {
+        return { query: css.slice(start, open).trim(), body: css.slice(open + 1, i) };
+      }
+    }
+  }
+  throw new Error("unbalanced braces");
+}
+
 function token(name: string): string {
   const match = new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{6})`).exec(css);
   if (!match) throw new Error(`token --${name} not a hex colour in :root`);
@@ -254,10 +272,12 @@ describe("reskin stylesheet contract", () => {
 
     it("lets the action row scroll on its own and stack to one column, so large text cannot squeeze the body away", () => {
       const footer = rulesFor(/^\.sheet-footer$/);
-      // vh base, dvh override behind @supports (an invalid var() would otherwise drop the cap).
+      // vh base, dvh override behind @supports (an invalid var() would otherwise drop the cap), then
+      // the cap is lifted inside the compact `@container sheet-box` block (the whole sheet scrolls).
       expect(declaration(footer, "max-height")).toEqual([
         "calc(var(--vv-height, 100vh) * 0.4)",
         "calc(var(--vv-height, 100dvh) * 0.4)",
+        "none",
       ]);
       expect(declaration(footer, "overflow-y")).toContain("auto");
       // Large text: long legends and stepper rows wrap instead of widening the page.
@@ -294,6 +314,54 @@ describe("reskin stylesheet contract", () => {
 
     it("reclaims vertical room on short viewports (landscape phone / keyboard open)", () => {
       expect(mediaBlock("(max-height: 34rem)")).toMatch(/\.sheet-grip\s*\{[^}]*display:\s*none/);
+    });
+
+    describe("with very little visible height (landscape phone, keyboard up)", () => {
+      it("makes the visual-viewport-sized backdrop a size container", () => {
+        // Media queries cannot see iOS Safari's keyboard (it shrinks only the visual viewport); the
+        // backdrop's own height (--vv-height) is the honest measure, so it is the query container.
+        const backdrop = rulesFor(/^\.sheet-backdrop$/);
+        expect(declaration(backdrop, "container-type")).toEqual(["size"]);
+        expect(declaration(backdrop, "container-name")).toEqual(["sheet-box"]);
+      });
+
+      it("scrolls the whole sheet as one page instead of squeezing the body and clipping the actions", () => {
+        const { query, body } = containerBlock("sheet-box");
+        const threshold = Number(/\(max-height:\s*([\d.]+)rem\)/.exec(query)?.[1]);
+        // Pinned header + footer need roughly 7-11rem and a labelled field about 5rem more, so the
+        // switch must happen no lower than this or the pinned layout is back in the broken range.
+        // `rem`, so large text switches sooner (its pinned chrome is larger too).
+        expect(threshold).toBeGreaterThanOrEqual(15);
+        expect(query).toMatch(/\(max-height:\s*[\d.]+rem\)/);
+        expect(body).toMatch(/\.sheet\s*\{[^}]*overflow-y:\s*auto/);
+        expect(body).toMatch(/\.sheet\s*\{[^}]*overscroll-behavior:\s*contain/);
+        expect(body).toMatch(/\.sheet-body\s*\{[^}]*flex:\s*none/);
+        expect(body).toMatch(/\.sheet-body\s*\{[^}]*overflow:\s*visible/);
+        expect(body).toMatch(/\.sheet-footer\s*\{[^}]*max-height:\s*none/);
+        expect(body).toMatch(/\.sheet-footer\s*\{[^}]*overflow:\s*visible/);
+        expect(body).toMatch(/\.sheet\s*\{[^}]*scroll-padding-block:\s*1rem/);
+      });
+
+      it("comes after the base and @supports rules it overrides, so it wins at equal specificity", () => {
+        const container = css.indexOf("@container sheet-box");
+        expect(container).toBeGreaterThan(css.lastIndexOf("@supports (height: 100dvh)"));
+        expect(container).toBeGreaterThan(css.lastIndexOf(".sheet-body {", container));
+        expect(container).toBeGreaterThan(css.lastIndexOf(".sheet-footer {", container));
+        expect(css.indexOf(".sheet-body {")).toBeLessThan(container);
+        expect(css.indexOf(".sheet-footer {")).toBeLessThan(container);
+      });
+
+      it("is exercised by the real-browser audit with a visual-viewport stand-in and a scroll-aware reach check", () => {
+        // Headless Chrome cannot shrink only the visual viewport, so the audit substitutes the numbers
+        // iOS reports; the check must scroll only user-scrollable ancestors, or an element clipped by
+        // an `overflow: hidden` parent would count as reachable (the very defect).
+        expect(uiAudit).toContain("VISUAL_VIEWPORT_STUB");
+        expect(uiAudit).toContain("vv-keyboard-landscape-90");
+        expect(uiAudit).toContain("vv-keyboard-landscape-140");
+        expect(uiAudit).toContain('overflowY !== "auto" && overflowY !== "scroll"');
+        expect(uiAudit).toContain("reasonFirstLineVisibleWhenKeyboardOpens");
+        expect(uiAudit).toContain("applyReachable");
+      });
     });
 
     it("locks root scroll only while a sheet is open, without the page jumping", () => {

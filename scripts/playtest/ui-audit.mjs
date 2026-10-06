@@ -500,13 +500,17 @@ async function auditModal(gm) {
         checks: {
           dialogInsideViewport: within(kb.dialog, kbFrame),
           focusedFieldVisible: within(kb.reason, kbFrame),
-          actionsVisible: within(kb.apply, kbFrame) && within(kb.cancel, kbFrame),
           noPageOverflow: kb.pageOverflowPx <= 1,
         },
       };
       record.keyboard.screenshot = await screenshot(gm, `gm-correction-keyboard-${vp.name}.jpg`, {
         fullPage: false,
       });
+      // Below ~18rem of visible height the whole sheet scrolls as one page (see `@container
+      // sheet-box` in styles.css), so the action row is reached by scrolling, not always on screen.
+      // Measured last: reaching a control scrolls the sheet.
+      const reach = await ev(gm, REACH_PROBE);
+      record.keyboard.checks.actionsReachable = reach.reach.apply && reach.reach.cancel;
       await applyViewport(gm, vp);
     }
     for (const [k, v] of Object.entries(record.checks)) {
@@ -697,19 +701,11 @@ async function auditModal(gm) {
           );
         }
         record.checks.bodyKeepsRoom = geo.body.clientHeight >= 96;
-        // The action row may scroll on its own at this size, but its buttons must be reachable.
-        await ev(
-          gm,
-          `(() => { const f = document.querySelector(".sheet-footer"); f.scrollTop = f.scrollHeight; })()`,
-        );
-        const end = await ev(gm, MODAL_GEOMETRY);
-        record.checks.actionsReachable = within(end.apply, frame) && within(end.cancel, frame);
-        await ev(
-          gm,
-          `(() => { const b = document.querySelector(".sheet-body"); b.scrollTop = b.scrollHeight; })()`,
-        );
-        const bottom = await ev(gm, MODAL_GEOMETRY);
-        record.checks.reasonReachable = within(bottom.reason, frame);
+        // The action row (or, below ~18rem of visible height, the whole sheet) may scroll at this
+        // size, but every control must be reachable by scrolling and then receive a tap.
+        const reach = await ev(gm, REACH_PROBE);
+        record.checks.actionsReachable = reach.reach.apply && reach.reach.cancel;
+        record.checks.reasonReachable = reach.reach.reason;
         record.textPx = px;
         record.screenshot = await screenshot(
           gm,
@@ -720,8 +716,149 @@ async function auditModal(gm) {
       { informationalChecks },
     );
   }
+  // iOS Safari raises the keyboard by shrinking only the VISUAL viewport; the layout viewport (and so
+  // `innerHeight` and every media query) keeps its full size. Headless Chrome cannot produce that, so
+  // these scenarios replace `window.visualViewport` with a controllable stand-in and let the REAL hook,
+  // stylesheet and layout engine react to it. What is simulated is only the numbers the browser would
+  // report; the visible heights below are the ones measured on a real iPhone and iPad Simulator (see
+  // docs/evidence/fn-keyboard-visual-viewport/README.md, which also records real iPhone and iPad Simulator Safari runs of the same check). A physical-device pass remains open.
+  for (const [name, vp, visibleHeight] of [
+    [
+      "vv-keyboard-landscape-90",
+      { name: "phone-844x390", width: 844, height: 390, mobile: true },
+      90,
+    ],
+    [
+      "vv-keyboard-landscape-140",
+      { name: "phone-844x390", width: 844, height: 390, mobile: true },
+      140,
+    ],
+    [
+      "vv-keyboard-landscape-se-130",
+      { name: "phone-667x375", width: 667, height: 375, mobile: true },
+      130,
+    ],
+    [
+      "vv-keyboard-ipad-landscape-266",
+      { name: "ipad-1024x768", width: 1024, height: 768, mobile: true },
+      266,
+    ],
+    ["vv-keyboard-phone-small-300", byName["phone-small"], 300],
+    // Just above the compact threshold (18rem + 24px padding): pinned layout with stacked actions.
+    ["vv-keyboard-phone-small-330", byName["phone-small"], 330],
+    ["vv-keyboard-phone-portrait-470", byName["phone"], 470],
+  ]) {
+    await scenario(name, vp, async (record) => {
+      try {
+        await ev(gm, VISUAL_VIEWPORT_STUB);
+        await openCorrection(gm);
+        await ev(gm, `document.querySelector("#correction-reason").focus()`);
+        await ev(gm, `window.__setFakeVisualViewport(${visibleHeight})`);
+        await sleep(450);
+        // What the person sees the moment the keyboard has opened (before anything is scrolled).
+        record.screenshot = await screenshot(gm, `gm-correction-${name}.jpg`, { fullPage: false });
+        const probe = await ev(gm, REACH_PROBE);
+        record.probe = probe;
+        record.visibleHeight = visibleHeight;
+        record.checks.dialogInsideVisualViewport = probe.dialogInside;
+        record.checks.reasonFirstLineVisibleWhenKeyboardOpens = probe.reasonFirstLineHit;
+        record.checks.titleReachable = probe.reach.title;
+        record.checks.reasonReachable = probe.reach.reason;
+        record.checks.applyReachable = probe.reach.apply;
+        record.checks.cancelReachable = probe.reach.cancel;
+        record.checks.actionTargets44 = probe.applyHeight >= 43.5 && probe.cancelHeight >= 43.5;
+        record.checks.noPageOverflow = probe.pageOverflowPx <= 1;
+      } finally {
+        await ev(gm, `window.__restoreVisualViewport?.()`);
+      }
+    });
+  }
   await applyViewport(gm, byName["desktop"]);
 }
+
+/** Installs a controllable `window.visualViewport` (see the comment above its use). */
+const VISUAL_VIEWPORT_STUB = `(() => {
+  if (window.__fakeVisualViewport) return true;
+  const fake = new EventTarget();
+  Object.assign(fake, { offsetTop: 0, offsetLeft: 0, pageTop: 0, pageLeft: 0, scale: 1, width: innerWidth, height: innerHeight });
+  // \`visualViewport\` is an own accessor of the global: keep its descriptor so restoring puts the REAL one back.
+  window.__realVisualViewportDescriptor = Object.getOwnPropertyDescriptor(window, "visualViewport");
+  Object.defineProperty(window, "visualViewport", { configurable: true, get: () => fake });
+  window.__fakeVisualViewport = fake;
+  window.__setFakeVisualViewport = (height) => {
+    fake.height = height;
+    fake.dispatchEvent(new Event("resize"));
+  };
+  window.__restoreVisualViewport = () => {
+    const real = window.__realVisualViewportDescriptor;
+    if (real) Object.defineProperty(window, "visualViewport", real);
+    else delete window.visualViewport;
+    delete window.__realVisualViewportDescriptor;
+    delete window.__fakeVisualViewport;
+    delete window.__setFakeVisualViewport;
+    delete window.__restoreVisualViewport;
+  };
+  return true;
+})()`;
+
+/**
+ * With the keyboard up: is what the person needs actually usable? Reachability is "can be scrolled
+ * to and then actually receives a tap", so an element clipped by an `overflow: hidden` ancestor or
+ * covered by a pinned bar fails even though its bounding box lies inside the visual viewport.
+ */
+const REACH_PROBE = `(() => {
+  const dialog = document.querySelector('[role="dialog"]');
+  const vv = window.visualViewport;
+  const frame = { top: vv.offsetTop, bottom: vv.offsetTop + vv.height, left: vv.offsetLeft, right: vv.offsetLeft + vv.width };
+  const inside = (r, tol = 1) => r.left >= frame.left - tol && r.right <= frame.right + tol && r.top >= frame.top - tol && r.bottom <= frame.bottom + tol;
+  const hitAt = (el, x, y) => {
+    if (x < frame.left || x > frame.right || y < frame.top || y > frame.bottom) return false;
+    const top = document.elementFromPoint(x, y);
+    return Boolean(top) && (top === el || el.contains(top));
+  };
+  // Fully visible and tappable: the whole box inside the visible frame, and the centre and all four
+  // corners (inset 3px) land on the element, so a half-clipped control does not count as reachable.
+  const hit = (el) => {
+    const r = el.getBoundingClientRect();
+    if (!inside(r)) return false;
+    return [[r.left + r.width / 2, r.top + r.height / 2], [r.left + 3, r.top + 3], [r.right - 3, r.top + 3], [r.left + 3, r.bottom - 3], [r.right - 3, r.bottom - 3]].every(([x, y]) => hitAt(el, x, y));
+  };
+  const find = (re) => [...dialog.querySelectorAll("button")].find(b => re.test(b.textContent));
+  const reason = dialog.querySelector("#correction-reason");
+  const apply = find(/apply correction/i);
+  const cancel = find(/cancel/i);
+  const title = dialog.querySelector("h2");
+  const firstLine = (() => { const r = reason.getBoundingClientRect(); return hitAt(reason, r.left + r.width / 2, r.top + Math.min(12, r.height / 2)); })();
+  // What a finger can do: scroll an ancestor only if it is user-scrollable (overflow auto/scroll).
+  // Element.scrollIntoView() would also move an \`overflow: hidden\` ancestor, which no gesture can,
+  // and so would report a clipped control as reachable.
+  const userReveal = (el, toStart) => {
+    for (let a = el.parentElement; a && a !== document.documentElement; a = a.parentElement) {
+      const overflowY = getComputedStyle(a).overflowY;
+      if ((overflowY !== "auto" && overflowY !== "scroll") || a.scrollHeight <= a.clientHeight) continue;
+      if (toStart) { a.scrollTop = 0; continue; }
+      const box = a.getBoundingClientRect();
+      const r = el.getBoundingClientRect();
+      if (r.top < box.top) a.scrollTop -= box.top - r.top;
+      else if (r.bottom > box.bottom) a.scrollTop += r.bottom - box.bottom;
+    }
+  };
+  const reach = {};
+  for (const [name, el, toStart] of [["title", title, true], ["reason", reason, false], ["apply", apply, false], ["cancel", cancel, false]]) {
+    userReveal(el, toStart);
+    reach[name] = hit(el);
+  }
+  return {
+    frame,
+    dialogInside: inside(dialog.getBoundingClientRect()),
+    reasonFirstLineHit: firstLine,
+    reach,
+    applyHeight: apply.getBoundingClientRect().height,
+    cancelHeight: cancel.getBoundingClientRect().height,
+    pageOverflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    bodyClientHeight: dialog.querySelector(".sheet-body")?.clientHeight ?? null,
+  };
+})()`;
 
 async function auditReducedMotion(gm) {
   const result = { allowed: {}, reduced: {} };

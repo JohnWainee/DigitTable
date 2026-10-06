@@ -1,0 +1,192 @@
+<!doctype html>
+<!--
+  Test-only page, not part of the app. It links the app's REAL stylesheet (?css=after|before, copied
+  from apps/web/src/styles.css at the fixed and the pre-fix commit) and reproduces the correction
+  sheet's DOM, then sets `--vv-height` on the backdrop exactly as `useVisualViewportBox` does when
+  iOS Safari's on-screen keyboard shrinks the visual viewport (?h=<visible px>). It measures, in
+  whatever browser loads it, whether the reason field is hit-testable and the Apply/Cancel row is
+  reachable by scrolling only user-scrollable ancestors, and prints the result under the sheet.
+  Used with iOS Simulator Mobile Safari; see README.md in this directory. It does NOT raise a real
+  keyboard: the number the keyboard would produce is supplied.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Sheet probe</title>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const css = params.get("css") === "before" ? "styles.before.css" : "styles.after.css";
+      document.write(`<link rel="stylesheet" href="${css}">`);
+    </script>
+  </head>
+  <body>
+    <pre
+      id="result"
+      style="
+        position: fixed;
+        left: 8px;
+        right: 8px;
+        top: 0;
+        margin: 0;
+        color: #fff;
+        background: #000;
+        font:
+          14px/1.35 ui-monospace,
+          monospace;
+        white-space: pre-wrap;
+        z-index: 200;
+      "
+    ></pre>
+    <div id="page"><h1>Director console (page behind the sheet)</h1></div>
+
+    <div class="sheet-backdrop" id="backdrop">
+      <div role="dialog" aria-modal="true" aria-labelledby="t" class="sheet">
+        <div class="sheet-header">
+          <span class="sheet-grip" aria-hidden="true"></span>
+          <h2 id="t" tabindex="-1">Correct Iryna</h2>
+        </div>
+        <div class="sheet-body">
+          <div class="form-field">
+            <div role="group" aria-labelledby="dl">
+              <span id="dl">Blood change</span>
+              <div class="stepper-controls">
+                <button type="button" aria-label="Decrease Blood change">−</button>
+                <span class="stepper-value">0</span>
+                <button type="button" aria-label="Increase Blood change">+</button>
+              </div>
+            </div>
+            <p class="form-hint">Blood 3 &rarr; 3</p>
+          </div>
+          <fieldset>
+            <legend>Item uses</legend>
+            <div class="form-field">
+              <span>Cigarettes</span>
+              <div class="stepper-controls">
+                <button type="button" aria-label="Decrease Cigarettes uses">−</button>
+                <span class="stepper-value">2/2</span>
+                <button type="button" aria-label="Increase Cigarettes uses">+</button>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Injury boxes</legend>
+            <div class="gear-list">
+              <span>Bruised</span>
+              <label class="gear-option"><input type="checkbox" />Box 1</label>
+              <label class="gear-option"><input type="checkbox" />Box 2</label>
+            </div>
+            <div class="gear-list">
+              <span>Wounded</span>
+              <label class="gear-option"><input type="checkbox" />Box 1</label>
+              <label class="gear-option"><input type="checkbox" />Box 2</label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Status</legend>
+            <label class="gear-option"><input type="checkbox" />Downed</label>
+            <label class="gear-option"><input type="checkbox" />Retired</label>
+          </fieldset>
+          <div class="form-field">
+            <label for="correction-reason">Reason (required)</label>
+            <input id="correction-reason" type="text" required />
+          </div>
+        </div>
+        <div class="sheet-footer">
+          <div class="landing-actions sheet-actions">
+            <button type="button" class="primary-action" disabled>Apply correction</button>
+            <button type="button" class="secondary-action">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const visible = Number(params.get("h")) || 0;
+      const backdrop = document.getElementById("backdrop");
+      document.documentElement.classList.add("sheet-open");
+      if (visible) backdrop.style.setProperty("--vv-height", `${visible}px`);
+      const dialog = document.querySelector('[role="dialog"]');
+      // Measure only after the sheet's 0.18s entrance animation, or everything reads 24px low.
+      setTimeout(() => {
+        const frame = { top: 0, bottom: visible || innerHeight, left: 0, right: innerWidth };
+        const hitAt = (el, x, y) => {
+          if (x < frame.left || x > frame.right || y < frame.top || y > frame.bottom) return false;
+          const top = document.elementFromPoint(x, y);
+          return Boolean(top) && (top === el || el.contains(top));
+        };
+        // Fully visible and tappable: the whole box inside the frame, and the centre and all four
+        // corners (inset 3px) land on the element, so a half-clipped control does not count.
+        const hit = (el) => {
+          const r = el.getBoundingClientRect();
+          if (r.left < frame.left - 1 || r.right > frame.right + 1) return false;
+          if (r.top < frame.top - 1 || r.bottom > frame.bottom + 1) return false;
+          return [
+            [r.left + r.width / 2, r.top + r.height / 2],
+            [r.left + 3, r.top + 3],
+            [r.right - 3, r.top + 3],
+            [r.left + 3, r.bottom - 3],
+            [r.right - 3, r.bottom - 3],
+          ].every(([x, y]) => hitAt(el, x, y));
+        };
+        const userReveal = (el, toStart) => {
+          for (let a = el.parentElement; a && a !== document.documentElement; a = a.parentElement) {
+            const overflowY = getComputedStyle(a).overflowY;
+            if (
+              (overflowY !== "auto" && overflowY !== "scroll") ||
+              a.scrollHeight <= a.clientHeight
+            )
+              continue;
+            if (toStart) {
+              a.scrollTop = 0;
+              continue;
+            }
+            const box = a.getBoundingClientRect();
+            const r = el.getBoundingClientRect();
+            if (r.top < box.top) a.scrollTop -= box.top - r.top;
+            else if (r.bottom > box.bottom) a.scrollTop += r.bottom - box.bottom;
+          }
+        };
+        const reason = document.getElementById("correction-reason");
+        reason.scrollIntoView({ block: "nearest", inline: "nearest" }); // what SheetDialog does on focus; focus() itself is skipped so no real keyboard hides the readout
+        const rr = reason.getBoundingClientRect();
+        const firstLine = hitAt(
+          reason,
+          rr.left + rr.width / 2,
+          rr.top + Math.min(12, rr.height / 2),
+        );
+        const reach = {};
+        const detail = [];
+        for (const [name, el, toStart] of [
+          ["title", dialog.querySelector("h2"), true],
+          ["reason", reason, false],
+          ["apply", dialog.querySelector(".primary-action"), false],
+          ["cancel", dialog.querySelector(".secondary-action"), false],
+        ]) {
+          userReveal(el, toStart);
+          reach[name] = hit(el);
+          const r = el.getBoundingClientRect();
+          const at = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+          detail.push(
+            `${name}: y=${Math.round(r.top)}..${Math.round(r.bottom)} sheetScroll=${Math.round(dialog.scrollTop)} at=${at ? at.tagName + "." + at.className : "none"}`,
+          );
+        }
+        const cs = getComputedStyle(backdrop);
+        const lines = [
+          `css=${css} visible=${visible || "full"}px inner=${innerWidth}x${innerHeight}`,
+          `containerType=${cs.containerType || "(unsupported)"} supportsCQ=${CSS.supports("container-type", "size")}`,
+          `sheet overflowY=${getComputedStyle(dialog).overflowY} body clientH=${dialog.querySelector(".sheet-body").clientHeight}`,
+          `reasonFirstLineVisible=${firstLine}`,
+          `reachable title=${reach.title} reason=${reach.reason} apply=${reach.apply} cancel=${reach.cancel}`,
+          `backdrop y=${Math.round(backdrop.getBoundingClientRect().top)}..${Math.round(backdrop.getBoundingClientRect().bottom)} sheet y=${Math.round(dialog.getBoundingClientRect().top)}..${Math.round(dialog.getBoundingClientRect().bottom)} pad-top=${cs.paddingTop}`,
+          ...detail,
+          `VERDICT ${firstLine && reach.title && reach.reason && reach.apply && reach.cancel ? "PASS" : "FAIL"}`,
+        ];
+        const out = document.getElementById("result");
+        out.style.top = `${(visible || 0) + 8}px`;
+        out.textContent = lines.join("\n");
+        document.title = lines[lines.length - 1];
+      }, 700);
+    </script>
+  </body>
+</html>

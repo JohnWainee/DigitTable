@@ -1,0 +1,393 @@
+{
+  "fixed_full_audit": {
+    "ok": true,
+    "summary": {
+      "states": 150,
+      "controlsAudited": 1434,
+      "controlIssues": 0,
+      "overflowStates": 0,
+      "axeHardViolations": 0,
+      "axeBestPractice": [
+        "anon/route-claim-no-such-room@phone: page-has-heading-one"
+      ],
+      "failures": 0
+    },
+    "failures": [],
+    "vvScenarios": [
+      {
+        "scenario": "vv-keyboard-landscape-90",
+        "size": "844x390",
+        "visibleHeight": 90,
+        "checks": {
+          "dialogInsideVisualViewport": true,
+          "reasonFirstLineVisibleWhenKeyboardOpens": true,
+          "titleReachable": true,
+          "reasonReachable": true,
+          "applyReachable": true,
+          "cancelReachable": true,
+          "actionTargets44": true,
+          "noPageOverflow": true
+        },
+        "reach": {
+          "title": true,
+          "reason": true,
+          "apply": true,
+          "cancel": true
+        }
+      },
+      {
+        "scenario": "vv-keyboard-landscape-140",
+        "size": "844x390",
+        "visibleHeight": 140,
+        "checks": {
+          "dialogInsideVisualViewport": true,
+          "reasonFirstLineVisibleWhenKeyboardOpens": true,
+          "titleReachable": true,
+          "reasonReachable": true,
+          "applyReachable": true,
+          "cancelReachable": true,
+          "actionTargets44": true,
+          "noPageOverflow": true
+        },
+        "reach": {
+          "title": true,
+          "reason": true,
+          "apply": true,
+          "cancel": true
+        }
+      },
+      {
+        "scenario": "vv-keyboard-landscape-se-130",
+        "size": "667x375",
+        "visibleHeight": 130,
+        "checks": {
+          "dialogInsideVisualViewport": true,
+          "reasonFirstLineVisibleWhenKeyboardOpens": true,
+          "titleReachable": true,
+          "reasonReachable": true,
+          "applyReachable": true,
+          "cancelReachable": true,
+          "actionTargets44": true,
+          "noPageOverflow": true
+        },
+        "reach": {
+          "title": true,
+          "reason": true,
+          "apply": true,
+          "cancel": true
+        }
+      },
+      {
+        "scenario": "vv-keyboard-ipad-landscape-266",
+        "size": "1024x768",
+        "visibleHeight": 266,
+        "checks": {
+          "dialogInsideVisualViewport": true,
+          "reasonFirstLineVisibleWhenKeyboardOpens": true,
+          "titleReachable": true,
+          "reasonReachable": true,
+          "applyReachable": true,
+          "cancelReachable": true,
+          "actionTargets44": true,
+          "noPageOverflow": true
+        },
+        "reach": {
+          "title": true,
+          "reason": true,
+          "apply": true,
+          "cancel": true
+        }
+      },
+      {
+        "scenario": "vv-keyboard-phone-small-300",
+        "size": "320x568",
+        "visibleHeight": 300,
+        "checks": {
+          "dialogInsideVisualViewport": true,
+          "reasonFirstLineVisibleWhenKeyboardOpens": true,
+          "titleReachable": true,
+          "reasonReachable": true,
+          "applyReachable": true,
+          "cancelReachable": true,
+          "actionTargets44": true,
+          "noPageOverflow": true
+        },
+        "reach": {
+          "title": true,
+          "reason": true,
+          "apply": true,
+          "cancel": true
+        }
+      },
+      {
+        "scenario": "vv-keyboard-phone-small-330",
+        "size": "320x568",
+        "visibleHeight": 330,
+        "checks": {
+          "dialogInsideVisualViewport": true,
+          "reasonFirstLineVisibleWhenKeyboardOpens": true,
+          "titleReachable": true,
+          "reasonReachable": true,
+          "applyReachable": true,
+          "cancelReachable": true,
+          "actionTargets44": true,
+          "noPageOverflow": true
+        },
+        "reach": {
+          "title": true,
+          "reason": true,
+          "apply": true,
+          "cancel": true
+        }
+      },
+      {
+        "scenario": "vv-keyboard-phone-portrait-470",
+        "size": "375x812",
+        "visibleHeight": 470,
+        "checks": {
+          "dialogInsideVisualViewport": true,
+          "reasonFirstLineVisibleWhenKeyboardOpens": true,
+          "titleReachable": true,
+          "reasonReachable": true,
+          "applyReachable": true,
+          "cancelReachable": true,
+          "actionTargets44": true,
+          "noPageOverflow": true
+        },
+        "reach": {
+          "title": true,
+          "reason": true,
+          "apply": true,
+          "cancel": true
+        }
+      }
+    ],
+    "consoleErrors": {
+      "gm": 0,
+      "player": 0,
+      "table": 0,
+      "anon": 0
+    }
+  },
+  "pre_fix_negative_control_modal_only": {
+    "ok": false,
+    "summary": {
+      "states": 0,
+      "controlsAudited": 0,
+      "controlIssues": 0,
+      "overflowStates": 0,
+      "axeHardViolations": 0,
+      "axeBestPractice": [],
+      "failures": 13
+    },
+    "failures": [
+      {
+        "scope": "modal-vv-keyboard-landscape-90",
+        "message": "reasonFirstLineVisibleWhenKeyboardOpens failed"
+      },
+      {
+        "scope": "modal-vv-keyboard-landscape-90",
+        "message": "titleReachable failed"
+      },
+      {
+        "scope": "modal-vv-keyboard-landscape-90",
+        "message": "reasonReachable failed"
+      },
+      {
+        "scope": "modal-vv-keyboard-landscape-90",
+        "message": "applyReachable failed"
+      },
+      {
+        "scope": "modal-vv-keyboard-landscape-90",
+        "message": "cancelReachable failed"
+      },
+      {
+        "scope": "modal-vv-keyboard-landscape-140",
+        "message": "reasonFirstLineVisibleWhenKeyboardOpens failed"
+      },
+      {
+        "scope": "modal-vv-keyboard-landscape-140",
+        "message": "reasonReachable failed"
+      },
+      {
+        "scope": "modal-vv-keyboard-landscape-140",
+        "message": "applyReachable failed"
+      },
+      {
+        "scope": "modal-vv-keyboard-landscape-140",
+        "message": "cancelReachable failed"
+      },
+      {
+        "scope": "modal-vv-keyboard-landscape-se-130",
+        "message": "reasonFirstLineVisibleWhenKeyboardOpens failed"
+      },
+      {
+        "scope": "modal-vv-keyboard-landscape-se-130",
+        "message": "reasonReachable failed"
+      },
+      {
+        "scope": "modal-vv-keyboard-landscape-se-130",
+        "message": "applyReachable failed"
+      },
+      {
+        "scope": "modal-vv-keyboard-landscape-se-130",
+        "message": "cancelReachable failed"
+      }
+    ],
+    "vvScenarios": [
+      {
+        "scenario": "vv-keyboard-landscape-90",
+        "size": "844x390",
+        "visibleHeight": 90,
+        "checks": {
+          "dialogInsideVisualViewport": true,
+          "reasonFirstLineVisibleWhenKeyboardOpens": false,
+          "titleReachable": false,
+          "reasonReachable": false,
+          "applyReachable": false,
+          "cancelReachable": false,
+          "actionTargets44": true,
+          "noPageOverflow": true
+        },
+        "reach": {
+          "title": false,
+          "reason": false,
+          "apply": false,
+          "cancel": false
+        }
+      },
+      {
+        "scenario": "vv-keyboard-landscape-140",
+        "size": "844x390",
+        "visibleHeight": 140,
+        "checks": {
+          "dialogInsideVisualViewport": true,
+          "reasonFirstLineVisibleWhenKeyboardOpens": false,
+          "titleReachable": true,
+          "reasonReachable": false,
+          "applyReachable": false,
+          "cancelReachable": false,
+          "actionTargets44": true,
+          "noPageOverflow": true
+        },
+        "reach": {
+          "title": true,
+          "reason": false,
+          "apply": false,
+          "cancel": false
+        }
+      },
+      {
+        "scenario": "vv-keyboard-landscape-se-130",
+        "size": "667x375",
+        "visibleHeight": 130,
+        "checks": {
+          "dialogInsideVisualViewport": true,
+          "reasonFirstLineVisibleWhenKeyboardOpens": false,
+          "titleReachable": true,
+          "reasonReachable": false,
+          "applyReachable": false,
+          "cancelReachable": false,
+          "actionTargets44": true,
+          "noPageOverflow": true
+        },
+        "reach": {
+          "title": true,
+          "reason": false,
+          "apply": false,
+          "cancel": false
+        }
+      },
+      {
+        "scenario": "vv-keyboard-ipad-landscape-266",
+        "size": "1024x768",
+        "visibleHeight": 266,
+        "checks": {
+          "dialogInsideVisualViewport": true,
+          "reasonFirstLineVisibleWhenKeyboardOpens": true,
+          "titleReachable": true,
+          "reasonReachable": true,
+          "applyReachable": true,
+          "cancelReachable": true,
+          "actionTargets44": true,
+          "noPageOverflow": true
+        },
+        "reach": {
+          "title": true,
+          "reason": true,
+          "apply": true,
+          "cancel": true
+        }
+      },
+      {
+        "scenario": "vv-keyboard-phone-small-300",
+        "size": "320x568",
+        "visibleHeight": 300,
+        "checks": {
+          "dialogInsideVisualViewport": true,
+          "reasonFirstLineVisibleWhenKeyboardOpens": true,
+          "titleReachable": true,
+          "reasonReachable": true,
+          "applyReachable": true,
+          "cancelReachable": true,
+          "actionTargets44": true,
+          "noPageOverflow": true
+        },
+        "reach": {
+          "title": true,
+          "reason": true,
+          "apply": true,
+          "cancel": true
+        }
+      },
+      {
+        "scenario": "vv-keyboard-phone-small-330",
+        "size": "320x568",
+        "visibleHeight": 330,
+        "checks": {
+          "dialogInsideVisualViewport": true,
+          "reasonFirstLineVisibleWhenKeyboardOpens": true,
+          "titleReachable": true,
+          "reasonReachable": true,
+          "applyReachable": true,
+          "cancelReachable": true,
+          "actionTargets44": true,
+          "noPageOverflow": true
+        },
+        "reach": {
+          "title": true,
+          "reason": true,
+          "apply": true,
+          "cancel": true
+        }
+      },
+      {
+        "scenario": "vv-keyboard-phone-portrait-470",
+        "size": "375x812",
+        "visibleHeight": 470,
+        "checks": {
+          "dialogInsideVisualViewport": true,
+          "reasonFirstLineVisibleWhenKeyboardOpens": true,
+          "titleReachable": true,
+          "reasonReachable": true,
+          "applyReachable": true,
+          "cancelReachable": true,
+          "actionTargets44": true,
+          "noPageOverflow": true
+        },
+        "reach": {
+          "title": true,
+          "reason": true,
+          "apply": true,
+          "cancel": true
+        }
+      }
+    ],
+    "consoleErrors": {
+      "gm": 0,
+      "player": 0,
+      "table": 0,
+      "anon": 0
+    }
+  }
+}

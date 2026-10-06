@@ -3,7 +3,42 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-10-06 by Codex on `codex/reskin-fi-integration-20261006` at `2cad086`; the reviewed Back-dismiss fix was fast-forwarded from `sonnet-fm/reskin-orchestrated-20261006` and pushed. No merge to `main` or deployment was made.
+- **Last updated:** 2026-10-06 by `sonnet-fn` on `sonnet-fn/reskin-mobile-audit-20261006` (base `9c1d36e`): CSS fix for the correction sheet with very little visible height (see the first section below). Earlier: Codex on `codex/reskin-fi-integration-20261006` at `2cad086` fast-forwarded the reviewed Back-dismiss fix from `sonnet-fm`. No merge to `main` or deployment was made.
+
+## Correction sheet with very little visible height (2026-10-06, sonnet-fn) — candidate on top of `9c1d36e`
+
+Audit of every pop-out (one modal `SheetDialog`, six native `<select>`s, one `<details>` disclosure) found one
+unaddressed defect in this lineage: with the iOS keyboard up on a landscape phone (~70-140px visible; iOS
+shrinks only the visual viewport) the pinned header/footer squeezed `.sheet-body` to its padding, the Apply /
+Cancel row was clipped by `overflow: hidden` (unreachable by touch) and the focused reason field was hidden.
+The Chrome audit could not see it (its keyboard emulation shrinks the layout viewport and it only compared
+bounding boxes). Fix, CSS only: `.sheet-backdrop` is a `size` container (`sheet-box`); below 18rem of visible
+height the whole sheet scrolls as one page. No JS/markup/hook, engine, contracts, templates, functions,
+authorization, projection, Firebase, asset or dependency change. Detail, tables and screenshots:
+[`docs/evidence/fn-keyboard-visual-viewport/`](docs/evidence/fn-keyboard-visual-viewport/README.md); review:
+[`docs/reviews/2026-10-06-fn-keyboard-visual-viewport-independent-review.md`](docs/reviews/2026-10-06-fn-keyboard-visual-viewport-independent-review.md)
+(approve with changes; all findings addressed).
+
+- `ui-audit.mjs`: new `vv-keyboard-*` scenarios stand in for `window.visualViewport` (restored afterwards), a
+  scroll-aware reachability probe (only user-scrollable ancestors; whole control in frame; centre + corners
+  hit-testable), and two older "visible without scrolling" checks converted to the same model. Negative control
+  (pre-fix CSS, same script): 13 failing checks; fixed: full audit **150 states, 1,434 controls, 0 control
+  issues, 0 overflow states, 0 hard axe violations, 0 failures** (an earlier run on the same fix: 1,422
+  controls; the count varies with random-roll branches).
+- Real iOS 26.5 Mobile Safari (iPhone 17 Pro and iPad Pro 11" simulators), supplied-height probe page: pre-fix
+  FAIL at 140px and 90px, fixed PASS; iPad 266px pre-fix label clipped, fixed shows label, field and actions.
+  It does not raise a real keyboard.
+- Gates on the final code: `npm run check` passed (format, lint, typecheck, **706 tests**, 11 todo; +4 contract
+  tests, mutation-checked); `npm run build` passed (existing chunk-size advisory only);
+  `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` passed **18 + 86 + 4** against
+  `demo-digitable` on default ports (no production resource touched).
+- Not run: real keyboard / physical iPhone or iPad, real Android Chrome, assistive technology.
+- Overlap: unmerged `sonnet-fg` (`f3fc981`) solves the same problem with a JS `data-compact` attribute and the
+  same 18rem threshold, plus other changes not in this lineage. Pick one mechanism when reconciling; do not apply
+  both.
+
+**Next action:** a physical landscape iPhone (and iPad) pass with the real keyboard on the GM correction
+sheet, and John's decision on reconciling this with the `fc`/`fg` lineage. Nothing was merged or deployed.
 
 ## Text-entry-hint integration candidate (2026-10-06) — unmerged, emulator follow-up required
 
