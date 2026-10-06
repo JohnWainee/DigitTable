@@ -15,6 +15,32 @@ This isolated branch applies the focused exact-text-entry change from reviewed s
 
 **Next action:** Rerun the full emulator suite in a clean/remapped local environment, then capture integration-specific browser/device evidence before considering this branch for deployment. Do not merge or deploy without John’s direction.
 
+## Automation deployed-staging playthrough re-verification (2026-10-06)
+
+The named `digitable-staging-playthrough` Sonnet session was absent from the
+current Claude roster, so this run did not infer an outcome from its process
+state. It first recovered the committed October 5 record, then directly reran
+the deployed smoke at `https://digitable.signal-bleed.com`:
+
+```sh
+node scripts/playtest/two-device-smoke.mjs \
+  --base https://digitable.signal-bleed.com \
+  --out /private/tmp/digitable-staging-playthrough-20261006-hourly-0610 \
+  --reload --port 9593
+```
+
+The run completed from 2026-10-06T06:12:07Z to 06:12:44Z with **17/17**
+GM/player/table steps passing. It covered fresh session creation, player and
+table admission, character claim, a complete declaration/opposition/allocation
+flow, pause/resume, scene advance, role guidance, direct resume, reload
+recovery, and the 375/768/1024/1280/1920 px overflow sweep. All browser
+contexts reported zero console errors and zero failed requests. The redacted,
+durable summary is in
+[`docs/evidence/dt-staging-playthrough-20261006-hourly/`](docs/evidence/dt-staging-playthrough-20261006-hourly/README.md);
+the raw report remains untracked because it contains an ephemeral room code.
+This verifies only the already deployed staging build: it neither deploys nor
+validates this unmerged integration candidate.
+
 ## Mission
 
 Build DigiTable as a reusable narrative-RPG play surface, with *Eat the Reich* as the first template and Signal Bleed as a behavioral reference.
@@ -26,6 +52,7 @@ Signal Bleed's useful patterns are room codes, GM-seat ownership, shared/GM/priv
 - **Playable staging candidate is online:** Firebase Hosting, Firestore/RTDB rules, and the five `us-west1` callable Functions (`createRoom`, `admitMember`, `claimSeat`, `submitRoomCommand`, `recoverSeat`) are deployed to project `powerglove-1cd23`. Cloud Run invoker bindings were explicitly verified/repaired to permit unauthenticated transport to the callable boundary; every operation still requires and validates Firebase Auth inside the callable pipeline.
 - **Sourcebook roster is production-ready in source:** all six supplied character sheets replace the placeholder roster while preserving stable character IDs for saved-room compatibility. Cigarettes and Cowboy Hat have player-facing marked-use mechanics, and Corpse Eater uses the printed any-1 trigger. Complete roster snapshot coverage and focused mechanics tests protect the source fields.
 - **Live release verification passes:** at 2026-09-24T17:18:01-10:00, the named staging-playthrough report (`/private/tmp/digitable-staging-playthrough-20260925-factory-follow-up/report.json`) recorded all **17/17** GM/player/table workflow steps passing against the deployed staging experience: create, isolated player/table admission, claim, opposed action, pause/resume, scene advance, role guidance, direct resume, reload recovery, original-art loading, zero console/request errors, and no positive horizontal overflow at 375/768/1024/1280/1920 px. This is live deployed-build evidence, not evidence that the newly integrated source change was deployed.
+- **Latest deployed staging verification passes:** at 2026-10-06T06:12:07Z, a direct re-run recorded all **17/17** GM/player/table steps passing, including reload recovery and the 375/768/1024/1280/1920 px overflow sweep, with zero console errors and failed requests. The reproducible, redacted summary is [`docs/evidence/dt-staging-playthrough-20261006-hourly/`](docs/evidence/dt-staging-playthrough-20261006-hourly/README.md). It remains evidence for the deployed staging build only, not for the unmerged integration candidate.
 - **Post-roster mobile audit is complete locally:** the correction-sheet audit trigger is roster-agnostic after the retired visible `Rook` fixture name stopped matching the sourcebook roster. The production-built app plus local `demo-digitable` Auth/Firestore/RTDB/Functions emulators audit at `/private/tmp/digitable-sonnet-w-post-utility-ui-audit-complete/report.json` passed all **150** state captures, **14** sheet scenarios, and **1,530** controls with zero geometry findings, hard axe violations, console errors, or failed requests. It covers the recovery form, both utility-item buttons, all role flows, phone/tablet/desktop/table widths, visual-viewport/safe-area/keyboard/zoom cases, and reduced motion. This is local candidate evidence only; nothing was deployed.
 - **Fifth-review integration gate is clean:** after recording the fifth independent mobile pop-out audit, this integration worktree passed `npm run check` (**692** passing tests, **11** todo), `npm run build` (the existing non-blocking Vite chunk-size warning only), and `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` (**108/108**: 18 testing, 86 Functions, 4 web). The emulator used only `demo-digitable`; no production resource or deployment was touched.
 - **Next action:** John conducts the complete flow on two physical devices, including a lost-identity recovery attempt from a fresh/private browser, and records device/browser evidence. Do not deploy the integrated touch-target/audit change or promote to a separate production Firebase project without explicit direction.
