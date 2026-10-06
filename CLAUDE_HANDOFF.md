@@ -322,6 +322,31 @@ deploy the separate final-reviewed reskin candidate
 `codex/reskin-fq-verified-20261006` (`ccb9f2d`), whose overlapping integration
 lineage still requires John's explicit selection. No product source changed.
 
+## Automation staging playthrough recheck (2026-10-06)
+
+The named `digitable-staging-playthrough` session remains unreadable: `claude
+logs 31f4a4ef` returned `ECONNREFUSED` for its daemon control socket, so the
+missing worker was again treated as a non-result. A direct rerun from the
+reviewed `ccb9f2d` candidate's test harness instead completed successfully:
+
+```sh
+node scripts/playtest/two-device-smoke.mjs \
+  --base https://digitable.signal-bleed.com \
+  --out /private/tmp/digitable-staging-smoke-20261006-hourly-retry \
+  --reload --no-images
+```
+
+All **17/17** GM/player/table steps passed, including fresh-room creation,
+player/table admission, complete action resolution, pause/resume, scene
+advance, direct resume, reload recovery, and the 375/768/1024/1280/1920 px
+overflow sweep. There were no browser console errors or positive overflow.
+The raw report remains outside Git because it contains a one-time room code;
+`--no-images` intentionally blocks the art requests. This is evidence only for
+the currently deployed baseline, not an authorization to deploy or merge any
+reskin candidate. A fresh isolated Sonnet audit lane now exists at
+`sonnet-fs/reskin-orchestrated-20261006`, based on `ccb9f2d`; it was instructed
+to avoid duplicate changes and to pursue only a newly reproducible defect.
+
 ## Mission
 
 Build DigiTable as a reusable narrative-RPG play surface, with *Eat the Reich* as the first template and Signal Bleed as a behavioral reference.
