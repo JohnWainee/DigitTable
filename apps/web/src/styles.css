@@ -1588,6 +1588,41 @@ details ul {
   }
 }
 
+/* Very little visible height: a landscape phone with the on-screen keyboard up. iOS Safari shrinks
+   only the VISUAL viewport for the keyboard (roughly 70-140px stays visible), so no media query can
+   see it; but the backdrop is sized from that viewport (--vv-height), which makes it a fixed-size
+   container whose own height is the honest "how much can the person see". The pinned header and
+   footer alone need more than that: the body was squeezed to its padding and the action row was
+   clipped by the sheet's `overflow: hidden`, out of reach of any touch. Below this height the whole
+   sheet scrolls as one page instead (title, fields, then the action row). The measured height is
+   the backdrop's CONTENT box, so its top padding (1.5rem, 0.5rem on short viewports) and, from
+   40.0625rem up, its bottom padding count too: the layout engages at roughly 20-21rem visible, not
+   18rem. `rem`, so large text reaches it sooner (a 320x568 phone at 200% text enters it with no
+   keyboard). Engines without size container queries keep the pinned layout. */
+.sheet-backdrop {
+  container-type: size;
+  container-name: sheet-box;
+}
+
+@container sheet-box (max-height: 18rem) {
+  .sheet {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-block: 1rem;
+  }
+
+  .sheet-body {
+    flex: none;
+    overflow: visible;
+  }
+
+  .sheet-footer {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
 /* ---------- Larger layouts ---------- */
 
 @media (min-width: 48rem) {
