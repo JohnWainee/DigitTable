@@ -79,6 +79,20 @@ kept outside Git at
 because it contains that run's one-time room code. This is deployed-build
 evidence only, not evidence for any unmerged reskin branch.
 
+The session was still absent in the 10:12Z roster check, so the automation
+again used direct evidence rather than treating that absence as completion.
+`two-device-smoke.mjs --reload --no-images` against the same URL ran from
+**2026-10-06T10:12:17Z** to **10:13:02Z**: **17/17** GM/player/table steps
+passed, including the opening-scene 375px GM check, full action resolution,
+pause/resume, next-scene propagation, direct resume, reload recovery, and the
+375/768/1024/1280/1920px overflow sweep. There were zero console errors and
+no responsive-overflow findings. `--no-images` intentionally blocked the
+original-art requests, so its network entries are expected rather than product
+failures. The raw report remains untracked at
+`/private/tmp/digitable-staging-playthrough-20261006-hourly-1000/report.json`
+because it contains a one-time room code. This verifies the deployed build
+only; it did not merge or deploy the unmerged integration candidate.
+
 ## Mission
 
 Build DigiTable as a reusable narrative-RPG play surface, with *Eat the Reich* as the first template and Signal Bleed as a behavioral reference.
