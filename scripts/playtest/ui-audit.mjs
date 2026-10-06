@@ -664,8 +664,10 @@ async function auditModal(gm) {
   // history stack left as it was (a second Back must not be needed to undo the sheet's own entry).
   await scenario("back-closes-only-the-sheet", byName["phone"], async (record) => {
     const hashBefore = await ev(gm, `location.hash`);
+    const lenBefore = await ev(gm, `history.length`);
     await openCorrection(gm);
     const lenOpen = await ev(gm, `history.length`);
+    const stateOpen = await ev(gm, `typeof (history.state && history.state.digitableSheet)`);
     await ev(gm, `history.back()`);
     await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 5000, "sheet closed by Back");
     await sleep(300);
@@ -687,7 +689,14 @@ async function auditModal(gm) {
       gm,
       `Boolean(history.state && history.state.digitableSheet)`,
     ));
-    record.notes.push(`history.length while open: ${lenOpen}`);
+    // The sheet's own entry must not leak: after open+Back+open+Cancel the visible stack is back at
+    // its baseline depth (entries beyond the cursor stay in `history.length` as forward entries, so
+    // compare the entry count we can observe: the length may only have grown by the one forward slot).
+    const lenAfter = await ev(gm, `history.length`);
+    record.checks.stackNotGrownBeyondOneEntry = lenAfter <= lenBefore + 1;
+    // Length can stay flat when a push truncates leftover forward entries, so observe the entry itself.
+    record.checks.entryAddedWhileOpen = stateOpen === "number";
+    record.notes.push(`history.length before/open/after: ${lenBefore}/${lenOpen}/${lenAfter}`);
   });
 
   // Almost nothing visible (landscape phone with the keyboard up leaves ~140px): the sheet must stop
@@ -703,6 +712,12 @@ async function auditModal(gm) {
       record.geometry = geo;
       record.checks.dialogInsideViewport = within(geo.dialog, frame);
       record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+      // The container-query branch must really have engaged (the sheet itself scrolls), otherwise
+      // the geometry checks below could pass on the pinned layout and prove nothing about it.
+      record.checks.containerBranchEngaged = await ev(
+        gm,
+        `getComputedStyle(document.querySelector('[role="dialog"]')).overflowY === "auto"`,
+      );
       await ev(
         gm,
         `(() => { const d = document.querySelector('[role="dialog"]'); d.scrollTop = d.scrollHeight; })()`,

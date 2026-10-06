@@ -1,6 +1,6 @@
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useState } from "react";
+import { StrictMode, useState } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SheetDialog } from "../../src/shared/SheetDialog.js";
 
@@ -149,6 +149,59 @@ describe("useBackDismiss (through SheetDialog)", () => {
 
     await user.click(screen.getByRole("button", { name: /cancel/i }));
     await waitFor(() => expect(isSheetEntry(window.history.state)).toBe(false));
+  });
+
+  it("under StrictMode (mount, cleanup, mount) pushes exactly one entry and keeps it", async () => {
+    const user = userEvent.setup();
+    render(
+      <StrictMode>
+        <Harness />
+      </StrictMode>,
+    );
+    const push = vi.spyOn(window.history, "pushState");
+    await user.click(screen.getByRole("button", { name: /open sheet/i }));
+    await tick();
+    expect(push).toHaveBeenCalledTimes(1);
+    expect(isSheetEntry(window.history.state)).toBe(true);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("reopening right after a close does not let the late pop dismiss the new sheet", async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+    await user.click(screen.getByRole("button", { name: /open sheet/i }));
+    await user.click(screen.getByRole("button", { name: /cancel/i }));
+    // The deferred history.back() has been issued but its popstate may not have landed yet.
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1));
+    });
+    await user.click(screen.getByRole("button", { name: /open sheet/i }));
+    await tick();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(isSheetEntry(window.history.state)).toBe(true);
+  });
+
+  it("with two sheets open, Back dismisses only the topmost and keeps an entry for the other", async () => {
+    const closedA = vi.fn();
+    const closedB = vi.fn();
+    render(
+      <>
+        <SheetDialog titleId="a" title="Sheet A" onClose={closedA} footer={<span />}>
+          <p>a</p>
+        </SheetDialog>
+        <SheetDialog titleId="b" title="Sheet B" onClose={closedB} footer={<span />}>
+          <p>b</p>
+        </SheetDialog>
+      </>,
+    );
+    await tick();
+    expect(isSheetEntry(window.history.state)).toBe(true);
+    act(() => {
+      window.history.back();
+    });
+    await waitFor(() => expect(closedB).toHaveBeenCalledTimes(1));
+    expect(closedA).not.toHaveBeenCalled();
+    await waitFor(() => expect(isSheetEntry(window.history.state)).toBe(true));
   });
 
   it("reopening after a Back works and pushes a fresh entry", async () => {

@@ -775,7 +775,6 @@ input[type="radio"]:disabled {
   border-color: var(--acid);
   background: rgba(255, 238, 0, 0.14);
   box-shadow: 4px 4px 0 var(--riot-deep);
-  font-weight: 700;
 }
 
 .gear-option:has(:disabled) {
@@ -1889,6 +1888,5 @@ details ul {
   h2,
   legend {
     border: 2px solid CanvasText;
-    forced-color-adjust: auto;
   }
 }

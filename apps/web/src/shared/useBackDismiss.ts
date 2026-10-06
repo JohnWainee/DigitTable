@@ -8,7 +8,8 @@ import { useEffect, useRef } from "react";
  * what had been typed into it, and the whole console were lost. While a sheet is open this hook
  * keeps ONE extra history entry at the same URL on top of the stack:
  *
- * - Back pops that entry, fires `popstate`, and the sheet is dismissed (the page stays put);
+ * - Back pops that entry, fires `popstate`, and the TOPMOST open sheet is dismissed (the page stays
+ *   put); if other sheets remain open the entry is pushed again for them;
  * - closing by Apply, Cancel or Escape removes the entry again (`history.back()`), so the stack is
  *   left exactly as it was found and the visitor does not have to press Back twice later;
  * - if something else navigated away meanwhile (the top entry is no longer ours), nothing is popped.
@@ -18,16 +19,22 @@ import { useEffect, useRef } from "react";
  * outside jsdom (an earlier draft compared identity, passed every jsdom test, and never popped its
  * entry in Chrome; `scripts/playtest/ui-audit.mjs` "back-closes-only-the-sheet" caught it).
  *
- * The entry has the same URL, so the hash router never sees a `hashchange`. One shared entry serves
- * all concurrently open sheets, and its removal is deferred one tick so React StrictMode's
- * mount/cleanup/mount in development reuses it instead of pushing a second one and popping it.
+ * Our own `history.back()` completes asynchronously. Until its `popstate` arrives (`pendingPop`) a
+ * sheet that mounts must not push (the late pop would remove its fresh entry and dismiss it at once);
+ * it is pushed when the pop lands instead.
+ *
+ * The entry has the same URL, so the hash router never sees a `hashchange`. Removal is deferred one
+ * tick so React StrictMode's mount/cleanup/mount in development reuses the entry instead of pushing
+ * a second one and popping it.
  *
  * Presentation only. No game state, projection or authorization is read or written here.
  */
 
+const handlers: Array<() => void> = [];
 let token: number | null = null;
 let nextToken = 1;
-let holders = 0;
+let pendingPop = false;
+let listening = false;
 
 function topEntryIsOurs(): boolean {
   const state: unknown = window.history.state;
@@ -39,6 +46,33 @@ function topEntryIsOurs(): boolean {
   );
 }
 
+function pushEntry(): void {
+  token = nextToken;
+  nextToken += 1;
+  window.history.pushState({ digitableSheet: token }, "", window.location.href);
+}
+
+function ensureEntry(): void {
+  if (pendingPop || topEntryIsOurs()) return;
+  pushEntry();
+}
+
+function onPopState(): void {
+  if (pendingPop) {
+    // Our own deferred `history.back()` has landed; a sheet opened meanwhile gets its entry now.
+    pendingPop = false;
+    if (handlers.length > 0) pushEntry();
+    return;
+  }
+  // We are no longer on our entry: Back (or a swipe) popped it. Dismiss the topmost sheet.
+  if (token !== null && !topEntryIsOurs()) {
+    token = null;
+    const top = handlers[handlers.length - 1];
+    if (handlers.length > 1) pushEntry();
+    top?.();
+  }
+}
+
 export function useBackDismiss(onDismiss: () => void): void {
   const latest = useRef(onDismiss);
   useEffect(() => {
@@ -46,32 +80,27 @@ export function useBackDismiss(onDismiss: () => void): void {
   }, [onDismiss]);
 
   useEffect(() => {
-    holders += 1;
-    if (!topEntryIsOurs()) {
-      token = nextToken;
-      nextToken += 1;
-      window.history.pushState({ digitableSheet: token }, "", window.location.href);
+    const handler = (): void => latest.current();
+    handlers.push(handler);
+    if (!listening) {
+      listening = true;
+      window.addEventListener("popstate", onPopState);
     }
-
-    function onPopState(): void {
-      // We are no longer on our entry: Back (or a swipe) popped it. Dismiss; the entry is gone.
-      if (token !== null && !topEntryIsOurs()) {
-        token = null;
-        latest.current();
-      }
-    }
-    window.addEventListener("popstate", onPopState);
+    ensureEntry();
 
     return () => {
-      window.removeEventListener("popstate", onPopState);
-      holders -= 1;
-      if (holders > 0) return;
+      const index = handlers.indexOf(handler);
+      if (index >= 0) handlers.splice(index, 1);
+      if (handlers.length > 0) return;
       setTimeout(() => {
-        if (holders !== 0 || token === null) return;
+        if (handlers.length !== 0 || token === null) return;
         // Only pop an entry that is still the top one; never undo someone else's navigation.
         const ours = topEntryIsOurs();
         token = null;
-        if (ours) window.history.back();
+        if (ours) {
+          pendingPop = true;
+          window.history.back();
+        }
       }, 0);
     };
   }, []);
