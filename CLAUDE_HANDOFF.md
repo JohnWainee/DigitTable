@@ -3,7 +3,7 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-10-06 by Codex on `codex/reskin-fi-integration-20261006` at `2cad086`; the reviewed Back-dismiss fix was fast-forwarded from `sonnet-fm/reskin-orchestrated-20261006` and pushed. No merge to `main` or deployment was made.
+- **Last updated:** 2026-10-06 by Codex on `codex/reskin-fi-integration-20261006`; the reviewed Back-dismiss fix remains at `2cad086`, and the deployed-staging smoke was independently rerun at 09:15Z. No merge to `main` or deployment was made.
 
 ## Text-entry-hint integration candidate (2026-10-06) — unmerged, emulator follow-up required
 
@@ -67,6 +67,17 @@ durable summary is in
 the raw report remains untracked because it contains an ephemeral room code.
 This verifies only the already deployed staging build: it neither deploys nor
 validates this unmerged integration candidate.
+
+The absent session remains absent in the current Claude roster. The automation
+therefore performed a second direct verification rather than inferring
+completion: `two-device-smoke.mjs --reload --no-images` against the same
+staging URL completed from **2026-10-06T09:15:20Z** to **09:16:05Z** with
+**17/17** steps passing, no positive overflow, and zero console errors or
+failed requests across GM, player, and table. The raw report is deliberately
+kept outside Git at
+`/private/tmp/digitable-staging-playthrough-20261006-hourly-0900/report.json`,
+because it contains that run's one-time room code. This is deployed-build
+evidence only, not evidence for any unmerged reskin branch.
 
 ## Mission
 
