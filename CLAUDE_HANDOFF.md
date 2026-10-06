@@ -501,3 +501,7 @@ emulator `two-device-smoke.mjs --reload` passed **17/17**. See
 This is still an integration candidate, not a deployed build. The open physical-device / AT / Windows
 High Contrast and candidate-against-staging evidence limits above remain real; do not represent the
 deployed build's smoke result as proof for this branch.
+
+## fu fresh audit (2026-10-06, sonnet-fu) — NO SOURCE CHANGE
+
+Branch `sonnet-fu/reskin-fresh-20261006` on `ccb9f2d`. Fresh pop-out/mobile-viewport audit found no new genuine defect, so only evidence and a review record were added: [`docs/reviews/2026-10-06-fu-fresh-popout-audit-review.md`](docs/reviews/2026-10-06-fu-fresh-popout-audit-review.md), [`docs/evidence/fu-fresh-audit/`](docs/evidence/fu-fresh-audit/ui-audit-report.json). Results: `npm run check` 714 passed/11 todo; build passed; `ui-audit.mjs` 150 states, 1,542 controls, 0 hard failures; smoke 17/17 (local emulators); emulators 18/86/4. Open: closed-sheet 320 px/200% text ~5 px overflow (backlog), physical-device/AT/High Contrast, staging playthrough of this build. Not merged or deployed.
