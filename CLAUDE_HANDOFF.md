@@ -3,7 +3,7 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-10-06 by Codex on `codex/reskin-uiux-followup-20261006`: independently reran the deployed staging smoke at 15:16Z after the named Sonnet session's control socket was unavailable. No merge to `main` or deployment was made. A fresh Sonnet lane could not be launched because `claude auth status` reports `loggedIn: false`.
+- **Last updated:** 2026-10-06 by Codex on `codex/reskin-uiux-followup-20261006`: independently reran the deployed staging smoke at 17:20Z after the named Sonnet session's control socket was unavailable. No merge to `main` or deployment was made. Claude OAuth is restored and a fresh isolated Sonnet reskin lane (`c27e4e73`) has started from this verified candidate.
 
 ## Latest automation verification (2026-10-06, `957b40c`)
 
@@ -34,6 +34,31 @@ occurred. Claude OAuth is currently unavailable; no fresh Sonnet lane was starte
 Android keyboard and assistive-technology evidence remains the release gap.
 
 ## Automation staging-playthrough rerun (2026-10-06)
+
+### Fresh verification at 17:20Z
+
+The historical `digitable-staging-playthrough` control socket remains unavailable, so this run
+again verified the deployed build directly rather than inferring completion from a missing
+process. The following command completed successfully:
+
+```sh
+node scripts/playtest/two-device-smoke.mjs \
+  --base https://digitable.signal-bleed.com \
+  --out /private/tmp/digitable-staging-playthrough-20261006-hourly-1640 \
+  --reload --no-images --port 9602
+```
+
+It ran from 2026-10-06T17:20:03Z to 2026-10-06T17:20:40Z with **17/17** GM/player/table
+steps passing: creation, player/table admission, claim, declaration, opposition, allocation,
+pause/resume, round/scene advance, direct resume, reload recovery, and the 375/768/1024/1280/
+1920px responsive overflow sweep. No browser context reported console errors; the overflow probe
+had no positive overflow. `--no-images` deliberately blocks artwork requests. The local JSON
+report and screenshots are not tracked because they include an ephemeral room code. This remains
+verification of the already deployed build—not a deployment or validation of an unmerged reskin.
+
+Claude OAuth is now healthy, and the new isolated Sonnet lane `c27e4e73`
+(`digitable-reskin-uiux-20261006`) has been started from `b26c2cb` for the requested reskin,
+mobile-popout audit, regression coverage, review, and full verification.
 
 The historical `digitable-staging-playthrough` session can no longer be read: its control socket
 at `/tmp/cc-daemon-501/e88de350/control.sock` refuses connections. This run therefore did not infer
