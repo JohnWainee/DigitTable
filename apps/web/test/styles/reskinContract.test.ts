@@ -55,6 +55,22 @@ function mediaBlock(query: string): string {
   throw new Error("unbalanced braces");
 }
 
+/** The text of the first block whose prelude is exactly `prelude` (an `@container …` rule), by brace matching. */
+function atRuleBlock(prelude: string): string {
+  const start = css.indexOf(prelude);
+  if (start < 0) throw new Error(`no ${prelude}`);
+  const open = css.indexOf("{", start);
+  let depth = 0;
+  for (let i = open; i < css.length; i += 1) {
+    if (css[i] === "{") depth += 1;
+    if (css[i] === "}") {
+      depth -= 1;
+      if (depth === 0) return css.slice(open + 1, i);
+    }
+  }
+  throw new Error("unbalanced braces");
+}
+
 function token(name: string): string {
   const match = new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{6})`).exec(css);
   if (!match) throw new Error(`token --${name} not a hex colour in :root`);
@@ -304,9 +320,11 @@ describe("reskin stylesheet contract", () => {
     it("lets the action row scroll on its own and stack to one column, so large text cannot squeeze the body away", () => {
       const footer = rulesFor(/^\.sheet-footer$/);
       // vh base, dvh override behind @supports (an invalid var() would otherwise drop the cap).
+      // The third value is the one-page layout's `none` (`@container sheet-box`, pinned below).
       expect(declaration(footer, "max-height")).toEqual([
         "calc(var(--vv-height, 100vh) * 0.4)",
         "calc(var(--vv-height, 100dvh) * 0.4)",
+        "none",
       ]);
       expect(declaration(footer, "overflow-y")).toContain("auto");
       // Large text: long legends and stepper rows wrap instead of widening the page.
@@ -343,6 +361,31 @@ describe("reskin stylesheet contract", () => {
 
     it("reclaims vertical room on short viewports (landscape phone / keyboard open)", () => {
       expect(mediaBlock("(max-height: 34rem)")).toMatch(/\.sheet-grip\s*\{[^}]*display:\s*none/);
+    });
+
+    it("scrolls the whole sheet as one page when little is visible (landscape phone, keyboard up)", () => {
+      // The backdrop is sized from --vv-height, so as a size container its height is the honest
+      // "how much can the person see", which no media query can know on iOS Safari.
+      const backdrop = rulesFor(/^\.sheet-backdrop$/);
+      expect(declaration(backdrop, "container-type")).toContain("size");
+      expect(declaration(backdrop, "container-name")).toContain("sheet-box");
+      const short = atRuleBlock("@container sheet-box (max-height: 18rem)");
+      // The sheet itself becomes the scroller; the pinned body/footer stop being clipped scrollers.
+      expect(short).toMatch(/\.sheet\s*\{[^}]*overflow-y:\s*auto/);
+      expect(short).toMatch(/\.sheet-body\s*\{[^}]*flex:\s*none[^}]*overflow:\s*visible/);
+      expect(short).toMatch(/\.sheet-footer\s*\{[^}]*max-height:\s*none[^}]*overflow:\s*visible/);
+      // rem, not px: larger text must reach the one-page layout sooner.
+      expect(short).not.toMatch(/px/);
+    });
+
+    it("audits that layout in a real browser at visible heights down to 100px, scroll-aware", () => {
+      expect(uiAudit).toContain("vv-keyboard-");
+      expect(uiAudit).toContain("[288, 200, 140, 100]");
+      expect(uiAudit).toContain("reachableByScrolling");
+      // scrollIntoView would scroll overflow:hidden containers a finger cannot reach.
+      expect(
+        uiAudit.match(/function reachableByScrolling|const reachableByScrolling/g),
+      ).toHaveLength(1);
     });
 
     it("locks root scroll only while a sheet is open, without the page jumping", () => {

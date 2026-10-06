@@ -3,7 +3,36 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-10-06 by Codex on `codex/reskin-fi-integration-20261006`: fast-forwarded the independently reviewed option-row fix `875b69b`, reran all required local gates, and reran the deployed staging smoke at 12:15Z. No merge to `main` or deployment was made.
+- **Last updated (sonnet-fp, newer):** 2026-10-06 on `worktree-digitable-sonnet-fp-reskin-20261006`: short-visible-height sheet fix, see "Short-visible-height sheet fix" below. Previous entry:
+  2026-10-06 by Codex on `codex/reskin-fi-integration-20261006`: fast-forwarded the independently reviewed option-row fix `875b69b`, reran all required local gates, and reran the deployed staging smoke at 12:15Z. No merge to `main` or deployment was made.
+
+## Short-visible-height sheet fix (2026-10-06, sonnet-fp) — unmerged, on `ec2b96a`
+
+Branch `worktree-digitable-sonnet-fp-reskin-20261006`, fast-forwarded to the verified integration
+candidate `ec2b96a` first. Audit of every select (6 native), the `<details>` disclosure and the one
+`SheetDialog` pop-out found one reproducible defect: with ~140px or less visible (landscape phone, iOS
+keyboard up) the pinned header/footer squeezed the body and the Apply/Cancel row was clipped by the
+sheet's `overflow:hidden`. Fixed in CSS only (`.sheet-backdrop` size container + `@container sheet-box
+(max-height: 18rem)` makes the whole sheet scroll). Re-implemented on this lineage; sibling `sonnet-fn`
+`84017f6` (same idea) was **not** merged. The other sibling items (iPad compact, page-dimming seam, route
+h1s) were not reproduced and not touched. Detail and before/after at phone/tablet/desktop/table plus real
+Mobile Safari (iPhone 17 Pro simulator):
+[`docs/evidence/fp-sheet-short-viewport/`](docs/evidence/fp-sheet-short-viewport/README.md); review:
+[`docs/reviews/2026-10-06-sonnet-fp-sheet-short-viewport-independent-review.md`](docs/reviews/2026-10-06-sonnet-fp-sheet-short-viewport-independent-review.md)
+(approve, no P0/P1; P2s recorded).
+
+- Gates (run in an APFS clone under `/private/tmp`, since esbuild hangs under `~/Documents`): `npm run
+  check` **712 passed | 11 todo** (+2; base 710); `npm run build` passed; `PATH=/opt/homebrew/opt/openjdk/bin:$PATH
+  npm run test:emulator` **18 + 86 + 4 passed**; real-Chrome `ui-audit.mjs` on the fixed build **150 states,
+  1,374 controls, 0 failures** (the two already-documented non-gating 200%-text items remain).
+- Negative control: base stylesheet fails 2 contract tests; base bundle fails **12** new `vv-keyboard-*` audit
+  checks; fixed bundle 0. The older keyboard/text audit checks became scroll-aware (`reachableByScrolling`).
+- Behaviour note: the container measures the backdrop content box, so the layout engages at ~20-21rem visible; a
+  320x568 phone at 200% text enters it without a keyboard.
+- Not verified: a real on-screen keyboard or physical device (visible height is stood in via `--vv-*`); print;
+  real forced-colors for this rule. The final CSS comment edit (after review) changed no declaration; the
+  contract test and format were rerun afterward.
+- No merge, deploy, production resource, licensed content, or engine/authorization/privacy change.
 
 ## Automation integration follow-up (2026-10-06, `875b69b`)
 

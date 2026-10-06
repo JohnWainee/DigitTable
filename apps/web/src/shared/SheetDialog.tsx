@@ -71,7 +71,9 @@ export interface SheetDialogProps {
  *   reader can reach the page behind it (`aria-modal` alone is only a hint).
  * - Sized from the *visual* viewport (`useVisualViewportBox`) so it never
  *   slides under an on-screen keyboard or off screen with dynamic browser
- *   chrome; the header and footer stay pinned while only the body scrolls.
+ *   chrome; the header and footer stay pinned while only the body scrolls, until the visible
+ *   height drops below ~18rem (`@container sheet-box` in `styles.css`), where the whole sheet
+ *   scrolls as one page so nothing is squeezed out or clipped.
  * - Root scrolling is locked while it is open, and a focused text field is
  *   scrolled back into view when the keyboard appears.
  * - Focus moves to the heading on open and returns to the trigger on close;

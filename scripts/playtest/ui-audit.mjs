@@ -419,6 +419,36 @@ function within(box, frame, tolerance = 1) {
   );
 }
 
+/**
+ * Whether a person could actually bring `selector` fully into view inside the open sheet: it scrolls
+ * every ancestor that really scrolls (overflow auto/scroll, as a finger would) to centre the control,
+ * then requires the control to lie inside the frame AND inside every clipping ancestor, including
+ * `overflow: hidden` ones, which no finger can scroll. (`scrollIntoView` is deliberately not used: it
+ * scrolls overflow:hidden containers too, so it reports clipped controls as reachable.)
+ */
+const reachableByScrolling = (selector, frame) => `(() => {
+  const el = document.querySelector('[role="dialog"]').querySelector(${JSON.stringify(selector)});
+  if (!el) return { ok: false, why: "control not found" };
+  const clips = [];
+  for (let p = el.parentElement; p; p = p.parentElement) {
+    const o = getComputedStyle(p);
+    if (/(auto|scroll)/.test(o.overflowY)) {
+      const pr = p.getBoundingClientRect(), er = el.getBoundingClientRect();
+      p.scrollTop += (er.top + er.height / 2) - (pr.top + pr.height / 2);
+      clips.push({ p, kind: "scroll" });
+    } else if (o.overflowY === "hidden" || o.overflowY === "clip") clips.push({ p, kind: "hidden" });
+  }
+  const r = el.getBoundingClientRect();
+  const frame = ${JSON.stringify(frame)};
+  const why = [];
+  if (r.top < frame.top - 1 || r.bottom > frame.bottom + 1 || r.left < frame.left - 1 || r.right > frame.right + 1) why.push("outside the visible frame");
+  for (const { p, kind } of clips) {
+    const pr = p.getBoundingClientRect();
+    if (r.top < pr.top - 1 || r.bottom > pr.bottom + 1) why.push("clipped by ." + String(p.className).split(" ")[0] + " (" + kind + ")");
+  }
+  return { ok: why.length === 0, why: why.join("; "), top: Math.round(r.top), bottom: Math.round(r.bottom), height: Math.round(r.height), width: Math.round(r.width) };
+})()`;
+
 async function openCorrection(gm) {
   // The roster is content-owned and has changed since this audit was first written. Audit the
   // correction affordance itself rather than one fixture character, so the mobile sheet gate
@@ -496,12 +526,20 @@ async function auditModal(gm) {
       await sleep(400);
       const kb = await ev(gm, MODAL_GEOMETRY);
       const kbFrame = { left: 0, top: 0, right: shrunk.width, bottom: shrunk.height };
+      // Below ~18rem of visible height the whole sheet scrolls as one page, so "visible" means
+      // "reachable by scrolling" here, not "on screen without scrolling".
+      const kbApply = await ev(gm, reachableByScrolling(".sheet-actions .primary-action", kbFrame));
+      const kbCancel = await ev(
+        gm,
+        reachableByScrolling(".sheet-actions .secondary-action", kbFrame),
+      );
+      const kbReason = await ev(gm, reachableByScrolling("#correction-reason", kbFrame));
       record.keyboard = {
         size: `${shrunk.width}x${shrunk.height}`,
         checks: {
           dialogInsideViewport: within(kb.dialog, kbFrame),
-          focusedFieldVisible: within(kb.reason, kbFrame),
-          actionsVisible: within(kb.apply, kbFrame) && within(kb.cancel, kbFrame),
+          focusedFieldVisible: kbReason.ok,
+          actionsVisible: kbApply.ok && kbCancel.ok,
           noPageOverflow: kb.pageOverflowPx <= 1,
         },
       };
@@ -697,20 +735,20 @@ async function auditModal(gm) {
             `(() => { const w = document.documentElement.clientWidth; return [...document.querySelectorAll("body *")].filter(e => (e.getBoundingClientRect().right > w + 1 || e.scrollWidth > e.clientWidth + 1) && getComputedStyle(e).display !== "none").slice(0, 10).map(e => e.tagName.toLowerCase() + (e.className && typeof e.className === "string" ? "." + e.className.split(" ").join(".") : "") + " right=" + Math.round(e.getBoundingClientRect().right) + " sw=" + e.scrollWidth + "/" + e.clientWidth + " :: " + (e.textContent || "").trim().slice(0, 30)); })()`,
           );
         }
+        // Vacuously true once the whole sheet scrolls as one page (the body is then unclipped); the
+        // reachability checks below are what gate in that layout.
         record.checks.bodyKeepsRoom = geo.body.clientHeight >= 96;
-        // The action row may scroll on its own at this size, but its buttons must be reachable.
-        await ev(
+        // The action row (or, when little height is visible, the whole sheet) may scroll at this
+        // size, but every control must be reachable by scrolling.
+        const apply = await ev(gm, reachableByScrolling(".sheet-actions .primary-action", frame));
+        const cancel = await ev(
           gm,
-          `(() => { const f = document.querySelector(".sheet-footer"); f.scrollTop = f.scrollHeight; })()`,
+          reachableByScrolling(".sheet-actions .secondary-action", frame),
         );
-        const end = await ev(gm, MODAL_GEOMETRY);
-        record.checks.actionsReachable = within(end.apply, frame) && within(end.cancel, frame);
-        await ev(
-          gm,
-          `(() => { const b = document.querySelector(".sheet-body"); b.scrollTop = b.scrollHeight; })()`,
-        );
-        const bottom = await ev(gm, MODAL_GEOMETRY);
-        record.checks.reasonReachable = within(bottom.reason, frame);
+        record.checks.actionsReachable = apply.ok && cancel.ok;
+        const reason = await ev(gm, reachableByScrolling("#correction-reason", frame));
+        record.checks.reasonReachable = reason.ok;
+        record.reach = { apply, cancel, reason };
         record.textPx = px;
         record.screenshot = await screenshot(
           gm,
@@ -720,6 +758,47 @@ async function auditModal(gm) {
       },
       { informationalChecks },
     );
+  }
+
+  // iOS Safari's on-screen keyboard shrinks only the VISUAL viewport, and on a landscape phone it
+  // leaves roughly 70-200px. Headless Chrome cannot produce that, so stand in for what
+  // `useVisualViewportBox` does with it: the same --vv-* variables on the backdrop. Pinned header and
+  // footer alone need more than ~140px, so before the fix the action row was clipped by the sheet's
+  // overflow:hidden (unreachable by touch) and the reason field by a 24px body. Every control must
+  // stay reachable by scrolling, inside the visible frame, at every visible height.
+  const landscapeSmall = { name: "phone-667x375", width: 667, height: 375, mobile: true };
+  for (const vp of [byName["phone-landscape"], landscapeSmall]) {
+    for (const visibleHeight of [288, 200, 140, 100]) {
+      await scenario(`vv-keyboard-${vp.name}-${visibleHeight}`, vp, async (record) => {
+        await openCorrection(gm);
+        await ev(
+          gm,
+          `(() => { const b = document.querySelector(".sheet-backdrop"); b.style.setProperty("--vv-top", "0px"); b.style.setProperty("--vv-left", "0px"); b.style.setProperty("--vv-width", "${vp.width}px"); b.style.setProperty("--vv-height", "${visibleHeight}px"); document.querySelector("#correction-reason").focus(); })()`,
+        );
+        await sleep(300);
+        const frame = { left: 0, top: 0, right: vp.width, bottom: visibleHeight };
+        const geo = await ev(gm, MODAL_GEOMETRY);
+        record.geometry = geo;
+        record.checks.dialogInsideVisibleFrame = within(geo.dialog, frame);
+        record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+        const reason = await ev(gm, reachableByScrolling("#correction-reason", frame));
+        const apply = await ev(gm, reachableByScrolling(".sheet-actions .primary-action", frame));
+        const cancel = await ev(
+          gm,
+          reachableByScrolling(".sheet-actions .secondary-action", frame),
+        );
+        record.reach = { reason, apply, cancel };
+        record.checks.reasonReachable = reason.ok;
+        record.checks.applyReachable = apply.ok;
+        record.checks.cancelReachable = cancel.ok;
+        record.checks.actionTargets44 = apply.height >= 43.5 && apply.width >= 43.5;
+        record.screenshot = await screenshot(
+          gm,
+          `gm-correction-vv-${vp.name}-${visibleHeight}.jpg`,
+          { fullPage: false },
+        );
+      });
+    }
   }
   await applyViewport(gm, byName["desktop"]);
 }
