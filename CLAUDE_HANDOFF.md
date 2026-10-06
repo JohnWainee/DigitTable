@@ -3,7 +3,7 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-10-06 by Claude Sonnet on `sonnet-fm/reskin-orchestrated-20261006` (base `6c12fbc`); no merge or deployment was made.
+- **Last updated:** 2026-10-06 by Codex on `codex/reskin-fi-integration-20261006` at `2cad086`; the reviewed Back-dismiss fix was fast-forwarded from `sonnet-fm/reskin-orchestrated-20261006` and pushed. No merge to `main` or deployment was made.
 
 ## Text-entry-hint integration candidate (2026-10-06) — unmerged, emulator follow-up required
 
@@ -15,27 +15,32 @@ This isolated branch applies the focused exact-text-entry change from reviewed s
 
 **Next action:** Rerun the full emulator suite in a clean/remapped local environment, then capture integration-specific browser/device evidence before considering this branch for deployment. Do not merge or deploy without John’s direction.
 
-## Sheet Back-dismiss re-implementation (2026-10-06, sonnet-fm) — unmerged
+## Sheet Back-dismiss re-implementation (2026-10-06, sonnet-fm) — integrated candidate
 
 Audit of the ink-black reskin pop-outs on `6c12fbc` found one remaining defect: the modal `SheetDialog`
 (GM correction sheet) owned no history entry, so browser Back left the director console and destroyed
 the sheet and any typed reason. This lineage lacks the earlier sibling fix (`218bfea` is not an
-ancestor); it was re-implemented here (not merged) as `apps/web/src/shared/useBackDismiss.ts`, wired in
+ancestor); it was re-implemented as `apps/web/src/shared/useBackDismiss.ts`, wired in
 `SheetDialog`. Presentation only; engine, contracts, templates, authorization, projection, Firebase,
 assets and dependencies are untouched. Detail and redacted results:
 [`docs/evidence/fm-back-dismiss/`](docs/evidence/fm-back-dismiss/README.md); review:
 [`docs/reviews/2026-10-06-fm-back-dismiss-independent-review.md`](docs/reviews/2026-10-06-fm-back-dismiss-independent-review.md).
 
 - `npm run check`: **702 tests passed** (11 todo; +4 new, mutation-checked). `npm run build`: passed.
-- `npm run test:emulator` (`demo-digitable`): **18 + 86 + 4 passed**.
+- Fresh Codex rerun: `npm run check` passed (**702 tests**, 11 todo), `npm run build` passed
+  (existing chunk advisory), and `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator`
+  passed (**18 + 86 + 4**) against `demo-digitable`.
 - Real Chrome `ui-audit.mjs` against emulators + Vite dev server: 150 states, 1,494 controls, 0 failures;
   new `back-dismiss` scenario passes, and fails (`routeUnchanged`, `consoleStillMounted`) with the hook disabled.
 - Not run: real iOS Safari / physical device. Other sibling fixes (option rows, forced-colors, landscape
   keyboard, iPad compact, dimming) are still absent from this lineage and need John's merge decision.
 
-**Next action:** John decides whether to merge the remaining reviewed sibling pop-out commits
-(`22dad04`..`f0e5d7c`, `1409e59`); if so, resolve the overlap with this independent Back-dismiss
-implementation (same behavior, different SHA) rather than keeping both.
+The integration branch was fast-forwarded and pushed at `2cad086` after a separate Codex review
+found no P0/P1 issue. It remains unmerged and undeployed.
+
+**Next action:** Before any deployment, perform physical iOS/Android and assistive-technology checks.
+Do not blindly merge the remaining reviewed sibling pop-out commits (`22dad04`..`f0e5d7c`,
+`1409e59`): first reconcile their overlap with this independent Back-dismiss implementation.
 
 ## Automation deployed-staging playthrough re-verification (2026-10-06)
 
