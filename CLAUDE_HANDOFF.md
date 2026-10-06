@@ -796,6 +796,13 @@ When pausing or finishing a material unit:
 
 ## Integrated verification and next action
 
+### Fresh deployed staging playthrough (2026-10-06, Codex hourly follow-up)
+
+- The named `digitable-staging-playthrough` Sonnet session was not queryable: `claude logs 31f4a4ef` returned `ECONNREFUSED` for its daemon control socket. Its disappearance was therefore not treated as a completed playthrough.
+- Independently reran `node scripts/playtest/two-device-smoke.mjs --base https://digitable.signal-bleed.com --out /private/tmp/digitable-staging-smoke-20261006-2130-complete --reload --no-images` from the reviewed `ccb9f2d` harness. It passed **17/17** GM/player/table steps: create, scene load, isolated player/table admission, claim, cross-device propagation, opposed action, allocation, pause/resume, scene advance, role guidance, direct Resume, and reload recovery. The 375/768/1024/1280/1920 px sweep found no positive horizontal overflow on GM, player, or table; no console errors occurred. The private report and screenshots remain under the temporary output path; no room codes are committed.
+- The fresh isolated Sonnet audit lane (`sonnet-fs/reskin-orchestrated-20261006`, commit `7329aa4`) independently rechecked the candidate's six native selects, `SheetDialog`, details disclosure, and row pickers. It found no new source defect and made no source change; its full local/emulator/browser evidence is retained in that branch's handoff. This does not prove the un-deployed reskin candidate is staged.
+- Remaining release evidence gaps are unchanged: candidate-specific staging requires an authorized deployment path, and physical iOS Safari/Android keyboard, assistive-technology, and Windows High Contrast passes are still outstanding. Do not infer those from headless Chrome.
+
 - `npm run check` — format, lint, typecheck, **589 tests passed | 11 todo** (62 files passed, 1 skipped).
 - `npm run build` — Functions and web builds passed; the existing Vite chunk-size warning remains non-blocking.
 - `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — **18/18** rules, **86/86** Functions, **3/3** web.
