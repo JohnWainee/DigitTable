@@ -3,7 +3,35 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-10-06 by Codex on `codex/reskin-fi-integration-20261006`: fast-forwarded the independently reviewed option-row fix `875b69b`, reran all required local gates, and reran the deployed staging smoke at 13:13Z. No merge to `main` or deployment was made.
+- **Last updated:** 2026-10-06 by Codex on `codex/reskin-fi-integration-20261006`: integrated and independently revalidated the short-visible-height correction-sheet fix as `957b40c`; reran all required local gates and a deployed staging smoke at 14:23Z. No merge to `main` or deployment was made.
+
+## Latest automation verification (2026-10-06, `957b40c`)
+
+The named `digitable-staging-playthrough` Sonnet session remains absent from the Claude roster and
+its control socket is unavailable, so no completion was inferred from process state. Its recoverable
+worktree did contain the pushed, independently reviewed `7595ce7`; it is integrated here as
+`957b40c` with the newer staging records retained. The presentation-only fix turns `SheetDialog`
+into a one-page internal scroller when the visual viewport is too short for its pinned header and
+footer, keeping the correction reason and Apply/Cancel controls reachable at 100--140px visible
+height.
+
+- `npm run check` — passed: format, lint, all workspace typechecks, **712 tests passed | 11 todo**.
+- `npm run build` — passed; the existing Vite >500 kB chunk advisory remains non-blocking.
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — passed: **18** testing,
+  **86** Functions, and **4** web emulator tests.
+- Fresh real-Chrome local audit — **150 states**, **1,590 controls**, **0** control issues,
+  **0** overflow states, **0** hard axe violations, **0** failures. It includes the added 100/140px
+  visual-viewport scenarios, safe areas, zoom, reduced motion, and GM/player/table flows.
+- Deployed smoke at `https://digitable.signal-bleed.com` from 2026-10-06T14:23:22Z to
+  14:24:07Z — **17/17** GM/player/table steps passed, including cross-device action resolution,
+  pause/resume, recovery/reload, and the 375/768/1024/1280/1920px overflow sweep. There were no
+  console errors or overflow states. `--no-images` intentionally blocked original-art requests;
+  the raw ephemeral-code report remains untracked at
+  `/private/tmp/digitable-staging-playthrough-20261006-hourly-1419/report.json`.
+
+No main merge, deployment, production resource, secret exposure, or architecture/privacy change
+occurred. Claude OAuth is currently unavailable; no fresh Sonnet lane was started. Physical iOS/
+Android keyboard and assistive-technology evidence remains the release gap.
 
 ## Short-visible-height sheet fix (2026-10-06, sonnet-fp) — integrated from `7595ce7`
 
