@@ -73,5 +73,8 @@ The ink-black punk reskin (`apps/web/src/styles.css`, branch `sonnet-d/reskin-mo
 | Halftone dots (page, art overlay) | `radial-gradient` dot pattern, 5–7 px pitch | Original |
 | Masking-tape strips, torn art edges, hazard-stripe fixture banner | CSS `clip-path` polygons and `repeating-linear-gradient` | Original |
 | Select chevron | Inline SVG triangle data URI | Original geometric mark |
+| Worn-toner speckle (`--dust`, 2026-10-06 "fq" pass) | One 220×220 inline SVG `feTurbulence` fractal-noise tile (seed 7) through a thresholding `feColorMatrix` (sparse bone-white dropouts), alpha ≈ 0.2, as a `data:image/svg+xml` custom property | Original; no raster input |
+| Photocopier streaks (`--streak`, "fq" pass) | One 360×240 inline SVG `feTurbulence` tile (seed 11, anisotropic frequency `.004 .55`) through a thresholding `feColorMatrix`, alpha ≈ 0.07 | Original; no raster input |
+| Hazard tape (`--tape-hazard`, sheet grip, page top band) | `repeating-linear-gradient` | Original |
 
 Colours are new original tokens (`--ink-*`, `--acid`, `--riot`, `--cyan`, `--pink`, `--volt`) chosen to sit with this pack's crimson, electric cyan, amber and bone-paper palette at a louder register; contrast is asserted numerically in `apps/web/test/styles/reskinContract.test.ts`. Type is system font stacks only (no `@font-face`, no downloaded or licensed face). The pack's PNGs and WebP derivatives are unchanged. Nothing here references, traces, or imitates licensed *Eat the Reich* artwork, layout, or typography.

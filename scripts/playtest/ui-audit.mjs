@@ -52,6 +52,7 @@ const LABEL = arg("label", "run");
 const PORT = Number(arg("port", "9350"));
 const SHOTS = !args.includes("--no-shots");
 const TOLERATE = args.includes("--tolerate-baseline");
+const DUMP_HTML = args.includes("--dump-html"); // also write a scriptless HTML snapshot per state under <out>/dump
 const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (fast iteration on the pop-out)
 const CHROME =
   process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
@@ -343,6 +344,17 @@ function isHardAxe(violation) {
 async function captureState(device, state, { axeViewports = ["phone", "tablet", "desktop"] } = {}) {
   if (MODAL_ONLY) return;
   const original = device.vp;
+  if (DUMP_HTML) {
+    // Scriptless DOM snapshot of this state, so styling can be iterated on a static page (see
+    // the `--dump-html` note in the header). Contains rendered room text only: no tokens or secrets
+    // are in the DOM after the one-time reveal cards are dismissed, but treat the output as private.
+    const html = await ev(
+      device,
+      `document.documentElement.outerHTML.replace(/<script[\\s\\S]*?<\\/script>/g, "")`,
+    );
+    mkdirSync(join(OUT, "dump"), { recursive: true });
+    writeFileSync(join(OUT, "dump", `${device.name}-${state}.html`), `<!doctype html>\n${html}`);
+  }
   for (const vp of VIEWPORTS) {
     await applyViewport(device, vp);
     await sleep(250);
@@ -419,8 +431,11 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  // Roster-agnostic: the first claimed character's Correct button, whatever the roster (the
+  // sourcebook roster replaced the placeholder "Rook"). Same selector fix as `c77cd94` on the
+  // sonnet-w lineage, which never reached this branch.
+  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => li.querySelector("button"))?.querySelector("button")`;
+  await waitFor(gm, finder, 20000, "a claimed character's Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
@@ -642,6 +657,64 @@ async function auditModal(gm) {
         record.checks.sheetClearOfTopInset = geo.dialog.top >= insets.top - 1;
       }
       record.screenshot = await screenshot(gm, `gm-correction-${name}.jpg`, { fullPage: false });
+    });
+  }
+
+  // Browser Back with the sheet open must close only the sheet: same route, console intact, and the
+  // history stack left as it was (a second Back must not be needed to undo the sheet's own entry).
+  await scenario("back-closes-only-the-sheet", byName["phone"], async (record) => {
+    const hashBefore = await ev(gm, `location.hash`);
+    await openCorrection(gm);
+    const lenOpen = await ev(gm, `history.length`);
+    await ev(gm, `history.back()`);
+    await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 5000, "sheet closed by Back");
+    await sleep(300);
+    record.checks.sheetClosed = true;
+    record.checks.routeUnchanged = (await ev(gm, `location.hash`)) === hashBefore;
+    record.checks.consoleStillRendered = await ev(
+      gm,
+      `Boolean(document.querySelector(".roster-panel-list"))`,
+    );
+    record.checks.rootUnlocked = !(await ev(
+      gm,
+      `document.documentElement.classList.contains("sheet-open")`,
+    ));
+    // Reopen and close with Cancel: the entry must be removed again (state is not the sheet entry).
+    await openCorrection(gm);
+    await closeCorrection(gm);
+    await sleep(300);
+    record.checks.cancelRemovesEntry = !(await ev(
+      gm,
+      `Boolean(history.state && history.state.digitableSheet)`,
+    ));
+    record.notes.push(`history.length while open: ${lenOpen}`);
+  });
+
+  // Almost nothing visible (landscape phone with the keyboard up leaves ~140px): the sheet must stop
+  // pinning its header and action row and scroll as one page, so Apply/Cancel stay reachable.
+  for (const vp of [
+    { name: "visible-140", width: 320, height: 140, mobile: true },
+    { name: "visible-160-landscape", width: 667, height: 160, mobile: true },
+  ]) {
+    await scenario(`short-${vp.name}`, vp, async (record) => {
+      await openCorrection(gm);
+      const frame = frameOf(vp);
+      const geo = await ev(gm, MODAL_GEOMETRY);
+      record.geometry = geo;
+      record.checks.dialogInsideViewport = within(geo.dialog, frame);
+      record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+      await ev(
+        gm,
+        `(() => { const d = document.querySelector('[role="dialog"]'); d.scrollTop = d.scrollHeight; })()`,
+      );
+      await sleep(200);
+      const end = await ev(gm, MODAL_GEOMETRY);
+      record.checks.applyReachable = within(end.apply, frame);
+      record.checks.cancelReachable = within(end.cancel, frame);
+      record.checks.actionTargets44 = end.apply?.height >= 43.5 && end.cancel?.height >= 43.5;
+      record.screenshot = await screenshot(gm, `gm-correction-short-${vp.name}.jpg`, {
+        fullPage: false,
+      });
     });
   }
 

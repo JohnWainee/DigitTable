@@ -22,29 +22,43 @@
  *   - visible >= 3:1 focus ring and >= 3:1 control boundaries on ink.
  */
 
+/*
+ * "fq" pass (2026-10-06): blacker ink, louder colour-blocking, a per-surface
+ * accent system (--sa slab, --sb hard shadow, --sc stamp; see "Surface
+ * identity"), stacked misregistration on headings, toner-dropout scuff on
+ * panels, and a hazard-taped pop-out. Palette names are unchanged; only the
+ * values moved darker/brighter and every contrast pair is re-asserted in
+ * test/styles/reskinContract.test.ts.
+ */
+
 :root {
   color-scheme: dark;
 
   /* Ink (surfaces) */
-  --ink-0: #050506;
-  --ink-1: #0d0d10;
-  --ink-2: #16161c;
-  --ink-3: #20202a;
-  --rule: #4a4a56;
+  --ink-0: #020203;
+  --ink-1: #08080b;
+  --ink-2: #0f0f14;
+  --ink-3: #191922;
+  --rule: #52525f;
 
   /* Paper (text). --dim/--mute keep >= 6:1 on --ink-2. */
-  --paper: #f3ecda;
-  --dim: #b4ad9f;
-  --mute: #9a9488;
+  --paper: #f6efdc;
+  --dim: #b9b2a3;
+  --mute: #9d978b;
 
   /* Punk accents. Each is >= 4.6:1 against --ink-2 (or is used as a fill
      carrying --ink-0 text at >= 5.6:1). */
-  --acid: #ffe600;
+  --acid: #ffee00;
   --riot: #ff3348;
-  --riot-deep: #c8102e;
-  --cyan: #22e6ff;
+  --riot-deep: #d3112f;
+  --cyan: #1fe9ff;
   --pink: #ff3fae;
-  --volt: #c6ff1a;
+  --volt: #c9ff1c;
+
+  /* Surface identity: slab fill (carries --ink-0 text), hard print shadow, stamp fill. */
+  --sa: var(--acid);
+  --sb: var(--riot-deep);
+  --sc: var(--cyan);
 
   /* Legacy token names kept so older rules and tests still resolve. */
   --bg: var(--ink-0);
@@ -67,7 +81,18 @@
 
   /* Procedural print grain: one fractal-noise tile, white speckle at low alpha. */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+  /* Worn-toner speckle (sparse bone-white dropouts) and photocopier streaks (long horizontal
+     smears). Both procedural feTurbulence tiles with a thresholding colour matrix: no raster
+     source, no licensed texture (provenance: assets/generated/eat-the-reich/README.md, "UI
+     reskin textures"). Decorative only; they sit under text as background layers, never above it. */
+  --dust: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .95 0 0 0 0 .85 0 0 0 16 -10.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23d)' opacity='.2'/%3E%3C/svg%3E");
+  --streak: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='240'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .55' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 11 -7.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)' opacity='.07'/%3E%3C/svg%3E");
   --halftone: radial-gradient(rgba(243, 236, 218, 0.07) 1px, transparent 1.6px);
+  --tape-hazard: repeating-linear-gradient(
+    -45deg,
+    var(--acid) 0 0.6rem,
+    var(--ink-0) 0.6rem 1.2rem
+  );
   --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffe600' d='M3 8h18l-9 10z'/%3E%3C/svg%3E");
 
   --tap: 3rem;
@@ -94,15 +119,19 @@ body {
   min-height: 100vh;
   background-color: var(--ink-0);
   background-image:
-    radial-gradient(ellipse 80% 100% at 15% 0%, rgba(255, 51, 72, 0.2), transparent 70%),
-    radial-gradient(ellipse 70% 100% at 100% 8%, rgba(34, 230, 255, 0.1), transparent 70%),
-    var(--grain), var(--halftone);
+    var(--tape-hazard),
+    radial-gradient(ellipse 80% 100% at 12% 0%, rgba(255, 51, 72, 0.3), transparent 70%),
+    radial-gradient(ellipse 70% 100% at 100% 6%, rgba(31, 233, 255, 0.14), transparent 70%),
+    var(--streak), var(--dust), var(--grain), var(--halftone);
   background-size:
-    100% 34rem,
-    100% 34rem,
+    auto 0.5rem,
+    100% 36rem,
+    100% 36rem,
+    360px 240px,
+    220px 220px,
     180px 180px,
     7px 7px;
-  background-repeat: no-repeat, no-repeat, repeat, repeat;
+  background-repeat: repeat-x, no-repeat, no-repeat, repeat, repeat, repeat, repeat;
   color: var(--paper);
   font-family: var(--font-body);
   font-size: 1rem;
@@ -130,26 +159,42 @@ h3 {
   text-wrap: balance;
 }
 
+/* Page title: oversized, tilted, with a misregistered second print (cold ghost up-left, hard hot
+   shadow down-right) and a slab underline in the surface colour. The ghost is a shadow, never text,
+   so contrast is measured on the paper glyphs over ink. */
 h1 {
-  font-size: clamp(2.4rem, 11vw, 4.25rem);
+  font-size: clamp(2.6rem, 13vw, 4.75rem);
   color: var(--paper);
-  text-shadow: 3px 3px 0 var(--riot-deep);
-  transform: rotate(-0.6deg);
+  text-shadow:
+    4px 4px 0 var(--sb),
+    -2px -2px 0 rgba(31, 233, 255, 0.45);
+  transform: rotate(-0.8deg);
   transform-origin: left center;
+  padding-bottom: 0.45rem;
+  background: linear-gradient(var(--sa), var(--sa)) no-repeat left bottom / min(100%, 7rem) 0.4rem;
 }
 
+/* Section heading: a reverse-video label slab (ink on the surface colour) with a hard shadow.
+   Shrink-wrapped so it reads as a paste-up label, wrapping inside its column when long. */
 h2 {
-  font-size: clamp(1.5rem, 6vw, 2rem);
-  padding-left: 0.65rem;
-  border-left: 0.5rem solid var(--acid);
-  color: var(--paper);
+  width: fit-content;
+  max-width: 100%;
+  font-size: clamp(1.5rem, 6.5vw, 2.1rem);
+  padding: 0.3rem 0.8rem 0.2rem;
+  color: var(--ink-0);
+  background: var(--sa);
+  box-shadow: 4px 4px 0 var(--ink-0);
+  outline: 2px solid var(--paper);
+  outline-offset: -2px;
+  transform: rotate(-0.7deg);
+  transform-origin: left center;
 }
 
 h3 {
   font-family: var(--font-mono);
   font-size: 0.85rem;
   letter-spacing: 0.14em;
-  color: var(--cyan);
+  color: var(--sc);
 }
 
 /* Review F7: the player dashboard's page-level heading. Compact so it does
@@ -217,6 +262,22 @@ li + li {
   min-width: 0;
 }
 
+/* Surface identity. Every role reads as its own zine: players are acid-on-ink with a riot
+   print shadow, the GM console is hot pink with acid stamps (the director's red pen), the shared
+   table is volt on ink with cold cyan shadows (a wall display). Colour is never the only channel:
+   the headings, labels and the "Connected as ..." strip also name the role in text. */
+.gm-screen {
+  --sa: var(--pink);
+  --sb: var(--riot-deep);
+  --sc: var(--acid);
+}
+
+.table-screen {
+  --sa: var(--volt);
+  --sb: rgba(31, 233, 255, 0.5);
+  --sc: var(--pink);
+}
+
 .landing-screen,
 .player-screen {
   max-width: 42rem;
@@ -250,13 +311,19 @@ li + li {
   gap: 1rem;
   padding: 1.25rem 1rem 1.25rem;
   background:
+    var(--dust),
     var(--grain),
     linear-gradient(180deg, var(--ink-2), var(--ink-1)) padding-box;
   background-size:
+    220px 220px,
     180px 180px,
     auto;
-  border: 2px solid var(--paper);
-  box-shadow: 6px 6px 0 var(--riot-deep);
+  border: 3px solid var(--paper);
+  /* Two prints: the surface shadow, then an ink gap and a hairline echo of the paper edge. */
+  box-shadow:
+    6px 6px 0 var(--sb),
+    9px 9px 0 var(--ink-0),
+    11px 11px 0 var(--rule);
 }
 
 /* Masking-tape strip: purely decorative, clipped to the card so it can never overflow. */
@@ -268,7 +335,7 @@ li + li {
   right: 1.25rem;
   width: 4.5rem;
   height: 1.3rem;
-  background: rgba(255, 230, 0, 0.88);
+  background: var(--sa);
   transform: rotate(3deg);
   pointer-events: none;
   opacity: 0.9;
@@ -276,16 +343,23 @@ li + li {
   clip-path: polygon(0 8%, 4% 0, 9% 10%, 100% 0, 96% 50%, 100% 100%, 5% 92%, 0 100%, 3% 50%);
 }
 
+/* One-time secrets (reveal cards) and the invite block are the loudest panels on screen. */
 .invite-panel,
 .reveal-card {
   border-color: var(--acid);
-  box-shadow: 6px 6px 0 var(--riot-deep);
+  box-shadow:
+    6px 6px 0 var(--riot),
+    9px 9px 0 var(--ink-0),
+    11px 11px 0 var(--acid);
   background-color: var(--ink-1);
 }
 
 .landing-resume {
   border-color: var(--cyan);
-  box-shadow: 6px 6px 0 rgba(34, 230, 255, 0.35);
+  box-shadow:
+    6px 6px 0 rgba(31, 233, 255, 0.45),
+    9px 9px 0 var(--ink-0),
+    11px 11px 0 var(--rule);
 }
 
 .scene-card {
@@ -313,22 +387,24 @@ fieldset {
   flex-direction: column;
   gap: 0.5rem;
   border: 2px solid var(--rule);
-  background: rgba(5, 5, 6, 0.55);
+  border-top: 2px solid var(--sc);
+  background: var(--streak), rgba(2, 2, 3, 0.62);
 }
 
 legend {
   /* At large text sizes a long legend must wrap inside its fieldset, not push the page wider. */
   max-width: 100%;
   overflow-wrap: anywhere;
-  padding: 0.15rem 0.65rem;
+  padding: 0.2rem 0.7rem;
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-0);
-  background: var(--cyan);
-  transform: rotate(-1deg);
+  background: var(--sc);
+  box-shadow: 3px 3px 0 var(--ink-0);
+  transform: rotate(-1.2deg);
 }
 
 .pending-action-card,
@@ -393,39 +469,41 @@ button {
   font-family: var(--font-display);
   font-weight: 700;
   font-synthesis-weight: none;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   line-height: 1.1;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   text-align: center;
-  border: 2px solid var(--ink-0);
+  border: 3px solid var(--ink-0);
   border-radius: 0;
   transition: none;
 }
 
+/* Primary: a solid slab in the surface colour with a hard riot print shadow. */
 .primary-action {
-  background: var(--acid);
+  background: var(--sa);
   color: var(--ink-0);
-  box-shadow: 4px 4px 0 var(--riot);
+  box-shadow: 5px 5px 0 var(--riot);
 }
 
+/* Secondary: outline-only (ink fill, stamped border), so primary vs secondary never rests on hue. */
 .secondary-action {
   background: var(--ink-0);
-  color: var(--cyan);
-  border-color: var(--cyan);
-  box-shadow: 4px 4px 0 rgba(34, 230, 255, 0.35);
+  color: var(--sc);
+  border-color: var(--sc);
+  box-shadow: 5px 5px 0 var(--rule);
 }
 
 @media (hover: hover) {
   .primary-action:hover:not(:disabled),
   .secondary-action:hover:not(:disabled) {
     transform: translate(-1px, -1px);
-    box-shadow: 6px 6px 0 var(--riot);
+    box-shadow: 7px 7px 0 var(--riot);
   }
 
   .secondary-action:hover:not(:disabled) {
     background: var(--ink-3);
-    box-shadow: 6px 6px 0 rgba(34, 230, 255, 0.5);
+    box-shadow: 7px 7px 0 var(--sc);
   }
 }
 
@@ -551,6 +629,19 @@ select {
   cursor: pointer;
 }
 
+/* The full, wrapped text of the select above it (a closed select can only ellipsise). */
+.select-echo {
+  margin: 0;
+  padding: 0.4rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: var(--paper);
+  background: var(--ink-0);
+  border-left: 0.35rem solid var(--sc);
+  overflow-wrap: anywhere;
+}
+
 option,
 optgroup {
   background: var(--ink-2);
@@ -622,6 +713,42 @@ input[type="radio"]:disabled {
   gap: 0.5rem;
 }
 
+/* An option row plus its own action button (a utility item you can "mark"): stacked, full-width
+   button on a phone; side by side only where both fit. The button is a sibling of the label, so
+   the checkbox's tap target and name never include it. */
+.gear-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.gear-row > .secondary-action {
+  align-self: stretch;
+}
+
+.gear-option > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 40rem) {
+  .gear-row {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .gear-row > .gear-option {
+    flex: 1 1 18rem;
+  }
+
+  .gear-row > .secondary-action {
+    flex: 0 1 auto;
+    align-self: center;
+  }
+}
+
 .gear-option,
 .form-field--checkbox {
   display: flex;
@@ -642,9 +769,13 @@ input[type="radio"]:disabled {
   flex-direction: row;
 }
 
+/* Chosen row: stamped acid frame, a tinted fill and a hard print shadow; the filled check/radio box
+   inside also changes, so selection is carried by shape and weight, not hue alone. */
 .gear-option:has(:checked) {
   border-color: var(--acid);
-  background: rgba(255, 230, 0, 0.1);
+  background: rgba(255, 238, 0, 0.14);
+  box-shadow: 4px 4px 0 var(--riot-deep);
+  font-weight: 700;
 }
 
 .gear-option:has(:disabled) {
@@ -669,7 +800,7 @@ summary {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--cyan);
+  color: var(--sc);
   cursor: pointer;
   list-style: none;
 }
@@ -683,7 +814,7 @@ summary::before {
   flex: none;
   width: 0.7rem;
   height: 0.7rem;
-  background: var(--cyan);
+  background: var(--sc);
   clip-path: polygon(0 0, 100% 50%, 0 100%);
 }
 
@@ -1382,8 +1513,15 @@ details ul {
   /* A strip of backdrop stays visible above the sheet so it reads as a sheet, not a page. */
   padding: max(env(safe-area-inset-top), 1.5rem) env(safe-area-inset-right) 0
     env(safe-area-inset-left);
-  background: rgba(3, 3, 4, 0.82);
+  background: var(--halftone), rgba(1, 1, 2, 0.88);
+  background-size:
+    7px 7px,
+    auto;
   overscroll-behavior: contain;
+  /* Size container: lets the sheet adapt to how much is VISIBLE (a landscape phone with the keyboard
+     up can leave under 9rem), which neither a media query nor `vh` can see. The backdrop has an
+     explicit fixed size, so size containment costs nothing. See `@container sheet` below. */
+  container: sheet / size;
   /* Deliberately unrestricted. An ancestor's touch-action cannot be re-enabled by a descendant, so
      `none` here would disable pinch-zoom for the whole page while a sheet is open (WCAG 1.4.4), and
      `pinch-zoom` alone would forbid one-finger panning of a zoomed page, stranding the sheet's title
@@ -1410,30 +1548,38 @@ details ul {
   overflow: hidden;
   color: var(--paper);
   background-color: var(--ink-1);
-  background-image: var(--grain);
-  background-size: 180px 180px;
-  border: 2px solid var(--paper);
+  background-image: var(--dust), var(--grain);
+  background-size:
+    220px 220px,
+    180px 180px;
+  border: 3px solid var(--paper);
   border-bottom: 0;
-  box-shadow: 0 -6px 0 var(--riot);
+  /* Riot slab on the top edge, then an ink gap: the sheet reads as a paste-up poster on the page. */
+  box-shadow:
+    0 -7px 0 var(--riot),
+    0 -10px 0 var(--ink-0);
   touch-action: auto;
 }
 
 .sheet-header {
   flex: none;
   padding: 0.6rem 1rem 0.75rem;
-  border-bottom: 2px solid var(--rule);
+  border-bottom: 3px solid var(--acid);
 }
 
 .sheet-header h2 {
   font-size: clamp(1.4rem, 5.5vw, 1.9rem);
 }
 
+/* The grip is a strip of hazard tape: the affordance "this is a sheet" without text. */
 .sheet-grip {
   display: block;
-  width: 3.5rem;
-  height: 0.3rem;
+  width: 4.5rem;
+  height: 0.5rem;
   margin: 0 auto 0.7rem;
-  background: var(--mute);
+  background: var(--tape-hazard);
+  border: 2px solid var(--ink-0);
+  outline: 1px solid var(--acid);
 }
 
 .sheet-body {
@@ -1453,7 +1599,7 @@ details ul {
   flex: none;
   padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
   background: var(--ink-2);
-  border-top: 2px solid var(--rule);
+  border-top: 3px solid var(--rule);
   /* Backstop for large text on a small screen: the action row may scroll, but can never take the
      whole sheet and squeeze the body away (WCAG 1.4.4 at 200% text on a 320px-wide phone). */
   max-height: calc(var(--vv-height, 100vh) * 0.4);
@@ -1522,6 +1668,34 @@ details ul {
   }
 }
 
+/* Almost nothing visible (a landscape phone with the on-screen keyboard up leaves ~140px): a pinned
+   header plus a pinned action row would take the whole visible height and squeeze the body to
+   nothing, so Apply/Cancel could never be reached. Below ~10rem (160px) of sheet area (about 190px visible, after padding) the sheet stops
+   pinning and becomes one internally scrolling page: title, fields, then the action row, all
+   reachable by scrolling inside the sheet. Needs size-container support; older engines keep the
+   pinned layout above. */
+@container sheet (max-height: 10rem) {
+  .sheet-backdrop .sheet {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sheet-backdrop .sheet-body {
+    flex: none;
+    overflow: visible;
+  }
+
+  .sheet-backdrop .sheet-footer {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .sheet-backdrop .sheet-header h2 {
+    font-size: 1.25rem;
+  }
+}
+
 /* ---------- Larger layouts ---------- */
 
 @media (min-width: 48rem) {
@@ -1582,7 +1756,13 @@ details ul {
 
   .table-screen > h1 {
     column-span: all;
-    font-size: 5rem;
+    font-size: 5.5rem;
+  }
+
+  .table-screen h2 {
+    font-size: 2.6rem;
+    padding: 0.4rem 1rem 0.3rem;
+    box-shadow: 6px 6px 0 var(--ink-0);
   }
 
   .scene-card-art--banner {
@@ -1695,5 +1875,20 @@ details ul {
 
   .sheet {
     border: 2px solid CanvasText;
+  }
+
+  /* The disclosure triangle is a clip-path over a background colour; forced colors replace
+     background colours with Canvas, which would make it vanish. Paint it in the text colour and
+     opt it out of the override. */
+  summary::before {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+
+  /* Slabs lose their fill under forced colors: keep the label legible and boxed. */
+  h2,
+  legend {
+    border: 2px solid CanvasText;
+    forced-color-adjust: auto;
   }
 }

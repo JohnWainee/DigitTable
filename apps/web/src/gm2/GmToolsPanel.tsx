@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SelectedEcho } from "../shared/SelectedEcho.js";
 import type { CharacterFullSheet, RollView, RollViewFull } from "@digitable/template-eat-the-reich";
 
 export interface GmToolsPanelProps {
@@ -233,6 +234,14 @@ export function GmToolsPanel({
               </option>
             ))}
           </select>
+          <SelectedEcho
+            text={(() => {
+              const chosen = advanceCharacter?.advances.find((a) => a.id === advanceId);
+              return chosen
+                ? `${chosen.label}${chosen.unlocked ? " (already unlocked)" : ""}`
+                : null;
+            })()}
+          />
           <div className="form-field">
             <label htmlFor="advance-reason">Reason</label>
             <input

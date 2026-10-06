@@ -315,6 +315,82 @@ describe("reskin stylesheet contract", () => {
     });
   });
 
+  describe("fq pass: blacker ink, surface identity, hardened pop-out", () => {
+    it("keeps the ink tokens near-black (relative luminance under 0.012 for ink-0..ink-2)", () => {
+      for (const name of ["ink-0", "ink-1", "ink-2"]) {
+        expect(luminance(token(name))).toBeLessThan(0.012);
+      }
+      // ...and the page itself is painted from them.
+      expect(declaration(rulesFor(/^body$/), "background-color")).toContain("var(--ink-0)");
+    });
+
+    it("defines the three surface-identity tokens and overrides them per role surface", () => {
+      expect(css).toMatch(/--sa:\s*var\(--acid\)/);
+      expect(css).toMatch(/--sb:\s*var\(--riot-deep\)/);
+      expect(css).toMatch(/--sc:\s*var\(--cyan\)/);
+      expect(declaration(rulesFor(/^\.gm-screen$/), "--sa")).toEqual(["var(--pink)"]);
+      expect(declaration(rulesFor(/^\.table-screen$/), "--sa")).toEqual(["var(--volt)"]);
+    });
+
+    it("keeps dark text legible on every surface slab colour (h2, primary button, legend)", () => {
+      // The slab fill is --sa (acid / pink / volt) and the stamp fill is --sc (cyan / acid / pink):
+      // all carry --ink-0 text, so every possible fill must clear WCAG AA with margin.
+      for (const fill of ["acid", "pink", "volt", "cyan"]) {
+        expect(contrast("ink-0", fill)).toBeGreaterThanOrEqual(4.5);
+      }
+      expect(declaration(rulesFor(/^h2$/), "color")).toContain("var(--ink-0)");
+      expect(declaration(rulesFor(/^h2$/), "background")).toContain("var(--sa)");
+      expect(declaration(rulesFor(/^\.primary-action$/), "background")).toContain("var(--sa)");
+      expect(declaration(rulesFor(/^\.primary-action$/), "color")).toContain("var(--ink-0)");
+      expect(declaration(rulesFor(/^legend$/), "background")).toContain("var(--sc)");
+      expect(declaration(rulesFor(/^legend$/), "color")).toContain("var(--ink-0)");
+      // Accent text used directly on ink (stamps, summaries, secondary buttons) on every surface.
+      for (const accent of ["acid", "pink", "cyan"]) {
+        expect(contrast(accent, "ink-0")).toBeGreaterThanOrEqual(4.5);
+        expect(contrast(accent, "ink-2")).toBeGreaterThanOrEqual(4.5);
+      }
+    });
+
+    it("keeps primary vs secondary distinguishable without hue: a fill versus an outline", () => {
+      expect(declaration(rulesFor(/^\.primary-action$/), "background")).toContain("var(--sa)");
+      expect(declaration(rulesFor(/^\.secondary-action$/), "background")).toContain("var(--ink-0)");
+      expect(declaration(rulesFor(/^\.secondary-action$/), "border-color")).toContain("var(--sc)");
+    });
+
+    it("draws the toner scuff and photocopy streaks procedurally and only as background layers", () => {
+      expect(css).toMatch(/--dust:\s*url\("data:image\/svg\+xml/);
+      expect(css).toMatch(/--streak:\s*url\("data:image\/svg\+xml/);
+      // Textures never sit above text: no ::before/::after overlay paints them.
+      expect(css).not.toMatch(/(?:::before|::after)[^{]*\{[^}]*var\(--(?:dust|streak)\)/);
+      expect(declaration(rulesFor(/^\.step,\s*\.scene-card/s), "background").join()).toContain(
+        "var(--dust)",
+      );
+    });
+
+    it("turns the sheet backdrop into a size container and un-pins the sheet when almost nothing is visible", () => {
+      expect(declaration(rulesFor(/^\.sheet-backdrop$/), "container")).toContain("sheet / size");
+      const block =
+        /@container sheet \(max-height: 10rem\)\s*\{([\s\S]*?)\n\}/.exec(css)?.[1] ?? "";
+      expect(block).toMatch(/\.sheet-backdrop \.sheet\s*\{[^}]*overflow-y:\s*auto/);
+      expect(block).toMatch(/\.sheet-backdrop \.sheet-body\s*\{[^}]*overflow:\s*visible/);
+      expect(block).toMatch(/\.sheet-backdrop \.sheet-footer\s*\{[^}]*max-height:\s*none/);
+      // The block must come after the base rules it overrides (and after the max-height media block).
+      expect(css.indexOf("@container sheet")).toBeGreaterThan(css.indexOf("(max-height: 34rem)"));
+    });
+
+    it("paints the disclosure triangle in a system colour under forced colors", () => {
+      const forced = mediaBlock("(forced-colors: active)");
+      expect(forced).toMatch(/summary::before\s*\{[^}]*background:\s*CanvasText/);
+      expect(forced).toMatch(/summary::before\s*\{[^}]*forced-color-adjust:\s*none/);
+    });
+
+    it("stacks a utility action under its option row on a phone and sets it beside only where it fits", () => {
+      expect(declaration(rulesFor(/^\.gear-row$/), "flex-direction")[0]).toBe("column");
+      expect(mediaBlock("(min-width: 40rem)")).toMatch(/\.gear-row\s*\{[^}]*flex-direction:\s*row/);
+      expect(declaration(rulesFor(/^\.gear-option > span$/), "min-width")).toContain("0");
+    });
+  });
+
   describe("licensing hygiene", () => {
     it("uses only system font stacks and no external resources", () => {
       expect(css).not.toMatch(/@import|@font-face|url\(\s*["']?https?:/i);

@@ -113,6 +113,8 @@ export function JoinScreen(): JSX.Element {
                 type="text"
                 required
                 autoCapitalize="characters"
+                autoCorrect="off"
+                spellCheck={false}
                 pattern="[A-Za-z0-9-]+"
                 value={recoveryRoomCode}
                 onChange={(event) => setRecoveryRoomCode(event.target.value)}
@@ -125,6 +127,9 @@ export function JoinScreen(): JSX.Element {
                 type="text"
                 required
                 autoComplete="off"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 value={recoveryCode}
                 onChange={(event) => setRecoveryCode(event.target.value)}
               />
@@ -213,6 +218,8 @@ export function JoinScreen(): JSX.Element {
               type="text"
               required
               autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck={false}
               pattern="[A-Za-z0-9-]+"
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value)}
@@ -225,6 +232,9 @@ export function JoinScreen(): JSX.Element {
               type="text"
               required
               autoComplete="off"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               value={passphrase}
               onChange={(e) => setPassphrase(e.target.value)}
             />

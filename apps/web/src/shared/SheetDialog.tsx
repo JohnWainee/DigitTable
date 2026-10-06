@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { useBackDismiss } from "./useBackDismiss.js";
 import { useVisualViewportBox } from "./useVisualViewportBox.js";
 
 const FOCUSABLE_SELECTOR =
@@ -91,6 +92,7 @@ export function SheetDialog({
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   useVisualViewportBox(backdropRef);
+  useBackDismiss(onClose);
 
   // Focus, inert background, and root scroll lock share one lifecycle so the
   // restore order is deterministic: un-inert first, then return focus (an
