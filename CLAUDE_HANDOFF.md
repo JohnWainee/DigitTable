@@ -3,7 +3,7 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update, with independent deployed-session reruns passing on 2026-09-19 and 2026-09-22. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-10-06 by Codex on `codex/reskin-fi-integration-20261006`: fast-forwarded the independently reviewed option-row fix `875b69b`, reran all required local gates, and reran the deployed staging smoke at 12:15Z. No merge to `main` or deployment was made.
+- **Last updated:** 2026-10-06 by Codex on `codex/reskin-fi-integration-20261006`: fast-forwarded the independently reviewed option-row fix `875b69b`, reran all required local gates, and reran the deployed staging smoke at 13:13Z. No merge to `main` or deployment was made.
 
 ## Automation integration follow-up (2026-10-06, `875b69b`)
 
@@ -168,6 +168,23 @@ remain outside Git at
 `/private/tmp/digitable-staging-playthrough-20261006-hourly-1100/` because they
 contain a one-time room code. This is evidence for the deployed build only;
 it does not merge, deploy, or validate the unmerged integration candidate.
+
+At 13:13Z, after `claude auth status` confirmed an authenticated session, the
+automation repeated the direct deployed smoke with screenshots enabled:
+
+```sh
+node scripts/playtest/two-device-smoke.mjs \
+  --base https://digitable.signal-bleed.com \
+  --out /private/tmp/digitable-staging-playthrough-20261006-hourly-1219 \
+  --reload --port 9595
+```
+
+It completed from **2026-10-06T13:13:45Z** to **13:14:21Z** with **17/17**
+GM/player/table steps passing. The raw report records `ok: true`, zero console
+errors, zero failed requests, and no overflow at 375/768/1024/1280/1920px.
+The report and screenshots remain untracked because the fresh-room report
+contains a short-lived room code. This remains deployed-build evidence only;
+it neither validates the unmerged integration branch nor changes deployment.
 
 ## Mission
 
