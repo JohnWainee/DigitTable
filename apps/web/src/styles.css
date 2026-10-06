@@ -706,32 +706,44 @@ input[type="radio"]:disabled {
   flex-direction: row;
 }
 
-/* An option row that carries its own action ("Mark and regain Blood", "Reveal"): the text takes the
-   space beside the box/icon and the button drops below it when the row is too narrow (large text,
-   small phone) instead of being squeezed until its word breaks. */
-.gear-option:has(> button),
-.gear-option:has(> .option-text) {
+/* An option row that carries its own action ("Mark and regain Blood"): a `.gear-option--row`
+   wrapper holds the checkbox label and the button as siblings (a button inside a label is a
+   nested-interactive). The label takes the space beside the edge and the button drops to its own
+   line, so large text / a small phone never squeezes the button until its word breaks. */
+.gear-option--row {
   flex-wrap: wrap;
+  cursor: default;
 }
 
-.gear-option > span {
-  flex: 1 1 8rem;
-  min-width: 0;
+/* Stack the button under the label only when the label's longest word cannot sit beside the box. */
+.gear-option--row > .gear-option-label {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex: 1 1 min-content;
+  min-width: min-content;
+  min-height: var(--tap);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.gear-option > .option-text {
-  /* Stack under the box only when the longest word cannot sit beside it. */
+.gear-option--row > .gear-option-label > .option-text {
+  flex: 1 1 0;
   min-width: min-content;
 }
 
-.gear-option > button {
+.gear-option--row > button {
   flex: 0 0 auto;
   max-width: 100%;
 }
 
-.gear-option > .gear-option-action {
+.gear-option--row > .gear-option-action {
   flex: 1 1 100%;
   margin-left: min(calc(1.65rem + 0.85rem), 9vw);
+}
+
+.gear-option--row:has(:disabled) > .gear-option-label {
+  cursor: not-allowed;
 }
 
 .gear-option:has(:checked) {

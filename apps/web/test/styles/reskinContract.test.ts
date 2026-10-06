@@ -302,15 +302,23 @@ describe("reskin stylesheet contract", () => {
     });
 
     it("never squeezes an option row's own action: the row wraps and the button keeps its width", () => {
-      expect(rulesFor(/^\.gear-option:has\(> button\)/s).join()).toMatch(/flex-wrap:\s*wrap/);
-      expect(declaration(rulesFor(/^\.gear-option > button$/), "flex")).toContain("0 0 auto");
-      // The one real action (ComposeStep2) takes its own full-width line under the text.
-      expect(declaration(rulesFor(/^\.gear-option > \.gear-option-action$/), "flex")).toContain(
-        "1 1 100%",
-      );
-      expect(declaration(rulesFor(/^\.gear-option > \.option-text$/), "min-width")).toContain(
-        "min-content",
-      );
+      // The action is a sibling of the checkbox label (never nested in it), inside `.gear-option--row`.
+      expect(declaration(rulesFor(/^\.gear-option--row$/), "flex-wrap")).toContain("wrap");
+      expect(declaration(rulesFor(/^\.gear-option--row > button$/), "flex")).toContain("0 0 auto");
+      expect(
+        declaration(rulesFor(/^\.gear-option--row > \.gear-option-action$/), "flex"),
+      ).toContain("1 1 100%");
+      // The label stays a >= 48px tap target and stacks the button below it only when its longest
+      // word cannot sit beside the box.
+      const label = rulesFor(/^\.gear-option--row > \.gear-option-label$/);
+      expect(declaration(label, "min-height")).toContain("var(--tap)");
+      expect(declaration(label, "min-width")).toContain("min-content");
+      expect(
+        declaration(
+          rulesFor(/^\.gear-option--row > \.gear-option-label > \.option-text$/),
+          "min-width",
+        ),
+      ).toContain("min-content");
     });
 
     it("keeps the disclosure marker visible in Windows High Contrast", () => {

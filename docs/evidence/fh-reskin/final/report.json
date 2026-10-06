@@ -1,0 +1,906 @@
+{
+  "failures": [],
+  "checks": 150,
+  "rows": [
+    {
+      "scenario": "phone-375x812@100%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "phone-375x812@100%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=375 vw=375 overflowing=0"
+    },
+    {
+      "scenario": "phone-375x812@100%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":33.5,\"y\":843.46875,\"w\":308,\"h\":171.4375,\"r\":341.5},\"button\":{\"x\":79.640625,\"y\":936.140625,\"w\":249.46875,\"h\":70.375,\"r\":329.109375}}"
+    },
+    {
+      "scenario": "phone-375x812@100%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=70.6875"
+    },
+    {
+      "scenario": "phone-375x812@100%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "249.46875x70.375"
+    },
+    {
+      "scenario": "phone-375x812@100%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=2"
+    },
+    {
+      "scenario": "phone-375x812@100%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=48"
+    },
+    {
+      "scenario": "phone-375x812@100%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":207.4921875,\"y\":405.515625,\"hit\":true}"
+    },
+    {
+      "scenario": "phone-375x812@100%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":204.375,\"y\":406.328125,\"hit\":true}"
+    },
+    {
+      "scenario": "phone-375x812@100%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "scenario": "phone-375x812@150%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "phone-375x812@150%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=375 vw=375 overflowing=0"
+    },
+    {
+      "scenario": "phone-375x812@150%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":33.625,\"y\":1258.296875,\"w\":307.75,\"h\":279.75,\"r\":341.375},\"button\":{\"x\":79.875,\"y\":1422.859375,\"w\":249,\"h\":103.59375,\"r\":328.875}}"
+    },
+    {
+      "scenario": "phone-375x812@150%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=132.578125"
+    },
+    {
+      "scenario": "phone-375x812@150%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "249x103.59375"
+    },
+    {
+      "scenario": "phone-375x812@150%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=2"
+    },
+    {
+      "scenario": "phone-375x812@150%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=72"
+    },
+    {
+      "scenario": "phone-375x812@150%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":217.4921875,\"y\":406.328125,\"hit\":true}"
+    },
+    {
+      "scenario": "phone-375x812@150%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":204.375,\"y\":405.65625,\"hit\":true}"
+    },
+    {
+      "scenario": "phone-375x812@150%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "scenario": "phone-375x812@200%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "phone-375x812@200%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=375 vw=375 overflowing=0"
+    },
+    {
+      "scenario": "phone-375x812@200%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":33.625,\"y\":1852.328125,\"w\":307.75,\"h\":547.546875,\"r\":341.375},\"button\":{\"x\":79.875,\"y\":2212.546875,\"w\":249,\"h\":172.53125,\"r\":328.875}}"
+    },
+    {
+      "scenario": "phone-375x812@200%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=318.234375"
+    },
+    {
+      "scenario": "phone-375x812@200%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "249x172.53125"
+    },
+    {
+      "scenario": "phone-375x812@200%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=3"
+    },
+    {
+      "scenario": "phone-375x812@200%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=96"
+    },
+    {
+      "scenario": "phone-375x812@200%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":227.4921875,\"y\":406.109375,\"hit\":true}"
+    },
+    {
+      "scenario": "phone-375x812@200%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":204.375,\"y\":405.8125,\"hit\":true}"
+    },
+    {
+      "scenario": "phone-375x812@200%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "scenario": "phone-small-320x568@100%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "phone-small-320x568@100%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=320 vw=320 overflowing=0"
+    },
+    {
+      "scenario": "phone-small-320x568@100%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":29.265625,\"y\":843.46875,\"w\":261.46875,\"h\":171.4375,\"r\":290.734375},\"button\":{\"x\":69.015625,\"y\":936.140625,\"w\":210.765625,\"h\":70.375,\"r\":279.78125}}"
+    },
+    {
+      "scenario": "phone-small-320x568@100%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=70.6875"
+    },
+    {
+      "scenario": "phone-small-320x568@100%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "210.765625x70.375"
+    },
+    {
+      "scenario": "phone-small-320x568@100%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=2"
+    },
+    {
+      "scenario": "phone-small-320x568@100%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=48"
+    },
+    {
+      "scenario": "phone-small-320x568@100%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":179.9921875,\"y\":283.515625,\"hit\":true}"
+    },
+    {
+      "scenario": "phone-small-320x568@100%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":174.3984375,\"y\":284.328125,\"hit\":true}"
+    },
+    {
+      "scenario": "phone-small-320x568@100%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "scenario": "phone-small-320x568@150%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "phone-small-320x568@150%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=320 vw=320 overflowing=0"
+    },
+    {
+      "scenario": "phone-small-320x568@150%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":29.265625,\"y\":1331.71875,\"w\":261.46875,\"h\":392.296875,\"r\":290.734375},\"button\":{\"x\":69.015625,\"y\":1575.828125,\"w\":210.765625,\"h\":136.59375,\"r\":279.78125}}"
+    },
+    {
+      "scenario": "phone-small-320x568@150%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=212.125"
+    },
+    {
+      "scenario": "phone-small-320x568@150%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "210.765625x136.59375"
+    },
+    {
+      "scenario": "phone-small-320x568@150%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=3"
+    },
+    {
+      "scenario": "phone-small-320x568@150%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=72"
+    },
+    {
+      "scenario": "phone-small-320x568@150%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":189.9921875,\"y\":283.8828125,\"hit\":true}"
+    },
+    {
+      "scenario": "phone-small-320x568@150%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":174.3984375,\"y\":284.125,\"hit\":true}"
+    },
+    {
+      "scenario": "phone-small-320x568@150%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "scenario": "phone-small-320x568@200%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "phone-small-320x568@200%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=320 vw=320 overflowing=0"
+    },
+    {
+      "scenario": "phone-small-320x568@200%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":29.265625,\"y\":1991.4375,\"w\":261.46875,\"h\":564.71875,\"r\":290.734375},\"button\":{\"x\":69.015625,\"y\":2387.015625,\"w\":210.765625,\"h\":154.34375,\"r\":279.78125}}"
+    },
+    {
+      "scenario": "phone-small-320x568@200%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=353.59375"
+    },
+    {
+      "scenario": "phone-small-320x568@200%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "210.765625x154.34375"
+    },
+    {
+      "scenario": "phone-small-320x568@200%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=3"
+    },
+    {
+      "scenario": "phone-small-320x568@200%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=96"
+    },
+    {
+      "scenario": "phone-small-320x568@200%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":199.9921875,\"y\":283.8203125,\"hit\":true}"
+    },
+    {
+      "scenario": "phone-small-320x568@200%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":174.3984375,\"y\":284.1875,\"hit\":true}"
+    },
+    {
+      "scenario": "phone-small-320x568@200%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "scenario": "tablet-768x1024@100%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "tablet-768x1024@100%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=768 vw=768 overflowing=0"
+    },
+    {
+      "scenario": "tablet-768x1024@100%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":33.59375,\"y\":855.46875,\"w\":700.8125,\"h\":126.75,\"r\":734.40625},\"button\":{\"x\":85.984375,\"y\":925.453125,\"w\":636.03125,\"h\":48.375,\"r\":722.015625}}"
+    },
+    {
+      "scenario": "tablet-768x1024@100%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=48"
+    },
+    {
+      "scenario": "tablet-768x1024@100%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "636.03125x48.375"
+    },
+    {
+      "scenario": "tablet-768x1024@100%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=1"
+    },
+    {
+      "scenario": "tablet-768x1024@100%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=48"
+    },
+    {
+      "scenario": "tablet-768x1024@100%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":403.9921875,\"y\":511.5078125,\"hit\":true}"
+    },
+    {
+      "scenario": "tablet-768x1024@100%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":404,\"y\":511.640625,\"hit\":true}"
+    },
+    {
+      "scenario": "tablet-768x1024@100%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "scenario": "tablet-768x1024@150%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "tablet-768x1024@150%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=768 vw=768 overflowing=0"
+    },
+    {
+      "scenario": "tablet-768x1024@150%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":48.390625,\"y\":1272.46875,\"w\":671.21875,\"h\":187.578125,\"r\":719.609375},\"button\":{\"x\":125.984375,\"y\":1376.453125,\"w\":576.03125,\"h\":72,\"r\":702.015625}}"
+    },
+    {
+      "scenario": "tablet-768x1024@150%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=72"
+    },
+    {
+      "scenario": "tablet-768x1024@150%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "576.03125x72"
+    },
+    {
+      "scenario": "tablet-768x1024@150%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=1"
+    },
+    {
+      "scenario": "tablet-768x1024@150%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=72"
+    },
+    {
+      "scenario": "tablet-768x1024@150%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":413.9921875,\"y\":512.4921875,\"hit\":true}"
+    },
+    {
+      "scenario": "tablet-768x1024@150%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":414,\"y\":512.453125,\"hit\":true}"
+    },
+    {
+      "scenario": "tablet-768x1024@150%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "scenario": "tablet-768x1024@200%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "tablet-768x1024@200%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=768 vw=768 overflowing=0"
+    },
+    {
+      "scenario": "tablet-768x1024@200%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":63.1875,\"y\":1674.078125,\"w\":641.625,\"h\":335,\"r\":704.8125},\"button\":{\"x\":155.09375,\"y\":1857.5,\"w\":526.921875,\"h\":136.78125,\"r\":682.015625}}"
+    },
+    {
+      "scenario": "tablet-768x1024@200%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=141.4375"
+    },
+    {
+      "scenario": "tablet-768x1024@200%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "526.921875x136.78125"
+    },
+    {
+      "scenario": "tablet-768x1024@200%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=2"
+    },
+    {
+      "scenario": "tablet-768x1024@200%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=96"
+    },
+    {
+      "scenario": "tablet-768x1024@200%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":423.9921875,\"y\":512.09375,\"hit\":true}"
+    },
+    {
+      "scenario": "tablet-768x1024@200%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":418.5546875,\"y\":511.890625,\"hit\":true}"
+    },
+    {
+      "scenario": "tablet-768x1024@200%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "scenario": "desktop-1280x800@100%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "desktop-1280x800@100%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=1265 vw=1265 overflowing=0"
+    },
+    {
+      "scenario": "desktop-1280x800@100%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":33.59375,\"y\":855.46875,\"w\":1197.8125,\"h\":126.75,\"r\":1231.40625},\"button\":{\"x\":85.984375,\"y\":925.453125,\"w\":1133.03125,\"h\":48.375,\"r\":1219.015625}}"
+    },
+    {
+      "scenario": "desktop-1280x800@100%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=48"
+    },
+    {
+      "scenario": "desktop-1280x800@100%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "1133.03125x48.375"
+    },
+    {
+      "scenario": "desktop-1280x800@100%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=1"
+    },
+    {
+      "scenario": "desktop-1280x800@100%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=48"
+    },
+    {
+      "scenario": "desktop-1280x800@100%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":652.4921875,\"y\":399.5078125,\"hit\":true}"
+    },
+    {
+      "scenario": "desktop-1280x800@100%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":652.5,\"y\":399.640625,\"hit\":true}"
+    },
+    {
+      "scenario": "desktop-1280x800@100%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "scenario": "desktop-1280x800@150%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "desktop-1280x800@150%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=1265 vw=1265 overflowing=0"
+    },
+    {
+      "scenario": "desktop-1280x800@150%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":48.390625,\"y\":1276.296875,\"w\":1168.21875,\"h\":187.578125,\"r\":1216.609375},\"button\":{\"x\":125.984375,\"y\":1380.28125,\"w\":1073.03125,\"h\":72,\"r\":1199.015625}}"
+    },
+    {
+      "scenario": "desktop-1280x800@150%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=72"
+    },
+    {
+      "scenario": "desktop-1280x800@150%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "1073.03125x72"
+    },
+    {
+      "scenario": "desktop-1280x800@150%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=1"
+    },
+    {
+      "scenario": "desktop-1280x800@150%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=72"
+    },
+    {
+      "scenario": "desktop-1280x800@150%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":662.4921875,\"y\":400.3203125,\"hit\":true}"
+    },
+    {
+      "scenario": "desktop-1280x800@150%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":662.5,\"y\":400.28125,\"hit\":true}"
+    },
+    {
+      "scenario": "desktop-1280x800@150%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "scenario": "desktop-1280x800@200%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "desktop-1280x800@200%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=1265 vw=1265 overflowing=0"
+    },
+    {
+      "scenario": "desktop-1280x800@200%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":63.1875,\"y\":1697.109375,\"w\":1138.625,\"h\":248.78125,\"r\":1201.8125},\"button\":{\"x\":165.984375,\"y\":1835.09375,\"w\":1013.03125,\"h\":96,\"r\":1179.015625}}"
+    },
+    {
+      "scenario": "desktop-1280x800@200%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=96"
+    },
+    {
+      "scenario": "desktop-1280x800@200%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "1013.03125x96"
+    },
+    {
+      "scenario": "desktop-1280x800@200%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=1"
+    },
+    {
+      "scenario": "desktop-1280x800@200%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=96"
+    },
+    {
+      "scenario": "desktop-1280x800@200%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":672.4921875,\"y\":400.1171875,\"hit\":true}"
+    },
+    {
+      "scenario": "desktop-1280x800@200%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":672.5,\"y\":400.09375,\"hit\":true}"
+    },
+    {
+      "scenario": "desktop-1280x800@200%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "scenario": "table-1920x1080@100%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "table-1920x1080@100%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=1905 vw=1905 overflowing=0"
+    },
+    {
+      "scenario": "table-1920x1080@100%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":33.59375,\"y\":855.46875,\"w\":1837.8125,\"h\":126.75,\"r\":1871.40625},\"button\":{\"x\":85.984375,\"y\":925.453125,\"w\":1773.03125,\"h\":48.375,\"r\":1859.015625}}"
+    },
+    {
+      "scenario": "table-1920x1080@100%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=48"
+    },
+    {
+      "scenario": "table-1920x1080@100%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "1773.03125x48.375"
+    },
+    {
+      "scenario": "table-1920x1080@100%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=1"
+    },
+    {
+      "scenario": "table-1920x1080@100%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=48"
+    },
+    {
+      "scenario": "table-1920x1080@100%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":972.4921875,\"y\":539.5078125,\"hit\":true}"
+    },
+    {
+      "scenario": "table-1920x1080@100%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":972.5,\"y\":539.640625,\"hit\":true}"
+    },
+    {
+      "scenario": "table-1920x1080@100%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "scenario": "table-1920x1080@150%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "table-1920x1080@150%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=1905 vw=1905 overflowing=0"
+    },
+    {
+      "scenario": "table-1920x1080@150%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":48.390625,\"y\":1276.296875,\"w\":1808.21875,\"h\":187.578125,\"r\":1856.609375},\"button\":{\"x\":125.984375,\"y\":1380.28125,\"w\":1713.03125,\"h\":72,\"r\":1839.015625}}"
+    },
+    {
+      "scenario": "table-1920x1080@150%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=72"
+    },
+    {
+      "scenario": "table-1920x1080@150%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "1713.03125x72"
+    },
+    {
+      "scenario": "table-1920x1080@150%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=1"
+    },
+    {
+      "scenario": "table-1920x1080@150%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=72"
+    },
+    {
+      "scenario": "table-1920x1080@150%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":982.4921875,\"y\":540.3203125,\"hit\":true}"
+    },
+    {
+      "scenario": "table-1920x1080@150%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":982.5,\"y\":540.28125,\"hit\":true}"
+    },
+    {
+      "scenario": "table-1920x1080@150%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "scenario": "table-1920x1080@200%",
+      "name": "no interactive control inside a label",
+      "ok": true,
+      "detail": "nested=0"
+    },
+    {
+      "scenario": "table-1920x1080@200%",
+      "name": "no horizontal overflow",
+      "ok": true,
+      "detail": "scrollW=1905 vw=1905 overflowing=0"
+    },
+    {
+      "scenario": "table-1920x1080@200%",
+      "name": "row, label, action and disclosure are horizontally contained",
+      "ok": true,
+      "detail": "{\"row\":{\"x\":63.1875,\"y\":1697.109375,\"w\":1778.625,\"h\":248.78125,\"r\":1841.8125},\"button\":{\"x\":165.984375,\"y\":1835.09375,\"w\":1653.03125,\"h\":96,\"r\":1819.015625}}"
+    },
+    {
+      "scenario": "table-1920x1080@200%",
+      "name": "label tap target >= 44px",
+      "ok": true,
+      "detail": "h=96"
+    },
+    {
+      "scenario": "table-1920x1080@200%",
+      "name": "action >= 44px tall and wide",
+      "ok": true,
+      "detail": "1653.03125x96"
+    },
+    {
+      "scenario": "table-1920x1080@200%",
+      "name": "action text not broken mid-word",
+      "ok": true,
+      "detail": "lines=1"
+    },
+    {
+      "scenario": "table-1920x1080@200%",
+      "name": "'Why?' summary >= 44px",
+      "ok": true,
+      "detail": "h=96"
+    },
+    {
+      "scenario": "table-1920x1080@200%",
+      "name": "tapping the label toggles its checkbox",
+      "ok": true,
+      "detail": "{\"x\":992.4921875,\"y\":540.1171875,\"hit\":true}"
+    },
+    {
+      "scenario": "table-1920x1080@200%",
+      "name": "tapping the action fires once and does not toggle the checkbox",
+      "ok": true,
+      "detail": "used 0->1 {\"x\":992.5,\"y\":540.09375,\"hit\":true}"
+    },
+    {
+      "scenario": "table-1920x1080@200%",
+      "name": "open 'Why?' adds no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}
