@@ -293,6 +293,35 @@ The report and screenshots remain untracked because the fresh-room report
 contains a short-lived room code. This remains deployed-build evidence only;
 it neither validates the unmerged integration branch nor changes deployment.
 
+## Automation staging playthrough confirmation (2026-10-06, 19:22Z)
+
+The named `digitable-staging-playthrough` Sonnet session was located as session
+`31f4a4ef`, but its daemon control socket still rejects connections
+(`ECONNREFUSED`). Its outcome is therefore not inferred from the absent process.
+The direct deployed-build rerun is the evidence for this automation turn:
+
+```sh
+node scripts/playtest/two-device-smoke.mjs \
+  --base https://digitable.signal-bleed.com \
+  --out /private/tmp/digitable-staging-smoke-20261006-escalated \
+  --reload --no-images
+```
+
+It completed from **2026-10-06T19:22:47Z** to **19:23:33Z** with **17/17**
+GM/player/table steps passing: fresh room creation, player/table admission,
+character claim, a complete declaration/opposition/allocation flow,
+pause/resume, scene advance, role guidance, direct resume, reload recovery, and
+the 375/768/1024/1280/1920 px overflow sweep. There was no positive horizontal
+overflow and no browser console error. `--no-images` deliberately blocks art
+requests; the smoke listener recorded only empty failed-request values from those
+blocked loads. The raw report stays outside Git because it includes an ephemeral
+room code: `/private/tmp/digitable-staging-smoke-20261006-escalated/report.json`.
+
+This confirms only the deployed staging build. It does not validate, merge, or
+deploy the separate final-reviewed reskin candidate
+`codex/reskin-fq-verified-20261006` (`ccb9f2d`), whose overlapping integration
+lineage still requires John's explicit selection. No product source changed.
+
 ## Mission
 
 Build DigiTable as a reusable narrative-RPG play surface, with *Eat the Reich* as the first template and Signal Bleed as a behavioral reference.
