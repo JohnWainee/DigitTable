@@ -33,11 +33,13 @@ describe("SelectField", () => {
     expect(screen.getAllByRole("option")).toHaveLength(3);
   });
 
-  it("echoes the full selected label, associated through aria-describedby", () => {
+  it("echoes the full selected label visually, without making assistive tech read it twice", () => {
     render(<Harness />);
     const select = screen.getByLabelText("Scene");
-    const echo = document.getElementById(select.getAttribute("aria-describedby") ?? "");
+    expect(select).not.toHaveAttribute("aria-describedby");
+    const echo = document.getElementById("pick-selected");
     expect(echo).not.toBeNull();
+    expect(echo).toHaveAttribute("aria-hidden", "true");
     expect(echo?.textContent).toContain(LONG);
     expect(echo).toBeVisible();
   });

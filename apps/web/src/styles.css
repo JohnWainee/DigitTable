@@ -1680,6 +1680,11 @@ details ul {
    background: it never changes a control's box, never animates, and every text/ink pairing used
    here was chosen >= 4.5:1 (pinned numerically in test/styles/reskinContract.test.ts). */
 
+html {
+  /* Keep focused controls clear of the fixed hazard-stripe masthead (WCAG 2.4.11). */
+  scroll-padding-top: 1.25rem;
+}
+
 body::before {
   content: "";
   position: fixed;
@@ -1703,8 +1708,8 @@ h1 {
   border-top-color: var(--pink);
 }
 
-.step:nth-of-type(even),
-.scene-card:nth-of-type(even) {
+.step:nth-child(even),
+.scene-card:nth-child(even) {
   border-top-color: var(--cyan);
 }
 
@@ -1732,7 +1737,7 @@ h1 {
     );
 }
 
-fieldset:nth-of-type(even) > legend {
+fieldset:nth-child(even) > legend {
   background: var(--pink);
 }
 
