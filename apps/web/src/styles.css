@@ -1673,9 +1673,138 @@ details ul {
   }
 }
 
+/* ---------- Riot-print layer (HE pass, 2026-10-07) ----------
+   A louder second coat over the base reskin: hazard-stripe masthead, misregistered cyan/riot
+   heading plates, alternating pink/cyan stamp labels, scratch overlay on panels, and the new
+   pop-out helpers (select echo, gear rows). All decoration is a non-interactive pseudo-element or
+   background: it never changes a control's box, never animates, and every text/ink pairing used
+   here was chosen >= 4.5:1 (pinned numerically in test/styles/reskinContract.test.ts). */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 0.45rem;
+  z-index: 50; /* above page content, below the sheet backdrop (z-index 100) */
+  pointer-events: none;
+  background: repeating-linear-gradient(-45deg, var(--acid) 0 0.55rem, var(--ink-0) 0.55rem 1.1rem);
+  border-bottom: 2px solid var(--riot);
+}
+
+h1 {
+  text-shadow:
+    3px 3px 0 var(--riot-deep),
+    -2px -1px 0 rgba(34, 230, 255, 0.55);
+}
+
+.step,
+.scene-card {
+  border-top-width: 4px;
+  border-top-color: var(--pink);
+}
+
+.step:nth-of-type(even),
+.scene-card:nth-of-type(even) {
+  border-top-color: var(--cyan);
+}
+
+/* Scratch overlay: three faint diagonal scuffs, painted over the panel but never over input. */
+.step::after,
+.scene-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      112deg,
+      transparent 0 31%,
+      rgba(243, 236, 218, 0.05) 31% 31.4%,
+      transparent 31.4% 63%,
+      rgba(243, 236, 218, 0.04) 63% 63.3%,
+      transparent 63.3% 100%
+    ),
+    linear-gradient(
+      68deg,
+      transparent 0 47%,
+      rgba(243, 236, 218, 0.04) 47% 47.35%,
+      transparent 47.35% 100%
+    );
+}
+
+fieldset:nth-of-type(even) > legend {
+  background: var(--pink);
+}
+
+.primary-action:not(:disabled) {
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22) 0 0.35rem,
+    transparent 0.35rem
+  );
+}
+
+/* Pop-out helper: the closed <select> ellipsises long labels, so the chosen option is echoed in
+   full, wrapped, directly under it ("selected-control context" for 320px phones). */
+.select-echo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.5rem;
+  margin: 0;
+  padding: 0.35rem 0.65rem;
+  border-left: 0.35rem solid var(--pink);
+  background: rgba(255, 63, 174, 0.09);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.select-echo[hidden] {
+  display: none;
+}
+
+.select-echo-tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pink);
+}
+
+/* Option row + its secondary action (e.g. "Mark and regain Blood"): the checkbox label keeps the
+   whole row tap target and wraps; the action drops to its own full-width line when it cannot fit
+   beside the text, instead of being squeezed into a narrow column. */
+.gear-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem 0.75rem;
+}
+
+.gear-row > .gear-option {
+  flex: 1 1 14rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.gear-row-action {
+  flex: 1 1 11rem;
+  max-width: 100%;
+  padding-block: 0.5rem;
+  font-size: 1rem;
+}
+
 /* ---------- Forced colors (Windows High Contrast) ---------- */
 
 @media (forced-colors: active) {
+  body::before,
+  .step::after,
+  .scene-card::after {
+    display: none;
+  }
+
   .primary-action,
   .secondary-action,
   .stepper-controls button {

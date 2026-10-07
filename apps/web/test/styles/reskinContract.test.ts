@@ -100,7 +100,13 @@ describe("reskin stylesheet contract", () => {
     });
 
     it("covers every styled <button> in the app: each className token is one the tap rule names", () => {
-      const covered = new Set(["primary-action", "secondary-action", "link-button"]);
+      // `gear-row-action` is a layout modifier that always accompanies `secondary-action`.
+      const covered = new Set([
+        "primary-action",
+        "secondary-action",
+        "link-button",
+        "gear-row-action",
+      ]);
       const uncovered: string[] = [];
       for (const file of sourceFiles(join(here, "../../src"))) {
         const source = readFileSync(file, "utf8");
@@ -312,6 +318,39 @@ describe("reskin stylesheet contract", () => {
       }
       expect(contrast("acid", "ink-0")).toBeGreaterThanOrEqual(3); // focus ring on ink
       expect(contrast("acid", "ink-3")).toBeGreaterThanOrEqual(3);
+    });
+  });
+
+  describe("riot-print layer and pop-out helpers", () => {
+    it("keeps the hazard-stripe masthead decorative and beneath the sheet backdrop", () => {
+      const rule = rulesFor(/^body::before$/);
+      expect(declaration(rule, "pointer-events")).toEqual(["none"]);
+      expect(declaration(rule, "position")).toEqual(["fixed"]);
+      const masthead = Number(declaration(rule, "z-index")[0]);
+      const backdrop = Number(declaration(rulesFor(/^\.sheet-backdrop$/), "z-index")[0]);
+      expect(masthead).toBeLessThan(backdrop);
+    });
+
+    it("keeps panel scratch overlays click-through, and the stamp-label inks at >= 4.5:1", () => {
+      expect(
+        declaration(rulesFor(/^\.step::after,\s*\.scene-card::after$/s), "pointer-events"),
+      ).toEqual(["none"]);
+      // The echo's tag is pink text over a ~9% pink wash on the panel ink; the wash is lighter than
+      // --ink-2, so also pin the worst plausible backdrop (--ink-3).
+      expect(contrast("pink", "ink-3")).toBeGreaterThanOrEqual(4.5);
+      expect(contrast("ink-0", "pink")).toBeGreaterThanOrEqual(4.5); // alternating pink legends
+    });
+
+    it("wraps the echoed select value instead of widening the page", () => {
+      const echo = rulesFor(/^\.select-echo$/);
+      expect(declaration(echo, "overflow-wrap")).toEqual(["anywhere"]);
+      expect(declaration(echo, "flex-wrap")).toEqual(["wrap"]);
+    });
+
+    it("lets an option row's secondary action wrap below the label instead of being squeezed", () => {
+      expect(declaration(rulesFor(/^\.gear-row$/), "flex-wrap")).toEqual(["wrap"]);
+      expect(declaration(rulesFor(/^\.gear-row > \.gear-option$/), "min-width")).toEqual(["0"]);
+      expect(declaration(rulesFor(/^\.gear-row-action$/), "max-width")).toEqual(["100%"]);
     });
   });
 

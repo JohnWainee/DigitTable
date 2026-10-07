@@ -310,8 +310,40 @@ const CONTROL_AUDIT = `(() => {
     if (el.matches('input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), select, textarea') && parseFloat(cs.fontSize) < 16) found.push("font-size " + cs.fontSize);
     if (found.length) issues.push({ control: describe(el), problems: found });
   }
+  // Pop-out/option-list context: a native <select> keeps its option popup in the OS, but its closed
+  // face ellipsises. Every visible select with a chosen value must have its full label echoed, in
+  // view and unclipped; option-row actions must not be squeezed into a sliver.
+  let selects = 0, truncatedSelects = 0;
+  for (const sel of document.querySelectorAll("select")) {
+    if (!visible(sel)) continue;
+    selects += 1;
+    const chosen = sel.selectedOptions[0];
+    const truncated = sel.scrollWidth > sel.clientWidth + 1;
+    if (truncated) truncatedSelects += 1;
+    if (!chosen || sel.value === "") continue;
+    const echoId = (sel.getAttribute("aria-describedby") || "").split(" ").find((i) => i.endsWith("-selected"));
+    const echo = echoId && document.getElementById(echoId);
+    const found = [];
+    if (!echo || !visible(echo)) found.push("no visible selected-value echo");
+    else {
+      const er = echo.getBoundingClientRect();
+      if (!echo.textContent.includes(chosen.textContent.trim())) found.push("echo does not show the full selected label");
+      if (er.right > vw + 0.5 || er.left < -0.5) found.push("echo outside viewport");
+      if (echo.scrollWidth > echo.clientWidth + 1) found.push("echo clipped");
+    }
+    if (found.length) issues.push({ control: describe(sel), problems: found });
+  }
+  for (const btn of document.querySelectorAll(".gear-row-action")) {
+    if (!visible(btn)) continue;
+    const r = btn.getBoundingClientRect();
+    const row = btn.closest(".gear-row").getBoundingClientRect();
+    const found = [];
+    if (r.width < 120) found.push("option-row action squeezed to " + Math.round(r.width) + "px");
+    if (r.right > row.right + 0.5 || r.left < row.left - 0.5) found.push("option-row action outside its row");
+    if (found.length) issues.push({ control: describe(btn), problems: found });
+  }
   const de = document.documentElement;
-  return { controls: count, overflowPx: de.scrollWidth - de.clientWidth, issues };
+  return { controls: count, selects, truncatedSelects, overflowPx: de.scrollWidth - de.clientWidth, issues };
 })()`;
 
 async function runAxe(device) {
@@ -354,6 +386,8 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
       viewport: vp.name,
       size: `${vp.width}x${vp.height}`,
       controls: audit.controls,
+      selects: audit.selects,
+      truncatedSelects: audit.truncatedSelects,
       overflowPx: audit.overflowPx,
       controlIssues: audit.issues,
       screenshot: file,
@@ -419,8 +453,8 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  const finder = `document.querySelector(".roster-panel-list li button")`;
+  await waitFor(gm, finder, 20000, "first roster Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
@@ -435,6 +469,51 @@ async function closeCorrection(gm) {
     `[...document.querySelectorAll('[role="dialog"] button')].find(b => /cancel/i.test(b.textContent))?.click()`,
   );
   await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 10000, "dialog closed");
+}
+
+/**
+ * Keyboard-open focus sweep: with the layout viewport shrunk to the space above an on-screen
+ * keyboard (Chrome Android `resizes-content`), focus every text field and select on the current
+ * screen the way a tap or Tab would, and require the focused control to be fully inside the visible
+ * area with its selected-value echo (if any) not hidden behind the bottom edge by more than the
+ * echo's own height (the control, not its caption, is what must stay visible). Limit: iOS Safari
+ * shrinks only the visual viewport; see KNOWN LIMIT in the header.
+ */
+async function auditKeyboardFocus(device, label) {
+  const results = [];
+  for (const base of [byName["phone-small"], byName["phone"], byName["phone-landscape"]]) {
+    const keyboard = Math.round(base.height * (base.width > base.height ? 0.5 : 0.45));
+    await applyViewport(device, { ...base, height: base.height - keyboard });
+    await sleep(250);
+    const rows = await ev(
+      device,
+      `(async () => {
+        const out = [];
+        const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+        const vh = window.innerHeight;
+        const fields = [...document.querySelectorAll('input:not([type=checkbox]):not([type=radio]):not([type=hidden]), select, textarea')]
+          .filter(el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && !el.disabled && !el.closest("[inert]"); });
+        for (const el of fields) {
+          el.focus();
+          await sleep(30);
+          const r = el.getBoundingClientRect();
+          out.push({ id: el.id || el.name || el.tagName, top: Math.round(r.top), bottom: Math.round(r.bottom), ok: r.top >= -0.5 && r.bottom <= vh + 0.5 });
+        }
+        document.activeElement?.blur();
+        return { vh, out };
+      })()`,
+    );
+    results.push({ viewport: base.name, visibleHeight: rows.vh, fields: rows.out.length });
+    for (const row of rows.out) {
+      if (!row.ok)
+        fail(
+          `${label}-keyboard-focus@${base.name}`,
+          `${row.id} not fully visible when focused (${row.top}..${row.bottom} of ${rows.vh})`,
+        );
+    }
+    if (rows.out.length === 0) fail(`${label}-keyboard-focus@${base.name}`, "no fields exercised");
+  }
+  (report.keyboardFocus ??= {})[label] = results;
 }
 
 async function auditModal(gm) {
@@ -825,6 +904,7 @@ async function main() {
     await setInput(player, "#join-passphrase", "audit-pass-1");
     await setInput(player, "#join-display-name", "Ada");
     await captureState(player, "join-filled");
+    await auditKeyboardFocus(player, "player-join");
     await clickText(player, "button", /^Join session$/);
     await waitFor(player, `document.querySelector(".reveal-card")`, 30000, "player reveal");
     await captureState(player, "join-reveal");
@@ -872,6 +952,8 @@ async function main() {
     await waitFor(gm, `${textMatch("button", "/^Roll it$/")}`, 30000, "Roll it");
     await captureState(gm, "console-pending");
 
+    await applyViewport(gm, byName["desktop"]);
+    await auditKeyboardFocus(gm, "gm-console");
     await auditModal(gm);
     await auditReducedMotion(gm);
 
