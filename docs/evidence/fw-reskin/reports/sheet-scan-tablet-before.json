@@ -1,0 +1,380 @@
+[
+  {
+    "width": 744,
+    "scale": 1,
+    "flagsByH": {
+      "180": [
+        "onePage"
+      ],
+      "240": [
+        "body47"
+      ],
+      "300": [],
+      "360": [],
+      "420": [],
+      "520": [],
+      "620": [],
+      "760": [],
+      "900": [],
+      "1100": []
+    },
+    "chrome": {
+      "header": 63,
+      "footerNatural": 74,
+      "footerBox": 77.4,
+      "dialogBorder": 3,
+      "rem": 16
+    }
+  },
+  {
+    "width": 744,
+    "scale": 1.5,
+    "flagsByH": {
+      "180": [
+        "onePage"
+      ],
+      "240": [
+        "onePage"
+      ],
+      "300": [
+        "onePage"
+      ],
+      "360": [
+        "body52"
+      ],
+      "420": [],
+      "520": [],
+      "620": [],
+      "760": [],
+      "900": [],
+      "1100": []
+    },
+    "chrome": {
+      "header": 88.3,
+      "footerNatural": 140,
+      "footerBox": 142.6,
+      "dialogBorder": 3,
+      "rem": 24
+    }
+  },
+  {
+    "width": 744,
+    "scale": 2,
+    "flagsByH": {
+      "180": [
+        "onePage"
+      ],
+      "240": [
+        "onePage"
+      ],
+      "300": [
+        "onePage"
+      ],
+      "360": [
+        "onePage"
+      ],
+      "420": [
+        "clipped20",
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "520": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "620": [
+        "footerNestedScroll"
+      ],
+      "760": [],
+      "900": [],
+      "1100": []
+    },
+    "chrome": {
+      "header": 107,
+      "footerNatural": 264,
+      "footerBox": 267,
+      "dialogBorder": 3,
+      "rem": 32
+    }
+  },
+  {
+    "width": 834,
+    "scale": 1,
+    "flagsByH": {
+      "180": [
+        "onePage"
+      ],
+      "240": [
+        "body47"
+      ],
+      "300": [],
+      "360": [],
+      "420": [],
+      "520": [],
+      "620": [],
+      "760": [],
+      "900": [],
+      "1100": []
+    },
+    "chrome": {
+      "header": 63,
+      "footerNatural": 74,
+      "footerBox": 77.4,
+      "dialogBorder": 3,
+      "rem": 16
+    }
+  },
+  {
+    "width": 834,
+    "scale": 1.5,
+    "flagsByH": {
+      "180": [
+        "onePage"
+      ],
+      "240": [
+        "onePage"
+      ],
+      "300": [
+        "onePage"
+      ],
+      "360": [],
+      "420": [],
+      "520": [],
+      "620": [],
+      "760": [],
+      "900": [],
+      "1100": []
+    },
+    "chrome": {
+      "header": 93,
+      "footerNatural": 109,
+      "footerBox": 111.6,
+      "dialogBorder": 3,
+      "rem": 24
+    }
+  },
+  {
+    "width": 834,
+    "scale": 2,
+    "flagsByH": {
+      "180": [
+        "cancelUnreachableAtEnd",
+        "applyUnreachable",
+        "onePage"
+      ],
+      "240": [
+        "cancelUnreachableAtEnd",
+        "onePage"
+      ],
+      "300": [
+        "onePage"
+      ],
+      "360": [
+        "onePage"
+      ],
+      "420": [
+        "clipped21",
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "520": [
+        "footerNestedScroll"
+      ],
+      "620": [],
+      "760": [],
+      "900": [],
+      "1100": []
+    },
+    "chrome": {
+      "header": 108,
+      "footerNatural": 229,
+      "footerBox": 231.8,
+      "dialogBorder": 3,
+      "rem": 32
+    }
+  },
+  {
+    "width": 1024,
+    "scale": 1,
+    "flagsByH": {
+      "180": [
+        "onePage"
+      ],
+      "240": [
+        "body47"
+      ],
+      "300": [],
+      "360": [],
+      "420": [],
+      "520": [],
+      "620": [],
+      "760": [],
+      "900": [],
+      "1100": []
+    },
+    "chrome": {
+      "header": 63,
+      "footerNatural": 74,
+      "footerBox": 77.4,
+      "dialogBorder": 3,
+      "rem": 16
+    }
+  },
+  {
+    "width": 1024,
+    "scale": 1.5,
+    "flagsByH": {
+      "180": [
+        "onePage"
+      ],
+      "240": [
+        "onePage"
+      ],
+      "300": [
+        "onePage"
+      ],
+      "360": [],
+      "420": [],
+      "520": [],
+      "620": [],
+      "760": [],
+      "900": [],
+      "1100": []
+    },
+    "chrome": {
+      "header": 93,
+      "footerNatural": 109,
+      "footerBox": 111.6,
+      "dialogBorder": 3,
+      "rem": 24
+    }
+  },
+  {
+    "width": 1024,
+    "scale": 2,
+    "flagsByH": {
+      "180": [
+        "cancelUnreachableAtEnd",
+        "applyUnreachable",
+        "onePage"
+      ],
+      "240": [
+        "onePage"
+      ],
+      "300": [
+        "onePage"
+      ],
+      "360": [
+        "onePage"
+      ],
+      "420": [
+        "clipped31",
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "520": [],
+      "620": [],
+      "760": [],
+      "900": [],
+      "1100": []
+    },
+    "chrome": {
+      "header": 118.5,
+      "footerNatural": 185,
+      "footerBox": 187.8,
+      "dialogBorder": 3,
+      "rem": 32
+    }
+  },
+  {
+    "width": 1180,
+    "scale": 1,
+    "flagsByH": {
+      "180": [
+        "onePage"
+      ],
+      "240": [
+        "body47"
+      ],
+      "300": [],
+      "360": [],
+      "420": [],
+      "520": [],
+      "620": [],
+      "760": [],
+      "900": [],
+      "1100": []
+    },
+    "chrome": {
+      "header": 63,
+      "footerNatural": 74,
+      "footerBox": 77.4,
+      "dialogBorder": 3,
+      "rem": 16
+    }
+  },
+  {
+    "width": 1180,
+    "scale": 1.5,
+    "flagsByH": {
+      "180": [
+        "onePage"
+      ],
+      "240": [
+        "onePage"
+      ],
+      "300": [
+        "onePage"
+      ],
+      "360": [],
+      "420": [],
+      "520": [],
+      "620": [],
+      "760": [],
+      "900": [],
+      "1100": []
+    },
+    "chrome": {
+      "header": 93,
+      "footerNatural": 109,
+      "footerBox": 111.6,
+      "dialogBorder": 3,
+      "rem": 24
+    }
+  },
+  {
+    "width": 1180,
+    "scale": 2,
+    "flagsByH": {
+      "180": [
+        "onePage"
+      ],
+      "240": [
+        "onePage"
+      ],
+      "300": [
+        "onePage"
+      ],
+      "360": [
+        "onePage"
+      ],
+      "420": [
+        "clipped15"
+      ],
+      "520": [],
+      "620": [],
+      "760": [],
+      "900": [],
+      "1100": []
+    },
+    "chrome": {
+      "header": 123,
+      "footerNatural": 144,
+      "footerBox": 147,
+      "dialogBorder": 3,
+      "rem": 32
+    }
+  }
+]

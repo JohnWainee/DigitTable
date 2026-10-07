@@ -1,7 +1,7 @@
 {
-  "label": "fw-before-real200",
+  "label": "fw7-before-real200",
   "base": "http://127.0.0.1:53174",
-  "startedAt": "2026-10-07T03:15:09.037Z",
+  "startedAt": "2026-10-07T08:50:15.779Z",
   "defaultFontPx": 32,
   "states": [
     {
@@ -137,7 +137,14 @@
       "size": "320x568",
       "controls": 5,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.secondary-action \"Lost your browser? Recover your \"",
+          "problems": [
+            "label word \"browser\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -200,7 +207,14 @@
       "size": "320x568",
       "controls": 3,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"Connect display\"",
+          "problems": [
+            "label word \"Connect\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -459,7 +473,15 @@
       "size": "320x568",
       "controls": 2,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"I'm ready — continue\"",
+          "problems": [
+            "label word \"ready\" broken mid-way",
+            "label word \"continue\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -469,7 +491,14 @@
       "size": "375x812",
       "controls": 2,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"I'm ready — continue\"",
+          "problems": [
+            "label word \"continue\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null,
       "axe": []
     },
@@ -522,7 +551,77 @@
       "size": "320x568",
       "controls": 27,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"Load scene\"",
+          "problems": [
+            "label word \"Load\" broken mid-way",
+            "label word \"scene\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Grant item\"",
+          "problems": [
+            "label word \"Grant\" broken mid-way",
+            "label word \"item\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Unlock advance\"",
+          "problems": [
+            "label word \"Unlock\" broken mid-way",
+            "label word \"advance\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Reassign\"",
+          "problems": [
+            "label word \"Reassign\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"End mission\"",
+          "problems": [
+            "label word \"mission\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -532,7 +631,69 @@
       "size": "375x812",
       "controls": 27,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"Load scene\"",
+          "problems": [
+            "label word \"scene\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Grant item\"",
+          "problems": [
+            "label word \"Grant\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Unlock advance\"",
+          "problems": [
+            "label word \"Unlock\" broken mid-way",
+            "label word \"advance\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Reassign\"",
+          "problems": [
+            "label word \"Reassign\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null,
       "axe": []
     },
@@ -585,7 +746,14 @@
       "size": "320x568",
       "controls": 5,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.secondary-action \"Lost your browser? Recover your \"",
+          "problems": [
+            "label word \"browser\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -648,7 +816,16 @@
       "size": "320x568",
       "controls": 1,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"I wrote it down — pick a charact\"",
+          "problems": [
+            "label word \"wrote\" broken mid-way",
+            "label word \"down\" broken mid-way",
+            "label word \"character\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -658,7 +835,14 @@
       "size": "375x812",
       "controls": 1,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"I wrote it down — pick a charact\"",
+          "problems": [
+            "label word \"character\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null,
       "axe": []
     },
@@ -711,7 +895,44 @@
       "size": "320x568",
       "controls": 6,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"Claim\"",
+          "problems": [
+            "label word \"Claim\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Claim\"",
+          "problems": [
+            "label word \"Claim\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Claim\"",
+          "problems": [
+            "label word \"Claim\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Claim\"",
+          "problems": [
+            "label word \"Claim\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Claim\"",
+          "problems": [
+            "label word \"Claim\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Claim\"",
+          "problems": [
+            "label word \"Claim\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -774,7 +995,23 @@
       "size": "320x568",
       "controls": 20,
       "overflowPx": 47,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.secondary-action \"Mark and regain Blood\"",
+          "problems": [
+            "label word \"Mark\" broken mid-way",
+            "label word \"regain\" broken mid-way",
+            "label word \"Blood\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Declare action\"",
+          "problems": [
+            "label word \"Declare\" broken mid-way",
+            "label word \"action\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -784,7 +1021,22 @@
       "size": "375x812",
       "controls": 20,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.secondary-action \"Mark and regain Blood\"",
+          "problems": [
+            "label word \"Mark\" broken mid-way",
+            "label word \"regain\" broken mid-way",
+            "label word \"Blood\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Declare action\"",
+          "problems": [
+            "label word \"Declare\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null,
       "axe": []
     },
@@ -837,7 +1089,23 @@
       "size": "320x568",
       "controls": 20,
       "overflowPx": 47,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.secondary-action \"Mark and regain Blood\"",
+          "problems": [
+            "label word \"Mark\" broken mid-way",
+            "label word \"regain\" broken mid-way",
+            "label word \"Blood\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Declare action\"",
+          "problems": [
+            "label word \"Declare\" broken mid-way",
+            "label word \"action\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -847,7 +1115,22 @@
       "size": "375x812",
       "controls": 20,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.secondary-action \"Mark and regain Blood\"",
+          "problems": [
+            "label word \"Mark\" broken mid-way",
+            "label word \"regain\" broken mid-way",
+            "label word \"Blood\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Declare action\"",
+          "problems": [
+            "label word \"Declare\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null,
       "axe": []
     },
@@ -961,7 +1244,90 @@
       "size": "320x568",
       "controls": 32,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.secondary-action \"End round 1\"",
+          "problems": [
+            "label word \"round\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Advance scene\"",
+          "problems": [
+            "label word \"Advance\" broken mid-way",
+            "label word \"scene\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Switch to simplified\"",
+          "problems": [
+            "label word \"Switch\" broken mid-way",
+            "label word \"simplified\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Grant item\"",
+          "problems": [
+            "label word \"Grant\" broken mid-way",
+            "label word \"item\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Unlock advance\"",
+          "problems": [
+            "label word \"Unlock\" broken mid-way",
+            "label word \"advance\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Reassign\"",
+          "problems": [
+            "label word \"Reassign\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"End mission\"",
+          "problems": [
+            "label word \"mission\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -971,7 +1337,77 @@
       "size": "375x812",
       "controls": 32,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"Advance scene\"",
+          "problems": [
+            "label word \"Advance\" broken mid-way",
+            "label word \"scene\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Switch to simplified\"",
+          "problems": [
+            "label word \"Switch\" broken mid-way",
+            "label word \"simplified\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Grant item\"",
+          "problems": [
+            "label word \"Grant\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Unlock advance\"",
+          "problems": [
+            "label word \"Unlock\" broken mid-way",
+            "label word \"advance\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Reassign\"",
+          "problems": [
+            "label word \"Reassign\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null,
       "axe": []
     },
@@ -1085,7 +1521,104 @@
       "size": "320x568",
       "controls": 37,
       "overflowPx": 5,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.secondary-action \"End round 1\"",
+          "problems": [
+            "label word \"round\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Advance scene\"",
+          "problems": [
+            "label word \"Advance\" broken mid-way",
+            "label word \"scene\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Switch to simplified\"",
+          "problems": [
+            "label word \"Switch\" broken mid-way",
+            "label word \"simplified\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Roll it\"",
+          "problems": [
+            "label word \"Roll\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Void this roll\"",
+          "problems": [
+            "label word \"Void\" broken mid-way",
+            "label word \"this\" broken mid-way",
+            "label word \"roll\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Grant item\"",
+          "problems": [
+            "label word \"Grant\" broken mid-way",
+            "label word \"item\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Unlock advance\"",
+          "problems": [
+            "label word \"Unlock\" broken mid-way",
+            "label word \"advance\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Reassign\"",
+          "problems": [
+            "label word \"Reassign\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"End mission\"",
+          "problems": [
+            "label word \"mission\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -1095,7 +1628,77 @@
       "size": "375x812",
       "controls": 37,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"Advance scene\"",
+          "problems": [
+            "label word \"Advance\" broken mid-way",
+            "label word \"scene\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Switch to simplified\"",
+          "problems": [
+            "label word \"Switch\" broken mid-way",
+            "label word \"simplified\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Grant item\"",
+          "problems": [
+            "label word \"Grant\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Unlock advance\"",
+          "problems": [
+            "label word \"Unlock\" broken mid-way",
+            "label word \"advance\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Reassign\"",
+          "problems": [
+            "label word \"Reassign\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null,
       "axe": []
     },
@@ -1146,9 +1749,17 @@
       "state": "allocation",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 12,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"Confirm allocation\"",
+          "problems": [
+            "label word \"Confirm\" broken mid-way",
+            "label word \"allocation\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -1156,9 +1767,17 @@
       "state": "allocation",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"Confirm allocation\"",
+          "problems": [
+            "label word \"Confirm\" broken mid-way",
+            "label word \"allocation\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null,
       "axe": []
     },
@@ -1167,7 +1786,7 @@
       "state": "allocation",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null
@@ -1177,7 +1796,7 @@
       "state": "allocation",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -1188,7 +1807,7 @@
       "state": "allocation",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null,
@@ -1199,7 +1818,7 @@
       "state": "allocation",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null
@@ -1209,9 +1828,17 @@
       "state": "allocation-assigned",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 12,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"Confirm allocation\"",
+          "problems": [
+            "label word \"Confirm\" broken mid-way",
+            "label word \"allocation\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -1219,9 +1846,17 @@
       "state": "allocation-assigned",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"Confirm allocation\"",
+          "problems": [
+            "label word \"Confirm\" broken mid-way",
+            "label word \"allocation\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null,
       "axe": []
     },
@@ -1230,7 +1865,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null
@@ -1240,7 +1875,7 @@
       "state": "allocation-assigned",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null
@@ -1250,7 +1885,7 @@
       "state": "allocation-assigned",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null
@@ -1260,7 +1895,7 @@
       "state": "allocation-assigned",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 6,
+      "controls": 10,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": null
@@ -1272,7 +1907,15 @@
       "size": "320x568",
       "controls": 2,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.primary-action \"Back to scene\"",
+          "problems": [
+            "label word \"Back\" broken mid-way",
+            "label word \"scene\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -1398,7 +2041,23 @@
       "size": "320x568",
       "controls": 20,
       "overflowPx": 47,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.secondary-action \"Mark and regain Blood\"",
+          "problems": [
+            "label word \"Mark\" broken mid-way",
+            "label word \"regain\" broken mid-way",
+            "label word \"Blood\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Declare action\"",
+          "problems": [
+            "label word \"Declare\" broken mid-way",
+            "label word \"action\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -1408,7 +2067,22 @@
       "size": "375x812",
       "controls": 20,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.secondary-action \"Mark and regain Blood\"",
+          "problems": [
+            "label word \"Mark\" broken mid-way",
+            "label word \"regain\" broken mid-way",
+            "label word \"Blood\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Declare action\"",
+          "problems": [
+            "label word \"Declare\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null,
       "axe": []
     },
@@ -1522,7 +2196,96 @@
       "size": "320x568",
       "controls": 33,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.secondary-action \"Reveal\"",
+          "problems": [
+            "label word \"Reveal\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"End round 1\"",
+          "problems": [
+            "label word \"round\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Advance scene\"",
+          "problems": [
+            "label word \"Advance\" broken mid-way",
+            "label word \"scene\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Switch to simplified\"",
+          "problems": [
+            "label word \"Switch\" broken mid-way",
+            "label word \"simplified\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Grant item\"",
+          "problems": [
+            "label word \"Grant\" broken mid-way",
+            "label word \"item\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Unlock advance\"",
+          "problems": [
+            "label word \"Unlock\" broken mid-way",
+            "label word \"advance\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Reassign\"",
+          "problems": [
+            "label word \"Reassign\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"End mission\"",
+          "problems": [
+            "label word \"mission\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -1532,7 +2295,83 @@
       "size": "375x812",
       "controls": 33,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.secondary-action \"Reveal\"",
+          "problems": [
+            "label word \"Reveal\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.primary-action \"Advance scene\"",
+          "problems": [
+            "label word \"Advance\" broken mid-way",
+            "label word \"scene\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Switch to simplified\"",
+          "problems": [
+            "label word \"Switch\" broken mid-way",
+            "label word \"simplified\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Correct\"",
+          "problems": [
+            "label word \"Correct\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Grant item\"",
+          "problems": [
+            "label word \"Grant\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Unlock advance\"",
+          "problems": [
+            "label word \"Unlock\" broken mid-way",
+            "label word \"advance\" broken mid-way"
+          ]
+        },
+        {
+          "control": "button.secondary-action \"Reassign\"",
+          "problems": [
+            "label word \"Reassign\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null,
       "axe": []
     },
@@ -1543,7 +2382,14 @@
       "size": "812x375",
       "controls": 33,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.secondary-action \"Reveal\"",
+          "problems": [
+            "label word \"Reveal\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null
     },
     {
@@ -1553,7 +2399,14 @@
       "size": "768x1024",
       "controls": 33,
       "overflowPx": 0,
-      "controlIssues": [],
+      "controlIssues": [
+        {
+          "control": "button.secondary-action \"Reveal\"",
+          "problems": [
+            "label word \"Reveal\" broken mid-way"
+          ]
+        }
+      ],
       "screenshot": null,
       "axe": []
     },
@@ -2778,7 +3631,7 @@
       },
       "notes": [],
       "scaleBefore": 1,
-      "scaleAfter": 1.999999761581421,
+      "scaleAfter": 1.9999994039535522,
       "informationalChecks": []
     },
     {
@@ -3300,40 +4153,40 @@
         "visual": {
           "offsetTop": 0,
           "offsetLeft": 0,
-          "width": 656.7384643554688,
-          "height": 157.53846740722656,
-          "scale": 1.015625
+          "width": 667,
+          "height": 160,
+          "scale": 1
         },
         "dialog": {
           "top": 16,
-          "bottom": 157.53125,
+          "bottom": 160,
           "left": 0,
-          "right": 656.734375,
-          "width": 656.734375,
-          "height": 141.53125
+          "right": 667,
+          "width": 667,
+          "height": 144
         },
         "apply": {
           "top": 2777.078125,
           "bottom": 2873.078125,
           "left": 35,
-          "right": 621.734375,
-          "width": 586.734375,
+          "right": 632,
+          "width": 597,
           "height": 96
         },
         "cancel": {
           "top": 2897.078125,
           "bottom": 2993.078125,
           "left": 35,
-          "right": 621.734375,
-          "width": 586.734375,
+          "right": 632,
+          "width": 597,
           "height": 96
         },
         "reason": {
           "top": 2638.078125,
           "bottom": 2734.078125,
           "left": 35,
-          "right": 621.734375,
-          "width": 586.734375,
+          "right": 632,
+          "width": 597,
           "height": 96
         },
         "body": {
@@ -3346,24 +4199,24 @@
           "top": 109.984375,
           "bottom": 2758.078125,
           "left": 3,
-          "right": 653.734375,
-          "width": 650.734375,
+          "right": 664,
+          "width": 661,
           "height": 2648.09375
         },
         "header": {
           "top": 19,
           "bottom": 109.984375,
           "left": 3,
-          "right": 653.734375,
-          "width": 650.734375,
+          "right": 664,
+          "width": 661,
           "height": 90.984375
         },
         "footer": {
           "top": 2758.078125,
           "bottom": 3009.078125,
           "left": 3,
-          "right": 653.734375,
-          "width": 650.734375,
+          "right": 664,
+          "width": 661,
           "height": 251
         },
         "heading": {
@@ -3375,10 +4228,10 @@
           "height": 59.72966766357422
         },
         "dataLayout": null,
-        "backdropContentHeight": 142,
+        "backdropContentHeight": 144,
         "dialogScroll": {
           "scrollHeight": 2990,
-          "clientHeight": 139,
+          "clientHeight": 141,
           "overflowY": "auto"
         },
         "footerScroll": {
@@ -3402,8 +4255,10 @@
       "size": "320x568",
       "scenario": "text-200-phone-small",
       "checks": {
+        "realFontApplied": true,
         "dialogInsideViewport": false,
         "noPageOverflow": false,
+        "sheetContentFits": false,
         "layoutChosen": false,
         "bodyKeepsRoomOrPageScrolls": false,
         "noNestedActionScroller": false,
@@ -3515,6 +4370,18 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
+      "sheetContentProblems": {
+        "rowOverflow": [
+          "label.gear-option \"Downed\" sw=216/cw=193",
+          "label.gear-option \"Retired\" sw=199/cw=193"
+        ],
+        "wordBreaks": [],
+        "buttonLabelProblems": [
+          "button.primary-action \"Apply correction\" :: label word \"correction\" broken mid-way"
+        ],
+        "smallTargets": [],
+        "outside": []
+      },
       "offenders": [
         "div right=320 sw=325/320 :: ConnectedDirector console1 act",
         "main.gm-screen right=320 sw=325/320 :: ConnectedDirector console1 act",
@@ -3536,8 +4403,10 @@
       "size": "375x812",
       "scenario": "text-200-phone",
       "checks": {
+        "realFontApplied": true,
         "dialogInsideViewport": true,
         "noPageOverflow": true,
+        "sheetContentFits": false,
         "layoutChosen": false,
         "bodyKeepsRoomOrPageScrolls": false,
         "noNestedActionScroller": false,
@@ -3649,6 +4518,15 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
+      "sheetContentProblems": {
+        "rowOverflow": [],
+        "wordBreaks": [],
+        "buttonLabelProblems": [
+          "button.primary-action \"Apply correction\" :: label word \"correction\" broken mid-way"
+        ],
+        "smallTargets": [],
+        "outside": []
+      },
       "textPx": 32,
       "screenshot": null,
       "informationalChecks": []
@@ -3658,6 +4536,8 @@
       "size": "320x568",
       "scenario": "sheet-layout-320-x2-kb298",
       "checks": {
+        "realFontApplied": true,
+        "sheetContentFits": false,
         "noPageOverflow": false,
         "layoutChosen": false,
         "dialogInsideVisibleArea": true,
@@ -3775,6 +4655,18 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
+      "sheetContentProblems": {
+        "rowOverflow": [
+          "label.gear-option \"Downed\" sw=216/cw=193",
+          "label.gear-option \"Retired\" sw=199/cw=193"
+        ],
+        "wordBreaks": [],
+        "buttonLabelProblems": [
+          "button.primary-action \"Apply correction\" :: label word \"correction\" broken mid-way"
+        ],
+        "smallTargets": [],
+        "outside": []
+      },
       "screenshot": null,
       "visibleHeight": 298,
       "textScale": 2,
@@ -3785,6 +4677,8 @@
       "size": "320x568",
       "scenario": "sheet-layout-320-x2-nokb",
       "checks": {
+        "realFontApplied": true,
+        "sheetContentFits": false,
         "noPageOverflow": false,
         "layoutChosen": false,
         "dialogInsideVisibleArea": true,
@@ -3902,6 +4796,18 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
+      "sheetContentProblems": {
+        "rowOverflow": [
+          "label.gear-option \"Downed\" sw=216/cw=193",
+          "label.gear-option \"Retired\" sw=199/cw=193"
+        ],
+        "wordBreaks": [],
+        "buttonLabelProblems": [
+          "button.primary-action \"Apply correction\" :: label word \"correction\" broken mid-way"
+        ],
+        "smallTargets": [],
+        "outside": []
+      },
       "screenshot": null,
       "visibleHeight": null,
       "textScale": 2,
@@ -3912,6 +4818,8 @@
       "size": "375x812",
       "scenario": "sheet-layout-375-x2-kb400",
       "checks": {
+        "realFontApplied": true,
+        "sheetContentFits": false,
         "noPageOverflow": true,
         "layoutChosen": false,
         "dialogInsideVisibleArea": true,
@@ -4029,6 +4937,153 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
+      "sheetContentProblems": {
+        "rowOverflow": [],
+        "wordBreaks": [],
+        "buttonLabelProblems": [
+          "button.primary-action \"Apply correction\" :: label word \"correction\" broken mid-way"
+        ],
+        "smallTargets": [],
+        "outside": []
+      },
+      "screenshot": null,
+      "visibleHeight": 400,
+      "textScale": 2,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-360",
+      "size": "360x800",
+      "scenario": "sheet-layout-360-x2-kb400",
+      "checks": {
+        "realFontApplied": true,
+        "sheetContentFits": false,
+        "noPageOverflow": true,
+        "layoutChosen": false,
+        "dialogInsideVisibleArea": true,
+        "noNestedActionScroller": false,
+        "pageScrolls": false,
+        "bodyIsNotASecondScroller": false,
+        "focusedFieldVisible": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true,
+        "titleVisibleAtTop": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 360,
+          "innerHeight": 800,
+          "clientWidth": 360
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 360,
+          "height": 400,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 400,
+          "left": 0,
+          "right": 360,
+          "width": 360,
+          "height": 384
+        },
+        "apply": {
+          "top": 259,
+          "bottom": 439.78125,
+          "left": 35,
+          "right": 325,
+          "width": 290,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 463.78125,
+          "bottom": 559.78125,
+          "left": 35,
+          "right": 325,
+          "width": 290,
+          "height": 96
+        },
+        "reason": {
+          "top": 191.796875,
+          "bottom": 287.796875,
+          "left": 35,
+          "right": 325,
+          "width": 290,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 3639,
+          "clientHeight": 80,
+          "scrollTop": 3487,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 159.578125,
+          "bottom": 240,
+          "left": 3,
+          "right": 357,
+          "width": 354,
+          "height": 80.421875
+        },
+        "header": {
+          "top": 19,
+          "bottom": 159.578125,
+          "left": 3,
+          "right": 357,
+          "width": 354,
+          "height": 140.578125
+        },
+        "footer": {
+          "top": 240,
+          "bottom": 400,
+          "left": 3,
+          "right": 357,
+          "width": 354,
+          "height": 160
+        },
+        "heading": {
+          "top": 31.461009979248047,
+          "bottom": 140.5741844177246,
+          "left": 34.35507583618164,
+          "right": 325.62329483032227,
+          "width": 291.2682189941406,
+          "height": 109.11317443847656
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 384,
+        "dialogScroll": {
+          "scrollHeight": 381,
+          "clientHeight": 381,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 333,
+          "clientHeight": 157,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "sheetContentProblems": {
+        "rowOverflow": [],
+        "wordBreaks": [],
+        "buttonLabelProblems": [
+          "button.primary-action \"Apply correction\" :: label word \"correction\" broken mid-way"
+        ],
+        "smallTargets": [],
+        "outside": []
+      },
       "screenshot": null,
       "visibleHeight": 400,
       "textScale": 2,
@@ -4039,6 +5094,8 @@
       "size": "375x812",
       "scenario": "sheet-layout-375-x2-kb400-scrolled",
       "checks": {
+        "realFontApplied": true,
+        "sheetContentFits": false,
         "noPageOverflow": true,
         "layoutChosen": false,
         "dialogInsideVisibleArea": true,
@@ -4062,7 +5119,7 @@
         "visual": {
           "offsetTop": 150,
           "offsetLeft": 0,
-          "width": 369.23077392578125,
+          "width": 375,
           "height": 400,
           "scale": 1
         },
@@ -4070,32 +5127,32 @@
           "top": 166,
           "bottom": 550,
           "left": 0,
-          "right": 369.21875,
-          "width": 369.21875,
+          "right": 375,
+          "width": 375,
           "height": 384
         },
         "apply": {
           "top": 409,
           "bottom": 589.78125,
           "left": 35,
-          "right": 334.21875,
-          "width": 299.21875,
+          "right": 340,
+          "width": 305,
           "height": 180.78125
         },
         "cancel": {
           "top": 613.78125,
           "bottom": 709.78125,
           "left": 35,
-          "right": 334.21875,
-          "width": 299.21875,
+          "right": 340,
+          "width": 305,
           "height": 96
         },
         "reason": {
           "top": 342,
           "bottom": 438,
           "left": 35,
-          "right": 334.21875,
-          "width": 299.21875,
+          "right": 340,
+          "width": 305,
           "height": 96
         },
         "body": {
@@ -4108,33 +5165,33 @@
           "top": 309.578125,
           "bottom": 390,
           "left": 3,
-          "right": 366.21875,
-          "width": 363.21875,
+          "right": 372,
+          "width": 369,
           "height": 80.421875
         },
         "header": {
           "top": 169,
           "bottom": 309.578125,
           "left": 3,
-          "right": 366.21875,
-          "width": 363.21875,
+          "right": 372,
+          "width": 369,
           "height": 140.578125
         },
         "footer": {
           "top": 390,
           "bottom": 550,
           "left": 3,
-          "right": 366.21875,
-          "width": 363.21875,
+          "right": 372,
+          "width": 369,
           "height": 160
         },
         "heading": {
-          "top": 181.348388671875,
+          "top": 181.2777557373047,
           "bottom": 290.5741882324219,
           "left": 34.35507583618164,
-          "right": 334.8413429260254,
-          "width": 300.48626708984375,
-          "height": 109.22579956054688
+          "right": 340.62216567993164,
+          "width": 306.26708984375,
+          "height": 109.29643249511719
         },
         "dataLayout": null,
         "backdropContentHeight": 384,
@@ -4156,6 +5213,15 @@
         "inertSiblings": true,
         "activeIsInside": true
       },
+      "sheetContentProblems": {
+        "rowOverflow": [],
+        "wordBreaks": [],
+        "buttonLabelProblems": [
+          "button.primary-action \"Apply correction\" :: label word \"correction\" broken mid-way"
+        ],
+        "smallTargets": [],
+        "outside": []
+      },
       "screenshot": null,
       "visibleHeight": 400,
       "textScale": 2,
@@ -4166,6 +5232,8 @@
       "size": "568x320",
       "scenario": "sheet-layout-568x320-x2-kb150",
       "checks": {
+        "realFontApplied": true,
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": false,
         "dialogInsideVisibleArea": true,
@@ -4189,7 +5257,7 @@
         "visual": {
           "offsetTop": 0,
           "offsetLeft": 0,
-          "width": 559.2615356445312,
+          "width": 568,
           "height": 150,
           "scale": 1
         },
@@ -4197,32 +5265,32 @@
           "top": 16,
           "bottom": 150,
           "left": 0,
-          "right": 559.25,
-          "width": 559.25,
+          "right": 568,
+          "width": 568,
           "height": 134
         },
         "apply": {
           "top": 193.078125,
           "bottom": 289.078125,
           "left": 35,
-          "right": 524.25,
-          "width": 489.25,
+          "right": 533,
+          "width": 498,
           "height": 96
         },
         "cancel": {
           "top": 313.078125,
           "bottom": 409.078125,
           "left": 35,
-          "right": 524.25,
-          "width": 489.25,
+          "right": 533,
+          "width": 498,
           "height": 96
         },
         "reason": {
           "top": 54.078125,
           "bottom": 150.078125,
           "left": 35,
-          "right": 524.25,
-          "width": 489.25,
+          "right": 533,
+          "width": 498,
           "height": 96
         },
         "body": {
@@ -4235,24 +5303,24 @@
           "top": -2474.015625,
           "bottom": 174.078125,
           "left": 3,
-          "right": 556.25,
-          "width": 553.25,
+          "right": 565,
+          "width": 562,
           "height": 2648.09375
         },
         "header": {
           "top": -2565,
           "bottom": -2474.015625,
           "left": 3,
-          "right": 556.25,
-          "width": 553.25,
+          "right": 565,
+          "width": 562,
           "height": 90.984375
         },
         "footer": {
           "top": 174.078125,
           "bottom": 425.078125,
           "left": 3,
-          "right": 556.25,
-          "width": 553.25,
+          "right": 565,
+          "width": 562,
           "height": 251
         },
         "heading": {
@@ -4286,6 +5354,301 @@
       "screenshot": null,
       "visibleHeight": 150,
       "textScale": 2,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-412",
+      "size": "412x915",
+      "scenario": "sheet-flip-412-real",
+      "checks": {
+        "layoutFollowsMeasurement": false,
+        "bothLayoutsSeen": false,
+        "oneFlipGoingDown": false
+      },
+      "notes": [],
+      "centre": 631,
+      "samples": [
+        [
+          661,
+          null,
+          645,
+          615
+        ],
+        [
+          659,
+          null,
+          643,
+          615
+        ],
+        [
+          657,
+          null,
+          641,
+          615
+        ],
+        [
+          655,
+          null,
+          639,
+          615
+        ],
+        [
+          653,
+          null,
+          637,
+          615
+        ],
+        [
+          651,
+          null,
+          635,
+          615
+        ],
+        [
+          649,
+          null,
+          633,
+          615
+        ],
+        [
+          647,
+          null,
+          631,
+          615
+        ],
+        [
+          645,
+          null,
+          629,
+          615
+        ],
+        [
+          643,
+          null,
+          627,
+          615
+        ],
+        [
+          641,
+          null,
+          625,
+          615
+        ],
+        [
+          639,
+          null,
+          623,
+          615
+        ],
+        [
+          637,
+          null,
+          621,
+          615
+        ],
+        [
+          635,
+          null,
+          619,
+          615
+        ],
+        [
+          633,
+          null,
+          617,
+          615
+        ],
+        [
+          631,
+          null,
+          615,
+          615
+        ],
+        [
+          629,
+          null,
+          613,
+          615
+        ],
+        [
+          627,
+          null,
+          611,
+          615
+        ],
+        [
+          625,
+          null,
+          609,
+          615
+        ],
+        [
+          623,
+          null,
+          607,
+          615
+        ],
+        [
+          621,
+          null,
+          605,
+          615
+        ],
+        [
+          619,
+          null,
+          603,
+          615
+        ],
+        [
+          617,
+          null,
+          601,
+          615
+        ],
+        [
+          615,
+          null,
+          599,
+          615
+        ],
+        [
+          613,
+          null,
+          597,
+          615
+        ],
+        [
+          611,
+          null,
+          595,
+          615
+        ],
+        [
+          609,
+          null,
+          593,
+          615
+        ],
+        [
+          607,
+          null,
+          591,
+          615
+        ],
+        [
+          605,
+          null,
+          589,
+          615
+        ],
+        [
+          603,
+          null,
+          587,
+          615
+        ],
+        [
+          601,
+          null,
+          585,
+          615
+        ]
+      ],
+      "wrongSamples": [
+        {
+          "h": 661,
+          "layout": null,
+          "room": 645,
+          "pad": 16,
+          "needed": 615
+        },
+        {
+          "h": 659,
+          "layout": null,
+          "room": 643,
+          "pad": 16,
+          "needed": 615
+        },
+        {
+          "h": 657,
+          "layout": null,
+          "room": 641,
+          "pad": 16,
+          "needed": 615
+        },
+        {
+          "h": 655,
+          "layout": null,
+          "room": 639,
+          "pad": 16,
+          "needed": 615
+        },
+        {
+          "h": 653,
+          "layout": null,
+          "room": 637,
+          "pad": 16,
+          "needed": 615
+        },
+        {
+          "h": 651,
+          "layout": null,
+          "room": 635,
+          "pad": 16,
+          "needed": 615
+        }
+      ],
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-320x1100",
+      "size": "320x1100",
+      "scenario": "sheet-flip-keeps-focused-control-in-view",
+      "checks": {
+        "startedPinned": false,
+        "flippedToPage": false,
+        "focusKept": true,
+        "focusedControlInView": false
+      },
+      "notes": [],
+      "before": {
+        "top": 477,
+        "bodyScrollTop": 3879,
+        "sheetScrollTop": 0,
+        "sheetScrollHeight": 1066,
+        "sheetClientHeight": 1066,
+        "sheetOverflow": "hidden",
+        "bodyOverflow": "auto",
+        "active": "INPUT.checkbox"
+      },
+      "immediately": {
+        "top": 4346,
+        "bodyScrollTop": 0,
+        "sheetScrollTop": 0,
+        "sheetScrollHeight": 5007,
+        "sheetClientHeight": 247,
+        "sheetOverflow": "auto",
+        "bodyOverflow": "visible",
+        "active": "INPUT.checkbox"
+      },
+      "after": {
+        "top": 4346,
+        "bodyScrollTop": 0,
+        "sheetScrollTop": 0,
+        "sheetScrollHeight": 5007,
+        "sheetClientHeight": 247,
+        "sheetOverflow": "auto",
+        "bodyOverflow": "visible",
+        "active": "INPUT.checkbox"
+      },
+      "state": {
+        "isCheckbox": true,
+        "top": 4346.234375,
+        "bottom": 4399.03125,
+        "frameTop": 0,
+        "frameBottom": 298
+      },
       "informationalChecks": []
     }
   ],
@@ -4347,6 +5710,14 @@
       "outside": [],
       "selectsWithoutEcho": [],
       "selects": 0,
+      "buttonLabelProblems": [
+        "button.secondary-action \"Mark and regain Blood\" :: label word \"Mark\" broken mid-way",
+        "button.secondary-action \"Mark and regain Blood\" :: label word \"regain\" broken mid-way",
+        "button.secondary-action \"Mark and regain Blood\" :: label word \"Blood\" broken mid-way",
+        "button.primary-action \"Declare action\" :: label word \"Declare\" broken mid-way",
+        "button.primary-action \"Declare action\" :: label word \"action\" broken mid-way"
+      ],
+      "buttons": 3,
       "screenshot": null
     },
     {
@@ -4400,7 +5771,14 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 0
+      "selects": 0,
+      "buttonLabelProblems": [
+        "button.secondary-action \"Mark and regain Blood\" :: label word \"Mark\" broken mid-way",
+        "button.secondary-action \"Mark and regain Blood\" :: label word \"regain\" broken mid-way",
+        "button.secondary-action \"Mark and regain Blood\" :: label word \"Blood\" broken mid-way",
+        "button.primary-action \"Declare action\" :: label word \"Declare\" broken mid-way"
+      ],
+      "buttons": 3
     },
     {
       "surface": "player",
@@ -4459,6 +5837,14 @@
       "outside": [],
       "selectsWithoutEcho": [],
       "selects": 0,
+      "buttonLabelProblems": [
+        "button.secondary-action \"Mark and regain Blood\" :: label word \"Mark\" broken mid-way",
+        "button.secondary-action \"Mark and regain Blood\" :: label word \"regain\" broken mid-way",
+        "button.secondary-action \"Mark and regain Blood\" :: label word \"Blood\" broken mid-way",
+        "button.primary-action \"Declare action\" :: label word \"Declare\" broken mid-way",
+        "button.primary-action \"Declare action\" :: label word \"action\" broken mid-way"
+      ],
+      "buttons": 3,
       "screenshot": null
     },
     {
@@ -4512,7 +5898,14 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 0
+      "selects": 0,
+      "buttonLabelProblems": [
+        "button.secondary-action \"Mark and regain Blood\" :: label word \"Mark\" broken mid-way",
+        "button.secondary-action \"Mark and regain Blood\" :: label word \"regain\" broken mid-way",
+        "button.secondary-action \"Mark and regain Blood\" :: label word \"Blood\" broken mid-way",
+        "button.primary-action \"Declare action\" :: label word \"Declare\" broken mid-way"
+      ],
+      "buttons": 3
     },
     {
       "surface": "gm",
@@ -4536,6 +5929,26 @@
         "#reassign-character \"Iryna\" 68>10"
       ],
       "selects": 6,
+      "buttonLabelProblems": [
+        "button.secondary-action \"End round 1\" :: label word \"round\" broken mid-way",
+        "button.primary-action \"Advance scene\" :: label word \"Advance\" broken mid-way",
+        "button.primary-action \"Advance scene\" :: label word \"scene\" broken mid-way",
+        "button.secondary-action \"Switch to simplified\" :: label word \"Switch\" broken mid-way",
+        "button.secondary-action \"Switch to simplified\" :: label word \"simplified\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Grant item\" :: label word \"Grant\" broken mid-way",
+        "button.secondary-action \"Grant item\" :: label word \"item\" broken mid-way",
+        "button.secondary-action \"Unlock advance\" :: label word \"Unlock\" broken mid-way",
+        "button.secondary-action \"Unlock advance\" :: label word \"advance\" broken mid-way",
+        "button.secondary-action \"Reassign\" :: label word \"Reassign\" broken mid-way",
+        "button.secondary-action \"End mission\" :: label word \"mission\" broken mid-way"
+      ],
+      "buttons": 14,
       "screenshot": null
     },
     {
@@ -4559,7 +5972,24 @@
         "#advance-character \"Iryna\" 68>65",
         "#reassign-character \"Iryna\" 68>65"
       ],
-      "selects": 6
+      "selects": 6,
+      "buttonLabelProblems": [
+        "button.primary-action \"Advance scene\" :: label word \"Advance\" broken mid-way",
+        "button.primary-action \"Advance scene\" :: label word \"scene\" broken mid-way",
+        "button.secondary-action \"Switch to simplified\" :: label word \"Switch\" broken mid-way",
+        "button.secondary-action \"Switch to simplified\" :: label word \"simplified\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Grant item\" :: label word \"Grant\" broken mid-way",
+        "button.secondary-action \"Unlock advance\" :: label word \"Unlock\" broken mid-way",
+        "button.secondary-action \"Unlock advance\" :: label word \"advance\" broken mid-way",
+        "button.secondary-action \"Reassign\" :: label word \"Reassign\" broken mid-way"
+      ],
+      "buttons": 14
     },
     {
       "surface": "gm",
@@ -4589,6 +6019,30 @@
         "#reassign-character \"Iryna\" 68>10"
       ],
       "selects": 6,
+      "buttonLabelProblems": [
+        "button.secondary-action \"End round 1\" :: label word \"round\" broken mid-way",
+        "button.primary-action \"Advance scene\" :: label word \"Advance\" broken mid-way",
+        "button.primary-action \"Advance scene\" :: label word \"scene\" broken mid-way",
+        "button.secondary-action \"Switch to simplified\" :: label word \"Switch\" broken mid-way",
+        "button.secondary-action \"Switch to simplified\" :: label word \"simplified\" broken mid-way",
+        "button.primary-action \"Roll it\" :: label word \"Roll\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Void this roll\" :: label word \"Void\" broken mid-way",
+        "button.secondary-action \"Void this roll\" :: label word \"this\" broken mid-way",
+        "button.secondary-action \"Void this roll\" :: label word \"roll\" broken mid-way",
+        "button.secondary-action \"Grant item\" :: label word \"Grant\" broken mid-way",
+        "button.secondary-action \"Grant item\" :: label word \"item\" broken mid-way",
+        "button.secondary-action \"Unlock advance\" :: label word \"Unlock\" broken mid-way",
+        "button.secondary-action \"Unlock advance\" :: label word \"advance\" broken mid-way",
+        "button.secondary-action \"Reassign\" :: label word \"Reassign\" broken mid-way",
+        "button.secondary-action \"End mission\" :: label word \"mission\" broken mid-way"
+      ],
+      "buttons": 16,
       "screenshot": null
     },
     {
@@ -4617,7 +6071,24 @@
         "#advance-character \"Iryna\" 68>65",
         "#reassign-character \"Iryna\" 68>65"
       ],
-      "selects": 6
+      "selects": 6,
+      "buttonLabelProblems": [
+        "button.primary-action \"Advance scene\" :: label word \"Advance\" broken mid-way",
+        "button.primary-action \"Advance scene\" :: label word \"scene\" broken mid-way",
+        "button.secondary-action \"Switch to simplified\" :: label word \"Switch\" broken mid-way",
+        "button.secondary-action \"Switch to simplified\" :: label word \"simplified\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Grant item\" :: label word \"Grant\" broken mid-way",
+        "button.secondary-action \"Unlock advance\" :: label word \"Unlock\" broken mid-way",
+        "button.secondary-action \"Unlock advance\" :: label word \"advance\" broken mid-way",
+        "button.secondary-action \"Reassign\" :: label word \"Reassign\" broken mid-way"
+      ],
+      "buttons": 16
     },
     {
       "surface": "player",
@@ -4629,10 +6100,15 @@
       "innerWidth": 332,
       "clientWidth": 320,
       "rootFontPx": 32,
-      "optionRows": 4,
+      "optionRows": 8,
       "rowOverflow": [
-        "section.step \"Your roll4 (success)1 (discarded\" sw=297/cw=250",
+        "section.step \"Your roll4 (success)5 (success)2\" sw=297/cw=250",
         "fieldset.allocation-die-group \"Die: 4 (success)Get clear of the\" sw=263/cw=182",
+        "label.gear-option \"Get clear of the wreckage and in\" sw=234/cw=124",
+        "label.gear-option \"Station Patrol A\" sw=198/cw=124",
+        "label.gear-option \"Station Patrol B\" sw=198/cw=124",
+        "label.gear-option \"Feed\" sw=169/cw=124",
+        "fieldset.allocation-die-group \"Die: 5 (success)Get clear of the\" sw=263/cw=182",
         "label.gear-option \"Get clear of the wreckage and in\" sw=234/cw=124",
         "label.gear-option \"Station Patrol A\" sw=198/cw=124",
         "label.gear-option \"Station Patrol B\" sw=198/cw=124",
@@ -4643,6 +6119,11 @@
       "outside": [],
       "selectsWithoutEcho": [],
       "selects": 0,
+      "buttonLabelProblems": [
+        "button.primary-action \"Confirm allocation\" :: label word \"Confirm\" broken mid-way",
+        "button.primary-action \"Confirm allocation\" :: label word \"allocation\" broken mid-way"
+      ],
+      "buttons": 2,
       "screenshot": null
     },
     {
@@ -4655,9 +6136,13 @@
       "innerWidth": 375,
       "clientWidth": 375,
       "rootFontPx": 32,
-      "optionRows": 4,
+      "optionRows": 8,
       "rowOverflow": [
         "fieldset.allocation-die-group \"Die: 4 (success)Get clear of the\" sw=263/cw=237",
+        "label.gear-option \"Get clear of the wreckage and in\" sw=234/cw=179",
+        "label.gear-option \"Station Patrol A\" sw=198/cw=179",
+        "label.gear-option \"Station Patrol B\" sw=198/cw=179",
+        "fieldset.allocation-die-group \"Die: 5 (success)Get clear of the\" sw=263/cw=237",
         "label.gear-option \"Get clear of the wreckage and in\" sw=234/cw=179",
         "label.gear-option \"Station Patrol A\" sw=198/cw=179",
         "label.gear-option \"Station Patrol B\" sw=198/cw=179"
@@ -4666,7 +6151,107 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 0
+      "selects": 0,
+      "buttonLabelProblems": [
+        "button.primary-action \"Confirm allocation\" :: label word \"Confirm\" broken mid-way",
+        "button.primary-action \"Confirm allocation\" :: label word \"allocation\" broken mid-way"
+      ],
+      "buttons": 2
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-small",
+      "scale": 2,
+      "pageOverflowPx": 0,
+      "pageZoomed": false,
+      "innerWidth": 320,
+      "clientWidth": 320,
+      "rootFontPx": 32,
+      "optionRows": 1,
+      "rowOverflow": [],
+      "wordBreaks": [
+        "Enforcer :: div.gear-option \"The Enforcer (hidden from player\"",
+        "hidden :: div.gear-option \"The Enforcer (hidden from player\"",
+        "from :: div.gear-option \"The Enforcer (hidden from player\"",
+        "players :: div.gear-option \"The Enforcer (hidden from player\""
+      ],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [
+        "#scene-select \"The Occupier's Printworks\" 362>10",
+        "#grant-character \"Iryna\" 68>10",
+        "#advance-character \"Iryna\" 68>10",
+        "#reassign-character \"Iryna\" 68>10"
+      ],
+      "selects": 6,
+      "buttonLabelProblems": [
+        "button.secondary-action \"Reveal\" :: label word \"Reveal\" broken mid-way",
+        "button.secondary-action \"End round 1\" :: label word \"round\" broken mid-way",
+        "button.primary-action \"Advance scene\" :: label word \"Advance\" broken mid-way",
+        "button.primary-action \"Advance scene\" :: label word \"scene\" broken mid-way",
+        "button.secondary-action \"Switch to simplified\" :: label word \"Switch\" broken mid-way",
+        "button.secondary-action \"Switch to simplified\" :: label word \"simplified\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Grant item\" :: label word \"Grant\" broken mid-way",
+        "button.secondary-action \"Grant item\" :: label word \"item\" broken mid-way",
+        "button.secondary-action \"Unlock advance\" :: label word \"Unlock\" broken mid-way",
+        "button.secondary-action \"Unlock advance\" :: label word \"advance\" broken mid-way",
+        "button.secondary-action \"Reassign\" :: label word \"Reassign\" broken mid-way",
+        "button.secondary-action \"End mission\" :: label word \"mission\" broken mid-way"
+      ],
+      "buttons": 15,
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone",
+      "scale": 2,
+      "pageOverflowPx": 0,
+      "pageZoomed": false,
+      "innerWidth": 375,
+      "clientWidth": 375,
+      "rootFontPx": 32,
+      "optionRows": 1,
+      "rowOverflow": [],
+      "wordBreaks": [
+        "Enforcer :: div.gear-option \"The Enforcer (hidden from player\"",
+        "hidden :: div.gear-option \"The Enforcer (hidden from player\"",
+        "players :: div.gear-option \"The Enforcer (hidden from player\""
+      ],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [
+        "#scene-select \"The Occupier's Printworks\" 362>65",
+        "#grant-character \"Iryna\" 68>65",
+        "#advance-character \"Iryna\" 68>65",
+        "#reassign-character \"Iryna\" 68>65"
+      ],
+      "selects": 6,
+      "buttonLabelProblems": [
+        "button.secondary-action \"Reveal\" :: label word \"Reveal\" broken mid-way",
+        "button.primary-action \"Advance scene\" :: label word \"Advance\" broken mid-way",
+        "button.primary-action \"Advance scene\" :: label word \"scene\" broken mid-way",
+        "button.secondary-action \"Switch to simplified\" :: label word \"Switch\" broken mid-way",
+        "button.secondary-action \"Switch to simplified\" :: label word \"simplified\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way",
+        "button.secondary-action \"Grant item\" :: label word \"Grant\" broken mid-way",
+        "button.secondary-action \"Unlock advance\" :: label word \"Unlock\" broken mid-way",
+        "button.secondary-action \"Unlock advance\" :: label word \"advance\" broken mid-way",
+        "button.secondary-action \"Reassign\" :: label word \"Reassign\" broken mid-way"
+      ],
+      "buttons": 15
     }
   ],
   "reducedMotion": {
@@ -4688,8 +6273,160 @@
   "routes": [],
   "failures": [
     {
+      "scope": "anon/join-form@phone-small",
+      "message": "button.secondary-action \"Lost your browser? Recover your \": label word \"browser\" broken mid-way"
+    },
+    {
+      "scope": "anon/table-join-form@phone-small",
+      "message": "button.primary-action \"Connect display\": label word \"Connect\" broken mid-way"
+    },
+    {
+      "scope": "gm/secrets-reveal@phone-small",
+      "message": "button.primary-action \"I'm ready — continue\": label word \"ready\" broken mid-way; label word \"continue\" broken mid-way"
+    },
+    {
+      "scope": "gm/secrets-reveal@phone",
+      "message": "button.primary-action \"I'm ready — continue\": label word \"continue\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "button.primary-action \"Load scene\": label word \"Load\" broken mid-way; label word \"scene\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "button.secondary-action \"Grant item\": label word \"Grant\" broken mid-way; label word \"item\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "button.secondary-action \"Unlock advance\": label word \"Unlock\" broken mid-way; label word \"advance\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "button.secondary-action \"Reassign\": label word \"Reassign\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone-small",
+      "message": "button.secondary-action \"End mission\": label word \"mission\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "button.primary-action \"Load scene\": label word \"scene\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "button.secondary-action \"Grant item\": label word \"Grant\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "button.secondary-action \"Unlock advance\": label word \"Unlock\" broken mid-way; label word \"advance\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-empty@phone",
+      "message": "button.secondary-action \"Reassign\": label word \"Reassign\" broken mid-way"
+    },
+    {
+      "scope": "player/join-filled@phone-small",
+      "message": "button.secondary-action \"Lost your browser? Recover your \": label word \"browser\" broken mid-way"
+    },
+    {
+      "scope": "player/join-reveal@phone-small",
+      "message": "button.primary-action \"I wrote it down — pick a charact\": label word \"wrote\" broken mid-way; label word \"down\" broken mid-way; label word \"character\" broken mid-way"
+    },
+    {
+      "scope": "player/join-reveal@phone",
+      "message": "button.primary-action \"I wrote it down — pick a charact\": label word \"character\" broken mid-way"
+    },
+    {
+      "scope": "player/claim-roster@phone-small",
+      "message": "button.primary-action \"Claim\": label word \"Claim\" broken mid-way"
+    },
+    {
+      "scope": "player/claim-roster@phone-small",
+      "message": "button.primary-action \"Claim\": label word \"Claim\" broken mid-way"
+    },
+    {
+      "scope": "player/claim-roster@phone-small",
+      "message": "button.primary-action \"Claim\": label word \"Claim\" broken mid-way"
+    },
+    {
+      "scope": "player/claim-roster@phone-small",
+      "message": "button.primary-action \"Claim\": label word \"Claim\" broken mid-way"
+    },
+    {
+      "scope": "player/claim-roster@phone-small",
+      "message": "button.primary-action \"Claim\": label word \"Claim\" broken mid-way"
+    },
+    {
+      "scope": "player/claim-roster@phone-small",
+      "message": "button.primary-action \"Claim\": label word \"Claim\" broken mid-way"
+    },
+    {
       "scope": "player/compose@phone-small",
       "message": "horizontal overflow 47px"
+    },
+    {
+      "scope": "player/compose@phone-small",
+      "message": "button.secondary-action \"Mark and regain Blood\": label word \"Mark\" broken mid-way; label word \"regain\" broken mid-way; label word \"Blood\" broken mid-way"
+    },
+    {
+      "scope": "player/compose@phone-small",
+      "message": "button.primary-action \"Declare action\": label word \"Declare\" broken mid-way; label word \"action\" broken mid-way"
+    },
+    {
+      "scope": "player/compose@phone",
+      "message": "button.secondary-action \"Mark and regain Blood\": label word \"Mark\" broken mid-way; label word \"regain\" broken mid-way; label word \"Blood\" broken mid-way"
+    },
+    {
+      "scope": "player/compose@phone",
+      "message": "button.primary-action \"Declare action\": label word \"Declare\" broken mid-way"
     },
     {
       "scope": "large-text player/compose@phone-smallx2",
@@ -4852,6 +6589,26 @@
       "message": "word broken mid-way inside an option row: Blood :: label.gear-option \"Cigarettes taken from the pocket\""
     },
     {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "button label: button.secondary-action \"Mark and regain Blood\" :: label word \"Mark\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "button label: button.secondary-action \"Mark and regain Blood\" :: label word \"regain\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "button label: button.secondary-action \"Mark and regain Blood\" :: label word \"Blood\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "button label: button.primary-action \"Declare action\" :: label word \"Declare\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "button label: button.primary-action \"Declare action\" :: label word \"action\" broken mid-way"
+    },
+    {
       "scope": "large-text player/compose@phonex2",
       "message": "content wider than its box: section.step \"Choose an actionStatBrawl (2)Con\" sw=332/cw=305"
     },
@@ -4982,12 +6739,44 @@
     {
       "scope": "large-text player/compose@phonex2",
       "message": "word broken mid-way inside an option row: Blood :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "button label: button.secondary-action \"Mark and regain Blood\" :: label word \"Mark\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "button label: button.secondary-action \"Mark and regain Blood\" :: label word \"regain\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "button label: button.secondary-action \"Mark and regain Blood\" :: label word \"Blood\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "button label: button.primary-action \"Declare action\" :: label word \"Declare\" broken mid-way"
     },
     {
       "scope": "player/compose-why-open@phone-small",
       "message": "horizontal overflow 47px"
     },
     {
+      "scope": "player/compose-why-open@phone-small",
+      "message": "button.secondary-action \"Mark and regain Blood\": label word \"Mark\" broken mid-way; label word \"regain\" broken mid-way; label word \"Blood\" broken mid-way"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small",
+      "message": "button.primary-action \"Declare action\": label word \"Declare\" broken mid-way; label word \"action\" broken mid-way"
+    },
+    {
+      "scope": "player/compose-why-open@phone",
+      "message": "button.secondary-action \"Mark and regain Blood\": label word \"Mark\" broken mid-way; label word \"regain\" broken mid-way; label word \"Blood\" broken mid-way"
+    },
+    {
+      "scope": "player/compose-why-open@phone",
+      "message": "button.primary-action \"Declare action\": label word \"Declare\" broken mid-way"
+    },
+    {
       "scope": "large-text player/compose-why-open@phone-smallx2",
       "message": "horizontal overflow 47px"
     },
@@ -5148,6 +6937,26 @@
       "message": "word broken mid-way inside an option row: Blood :: label.gear-option \"Cigarettes taken from the pocket\""
     },
     {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "button label: button.secondary-action \"Mark and regain Blood\" :: label word \"Mark\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "button label: button.secondary-action \"Mark and regain Blood\" :: label word \"regain\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "button label: button.secondary-action \"Mark and regain Blood\" :: label word \"Blood\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "button label: button.primary-action \"Declare action\" :: label word \"Declare\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "button label: button.primary-action \"Declare action\" :: label word \"action\" broken mid-way"
+    },
+    {
       "scope": "large-text player/compose-why-open@phonex2",
       "message": "content wider than its box: section.step \"Choose an actionStatBrawl (2)Con\" sw=332/cw=305"
     },
@@ -5278,6 +7087,118 @@
     {
       "scope": "large-text player/compose-why-open@phonex2",
       "message": "word broken mid-way inside an option row: Blood :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "button label: button.secondary-action \"Mark and regain Blood\" :: label word \"Mark\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "button label: button.secondary-action \"Mark and regain Blood\" :: label word \"regain\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "button label: button.secondary-action \"Mark and regain Blood\" :: label word \"Blood\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "button label: button.primary-action \"Declare action\" :: label word \"Declare\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "button.secondary-action \"End round 1\": label word \"round\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "button.primary-action \"Advance scene\": label word \"Advance\" broken mid-way; label word \"scene\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "button.secondary-action \"Switch to simplified\": label word \"Switch\" broken mid-way; label word \"simplified\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "button.secondary-action \"Grant item\": label word \"Grant\" broken mid-way; label word \"item\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "button.secondary-action \"Unlock advance\": label word \"Unlock\" broken mid-way; label word \"advance\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "button.secondary-action \"Reassign\": label word \"Reassign\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone-small",
+      "message": "button.secondary-action \"End mission\": label word \"mission\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "button.primary-action \"Advance scene\": label word \"Advance\" broken mid-way; label word \"scene\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "button.secondary-action \"Switch to simplified\": label word \"Switch\" broken mid-way; label word \"simplified\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "button.secondary-action \"Grant item\": label word \"Grant\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "button.secondary-action \"Unlock advance\": label word \"Unlock\" broken mid-way; label word \"advance\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-scene-loaded@phone",
+      "message": "button.secondary-action \"Reassign\": label word \"Reassign\" broken mid-way"
     },
     {
       "scope": "large-text gm/console-scene-loaded@phone-smallx2",
@@ -5296,6 +7217,74 @@
       "message": "closed select hides its value with no echo: #reassign-character \"Iryna\" 68>10"
     },
     {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"End round 1\" :: label word \"round\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.primary-action \"Advance scene\" :: label word \"Advance\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.primary-action \"Advance scene\" :: label word \"scene\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"Switch to simplified\" :: label word \"Switch\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"Switch to simplified\" :: label word \"simplified\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"Grant item\" :: label word \"Grant\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"Grant item\" :: label word \"item\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"Unlock advance\" :: label word \"Unlock\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"Unlock advance\" :: label word \"advance\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"Reassign\" :: label word \"Reassign\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "button label: button.secondary-action \"End mission\" :: label word \"mission\" broken mid-way"
+    },
+    {
       "scope": "large-text gm/console-scene-loaded@phonex2",
       "message": "closed select hides its value with no echo: #scene-select \"The Abandoned Métro Platform\" 430>65"
     },
@@ -5312,8 +7301,168 @@
       "message": "closed select hides its value with no echo: #reassign-character \"Iryna\" 68>65"
     },
     {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "button label: button.primary-action \"Advance scene\" :: label word \"Advance\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "button label: button.primary-action \"Advance scene\" :: label word \"scene\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "button label: button.secondary-action \"Switch to simplified\" :: label word \"Switch\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "button label: button.secondary-action \"Switch to simplified\" :: label word \"simplified\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "button label: button.secondary-action \"Grant item\" :: label word \"Grant\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "button label: button.secondary-action \"Unlock advance\" :: label word \"Unlock\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "button label: button.secondary-action \"Unlock advance\" :: label word \"advance\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "button label: button.secondary-action \"Reassign\" :: label word \"Reassign\" broken mid-way"
+    },
+    {
       "scope": "gm/console-pending@phone-small",
       "message": "horizontal overflow 5px"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.secondary-action \"End round 1\": label word \"round\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.primary-action \"Advance scene\": label word \"Advance\" broken mid-way; label word \"scene\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.secondary-action \"Switch to simplified\": label word \"Switch\" broken mid-way; label word \"simplified\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.primary-action \"Roll it\": label word \"Roll\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.secondary-action \"Void this roll\": label word \"Void\" broken mid-way; label word \"this\" broken mid-way; label word \"roll\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.secondary-action \"Grant item\": label word \"Grant\" broken mid-way; label word \"item\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.secondary-action \"Unlock advance\": label word \"Unlock\" broken mid-way; label word \"advance\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.secondary-action \"Reassign\": label word \"Reassign\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "button.secondary-action \"End mission\": label word \"mission\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "button.primary-action \"Advance scene\": label word \"Advance\" broken mid-way; label word \"scene\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "button.secondary-action \"Switch to simplified\": label word \"Switch\" broken mid-way; label word \"simplified\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "button.secondary-action \"Grant item\": label word \"Grant\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "button.secondary-action \"Unlock advance\": label word \"Unlock\" broken mid-way; label word \"advance\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-pending@phone",
+      "message": "button.secondary-action \"Reassign\": label word \"Reassign\" broken mid-way"
     },
     {
       "scope": "large-text gm/console-pending@phone-smallx2",
@@ -5360,6 +7509,90 @@
       "message": "closed select hides its value with no echo: #reassign-character \"Iryna\" 68>10"
     },
     {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"End round 1\" :: label word \"round\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.primary-action \"Advance scene\" :: label word \"Advance\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.primary-action \"Advance scene\" :: label word \"scene\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Switch to simplified\" :: label word \"Switch\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Switch to simplified\" :: label word \"simplified\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.primary-action \"Roll it\" :: label word \"Roll\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Void this roll\" :: label word \"Void\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Void this roll\" :: label word \"this\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Void this roll\" :: label word \"roll\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Grant item\" :: label word \"Grant\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Grant item\" :: label word \"item\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Unlock advance\" :: label word \"Unlock\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Unlock advance\" :: label word \"advance\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"Reassign\" :: label word \"Reassign\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "button label: button.secondary-action \"End mission\" :: label word \"mission\" broken mid-way"
+    },
+    {
       "scope": "large-text gm/console-pending@phonex2",
       "message": "content wider than its box: li.pending-action-card \"IrynaStat: CONEngaged threatsSta\" sw=256/cw=237"
     },
@@ -5390,6 +7623,62 @@
     {
       "scope": "large-text gm/console-pending@phonex2",
       "message": "closed select hides its value with no echo: #reassign-character \"Iryna\" 68>65"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "button label: button.primary-action \"Advance scene\" :: label word \"Advance\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "button label: button.primary-action \"Advance scene\" :: label word \"scene\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "button label: button.secondary-action \"Switch to simplified\" :: label word \"Switch\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "button label: button.secondary-action \"Switch to simplified\" :: label word \"simplified\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "button label: button.secondary-action \"Grant item\" :: label word \"Grant\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "button label: button.secondary-action \"Unlock advance\" :: label word \"Unlock\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "button label: button.secondary-action \"Unlock advance\" :: label word \"advance\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "button label: button.secondary-action \"Reassign\" :: label word \"Reassign\" broken mid-way"
     },
     {
       "scope": "modal@phone-small",
@@ -5429,6 +7718,10 @@
     },
     {
       "scope": "modal-text-200-phone-small",
+      "message": "sheetContentFits failed"
+    },
+    {
+      "scope": "modal-text-200-phone-small",
       "message": "layoutChosen failed"
     },
     {
@@ -5441,6 +7734,10 @@
     },
     {
       "scope": "modal-text-200-phone",
+      "message": "sheetContentFits failed"
+    },
+    {
+      "scope": "modal-text-200-phone",
       "message": "layoutChosen failed"
     },
     {
@@ -5450,6 +7747,10 @@
     {
       "scope": "modal-text-200-phone",
       "message": "noNestedActionScroller failed"
+    },
+    {
+      "scope": "modal-sheet-layout-320-x2-kb298",
+      "message": "sheetContentFits failed"
     },
     {
       "scope": "modal-sheet-layout-320-x2-kb298",
@@ -5458,6 +7759,10 @@
     {
       "scope": "modal-sheet-layout-320-x2-kb298",
       "message": "layoutChosen failed"
+    },
+    {
+      "scope": "modal-sheet-layout-320-x2-nokb",
+      "message": "sheetContentFits failed"
     },
     {
       "scope": "modal-sheet-layout-320-x2-nokb",
@@ -5481,6 +7786,10 @@
     },
     {
       "scope": "modal-sheet-layout-375-x2-kb400",
+      "message": "sheetContentFits failed"
+    },
+    {
+      "scope": "modal-sheet-layout-375-x2-kb400",
       "message": "layoutChosen failed"
     },
     {
@@ -5494,6 +7803,30 @@
     {
       "scope": "modal-sheet-layout-375-x2-kb400",
       "message": "bodyIsNotASecondScroller failed"
+    },
+    {
+      "scope": "modal-sheet-layout-360-x2-kb400",
+      "message": "sheetContentFits failed"
+    },
+    {
+      "scope": "modal-sheet-layout-360-x2-kb400",
+      "message": "layoutChosen failed"
+    },
+    {
+      "scope": "modal-sheet-layout-360-x2-kb400",
+      "message": "noNestedActionScroller failed"
+    },
+    {
+      "scope": "modal-sheet-layout-360-x2-kb400",
+      "message": "pageScrolls failed"
+    },
+    {
+      "scope": "modal-sheet-layout-360-x2-kb400",
+      "message": "bodyIsNotASecondScroller failed"
+    },
+    {
+      "scope": "modal-sheet-layout-375-x2-kb400-scrolled",
+      "message": "sheetContentFits failed"
     },
     {
       "scope": "modal-sheet-layout-375-x2-kb400-scrolled",
@@ -5516,8 +7849,40 @@
       "message": "layoutChosen failed"
     },
     {
+      "scope": "modal-sheet-flip-412-real",
+      "message": "layoutFollowsMeasurement failed"
+    },
+    {
+      "scope": "modal-sheet-flip-412-real",
+      "message": "bothLayoutsSeen failed"
+    },
+    {
+      "scope": "modal-sheet-flip-412-real",
+      "message": "oneFlipGoingDown failed"
+    },
+    {
+      "scope": "modal-sheet-flip-keeps-focused-control-in-view",
+      "message": "startedPinned failed"
+    },
+    {
+      "scope": "modal-sheet-flip-keeps-focused-control-in-view",
+      "message": "flippedToPage failed"
+    },
+    {
+      "scope": "modal-sheet-flip-keeps-focused-control-in-view",
+      "message": "focusedControlInView failed"
+    },
+    {
       "scope": "player/allocation@phone-small",
       "message": "horizontal overflow 12px"
+    },
+    {
+      "scope": "player/allocation@phone-small",
+      "message": "button.primary-action \"Confirm allocation\": label word \"Confirm\" broken mid-way; label word \"allocation\" broken mid-way"
+    },
+    {
+      "scope": "player/allocation@phone",
+      "message": "button.primary-action \"Confirm allocation\": label word \"Confirm\" broken mid-way; label word \"allocation\" broken mid-way"
     },
     {
       "scope": "large-text player/allocation@phone-smallx2",
@@ -5529,7 +7894,7 @@
     },
     {
       "scope": "large-text player/allocation@phone-smallx2",
-      "message": "content wider than its box: section.step \"Your roll4 (success)1 (discarded\" sw=297/cw=250"
+      "message": "content wider than its box: section.step \"Your roll4 (success)5 (success)2\" sw=297/cw=250"
     },
     {
       "scope": "large-text player/allocation@phone-smallx2",
@@ -5552,6 +7917,34 @@
       "message": "content wider than its box: label.gear-option \"Feed\" sw=169/cw=124"
     },
     {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "content wider than its box: fieldset.allocation-die-group \"Die: 5 (success)Get clear of the\" sw=263/cw=182"
+    },
+    {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Get clear of the wreckage and in\" sw=234/cw=124"
+    },
+    {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol A\" sw=198/cw=124"
+    },
+    {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol B\" sw=198/cw=124"
+    },
+    {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Feed\" sw=169/cw=124"
+    },
+    {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "button label: button.primary-action \"Confirm allocation\" :: label word \"Confirm\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "button label: button.primary-action \"Confirm allocation\" :: label word \"allocation\" broken mid-way"
+    },
+    {
       "scope": "large-text player/allocation@phonex2",
       "message": "content wider than its box: fieldset.allocation-die-group \"Die: 4 (success)Get clear of the\" sw=263/cw=237"
     },
@@ -5568,12 +7961,368 @@
       "message": "content wider than its box: label.gear-option \"Station Patrol B\" sw=198/cw=179"
     },
     {
+      "scope": "large-text player/allocation@phonex2",
+      "message": "content wider than its box: fieldset.allocation-die-group \"Die: 5 (success)Get clear of the\" sw=263/cw=237"
+    },
+    {
+      "scope": "large-text player/allocation@phonex2",
+      "message": "content wider than its box: label.gear-option \"Get clear of the wreckage and in\" sw=234/cw=179"
+    },
+    {
+      "scope": "large-text player/allocation@phonex2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol A\" sw=198/cw=179"
+    },
+    {
+      "scope": "large-text player/allocation@phonex2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol B\" sw=198/cw=179"
+    },
+    {
+      "scope": "large-text player/allocation@phonex2",
+      "message": "button label: button.primary-action \"Confirm allocation\" :: label word \"Confirm\" broken mid-way"
+    },
+    {
+      "scope": "large-text player/allocation@phonex2",
+      "message": "button label: button.primary-action \"Confirm allocation\" :: label word \"allocation\" broken mid-way"
+    },
+    {
       "scope": "player/allocation-assigned@phone-small",
       "message": "horizontal overflow 12px"
     },
     {
+      "scope": "player/allocation-assigned@phone-small",
+      "message": "button.primary-action \"Confirm allocation\": label word \"Confirm\" broken mid-way; label word \"allocation\" broken mid-way"
+    },
+    {
+      "scope": "player/allocation-assigned@phone",
+      "message": "button.primary-action \"Confirm allocation\": label word \"Confirm\" broken mid-way; label word \"allocation\" broken mid-way"
+    },
+    {
+      "scope": "player/resolved@phone-small",
+      "message": "button.primary-action \"Back to scene\": label word \"Back\" broken mid-way; label word \"scene\" broken mid-way"
+    },
+    {
       "scope": "player/paused@phone-small",
       "message": "horizontal overflow 47px"
+    },
+    {
+      "scope": "player/paused@phone-small",
+      "message": "button.secondary-action \"Mark and regain Blood\": label word \"Mark\" broken mid-way; label word \"regain\" broken mid-way; label word \"Blood\" broken mid-way"
+    },
+    {
+      "scope": "player/paused@phone-small",
+      "message": "button.primary-action \"Declare action\": label word \"Declare\" broken mid-way; label word \"action\" broken mid-way"
+    },
+    {
+      "scope": "player/paused@phone",
+      "message": "button.secondary-action \"Mark and regain Blood\": label word \"Mark\" broken mid-way; label word \"regain\" broken mid-way; label word \"Blood\" broken mid-way"
+    },
+    {
+      "scope": "player/paused@phone",
+      "message": "button.primary-action \"Declare action\": label word \"Declare\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "button.secondary-action \"Reveal\": label word \"Reveal\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "button.secondary-action \"End round 1\": label word \"round\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "button.primary-action \"Advance scene\": label word \"Advance\" broken mid-way; label word \"scene\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "button.secondary-action \"Switch to simplified\": label word \"Switch\" broken mid-way; label word \"simplified\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "button.secondary-action \"Grant item\": label word \"Grant\" broken mid-way; label word \"item\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "button.secondary-action \"Unlock advance\": label word \"Unlock\" broken mid-way; label word \"advance\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "button.secondary-action \"Reassign\": label word \"Reassign\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-small",
+      "message": "button.secondary-action \"End mission\": label word \"mission\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "button.secondary-action \"Reveal\": label word \"Reveal\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "button.primary-action \"Advance scene\": label word \"Advance\" broken mid-way; label word \"scene\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "button.secondary-action \"Switch to simplified\": label word \"Switch\" broken mid-way; label word \"simplified\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "button.secondary-action \"Correct\": label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "button.secondary-action \"Grant item\": label word \"Grant\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "button.secondary-action \"Unlock advance\": label word \"Unlock\" broken mid-way; label word \"advance\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone",
+      "message": "button.secondary-action \"Reassign\": label word \"Reassign\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@phone-landscape",
+      "message": "button.secondary-action \"Reveal\": label word \"Reveal\" broken mid-way"
+    },
+    {
+      "scope": "gm/console-next-scene@tablet",
+      "message": "button.secondary-action \"Reveal\": label word \"Reveal\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "word broken mid-way inside an option row: Enforcer :: div.gear-option \"The Enforcer (hidden from player\""
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "word broken mid-way inside an option row: hidden :: div.gear-option \"The Enforcer (hidden from player\""
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "word broken mid-way inside an option row: from :: div.gear-option \"The Enforcer (hidden from player\""
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "word broken mid-way inside an option row: players :: div.gear-option \"The Enforcer (hidden from player\""
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "closed select hides its value with no echo: #scene-select \"The Occupier's Printworks\" 362>10"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "closed select hides its value with no echo: #grant-character \"Iryna\" 68>10"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "closed select hides its value with no echo: #advance-character \"Iryna\" 68>10"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "closed select hides its value with no echo: #reassign-character \"Iryna\" 68>10"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"Reveal\" :: label word \"Reveal\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"End round 1\" :: label word \"round\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.primary-action \"Advance scene\" :: label word \"Advance\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.primary-action \"Advance scene\" :: label word \"scene\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"Switch to simplified\" :: label word \"Switch\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"Switch to simplified\" :: label word \"simplified\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"Grant item\" :: label word \"Grant\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"Grant item\" :: label word \"item\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"Unlock advance\" :: label word \"Unlock\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"Unlock advance\" :: label word \"advance\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"Reassign\" :: label word \"Reassign\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phone-smallx2",
+      "message": "button label: button.secondary-action \"End mission\" :: label word \"mission\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "word broken mid-way inside an option row: Enforcer :: div.gear-option \"The Enforcer (hidden from player\""
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "word broken mid-way inside an option row: hidden :: div.gear-option \"The Enforcer (hidden from player\""
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "word broken mid-way inside an option row: players :: div.gear-option \"The Enforcer (hidden from player\""
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "closed select hides its value with no echo: #scene-select \"The Occupier's Printworks\" 362>65"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "closed select hides its value with no echo: #grant-character \"Iryna\" 68>65"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "closed select hides its value with no echo: #advance-character \"Iryna\" 68>65"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "closed select hides its value with no echo: #reassign-character \"Iryna\" 68>65"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.secondary-action \"Reveal\" :: label word \"Reveal\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.primary-action \"Advance scene\" :: label word \"Advance\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.primary-action \"Advance scene\" :: label word \"scene\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.secondary-action \"Switch to simplified\" :: label word \"Switch\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.secondary-action \"Switch to simplified\" :: label word \"simplified\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.secondary-action \"Correct\" :: label word \"Correct\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.secondary-action \"Grant item\" :: label word \"Grant\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.secondary-action \"Unlock advance\" :: label word \"Unlock\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.secondary-action \"Unlock advance\" :: label word \"advance\" broken mid-way"
+    },
+    {
+      "scope": "large-text gm/console-next-scene@phonex2",
+      "message": "button label: button.secondary-action \"Reassign\" :: label word \"Reassign\" broken mid-way"
     }
   ],
   "console": {
@@ -5594,19 +8343,19 @@
       "failedRequests": []
     }
   },
-  "finishedAt": "2026-10-07T03:17:13.558Z",
+  "finishedAt": "2026-10-07T08:52:27.451Z",
   "ok": false,
   "summary": {
     "states": 150,
-    "controlsAudited": 1422,
-    "controlIssues": 0,
+    "controlsAudited": 1470,
+    "controlIssues": 129,
     "overflowStates": 6,
     "axeHardViolations": 0,
     "axeBestPractice": [
       "anon/route-claim-no-such-room@phone: page-has-heading-one"
     ],
-    "largeTextPasses": 10,
-    "modalScenarios": 23,
-    "failures": 222
+    "largeTextPasses": 12,
+    "modalScenarios": 26,
+    "failures": 513
   }
 }

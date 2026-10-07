@@ -1,7 +1,7 @@
 {
-  "label": "fw-after",
+  "label": "fw7-after",
   "base": "http://127.0.0.1:53175",
-  "startedAt": "2026-10-07T03:09:10.987Z",
+  "startedAt": "2026-10-07T08:50:15.779Z",
   "defaultFontPx": 0,
   "states": [
     {
@@ -1146,7 +1146,7 @@
       "state": "allocation",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 11,
+      "controls": 16,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-small.jpg"
@@ -1156,7 +1156,7 @@
       "state": "allocation",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 11,
+      "controls": 16,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone.jpg",
@@ -1167,7 +1167,7 @@
       "state": "allocation",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 11,
+      "controls": 16,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-landscape.jpg"
@@ -1177,7 +1177,7 @@
       "state": "allocation",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 11,
+      "controls": 16,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-tablet.jpg",
@@ -1188,7 +1188,7 @@
       "state": "allocation",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 11,
+      "controls": 16,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-desktop.jpg",
@@ -1199,7 +1199,7 @@
       "state": "allocation",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 11,
+      "controls": 16,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-table.jpg"
@@ -1209,7 +1209,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 11,
+      "controls": 16,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-small.jpg"
@@ -1219,7 +1219,7 @@
       "state": "allocation-assigned",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 11,
+      "controls": 16,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone.jpg",
@@ -1230,7 +1230,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 11,
+      "controls": 16,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-landscape.jpg"
@@ -1240,7 +1240,7 @@
       "state": "allocation-assigned",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 11,
+      "controls": 16,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-tablet.jpg"
@@ -1250,7 +1250,7 @@
       "state": "allocation-assigned",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 11,
+      "controls": 16,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-desktop.jpg"
@@ -1260,7 +1260,7 @@
       "state": "allocation-assigned",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 11,
+      "controls": 16,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-table.jpg"
@@ -1754,20 +1754,20 @@
           "height": 788
         },
         "apply": {
-          "top": 707.625,
-          "bottom": 800,
+          "top": 689.25,
+          "bottom": 737.625,
           "left": 19,
-          "right": 181.5,
-          "width": 162.5,
-          "height": 92.375
+          "right": 356,
+          "width": 337,
+          "height": 48.375
         },
         "cancel": {
-          "top": 707.625,
+          "top": 749.625,
           "bottom": 800,
-          "left": 193.5,
+          "left": 19,
           "right": 356,
-          "width": 162.5,
-          "height": 92.375
+          "width": 337,
+          "height": 50.375
         },
         "reason": {
           "top": 1388.140625,
@@ -1779,17 +1779,17 @@
         },
         "body": {
           "scrollHeight": 1351,
-          "clientHeight": 591,
+          "clientHeight": 573,
           "scrollTop": 0,
           "overflowY": "auto"
         },
         "bodyBox": {
           "top": 101.171875,
-          "bottom": 692.625,
+          "bottom": 674.25,
           "left": 3,
           "right": 372,
           "width": 369,
-          "height": 591.453125
+          "height": 573.078125
         },
         "header": {
           "top": 27,
@@ -1800,12 +1800,12 @@
           "height": 74.171875
         },
         "footer": {
-          "top": 692.625,
+          "top": 674.25,
           "bottom": 812,
           "left": 3,
           "right": 372,
           "width": 369,
-          "height": 119.375
+          "height": 137.75
         },
         "heading": {
           "top": 53.720191955566406,
@@ -1823,8 +1823,8 @@
           "overflowY": "hidden"
         },
         "footerScroll": {
-          "scrollHeight": 116,
-          "clientHeight": 116,
+          "scrollHeight": 135,
+          "clientHeight": 135,
           "overflowY": "visible"
         },
         "rem": 16,
@@ -2778,7 +2778,7 @@
       },
       "notes": [],
       "scaleBefore": 1,
-      "scaleAfter": 2.000000238418579,
+      "scaleAfter": 1.9999995231628418,
       "informationalChecks": []
     },
     {
@@ -3054,20 +3054,20 @@
           "height": 765
         },
         "apply": {
-          "top": 673.625,
-          "bottom": 766,
+          "top": 655.25,
+          "bottom": 703.625,
           "left": 19,
-          "right": 181.5,
-          "width": 162.5,
-          "height": 92.375
+          "right": 356,
+          "width": 337,
+          "height": 48.375
         },
         "cancel": {
-          "top": 673.625,
+          "top": 715.625,
           "bottom": 766,
-          "left": 193.5,
+          "left": 19,
           "right": 356,
-          "width": 162.5,
-          "height": 92.375
+          "width": 337,
+          "height": 50.375
         },
         "reason": {
           "top": 1411.140625,
@@ -3079,17 +3079,17 @@
         },
         "body": {
           "scrollHeight": 1351,
-          "clientHeight": 534,
+          "clientHeight": 516,
           "scrollTop": 0,
           "overflowY": "auto"
         },
         "bodyBox": {
           "top": 124.171875,
-          "bottom": 658.625,
+          "bottom": 640.25,
           "left": 3,
           "right": 372,
           "width": 369,
-          "height": 534.453125
+          "height": 516.078125
         },
         "header": {
           "top": 50,
@@ -3100,12 +3100,12 @@
           "height": 74.171875
         },
         "footer": {
-          "top": 658.625,
+          "top": 640.25,
           "bottom": 812,
           "left": 3,
           "right": 372,
           "width": 369,
-          "height": 153.375
+          "height": 171.75
         },
         "heading": {
           "top": 76.7201919555664,
@@ -3123,8 +3123,8 @@
           "overflowY": "hidden"
         },
         "footerScroll": {
-          "scrollHeight": 150,
-          "clientHeight": 150,
+          "scrollHeight": 169,
+          "clientHeight": 169,
           "overflowY": "visible"
         },
         "rem": 16,
@@ -3404,6 +3404,7 @@
       "checks": {
         "dialogInsideViewport": true,
         "noPageOverflow": true,
+        "sheetContentFits": true,
         "layoutChosen": true,
         "bodyKeepsRoomOrPageScrolls": true,
         "noNestedActionScroller": true,
@@ -3526,6 +3527,7 @@
       "checks": {
         "dialogInsideViewport": true,
         "noPageOverflow": true,
+        "sheetContentFits": true,
         "layoutChosen": true,
         "bodyKeepsRoomOrPageScrolls": true,
         "noNestedActionScroller": true,
@@ -3556,12 +3558,12 @@
           "height": 764
         },
         "apply": {
-          "top": 572,
+          "top": 548.84375,
           "bottom": 668,
           "left": 21.75,
           "right": 353.25,
           "width": 331.5,
-          "height": 96
+          "height": 119.15625
         },
         "cancel": {
           "top": 692,
@@ -3581,17 +3583,17 @@
         },
         "body": {
           "scrollHeight": 3464,
-          "clientHeight": 304,
+          "clientHeight": 281,
           "scrollTop": 0,
           "overflowY": "auto"
         },
         "bodyBox": {
           "top": 241.15625,
-          "bottom": 545,
+          "bottom": 521.84375,
           "left": 3,
           "right": 372,
           "width": 369,
-          "height": 303.84375
+          "height": 280.6875
         },
         "header": {
           "top": 51,
@@ -3602,12 +3604,12 @@
           "height": 190.15625
         },
         "footer": {
-          "top": 545,
+          "top": 521.84375,
           "bottom": 812,
           "left": 3,
           "right": 372,
           "width": 369,
-          "height": 267
+          "height": 290.15625
         },
         "heading": {
           "top": 104.5321273803711,
@@ -3625,8 +3627,8 @@
           "overflowY": "hidden"
         },
         "footerScroll": {
-          "scrollHeight": 264,
-          "clientHeight": 264,
+          "scrollHeight": 287,
+          "clientHeight": 287,
           "overflowY": "visible"
         },
         "rem": 32,
@@ -3648,6 +3650,7 @@
       "checks": {
         "dialogInsideViewport": true,
         "noPageOverflow": true,
+        "sheetContentFits": true,
         "layoutChosen": true,
         "bodyKeepsRoomOrPageScrolls": true,
         "noNestedActionScroller": true,
@@ -3679,15 +3682,15 @@
         },
         "apply": {
           "top": 3955.375,
-          "bottom": 4051.375,
+          "bottom": 4074.53125,
           "left": 19,
           "right": 301,
           "width": 282,
-          "height": 96
+          "height": 119.15625
         },
         "cancel": {
-          "top": 4075.375,
-          "bottom": 4171.375,
+          "top": 4098.53125,
+          "bottom": 4194.53125,
           "left": 19,
           "right": 301,
           "width": 282,
@@ -3725,11 +3728,11 @@
         },
         "footer": {
           "top": 3928.375,
-          "bottom": 4195.375,
+          "bottom": 4218.53125,
           "left": 3,
           "right": 317,
           "width": 314,
-          "height": 267
+          "height": 290.15625
         },
         "heading": {
           "top": 105.13687133789062,
@@ -3742,13 +3745,13 @@
         "dataLayout": "page",
         "backdropContentHeight": 520,
         "dialogScroll": {
-          "scrollHeight": 4144,
+          "scrollHeight": 4168,
           "clientHeight": 517,
           "overflowY": "auto"
         },
         "footerScroll": {
-          "scrollHeight": 264,
-          "clientHeight": 264,
+          "scrollHeight": 287,
+          "clientHeight": 287,
           "overflowY": "visible"
         },
         "rem": 32,
@@ -3768,6 +3771,7 @@
       "size": "320x568",
       "scenario": "sheet-layout-320-x1-kb298",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -3805,24 +3809,24 @@
           "height": 274
         },
         "apply": {
-          "top": 329.140625,
-          "bottom": 377.515625,
+          "top": 313.140625,
+          "bottom": 361.515625,
           "left": 19,
           "right": 301,
           "width": 282,
           "height": 48.375
         },
         "cancel": {
-          "top": 389.515625,
-          "bottom": 439.890625,
+          "top": 373.515625,
+          "bottom": 423.890625,
           "left": 19,
           "right": 301,
           "width": 282,
           "height": 50.375
         },
         "reason": {
-          "top": 250.140625,
-          "bottom": 298.140625,
+          "top": 234.140625,
+          "bottom": 282.140625,
           "left": 19,
           "right": 301,
           "width": 282,
@@ -3835,32 +3839,32 @@
           "overflowY": "visible"
         },
         "bodyBox": {
-          "top": -1036.828125,
-          "bottom": 314.140625,
+          "top": -1052.828125,
+          "bottom": 298.140625,
           "left": 3,
           "right": 317,
           "width": 314,
           "height": 1350.96875
         },
         "header": {
-          "top": -1111,
-          "bottom": -1036.828125,
+          "top": -1127,
+          "bottom": -1052.828125,
           "left": 3,
           "right": 317,
           "width": 314,
           "height": 74.171875
         },
         "footer": {
-          "top": 314.140625,
-          "bottom": 451.890625,
+          "top": 298.140625,
+          "bottom": 435.890625,
           "left": 3,
           "right": 317,
           "width": 314,
           "height": 137.75
         },
         "heading": {
-          "top": -1084.27978515625,
-          "bottom": -1051.8292236328125,
+          "top": -1100.27978515625,
+          "bottom": -1067.8292236328125,
           "left": 18.81435775756836,
           "right": 187.96992111206055,
           "width": 169.1555633544922,
@@ -3896,6 +3900,7 @@
       "size": "320x568",
       "scenario": "sheet-layout-320-x1-nokb",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -4025,6 +4030,7 @@
       "size": "375x812",
       "scenario": "sheet-layout-375-x1-kb400",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -4063,24 +4069,24 @@
           "height": 376
         },
         "apply": {
-          "top": 295.625,
-          "bottom": 388,
+          "top": 277.25,
+          "bottom": 325.625,
           "left": 19,
-          "right": 181.5,
-          "width": 162.5,
-          "height": 92.375
+          "right": 356,
+          "width": 337,
+          "height": 48.375
         },
         "cancel": {
-          "top": 295.625,
+          "top": 337.625,
           "bottom": 388,
-          "left": 193.5,
+          "left": 19,
           "right": 356,
-          "width": 162.5,
-          "height": 92.375
+          "width": 337,
+          "height": 50.375
         },
         "reason": {
-          "top": 216.140625,
-          "bottom": 264.140625,
+          "top": 198.140625,
+          "bottom": 246.140625,
           "left": 19,
           "right": 356,
           "width": 337,
@@ -4088,17 +4094,17 @@
         },
         "body": {
           "scrollHeight": 1351,
-          "clientHeight": 179,
-          "scrollTop": 1172,
+          "clientHeight": 161,
+          "scrollTop": 1190,
           "overflowY": "auto"
         },
         "bodyBox": {
           "top": 101.171875,
-          "bottom": 280.625,
+          "bottom": 262.25,
           "left": 3,
           "right": 372,
           "width": 369,
-          "height": 179.453125
+          "height": 161.078125
         },
         "header": {
           "top": 27,
@@ -4109,12 +4115,12 @@
           "height": 74.171875
         },
         "footer": {
-          "top": 280.625,
+          "top": 262.25,
           "bottom": 400,
           "left": 3,
           "right": 372,
           "width": 369,
-          "height": 119.375
+          "height": 137.75
         },
         "heading": {
           "top": 53.720191955566406,
@@ -4132,8 +4138,8 @@
           "overflowY": "hidden"
         },
         "footerScroll": {
-          "scrollHeight": 116,
-          "clientHeight": 116,
+          "scrollHeight": 135,
+          "clientHeight": 135,
           "overflowY": "visible"
         },
         "rem": 16,
@@ -4150,10 +4156,141 @@
       "informationalChecks": []
     },
     {
+      "viewport": "phone-360",
+      "size": "360x800",
+      "scenario": "sheet-layout-360-x1-kb400",
+      "checks": {
+        "sheetContentFits": true,
+        "noPageOverflow": true,
+        "layoutChosen": true,
+        "dialogInsideVisibleArea": true,
+        "noNestedActionScroller": true,
+        "layoutMatchesMeasurement": true,
+        "nothingClipped": true,
+        "actionsVisibleAtRest": true,
+        "bodyKeepsRoom": true,
+        "focusedFieldVisible": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true,
+        "titleVisibleAtTop": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 360,
+          "innerHeight": 800,
+          "clientWidth": 360
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 360,
+          "height": 400,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 400,
+          "left": 0,
+          "right": 360,
+          "width": 360,
+          "height": 376
+        },
+        "apply": {
+          "top": 277.25,
+          "bottom": 325.625,
+          "left": 19,
+          "right": 341,
+          "width": 322,
+          "height": 48.375
+        },
+        "cancel": {
+          "top": 337.625,
+          "bottom": 388,
+          "left": 19,
+          "right": 341,
+          "width": 322,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 198.140625,
+          "bottom": 246.140625,
+          "left": 19,
+          "right": 341,
+          "width": 322,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1351,
+          "clientHeight": 161,
+          "scrollTop": 1190,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 101.171875,
+          "bottom": 262.25,
+          "left": 3,
+          "right": 357,
+          "width": 354,
+          "height": 161.078125
+        },
+        "header": {
+          "top": 27,
+          "bottom": 101.171875,
+          "left": 3,
+          "right": 357,
+          "width": 354,
+          "height": 74.171875
+        },
+        "footer": {
+          "top": 262.25,
+          "bottom": 400,
+          "left": 3,
+          "right": 357,
+          "width": 354,
+          "height": 137.75
+        },
+        "heading": {
+          "top": 53.720191955566406,
+          "bottom": 86.17074584960938,
+          "left": 18.81435775756836,
+          "right": 187.96992111206055,
+          "width": 169.1555633544922,
+          "height": 32.45055389404297
+        },
+        "dataLayout": "pinned",
+        "backdropContentHeight": 376,
+        "dialogScroll": {
+          "scrollHeight": 373,
+          "clientHeight": 373,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 135,
+          "clientHeight": 135,
+          "overflowY": "visible"
+        },
+        "rem": 16,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-layout-360-x1-kb400.jpg",
+      "visibleHeight": 400,
+      "textScale": 1,
+      "informationalChecks": []
+    },
+    {
       "viewport": "phone",
       "size": "375x812",
       "scenario": "sheet-layout-375-x1-kb400-scrolled",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -4192,24 +4329,24 @@
           "height": 376
         },
         "apply": {
-          "top": 445.625,
-          "bottom": 538,
+          "top": 427.25,
+          "bottom": 475.625,
           "left": 19,
-          "right": 181.5,
-          "width": 162.5,
-          "height": 92.375
+          "right": 356,
+          "width": 337,
+          "height": 48.375
         },
         "cancel": {
-          "top": 445.625,
+          "top": 487.625,
           "bottom": 538,
-          "left": 193.5,
+          "left": 19,
           "right": 356,
-          "width": 162.5,
-          "height": 92.375
+          "width": 337,
+          "height": 50.375
         },
         "reason": {
-          "top": 366.140625,
-          "bottom": 414.140625,
+          "top": 348.140625,
+          "bottom": 396.140625,
           "left": 19,
           "right": 356,
           "width": 337,
@@ -4217,17 +4354,17 @@
         },
         "body": {
           "scrollHeight": 1351,
-          "clientHeight": 179,
-          "scrollTop": 1172,
+          "clientHeight": 161,
+          "scrollTop": 1190,
           "overflowY": "auto"
         },
         "bodyBox": {
           "top": 251.171875,
-          "bottom": 430.625,
+          "bottom": 412.25,
           "left": 3,
           "right": 372,
           "width": 369,
-          "height": 179.453125
+          "height": 161.078125
         },
         "header": {
           "top": 177,
@@ -4238,12 +4375,12 @@
           "height": 74.171875
         },
         "footer": {
-          "top": 430.625,
+          "top": 412.25,
           "bottom": 550,
           "left": 3,
           "right": 372,
           "width": 369,
-          "height": 119.375
+          "height": 137.75
         },
         "heading": {
           "top": 203.72018432617188,
@@ -4261,8 +4398,8 @@
           "overflowY": "hidden"
         },
         "footerScroll": {
-          "scrollHeight": 116,
-          "clientHeight": 116,
+          "scrollHeight": 135,
+          "clientHeight": 135,
           "overflowY": "visible"
         },
         "rem": 16,
@@ -4283,6 +4420,7 @@
       "size": "568x320",
       "scenario": "sheet-layout-568x320-x1-kb150",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -4320,24 +4458,24 @@
           "height": 142
         },
         "apply": {
-          "top": 172.953125,
-          "bottom": 223.328125,
+          "top": 156.953125,
+          "bottom": 207.328125,
           "left": 19,
           "right": 278,
           "width": 259,
           "height": 50.375
         },
         "cancel": {
-          "top": 172.953125,
-          "bottom": 223.328125,
+          "top": 156.953125,
+          "bottom": 207.328125,
           "left": 290,
           "right": 549,
           "width": 259,
           "height": 50.375
         },
         "reason": {
-          "top": 101.953125,
-          "bottom": 149.953125,
+          "top": 85.953125,
+          "bottom": 133.953125,
           "left": 19,
           "right": 549,
           "width": 530,
@@ -4350,32 +4488,32 @@
           "overflowY": "visible"
         },
         "bodyBox": {
-          "top": -1141.015625,
-          "bottom": 161.953125,
+          "top": -1157.015625,
+          "bottom": 145.953125,
           "left": 3,
           "right": 565,
           "width": 562,
           "height": 1302.96875
         },
         "header": {
-          "top": -1188,
-          "bottom": -1141.015625,
+          "top": -1204,
+          "bottom": -1157.015625,
           "left": 3,
           "right": 565,
           "width": 562,
           "height": 46.984375
         },
         "footer": {
-          "top": 161.953125,
-          "bottom": 231.328125,
+          "top": 145.953125,
+          "bottom": 215.328125,
           "left": 3,
           "right": 565,
           "width": 562,
           "height": 69.375
         },
         "heading": {
-          "top": -1181.8736572265625,
-          "bottom": -1152.0167236328125,
+          "top": -1197.8736572265625,
+          "bottom": -1168.0167236328125,
           "left": 18.829057693481445,
           "right": 172.61261177062988,
           "width": 153.78355407714844,
@@ -4411,6 +4549,7 @@
       "size": "320x568",
       "scenario": "sheet-layout-320-x1.5-kb298",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -4448,24 +4587,24 @@
           "height": 262
         },
         "apply": {
-          "top": 342.9375,
-          "bottom": 414.9375,
+          "top": 318.9375,
+          "bottom": 390.9375,
           "left": 19,
           "right": 301,
           "width": 282,
           "height": 72
         },
         "cancel": {
-          "top": 432.9375,
-          "bottom": 504.9375,
+          "top": 408.9375,
+          "bottom": 480.9375,
           "left": 19,
           "right": 301,
           "width": 282,
           "height": 72
         },
         "reason": {
-          "top": 225.9375,
-          "bottom": 297.9375,
+          "top": 201.9375,
+          "bottom": 273.9375,
           "left": 19,
           "right": 301,
           "width": 282,
@@ -4478,32 +4617,32 @@
           "overflowY": "visible"
         },
         "bodyBox": {
-          "top": -2155.234375,
-          "bottom": 321.9375,
+          "top": -2179.234375,
+          "bottom": 297.9375,
           "left": 3,
           "right": 317,
           "width": 314,
           "height": 2477.171875
         },
         "header": {
-          "top": -2265,
-          "bottom": -2155.234375,
+          "top": -2289,
+          "bottom": -2179.234375,
           "left": 3,
           "right": 317,
           "width": 314,
           "height": 109.765625
         },
         "footer": {
-          "top": 321.9375,
-          "bottom": 522.9375,
+          "top": 297.9375,
+          "bottom": 498.9375,
           "left": 3,
           "right": 317,
           "width": 314,
           "height": 201
         },
         "heading": {
-          "top": -2224.9033203125,
-          "bottom": -2176.236083984375,
+          "top": -2248.9033203125,
+          "bottom": -2200.236083984375,
           "left": 18.721586227416992,
           "right": 272.38451957702637,
           "width": 253.66293334960938,
@@ -4539,6 +4678,7 @@
       "size": "320x568",
       "scenario": "sheet-layout-320-x1.5-nokb",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -4668,6 +4808,7 @@
       "size": "375x812",
       "scenario": "sheet-layout-375-x1.5-kb400",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -4705,24 +4846,24 @@
           "height": 364
         },
         "apply": {
-          "top": 445.375,
-          "bottom": 517.375,
+          "top": 421.375,
+          "bottom": 493.375,
           "left": 21.75,
           "right": 353.25,
           "width": 331.5,
           "height": 72
         },
         "cancel": {
-          "top": 535.375,
-          "bottom": 607.375,
+          "top": 511.375,
+          "bottom": 583.375,
           "left": 21.75,
           "right": 353.25,
           "width": 331.5,
           "height": 72
         },
         "reason": {
-          "top": 328.375,
-          "bottom": 400.375,
+          "top": 304.375,
+          "bottom": 376.375,
           "left": 21.75,
           "right": 353.25,
           "width": 331.5,
@@ -4735,32 +4876,32 @@
           "overflowY": "visible"
         },
         "bodyBox": {
-          "top": -1671.234375,
-          "bottom": 424.375,
+          "top": -1695.234375,
+          "bottom": 400.375,
           "left": 3,
           "right": 372,
           "width": 369,
           "height": 2095.609375
         },
         "header": {
-          "top": -1781,
-          "bottom": -1671.234375,
+          "top": -1805,
+          "bottom": -1695.234375,
           "left": 3,
           "right": 372,
           "width": 369,
           "height": 109.765625
         },
         "footer": {
-          "top": 424.375,
-          "bottom": 625.375,
+          "top": 400.375,
+          "bottom": 601.375,
           "left": 3,
           "right": 372,
           "width": 369,
           "height": 201
         },
         "heading": {
-          "top": -1740.9031982421875,
-          "bottom": -1692.236083984375,
+          "top": -1764.9031982421875,
+          "bottom": -1716.236083984375,
           "left": 21.471586227416992,
           "right": 275.13451957702637,
           "width": 253.66293334960938,
@@ -4792,10 +4933,140 @@
       "informationalChecks": []
     },
     {
+      "viewport": "phone-360",
+      "size": "360x800",
+      "scenario": "sheet-layout-360-x1.5-kb400",
+      "checks": {
+        "sheetContentFits": true,
+        "noPageOverflow": true,
+        "layoutChosen": true,
+        "dialogInsideVisibleArea": true,
+        "noNestedActionScroller": true,
+        "layoutMatchesMeasurement": true,
+        "pageScrolls": true,
+        "bodyIsNotASecondScroller": true,
+        "focusedFieldVisible": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true,
+        "titleVisibleAtTop": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 360,
+          "innerHeight": 800,
+          "clientWidth": 360
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 360,
+          "height": 400,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 36,
+          "bottom": 400,
+          "left": 0,
+          "right": 360,
+          "width": 360,
+          "height": 364
+        },
+        "apply": {
+          "top": 421.375,
+          "bottom": 493.375,
+          "left": 21,
+          "right": 339,
+          "width": 318,
+          "height": 72
+        },
+        "cancel": {
+          "top": 511.375,
+          "bottom": 583.375,
+          "left": 21,
+          "right": 339,
+          "width": 318,
+          "height": 72
+        },
+        "reason": {
+          "top": 304.375,
+          "bottom": 376.375,
+          "left": 21,
+          "right": 339,
+          "width": 318,
+          "height": 72
+        },
+        "body": {
+          "scrollHeight": 2096,
+          "clientHeight": 2096,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "bodyBox": {
+          "top": -1695.234375,
+          "bottom": 400.375,
+          "left": 3,
+          "right": 357,
+          "width": 354,
+          "height": 2095.609375
+        },
+        "header": {
+          "top": -1805,
+          "bottom": -1695.234375,
+          "left": 3,
+          "right": 357,
+          "width": 354,
+          "height": 109.765625
+        },
+        "footer": {
+          "top": 400.375,
+          "bottom": 601.375,
+          "left": 3,
+          "right": 357,
+          "width": 354,
+          "height": 201
+        },
+        "heading": {
+          "top": -1764.9031982421875,
+          "bottom": -1716.236083984375,
+          "left": 20.721586227416992,
+          "right": 274.38451957702637,
+          "width": 253.66293334960938,
+          "height": 48.6671142578125
+        },
+        "dataLayout": "page",
+        "backdropContentHeight": 364,
+        "dialogScroll": {
+          "scrollHeight": 2406,
+          "clientHeight": 361,
+          "overflowY": "auto"
+        },
+        "footerScroll": {
+          "scrollHeight": 198,
+          "clientHeight": 198,
+          "overflowY": "visible"
+        },
+        "rem": 24,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-layout-360-x1.5-kb400.jpg",
+      "visibleHeight": 400,
+      "textScale": 1.5,
+      "informationalChecks": []
+    },
+    {
       "viewport": "phone",
       "size": "375x812",
       "scenario": "sheet-layout-375-x1.5-kb400-scrolled",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -4833,24 +5104,24 @@
           "height": 364
         },
         "apply": {
-          "top": 595.375,
-          "bottom": 667.375,
+          "top": 571.375,
+          "bottom": 643.375,
           "left": 21.75,
           "right": 353.25,
           "width": 331.5,
           "height": 72
         },
         "cancel": {
-          "top": 685.375,
-          "bottom": 757.375,
+          "top": 661.375,
+          "bottom": 733.375,
           "left": 21.75,
           "right": 353.25,
           "width": 331.5,
           "height": 72
         },
         "reason": {
-          "top": 478.375,
-          "bottom": 550.375,
+          "top": 454.375,
+          "bottom": 526.375,
           "left": 21.75,
           "right": 353.25,
           "width": 331.5,
@@ -4863,32 +5134,32 @@
           "overflowY": "visible"
         },
         "bodyBox": {
-          "top": -1521.234375,
-          "bottom": 574.375,
+          "top": -1545.234375,
+          "bottom": 550.375,
           "left": 3,
           "right": 372,
           "width": 369,
           "height": 2095.609375
         },
         "header": {
-          "top": -1631,
-          "bottom": -1521.234375,
+          "top": -1655,
+          "bottom": -1545.234375,
           "left": 3,
           "right": 372,
           "width": 369,
           "height": 109.765625
         },
         "footer": {
-          "top": 574.375,
-          "bottom": 775.375,
+          "top": 550.375,
+          "bottom": 751.375,
           "left": 3,
           "right": 372,
           "width": 369,
           "height": 201
         },
         "heading": {
-          "top": -1590.9031982421875,
-          "bottom": -1542.236083984375,
+          "top": -1614.9031982421875,
+          "bottom": -1566.236083984375,
           "left": 21.471586227416992,
           "right": 275.13451957702637,
           "width": 253.66293334960938,
@@ -4924,6 +5195,7 @@
       "size": "568x320",
       "scenario": "sheet-layout-568x320-x1.5-kb150",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -4961,24 +5233,24 @@
           "height": 138
         },
         "apply": {
-          "top": 182.59375,
-          "bottom": 286.1875,
+          "top": 158.59375,
+          "bottom": 262.1875,
           "left": 27,
           "right": 275,
           "width": 248,
           "height": 103.59375
         },
         "cancel": {
-          "top": 182.59375,
-          "bottom": 286.1875,
+          "top": 158.59375,
+          "bottom": 262.1875,
           "left": 293,
           "right": 541,
           "width": 248,
           "height": 103.59375
         },
         "reason": {
-          "top": 77.59375,
-          "bottom": 149.59375,
+          "top": 53.59375,
+          "bottom": 125.59375,
           "left": 27,
           "right": 541,
           "width": 514,
@@ -4991,32 +5263,32 @@
           "overflowY": "visible"
         },
         "bodyBox": {
-          "top": -1820.015625,
-          "bottom": 167.59375,
+          "top": -1844.015625,
+          "bottom": 143.59375,
           "left": 3,
           "right": 565,
           "width": 562,
           "height": 1987.609375
         },
         "header": {
-          "top": -1889,
-          "bottom": -1820.015625,
+          "top": -1913,
+          "bottom": -1844.015625,
           "left": 3,
           "right": 565,
           "width": 562,
           "height": 68.984375
         },
         "footer": {
-          "top": 167.59375,
-          "bottom": 298.1875,
+          "top": 143.59375,
+          "bottom": 274.1875,
           "left": 3,
           "right": 565,
           "width": 562,
           "height": 130.59375
         },
         "heading": {
-          "top": -1879.8104248046875,
-          "bottom": -1835.0172119140625,
+          "top": -1903.8104248046875,
+          "bottom": -1859.0172119140625,
           "left": 26.74353790283203,
           "right": 257.41117095947266,
           "width": 230.66763305664062,
@@ -5052,6 +5324,7 @@
       "size": "320x568",
       "scenario": "sheet-layout-320-x2-kb298",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -5089,24 +5362,24 @@
           "height": 250
         },
         "apply": {
-          "top": 356.78125,
-          "bottom": 452.78125,
+          "top": 324.78125,
+          "bottom": 443.9375,
           "left": 19,
           "right": 301,
           "width": 282,
-          "height": 96
+          "height": 119.15625
         },
         "cancel": {
-          "top": 476.78125,
-          "bottom": 572.78125,
+          "top": 467.9375,
+          "bottom": 563.9375,
           "left": 19,
           "right": 301,
           "width": 282,
           "height": 96
         },
         "reason": {
-          "top": 201.78125,
-          "bottom": 297.78125,
+          "top": 169.78125,
+          "bottom": 265.78125,
           "left": 19,
           "right": 301,
           "width": 282,
@@ -5119,32 +5392,32 @@
           "overflowY": "visible"
         },
         "bodyBox": {
-          "top": -3357.4375,
-          "bottom": 329.78125,
+          "top": -3389.4375,
+          "bottom": 297.78125,
           "left": 3,
           "right": 317,
           "width": 314,
           "height": 3687.21875
         },
         "header": {
-          "top": -3538,
-          "bottom": -3357.4375,
+          "top": -3570,
+          "bottom": -3389.4375,
           "left": 3,
           "right": 317,
           "width": 314,
           "height": 180.5625
         },
         "footer": {
-          "top": 329.78125,
-          "bottom": 596.78125,
+          "top": 297.78125,
+          "bottom": 587.9375,
           "left": 3,
           "right": 317,
           "width": 314,
-          "height": 267
+          "height": 290.15625
         },
         "heading": {
-          "top": -3483.863525390625,
-          "bottom": -3384.441162109375,
+          "top": -3515.863525390625,
+          "bottom": -3416.441162109375,
           "left": 18.413679122924805,
           "right": 301.5652904510498,
           "width": 283.151611328125,
@@ -5153,13 +5426,13 @@
         "dataLayout": "page",
         "backdropContentHeight": 250,
         "dialogScroll": {
-          "scrollHeight": 4135,
+          "scrollHeight": 4158,
           "clientHeight": 247,
           "overflowY": "auto"
         },
         "footerScroll": {
-          "scrollHeight": 264,
-          "clientHeight": 264,
+          "scrollHeight": 287,
+          "clientHeight": 287,
           "overflowY": "visible"
         },
         "rem": 32,
@@ -5180,6 +5453,7 @@
       "size": "320x568",
       "scenario": "sheet-layout-320-x2-nokb",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -5218,15 +5492,15 @@
         },
         "apply": {
           "top": 416.375,
-          "bottom": 512.375,
+          "bottom": 535.53125,
           "left": 19,
           "right": 301,
           "width": 282,
-          "height": 96
+          "height": 119.15625
         },
         "cancel": {
-          "top": 536.375,
-          "bottom": 632.375,
+          "top": 559.53125,
+          "bottom": 655.53125,
           "left": 19,
           "right": 301,
           "width": 282,
@@ -5264,11 +5538,11 @@
         },
         "footer": {
           "top": 389.375,
-          "bottom": 656.375,
+          "bottom": 679.53125,
           "left": 3,
           "right": 317,
           "width": 314,
-          "height": 267
+          "height": 290.15625
         },
         "heading": {
           "top": -3433.863037109375,
@@ -5281,13 +5555,13 @@
         "dataLayout": "page",
         "backdropContentHeight": 520,
         "dialogScroll": {
-          "scrollHeight": 4144,
+          "scrollHeight": 4168,
           "clientHeight": 517,
           "overflowY": "auto"
         },
         "footerScroll": {
-          "scrollHeight": 264,
-          "clientHeight": 264,
+          "scrollHeight": 287,
+          "clientHeight": 287,
           "overflowY": "visible"
         },
         "rem": 32,
@@ -5308,6 +5582,7 @@
       "size": "375x812",
       "scenario": "sheet-layout-375-x2-kb400",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -5345,24 +5620,24 @@
           "height": 352
         },
         "apply": {
-          "top": 459.1875,
-          "bottom": 555.1875,
+          "top": 427.1875,
+          "bottom": 546.34375,
           "left": 21.75,
           "right": 353.25,
           "width": 331.5,
-          "height": 96
+          "height": 119.15625
         },
         "cancel": {
-          "top": 579.1875,
-          "bottom": 675.1875,
+          "top": 570.34375,
+          "bottom": 666.34375,
           "left": 21.75,
           "right": 353.25,
           "width": 331.5,
           "height": 96
         },
         "reason": {
-          "top": 304.1875,
-          "bottom": 400.1875,
+          "top": 272.1875,
+          "bottom": 368.1875,
           "left": 21.75,
           "right": 353.25,
           "width": 331.5,
@@ -5375,32 +5650,32 @@
           "overflowY": "visible"
         },
         "bodyBox": {
-          "top": -3031.84375,
-          "bottom": 432.1875,
+          "top": -3063.84375,
+          "bottom": 400.1875,
           "left": 3,
           "right": 372,
           "width": 369,
           "height": 3464.03125
         },
         "header": {
-          "top": -3222,
-          "bottom": -3031.84375,
+          "top": -3254,
+          "bottom": -3063.84375,
           "left": 3,
           "right": 372,
           "width": 369,
           "height": 190.15625
         },
         "footer": {
-          "top": 432.1875,
-          "bottom": 699.1875,
+          "top": 400.1875,
+          "bottom": 690.34375,
           "left": 3,
           "right": 372,
           "width": 369,
-          "height": 267
+          "height": 290.15625
         },
         "heading": {
-          "top": -3168.4677734375,
-          "bottom": -3058.84765625,
+          "top": -3200.4677734375,
+          "bottom": -3090.84765625,
           "left": 21.10507583618164,
           "right": 353.8701820373535,
           "width": 332.7651062011719,
@@ -5409,13 +5684,13 @@
         "dataLayout": "page",
         "backdropContentHeight": 352,
         "dialogScroll": {
-          "scrollHeight": 3921,
+          "scrollHeight": 3944,
           "clientHeight": 349,
           "overflowY": "auto"
         },
         "footerScroll": {
-          "scrollHeight": 264,
-          "clientHeight": 264,
+          "scrollHeight": 287,
+          "clientHeight": 287,
           "overflowY": "visible"
         },
         "rem": 32,
@@ -5432,10 +5707,140 @@
       "informationalChecks": []
     },
     {
+      "viewport": "phone-360",
+      "size": "360x800",
+      "scenario": "sheet-layout-360-x2-kb400",
+      "checks": {
+        "sheetContentFits": true,
+        "noPageOverflow": true,
+        "layoutChosen": true,
+        "dialogInsideVisibleArea": true,
+        "noNestedActionScroller": true,
+        "layoutMatchesMeasurement": true,
+        "pageScrolls": true,
+        "bodyIsNotASecondScroller": true,
+        "focusedFieldVisible": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true,
+        "titleVisibleAtTop": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 360,
+          "innerHeight": 800,
+          "clientWidth": 360
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 360,
+          "height": 400,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 400,
+          "left": 0,
+          "right": 360,
+          "width": 360,
+          "height": 352
+        },
+        "apply": {
+          "top": 427.1875,
+          "bottom": 546.34375,
+          "left": 21,
+          "right": 339,
+          "width": 318,
+          "height": 119.15625
+        },
+        "cancel": {
+          "top": 570.34375,
+          "bottom": 666.34375,
+          "left": 21,
+          "right": 339,
+          "width": 318,
+          "height": 96
+        },
+        "reason": {
+          "top": 272.1875,
+          "bottom": 368.1875,
+          "left": 21,
+          "right": 339,
+          "width": 318,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 3512,
+          "clientHeight": 3512,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "bodyBox": {
+          "top": -3111.84375,
+          "bottom": 400.1875,
+          "left": 3,
+          "right": 357,
+          "width": 354,
+          "height": 3512.03125
+        },
+        "header": {
+          "top": -3302,
+          "bottom": -3111.84375,
+          "left": 3,
+          "right": 357,
+          "width": 354,
+          "height": 190.15625
+        },
+        "footer": {
+          "top": 400.1875,
+          "bottom": 690.34375,
+          "left": 3,
+          "right": 357,
+          "width": 354,
+          "height": 290.15625
+        },
+        "heading": {
+          "top": -3248.302978515625,
+          "bottom": -3138.84765625,
+          "left": 20.35507583618164,
+          "right": 339.62118911743164,
+          "width": 319.26611328125,
+          "height": 109.455322265625
+        },
+        "dataLayout": "page",
+        "backdropContentHeight": 352,
+        "dialogScroll": {
+          "scrollHeight": 3992,
+          "clientHeight": 349,
+          "overflowY": "auto"
+        },
+        "footerScroll": {
+          "scrollHeight": 287,
+          "clientHeight": 287,
+          "overflowY": "visible"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-layout-360-x2-kb400.jpg",
+      "visibleHeight": 400,
+      "textScale": 2,
+      "informationalChecks": []
+    },
+    {
       "viewport": "phone",
       "size": "375x812",
       "scenario": "sheet-layout-375-x2-kb400-scrolled",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -5473,24 +5878,24 @@
           "height": 352
         },
         "apply": {
-          "top": 609.1875,
-          "bottom": 705.1875,
+          "top": 577.1875,
+          "bottom": 696.34375,
           "left": 21.75,
           "right": 353.25,
           "width": 331.5,
-          "height": 96
+          "height": 119.15625
         },
         "cancel": {
-          "top": 729.1875,
-          "bottom": 825.1875,
+          "top": 720.34375,
+          "bottom": 816.34375,
           "left": 21.75,
           "right": 353.25,
           "width": 331.5,
           "height": 96
         },
         "reason": {
-          "top": 454.1875,
-          "bottom": 550.1875,
+          "top": 422.1875,
+          "bottom": 518.1875,
           "left": 21.75,
           "right": 353.25,
           "width": 331.5,
@@ -5503,32 +5908,32 @@
           "overflowY": "visible"
         },
         "bodyBox": {
-          "top": -2881.84375,
-          "bottom": 582.1875,
+          "top": -2913.84375,
+          "bottom": 550.1875,
           "left": 3,
           "right": 372,
           "width": 369,
           "height": 3464.03125
         },
         "header": {
-          "top": -3072,
-          "bottom": -2881.84375,
+          "top": -3104,
+          "bottom": -2913.84375,
           "left": 3,
           "right": 372,
           "width": 369,
           "height": 190.15625
         },
         "footer": {
-          "top": 582.1875,
-          "bottom": 849.1875,
+          "top": 550.1875,
+          "bottom": 840.34375,
           "left": 3,
           "right": 372,
           "width": 369,
-          "height": 267
+          "height": 290.15625
         },
         "heading": {
-          "top": -3018.4677734375,
-          "bottom": -2908.84765625,
+          "top": -3050.4677734375,
+          "bottom": -2940.84765625,
           "left": 21.10507583618164,
           "right": 353.8701820373535,
           "width": 332.7651062011719,
@@ -5537,13 +5942,13 @@
         "dataLayout": "page",
         "backdropContentHeight": 352,
         "dialogScroll": {
-          "scrollHeight": 3921,
+          "scrollHeight": 3944,
           "clientHeight": 349,
           "overflowY": "auto"
         },
         "footerScroll": {
-          "scrollHeight": 264,
-          "clientHeight": 264,
+          "scrollHeight": 287,
+          "clientHeight": 287,
           "overflowY": "visible"
         },
         "rem": 32,
@@ -5564,6 +5969,7 @@
       "size": "568x320",
       "scenario": "sheet-layout-568x320-x2-kb150",
       "checks": {
+        "sheetContentFits": true,
         "noPageOverflow": true,
         "layoutChosen": true,
         "dialogInsideVisibleArea": true,
@@ -5601,24 +6007,24 @@
           "height": 134
         },
         "apply": {
-          "top": 193.078125,
-          "bottom": 289.078125,
+          "top": 190.078125,
+          "bottom": 286.078125,
           "left": 31.390625,
           "right": 536.609375,
           "width": 505.21875,
           "height": 96
         },
         "cancel": {
-          "top": 313.078125,
-          "bottom": 409.078125,
+          "top": 310.078125,
+          "bottom": 406.078125,
           "left": 31.390625,
           "right": 536.609375,
           "width": 505.21875,
           "height": 96
         },
         "reason": {
-          "top": 54.078125,
-          "bottom": 150.078125,
+          "top": 51.078125,
+          "bottom": 147.078125,
           "left": 31.390625,
           "right": 536.609375,
           "width": 505.21875,
@@ -5631,32 +6037,32 @@
           "overflowY": "visible"
         },
         "bodyBox": {
-          "top": -2474.015625,
-          "bottom": 174.078125,
+          "top": -2477.015625,
+          "bottom": 171.078125,
           "left": 3,
           "right": 565,
           "width": 562,
           "height": 2648.09375
         },
         "header": {
-          "top": -2565,
-          "bottom": -2474.015625,
+          "top": -2568,
+          "bottom": -2477.015625,
           "left": 3,
           "right": 565,
           "width": 562,
           "height": 90.984375
         },
         "footer": {
-          "top": 174.078125,
-          "bottom": 425.078125,
+          "top": 171.078125,
+          "bottom": 422.078125,
           "left": 3,
           "right": 565,
           "width": 562,
           "height": 251
         },
         "heading": {
-          "top": -2552.747314453125,
-          "bottom": -2493.017822265625,
+          "top": -2555.747314453125,
+          "bottom": -2496.017822265625,
           "left": 31.04864501953125,
           "right": 338.6159362792969,
           "width": 307.5672912597656,
@@ -5686,6 +6092,663 @@
       "visibleHeight": 150,
       "textScale": 2,
       "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "sheet-flip-320-x1",
+      "checks": {
+        "layoutFollowsMeasurement": true,
+        "bothLayoutsSeen": true,
+        "oneFlipGoingDown": true
+      },
+      "notes": [],
+      "centre": 351,
+      "samples": [
+        [
+          381,
+          "pinned",
+          357,
+          327
+        ],
+        [
+          379,
+          "pinned",
+          355,
+          327
+        ],
+        [
+          377,
+          "pinned",
+          353,
+          327
+        ],
+        [
+          375,
+          "pinned",
+          351,
+          327
+        ],
+        [
+          373,
+          "pinned",
+          349,
+          327
+        ],
+        [
+          371,
+          "pinned",
+          347,
+          327
+        ],
+        [
+          369,
+          "pinned",
+          345,
+          327
+        ],
+        [
+          367,
+          "pinned",
+          343,
+          327
+        ],
+        [
+          365,
+          "pinned",
+          341,
+          327
+        ],
+        [
+          363,
+          "pinned",
+          339,
+          327
+        ],
+        [
+          361,
+          "pinned",
+          337,
+          327
+        ],
+        [
+          359,
+          "pinned",
+          335,
+          327
+        ],
+        [
+          357,
+          "pinned",
+          333,
+          327
+        ],
+        [
+          355,
+          "pinned",
+          331,
+          327
+        ],
+        [
+          353,
+          "pinned",
+          329,
+          327
+        ],
+        [
+          351,
+          "pinned",
+          327,
+          327
+        ],
+        [
+          349,
+          "page",
+          325,
+          327
+        ],
+        [
+          347,
+          "page",
+          323,
+          327
+        ],
+        [
+          345,
+          "page",
+          321,
+          327
+        ],
+        [
+          343,
+          "page",
+          319,
+          327
+        ],
+        [
+          341,
+          "page",
+          317,
+          327
+        ],
+        [
+          339,
+          "page",
+          315,
+          327
+        ],
+        [
+          337,
+          "page",
+          313,
+          327
+        ],
+        [
+          335,
+          "page",
+          311,
+          327
+        ],
+        [
+          333,
+          "page",
+          309,
+          327
+        ],
+        [
+          331,
+          "page",
+          307,
+          327
+        ],
+        [
+          329,
+          "page",
+          305,
+          327
+        ],
+        [
+          327,
+          "page",
+          303,
+          327
+        ],
+        [
+          325,
+          "page",
+          301,
+          327
+        ],
+        [
+          323,
+          "page",
+          299,
+          327
+        ],
+        [
+          321,
+          "page",
+          297,
+          327
+        ]
+      ],
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "sheet-flip-375-x1.5",
+      "checks": {
+        "layoutFollowsMeasurement": true,
+        "bothLayoutsSeen": true,
+        "oneFlipGoingDown": true
+      },
+      "notes": [],
+      "centre": 518,
+      "samples": [
+        [
+          548,
+          "pinned",
+          512,
+          482
+        ],
+        [
+          546,
+          "pinned",
+          510,
+          482
+        ],
+        [
+          544,
+          "pinned",
+          508,
+          482
+        ],
+        [
+          542,
+          "pinned",
+          506,
+          482
+        ],
+        [
+          540,
+          "pinned",
+          504,
+          482
+        ],
+        [
+          538,
+          "pinned",
+          502,
+          482
+        ],
+        [
+          536,
+          "pinned",
+          500,
+          482
+        ],
+        [
+          534,
+          "pinned",
+          498,
+          482
+        ],
+        [
+          532,
+          "pinned",
+          496,
+          482
+        ],
+        [
+          530,
+          "pinned",
+          494,
+          482
+        ],
+        [
+          528,
+          "pinned",
+          492,
+          482
+        ],
+        [
+          526,
+          "pinned",
+          490,
+          482
+        ],
+        [
+          524,
+          "pinned",
+          488,
+          482
+        ],
+        [
+          522,
+          "pinned",
+          486,
+          482
+        ],
+        [
+          520,
+          "pinned",
+          484,
+          482
+        ],
+        [
+          518,
+          "pinned",
+          482,
+          482
+        ],
+        [
+          516,
+          "page",
+          480,
+          482
+        ],
+        [
+          514,
+          "page",
+          478,
+          482
+        ],
+        [
+          512,
+          "page",
+          476,
+          482
+        ],
+        [
+          510,
+          "page",
+          474,
+          482
+        ],
+        [
+          508,
+          "page",
+          472,
+          482
+        ],
+        [
+          506,
+          "page",
+          470,
+          482
+        ],
+        [
+          504,
+          "page",
+          468,
+          482
+        ],
+        [
+          502,
+          "page",
+          466,
+          482
+        ],
+        [
+          500,
+          "page",
+          464,
+          482
+        ],
+        [
+          498,
+          "page",
+          462,
+          482
+        ],
+        [
+          496,
+          "page",
+          460,
+          482
+        ],
+        [
+          494,
+          "page",
+          458,
+          482
+        ],
+        [
+          492,
+          "page",
+          456,
+          482
+        ],
+        [
+          490,
+          "page",
+          454,
+          482
+        ],
+        [
+          488,
+          "page",
+          452,
+          482
+        ]
+      ],
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-412",
+      "size": "412x915",
+      "scenario": "sheet-flip-412-x2",
+      "checks": {
+        "layoutFollowsMeasurement": true,
+        "bothLayoutsSeen": true,
+        "oneFlipGoingDown": true
+      },
+      "notes": [],
+      "centre": 687,
+      "samples": [
+        [
+          717,
+          "pinned",
+          669,
+          639
+        ],
+        [
+          715,
+          "pinned",
+          667,
+          639
+        ],
+        [
+          713,
+          "pinned",
+          665,
+          639
+        ],
+        [
+          711,
+          "pinned",
+          663,
+          639
+        ],
+        [
+          709,
+          "pinned",
+          661,
+          639
+        ],
+        [
+          707,
+          "pinned",
+          659,
+          639
+        ],
+        [
+          705,
+          "pinned",
+          657,
+          639
+        ],
+        [
+          703,
+          "pinned",
+          655,
+          639
+        ],
+        [
+          701,
+          "pinned",
+          653,
+          639
+        ],
+        [
+          699,
+          "pinned",
+          651,
+          639
+        ],
+        [
+          697,
+          "pinned",
+          649,
+          639
+        ],
+        [
+          695,
+          "pinned",
+          647,
+          639
+        ],
+        [
+          693,
+          "pinned",
+          645,
+          639
+        ],
+        [
+          691,
+          "pinned",
+          643,
+          639
+        ],
+        [
+          689,
+          "pinned",
+          641,
+          639
+        ],
+        [
+          687,
+          "pinned",
+          639,
+          639
+        ],
+        [
+          685,
+          "page",
+          637,
+          639
+        ],
+        [
+          683,
+          "page",
+          635,
+          639
+        ],
+        [
+          681,
+          "page",
+          633,
+          639
+        ],
+        [
+          679,
+          "page",
+          631,
+          639
+        ],
+        [
+          677,
+          "page",
+          629,
+          639
+        ],
+        [
+          675,
+          "page",
+          627,
+          639
+        ],
+        [
+          673,
+          "page",
+          625,
+          639
+        ],
+        [
+          671,
+          "page",
+          623,
+          639
+        ],
+        [
+          669,
+          "page",
+          621,
+          639
+        ],
+        [
+          667,
+          "page",
+          619,
+          639
+        ],
+        [
+          665,
+          "page",
+          617,
+          639
+        ],
+        [
+          663,
+          "page",
+          615,
+          639
+        ],
+        [
+          661,
+          "page",
+          613,
+          639
+        ],
+        [
+          659,
+          "page",
+          611,
+          639
+        ],
+        [
+          657,
+          "page",
+          609,
+          639
+        ]
+      ],
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "sheet-flip-keeps-focused-control-in-view",
+      "checks": {
+        "startedPinned": true,
+        "flippedToPage": true,
+        "focusKept": true,
+        "focusedControlInView": true
+      },
+      "notes": [],
+      "before": {
+        "top": 270,
+        "layout": "pinned",
+        "bodyScrollTop": 1022,
+        "sheetScrollTop": 0,
+        "sheetScrollHeight": 541,
+        "sheetClientHeight": 541,
+        "sheetOverflow": "hidden",
+        "bodyOverflow": "auto",
+        "active": "INPUT.checkbox"
+      },
+      "immediately": {
+        "top": 256,
+        "layout": "page",
+        "bodyScrollTop": 0,
+        "sheetScrollTop": 1036,
+        "sheetScrollHeight": 1563,
+        "sheetClientHeight": 271,
+        "sheetOverflow": "auto",
+        "bodyOverflow": "visible",
+        "active": "INPUT.checkbox"
+      },
+      "after": {
+        "top": 256,
+        "layout": "page",
+        "bodyScrollTop": 0,
+        "sheetScrollTop": 1036,
+        "sheetScrollHeight": 1563,
+        "sheetClientHeight": 271,
+        "sheetOverflow": "auto",
+        "bodyOverflow": "visible",
+        "active": "INPUT.checkbox"
+      },
+      "state": {
+        "isCheckbox": true,
+        "layout": "page",
+        "top": 255.765625,
+        "bottom": 282.15625,
+        "frameTop": 0,
+        "frameBottom": 298
+      },
+      "informationalChecks": []
     }
   ],
   "largeText": [
@@ -5705,7 +6768,9 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 0
+      "selects": 0,
+      "buttonLabelProblems": [],
+      "buttons": 3
     },
     {
       "surface": "player",
@@ -5724,6 +6789,8 @@
       "outside": [],
       "selectsWithoutEcho": [],
       "selects": 0,
+      "buttonLabelProblems": [],
+      "buttons": 3,
       "screenshot": "player-compose-phone-small-text-200.jpg"
     },
     {
@@ -5742,7 +6809,9 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 0
+      "selects": 0,
+      "buttonLabelProblems": [],
+      "buttons": 3
     },
     {
       "surface": "player",
@@ -5760,7 +6829,9 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 0
+      "selects": 0,
+      "buttonLabelProblems": [],
+      "buttons": 3
     },
     {
       "surface": "player",
@@ -5778,7 +6849,9 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 0
+      "selects": 0,
+      "buttonLabelProblems": [],
+      "buttons": 3
     },
     {
       "surface": "player",
@@ -5797,6 +6870,8 @@
       "outside": [],
       "selectsWithoutEcho": [],
       "selects": 0,
+      "buttonLabelProblems": [],
+      "buttons": 3,
       "screenshot": "player-compose-why-open-phone-small-text-200.jpg"
     },
     {
@@ -5815,7 +6890,9 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 0
+      "selects": 0,
+      "buttonLabelProblems": [],
+      "buttons": 3
     },
     {
       "surface": "player",
@@ -5833,7 +6910,9 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 0
+      "selects": 0,
+      "buttonLabelProblems": [],
+      "buttons": 3
     },
     {
       "surface": "gm",
@@ -5851,7 +6930,9 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 6
+      "selects": 6,
+      "buttonLabelProblems": [],
+      "buttons": 14
     },
     {
       "surface": "gm",
@@ -5870,6 +6951,8 @@
       "outside": [],
       "selectsWithoutEcho": [],
       "selects": 6,
+      "buttonLabelProblems": [],
+      "buttons": 14,
       "screenshot": "gm-console-scene-loaded-phone-small-text-200.jpg"
     },
     {
@@ -5888,7 +6971,9 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 6
+      "selects": 6,
+      "buttonLabelProblems": [],
+      "buttons": 14
     },
     {
       "surface": "gm",
@@ -5906,7 +6991,9 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 6
+      "selects": 6,
+      "buttonLabelProblems": [],
+      "buttons": 14
     },
     {
       "surface": "gm",
@@ -5924,7 +7011,9 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 6
+      "selects": 6,
+      "buttonLabelProblems": [],
+      "buttons": 16
     },
     {
       "surface": "gm",
@@ -5943,6 +7032,8 @@
       "outside": [],
       "selectsWithoutEcho": [],
       "selects": 6,
+      "buttonLabelProblems": [],
+      "buttons": 16,
       "screenshot": "gm-console-pending-phone-small-text-200.jpg"
     },
     {
@@ -5961,7 +7052,9 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 6
+      "selects": 6,
+      "buttonLabelProblems": [],
+      "buttons": 16
     },
     {
       "surface": "gm",
@@ -5979,7 +7072,9 @@
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 6
+      "selects": 6,
+      "buttonLabelProblems": [],
+      "buttons": 16
     },
     {
       "surface": "player",
@@ -5991,13 +7086,15 @@
       "innerWidth": 320,
       "clientWidth": 320,
       "rootFontPx": 24,
-      "optionRows": 9,
+      "optionRows": 14,
       "rowOverflow": [],
       "wordBreaks": [],
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 0
+      "selects": 0,
+      "buttonLabelProblems": [],
+      "buttons": 2
     },
     {
       "surface": "player",
@@ -6009,13 +7106,15 @@
       "innerWidth": 320,
       "clientWidth": 320,
       "rootFontPx": 32,
-      "optionRows": 9,
+      "optionRows": 14,
       "rowOverflow": [],
       "wordBreaks": [],
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
       "selects": 0,
+      "buttonLabelProblems": [],
+      "buttons": 2,
       "screenshot": "player-allocation-phone-small-text-200.jpg"
     },
     {
@@ -6028,13 +7127,15 @@
       "innerWidth": 375,
       "clientWidth": 375,
       "rootFontPx": 24,
-      "optionRows": 9,
+      "optionRows": 14,
       "rowOverflow": [],
       "wordBreaks": [],
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 0
+      "selects": 0,
+      "buttonLabelProblems": [],
+      "buttons": 2
     },
     {
       "surface": "player",
@@ -6046,13 +7147,96 @@
       "innerWidth": 375,
       "clientWidth": 375,
       "rootFontPx": 32,
-      "optionRows": 9,
+      "optionRows": 14,
       "rowOverflow": [],
       "wordBreaks": [],
       "smallTargets": [],
       "outside": [],
       "selectsWithoutEcho": [],
-      "selects": 0
+      "selects": 0,
+      "buttonLabelProblems": [],
+      "buttons": 2
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-small",
+      "scale": 1.5,
+      "pageOverflowPx": 0,
+      "pageZoomed": false,
+      "innerWidth": 320,
+      "clientWidth": 320,
+      "rootFontPx": 24,
+      "optionRows": 1,
+      "rowOverflow": [],
+      "wordBreaks": [],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [],
+      "selects": 6,
+      "buttonLabelProblems": [],
+      "buttons": 15
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-small",
+      "scale": 2,
+      "pageOverflowPx": 0,
+      "pageZoomed": false,
+      "innerWidth": 320,
+      "clientWidth": 320,
+      "rootFontPx": 32,
+      "optionRows": 1,
+      "rowOverflow": [],
+      "wordBreaks": [],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [],
+      "selects": 6,
+      "buttonLabelProblems": [],
+      "buttons": 15,
+      "screenshot": "gm-console-next-scene-phone-small-text-200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone",
+      "scale": 1.5,
+      "pageOverflowPx": 0,
+      "pageZoomed": false,
+      "innerWidth": 375,
+      "clientWidth": 375,
+      "rootFontPx": 24,
+      "optionRows": 1,
+      "rowOverflow": [],
+      "wordBreaks": [],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [],
+      "selects": 6,
+      "buttonLabelProblems": [],
+      "buttons": 15
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone",
+      "scale": 2,
+      "pageOverflowPx": 0,
+      "pageZoomed": false,
+      "innerWidth": 375,
+      "clientWidth": 375,
+      "rootFontPx": 32,
+      "optionRows": 1,
+      "rowOverflow": [],
+      "wordBreaks": [],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [],
+      "selects": 6,
+      "buttonLabelProblems": [],
+      "buttons": 15
     }
   ],
   "reducedMotion": {
@@ -6091,19 +7275,19 @@
       "failedRequests": []
     }
   },
-  "finishedAt": "2026-10-07T03:14:37.162Z",
+  "finishedAt": "2026-10-07T08:56:08.714Z",
   "ok": true,
   "summary": {
     "states": 150,
-    "controlsAudited": 1482,
+    "controlsAudited": 1542,
     "controlIssues": 0,
     "overflowStates": 0,
     "axeHardViolations": 0,
     "axeBestPractice": [
       "anon/route-claim-no-such-room@phone: page-has-heading-one"
     ],
-    "largeTextPasses": 20,
-    "modalScenarios": 34,
+    "largeTextPasses": 24,
+    "modalScenarios": 41,
     "failures": 0
   }
 }

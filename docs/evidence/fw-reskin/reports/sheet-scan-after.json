@@ -141,6 +141,7 @@
         "onePage"
       ],
       "150": [
+        "applyUnreachable",
         "onePage"
       ],
       "180": [
@@ -180,8 +181,8 @@
     },
     "chrome": {
       "header": 190.2,
-      "footerNatural": 264,
-      "footerBox": 267,
+      "footerNatural": 287,
+      "footerBox": 290.2,
       "dialogBorder": 3,
       "rem": 32
     }
@@ -208,7 +209,9 @@
       "300": [
         "onePage"
       ],
-      "340": [],
+      "340": [
+        "onePage"
+      ],
       "380": [],
       "420": [],
       "460": [],
@@ -219,8 +222,8 @@
     },
     "chrome": {
       "header": 74.2,
-      "footerNatural": 116,
-      "footerBox": 119.4,
+      "footerNatural": 135,
+      "footerBox": 137.8,
       "dialogBorder": 3,
       "rem": 16
     }
@@ -326,6 +329,7 @@
         "onePage"
       ],
       "150": [
+        "applyUnreachable",
         "onePage"
       ],
       "180": [
@@ -365,8 +369,8 @@
     },
     "chrome": {
       "header": 190.2,
-      "footerNatural": 264,
-      "footerBox": 267,
+      "footerNatural": 287,
+      "footerBox": 290.2,
       "dialogBorder": 3,
       "rem": 32
     }

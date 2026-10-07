@@ -1,11 +1,11 @@
 {
- "statesCompared": 312,
+ "statesCompared": 351,
  "statesMissing": 0,
- "boxesCompared": 19344,
- "boxesIdentical": 19344,
- "boxesDiffering": 0,
- "boxesZeroSizeIgnored": 1456,
- "dataDependentTextIgnored": 182,
+ "boxesCompared": 24254,
+ "boxesIdentical": 22757,
+ "boxesDiffering": 1497,
+ "boxesZeroSizeIgnored": 2210,
+ "dataDependentTextIgnored": 208,
  "variableStates": [
   "player/allocation@phone-smallx1",
   "player/allocation@w340x1",
@@ -34,7 +34,38 @@
   "player/allocation-assigned@desktopx1",
   "player/allocation-assigned@tablex1"
  ],
- "differences": [],
+ "differences": [
+  "player/allocation@w540x1 li.die-chip.die-chip--success~1: [35,1026.5,128.5,48,\"\"] -> [297,1026.5,128.5,48,\"\"]",
+  "player/allocation@w600x1 li.die-chip.die-chip--success~1: [35,1002.5,128.5,48,\"\"] -> [297,1002.5,128.5,48,\"\"]",
+  "player/allocation@tabletx1 li.die-chip.die-chip--success~1: [51,968.5,128.5,48,\"\"] -> [313,968.5,128.5,48,\"\"]",
+  "player/allocation@w1024x1 li.die-chip.die-chip--success~1: [179,968.5,128.5,48,\"\"] -> [441,968.5,128.5,48,\"\"]",
+  "player/allocation@desktopx1 li.die-chip.die-chip--success~1: [299.5,968.5,128.5,48,\"\"] -> [561.5,968.5,128.5,48,\"\"]",
+  "player/allocation@tablex1 li.die-chip.die-chip--success~1: [619.5,968.5,128.5,48,\"\"] -> [881.5,968.5,128.5,48,\"\"]",
+  "player/allocation-assigned@w540x1 li.die-chip.die-chip--success~1: [35,1026.5,128.5,48,\"\"] -> [297,1026.5,128.5,48,\"\"]",
+  "player/allocation-assigned@w600x1 li.die-chip.die-chip--success~1: [35,1002.5,128.5,48,\"\"] -> [297,1002.5,128.5,48,\"\"]",
+  "player/allocation-assigned@tabletx1 li.die-chip.die-chip--success~1: [51,968.5,128.5,48,\"\"] -> [313,968.5,128.5,48,\"\"]",
+  "player/allocation-assigned@w1024x1 li.die-chip.die-chip--success~1: [179,968.5,128.5,48,\"\"] -> [441,968.5,128.5,48,\"\"]",
+  "player/allocation-assigned@desktopx1 li.die-chip.die-chip--success~1: [299.5,968.5,128.5,48,\"\"] -> [561.5,968.5,128.5,48,\"\"]",
+  "player/allocation-assigned@tablex1 li.die-chip.die-chip--success~1: [619.5,968.5,128.5,48,\"\"] -> [881.5,968.5,128.5,48,\"\"]",
+  "gm/console-next-scene@phone-smallx1 div#root~1: [0,0,320,5698,\"\"] -> [0,0,320,5709,\"\"]",
+  "gm/console-next-scene@phone-smallx1 main.gm-screen~1: [0,0,320,5698,\"\"] -> [0,0,320,5709,\"\"]",
+  "gm/console-next-scene@phone-smallx1 section.step~1: [16,634,288,1813.5,\"\"] -> [16,634,288,1825,\"\"]",
+  "gm/console-next-scene@phone-smallx1 div.gear-list~1: [35,1298,250,111,\"\"] -> [35,1298,250,122.5,\"\"]",
+  "gm/console-next-scene@phone-smallx1 div.gear-option~1: [35,1298,250,111,\"\"] -> [35,1298,250,122.5,\"\"]",
+  "gm/console-next-scene@phone-smallx1 span~1: [47.5,1322,130.5,62.5,\"The Enforcer (hidden from players)\"] -> [47.5,1306,225,41.5,\"The Enforcer (hidden from players)\"]",
+  "gm/console-next-scene@phone-smallx1 button.secondary-action~2: [191.5,1306,81,94.5,\"Reveal\"] -> [47.5,1361.5,113.5,50.5,\"Reveal\"]",
+  "gm/console-next-scene@phone-smallx1 div.landing-actions~2: [35,1425,250,50.5,\"\"] -> [35,1436,250,50.5,\"\"]",
+  "gm/console-next-scene@phone-smallx1 button.secondary-action~3: [35,1425,250,50.5,\"End round 1\"] -> [35,1436,250,50.5,\"End round 1\"]",
+  "gm/console-next-scene@phone-smallx1 fieldset~1: [35,1491.5,250,536,\"\"] -> [35,1502.5,250,536,\"\"]",
+  "gm/console-next-scene@phone-smallx1 legend~1: [50,1489,219.5,49.5,\"Advance to a new scene\"] -> [50,1500,219.5,49.5,\"Advance to a new scene\"]",
+  "gm/console-next-scene@phone-smallx1 label~1: [50.5,1553.5,219,20.5,\"Scene\"] -> [50.5,1565,219,20.5,\"Scene\"]",
+  "gm/console-next-scene@phone-smallx1 select#scene-select~1: [50.5,1582,219,48,\"\"] -> [50.5,1593,219,48,\"\"]",
+  "gm/console-next-scene@phone-smallx1 p.form-hint~2: [50.5,1638,219,194.5,\"Loot: an ink-drum on a trolley (++ rolli\"] -> [50.5,1649,219,194.5,\"Loot: an ink-drum on a trolley (++ rolli\"]",
+  "gm/console-next-scene@phone-smallx1 div.form-field~1: [50.5,1840.5,219,115,\"\"] -> [50.5,1851.5,219,115,\"\"]",
+  "gm/console-next-scene@phone-smallx1 label~2: [50.5,1840.5,219,61,\"Reason (required — the primary Objective\"] -> [50.5,1851.5,219,61,\"Reason (required — the primary Objective\"]",
+  "gm/console-next-scene@phone-smallx1 input#scene-reason~1: [50.5,1907.5,219,48,\"\"] -> [50.5,1918.5,219,48,\"\"]",
+  "gm/console-next-scene@phone-smallx1 button.primary-action~1: [50.5,1963.5,219,48.5,\"Advance scene\"] -> [50.5,1974.5,219,48.5,\"Advance scene\"]"
+ ],
  "perState": {
   "anon/landing": {
    "compared": 182,
@@ -127,13 +158,13 @@
    "variable": false
   },
   "player/allocation": {
-   "compared": 897,
-   "differing": 0,
+   "compared": 884,
+   "differing": 6,
    "variable": true
   },
   "player/allocation-assigned": {
-   "compared": 897,
-   "differing": 0,
+   "compared": 884,
+   "differing": 6,
    "variable": true
   },
   "player/resolved": {
@@ -154,6 +185,21 @@
   "gm/console-round2": {
    "compared": 1677,
    "differing": 0,
+   "variable": false
+  },
+  "gm/console-next-scene": {
+   "compared": 1742,
+   "differing": 735,
+   "variable": false
+  },
+  "table/next-scene": {
+   "compared": 507,
+   "differing": 0,
+   "variable": false
+  },
+  "gm/correction-sheet": {
+   "compared": 2687,
+   "differing": 750,
    "variable": false
   }
  }

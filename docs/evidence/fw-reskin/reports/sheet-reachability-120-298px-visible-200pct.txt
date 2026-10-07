@@ -1,0 +1,16 @@
+w320 x2 visible=298: layout=page area=48,298 apply(h=119) visible=119px hits=true | cancel(h=96) visible=96px hits=true => REACHABLE
+w320 x2 visible=200: layout=page area=48,200 apply(h=119) visible=119px hits=true | cancel(h=96) visible=96px hits=true => REACHABLE
+w320 x2 visible=150: layout=page area=48,150 apply(h=119) visible=94px hits=true | cancel(h=96) visible=94px hits=true => REACHABLE
+w320 x2 visible=120: layout=page area=48,120 apply(h=119) visible=64px hits=true | cancel(h=96) visible=64px hits=true => REACHABLE
+w375 x2 visible=298: layout=page area=48,298 apply(h=119) visible=119px hits=true | cancel(h=96) visible=96px hits=true => REACHABLE
+w375 x2 visible=200: layout=page area=48,200 apply(h=119) visible=119px hits=true | cancel(h=96) visible=96px hits=true => REACHABLE
+w375 x2 visible=150: layout=page area=48,150 apply(h=119) visible=94px hits=true | cancel(h=96) visible=94px hits=true => REACHABLE
+w375 x2 visible=120: layout=page area=48,120 apply(h=119) visible=64px hits=true | cancel(h=96) visible=64px hits=true => REACHABLE
+w412 x2 visible=298: layout=page area=48,298 apply(h=96) visible=96px hits=true | cancel(h=96) visible=96px hits=true => REACHABLE
+w412 x2 visible=200: layout=page area=48,200 apply(h=96) visible=96px hits=true | cancel(h=96) visible=96px hits=true => REACHABLE
+w412 x2 visible=150: layout=page area=48,150 apply(h=96) visible=94px hits=true | cancel(h=96) visible=94px hits=true => REACHABLE
+w412 x2 visible=120: layout=page area=48,120 apply(h=96) visible=64px hits=true | cancel(h=96) visible=64px hits=true => REACHABLE
+w320 x1.5 visible=298: layout=page area=36,298 apply(h=72) visible=72px hits=true | cancel(h=72) visible=72px hits=true => REACHABLE
+w320 x1.5 visible=200: layout=page area=36,200 apply(h=72) visible=72px hits=true | cancel(h=72) visible=72px hits=true => REACHABLE
+w320 x1.5 visible=150: layout=page area=36,150 apply(h=72) visible=72px hits=true | cancel(h=72) visible=72px hits=true => REACHABLE
+w320 x1.5 visible=120: layout=page area=36,120 apply(h=72) visible=72px hits=true | cancel(h=72) visible=72px hits=true => REACHABLE

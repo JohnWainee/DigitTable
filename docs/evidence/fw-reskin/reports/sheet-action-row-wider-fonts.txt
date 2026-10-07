@@ -1,0 +1,48 @@
+ok       Impact         w320 x1: apply 282x48.4 (1 rects) cancel 282x50.4 row 282 sheetScrollW-clientW=0 page=0 font=20px
+ok       Impact         w320 x1.5: apply 282x72 (1 rects) cancel 282x72 row 282 sheetScrollW-clientW=0 page=0 font=24px
+ok       Impact         w320 x2: apply 282x119.2 (2 rects) cancel 282x96 row 282 sheetScrollW-clientW=0 page=0 font=32px
+ok       Impact         w360 x1: apply 322x48.4 (1 rects) cancel 322x50.4 row 322 sheetScrollW-clientW=0 page=0 font=20px
+ok       Impact         w360 x1.5: apply 318x72 (1 rects) cancel 318x72 row 318 sheetScrollW-clientW=0 page=0 font=25.2px
+ok       Impact         w360 x2: apply 318x119.2 (2 rects) cancel 318x96 row 318 sheetScrollW-clientW=0 page=0 font=32px
+ok       Impact         w375 x1: apply 337x48.4 (1 rects) cancel 337x50.4 row 337 sheetScrollW-clientW=0 page=0 font=20px
+ok       Impact         w375 x1.5: apply 331.5x72 (1 rects) cancel 331.5x72 row 331.5 sheetScrollW-clientW=0 page=0 font=26.25px
+ok       Impact         w375 x2: apply 331.5x119.2 (2 rects) cancel 331.5x96 row 331.5 sheetScrollW-clientW=0 page=0 font=32px
+ok       Impact         w412 x1: apply 181x70.4 (2 rects) cancel 181x70.4 row 374 sheetScrollW-clientW=0 page=0 font=20px
+ok       Impact         w412 x1.5: apply 364.8x72 (1 rects) cancel 364.8x72 row 364.8 sheetScrollW-clientW=0 page=0 font=28.84px
+ok       Impact         w412 x2: apply 364.8x96 (1 rects) cancel 364.8x96 row 364.8 sheetScrollW-clientW=0 page=0 font=32px
+ok       Arial          w320 x1: apply 282x48.4 (1 rects) cancel 282x50.4 row 282 sheetScrollW-clientW=0 page=0 font=20px
+ok       Arial          w320 x1.5: apply 282x90.4 (2 rects) cancel 282x72 row 282 sheetScrollW-clientW=0 page=0 font=24px
+wraps    Arial          w320 x2: apply 282x154.3 (3 rects) cancel 282x96 row 282 sheetScrollW-clientW=0 page=0 font=32px
+ok       Arial          w360 x1: apply 322x48.4 (1 rects) cancel 322x50.4 row 322 sheetScrollW-clientW=0 page=0 font=20px
+ok       Arial          w360 x1.5: apply 318x93 (2 rects) cancel 318x72 row 318 sheetScrollW-clientW=0 page=0 font=25.2px
+ok       Arial          w360 x2: apply 318x119.2 (2 rects) cancel 318x96 row 318 sheetScrollW-clientW=0 page=0 font=32px
+ok       Arial          w375 x1: apply 337x48.4 (1 rects) cancel 337x50.4 row 337 sheetScrollW-clientW=0 page=0 font=20px
+ok       Arial          w375 x1.5: apply 331.5x95.3 (2 rects) cancel 331.5x72 row 331.5 sheetScrollW-clientW=0 page=0 font=26.25px
+ok       Arial          w375 x2: apply 331.5x119.2 (2 rects) cancel 331.5x96 row 331.5 sheetScrollW-clientW=0 page=0 font=32px
+ok       Arial          w412 x1: apply 374x48.4 (1 rects) cancel 374x50.4 row 374 sheetScrollW-clientW=0 page=0 font=20px
+ok       Arial          w412 x1.5: apply 364.8x101 (2 rects) cancel 364.8x72 row 364.8 sheetScrollW-clientW=0 page=0 font=28.84px
+ok       Arial          w412 x2: apply 364.8x119.2 (2 rects) cancel 364.8x96 row 364.8 sheetScrollW-clientW=0 page=0 font=32px
+ok       Arial Black    w320 x1: apply 282x70.4 (2 rects) cancel 282x50.4 row 282 sheetScrollW-clientW=0 page=0 font=20px
+ok       Arial Black    w320 x1.5: apply 282x90.4 (2 rects) cancel 282x72 row 282 sheetScrollW-clientW=0 page=0 font=24px
+wraps    Arial Black    w320 x2: apply 282x154.3 (3 rects) cancel 282x96 row 282 sheetScrollW-clientW=0 page=0 font=32px
+ok       Arial Black    w360 x1: apply 322x48.4 (1 rects) cancel 322x50.4 row 322 sheetScrollW-clientW=0 page=0 font=20px
+ok       Arial Black    w360 x1.5: apply 318x93 (2 rects) cancel 318x72 row 318 sheetScrollW-clientW=0 page=0 font=25.2px
+wraps    Arial Black    w360 x2: apply 318x154.3 (3 rects) cancel 318x96 row 318 sheetScrollW-clientW=0 page=0 font=32px
+ok       Arial Black    w375 x1: apply 337x48.4 (1 rects) cancel 337x50.4 row 337 sheetScrollW-clientW=0 page=0 font=20px
+ok       Arial Black    w375 x1.5: apply 331.5x95.3 (2 rects) cancel 331.5x72 row 331.5 sheetScrollW-clientW=0 page=0 font=26.25px
+ok       Arial Black    w375 x2: apply 331.5x119.2 (2 rects) cancel 331.5x96 row 331.5 sheetScrollW-clientW=0 page=0 font=32px
+ok       Arial Black    w412 x1: apply 374x48.4 (1 rects) cancel 374x50.4 row 374 sheetScrollW-clientW=0 page=0 font=20px
+ok       Arial Black    w412 x1.5: apply 364.8x101 (2 rects) cancel 364.8x72 row 364.8 sheetScrollW-clientW=0 page=0 font=28.84px
+ok       Arial Black    w412 x2: apply 364.8x119.2 (2 rects) cancel 364.8x96 row 364.8 sheetScrollW-clientW=0 page=0 font=32px
+ok       Helvetica Neue w320 x1: apply 282x48.4 (1 rects) cancel 282x50.4 row 282 sheetScrollW-clientW=0 page=0 font=20px
+ok       Helvetica Neue w320 x1.5: apply 282x90.4 (2 rects) cancel 282x72 row 282 sheetScrollW-clientW=0 page=0 font=24px
+wraps    Helvetica Neue w320 x2: apply 282x154.3 (3 rects) cancel 282x96 row 282 sheetScrollW-clientW=0 page=0 font=32px
+ok       Helvetica Neue w360 x1: apply 322x48.4 (1 rects) cancel 322x50.4 row 322 sheetScrollW-clientW=0 page=0 font=20px
+ok       Helvetica Neue w360 x1.5: apply 318x93 (2 rects) cancel 318x72 row 318 sheetScrollW-clientW=0 page=0 font=25.2px
+ok       Helvetica Neue w360 x2: apply 318x119.2 (2 rects) cancel 318x96 row 318 sheetScrollW-clientW=0 page=0 font=32px
+ok       Helvetica Neue w375 x1: apply 337x48.4 (1 rects) cancel 337x50.4 row 337 sheetScrollW-clientW=0 page=0 font=20px
+ok       Helvetica Neue w375 x1.5: apply 331.5x95.3 (2 rects) cancel 331.5x72 row 331.5 sheetScrollW-clientW=0 page=0 font=26.25px
+ok       Helvetica Neue w375 x2: apply 331.5x119.2 (2 rects) cancel 331.5x96 row 331.5 sheetScrollW-clientW=0 page=0 font=32px
+ok       Helvetica Neue w412 x1: apply 374x48.4 (1 rects) cancel 374x50.4 row 374 sheetScrollW-clientW=0 page=0 font=20px
+ok       Helvetica Neue w412 x1.5: apply 364.8x101 (2 rects) cancel 364.8x72 row 364.8 sheetScrollW-clientW=0 page=0 font=28.84px
+ok       Helvetica Neue w412 x2: apply 364.8x119.2 (2 rects) cancel 364.8x96 row 364.8 sheetScrollW-clientW=0 page=0 font=32px

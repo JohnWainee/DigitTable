@@ -50,3 +50,21 @@ actions, or an incorrect layout choice.
 The remaining physical-device, AT, Android font-scale, and Windows
 High-Contrast limitations remain explicitly open and are not hidden by this
 approval.
+
+## Addendum (implementation lane, after this review)
+
+Written by the implementation lane, not by the reviewer above; the review text itself is unchanged.
+
+- The three items under "Required before calling the candidate release-ready" were taken up afterwards, on isolated ports (project `demo-digitable-fw`; the audits and the
+  smoke ran against a private stack on 53xxx, the emulator suite on 54xxx):
+  1. `npm run test:emulator` at the final tip: **18** rules/testing, **86** Functions and **4** web tests passed (exit 0).
+  2. The local GM/player/table smoke (`two-device-smoke.mjs --reload`) against the candidate bundle and those emulators: **17/17** steps passed.
+  3. A staging playthrough has **not** been done: the deployed staging build does not contain this branch and nothing was deployed. It stays open.
+- The code reviewed here (`ccb9f2d..97cc9c7`) was followed by fixes after a second, independent pass; see
+  [`2026-10-07-fw-reskin-independent-review-pass2.md`](2026-10-07-fw-reskin-independent-review-pass2.md) and
+  [`2026-10-07-fw-reskin-independent-review-pass3.md`](2026-10-07-fw-reskin-independent-review-pass3.md). Two statements above need that context:
+  "the browser audit now fails for ... an incorrect layout choice" held only for gross errors (ten hook mutants survived the first unit tests and five also
+  survived the audit; the unit tests and the audit's flip scenarios were extended), and "restores focus context after a layout change" held for text fields
+  only (a focused checkbox or button was left off screen after a flip; fixed and gated).
+- The final `npm run check` is **750 tests passed, 11 todo** (this review recorded 736), and `npm run build` still passes with the same chunk-size warning.
+
