@@ -391,6 +391,54 @@ describe("reskin stylesheet contract", () => {
     });
   });
 
+  describe("gx pass: hierarchy tiers, pure-black ink, print wear", () => {
+    it("paints the page from pure-black ink and keeps every new token legible", () => {
+      expect(token("ink-0")).toBe("#000000");
+      expect(luminance(token("ink-3"))).toBeLessThan(0.012);
+      // --rule-hi draws the quiet panel borders and crop marks: >= 3:1 on every ink surface (1.4.11).
+      for (const surface of ["ink-0", "ink-1", "ink-2", "ink-3"]) {
+        expect(contrast("rule-hi", surface)).toBeGreaterThanOrEqual(3);
+      }
+    });
+
+    it("gives the one primary action of a decision panel a taller, wider slab than other buttons", () => {
+      const rule = rulesFor(/^\.step > \.primary-action,/s);
+      expect(declaration(rule, "min-height")).toEqual(["3.5rem"]);
+      expect(declaration(rule, "font-size")).toEqual(["1.5rem"]);
+      // ...but never inside the pop-out: the rule's selectors are child combinators on panel and form
+      // containers only, so nothing under .sheet-footer / .sheet-actions can match.
+      const selectors = /(\.step > \.primary-action,[^{]*)\{/.exec(css)?.[1] ?? "";
+      expect(selectors).not.toMatch(/sheet/);
+      expect(selectors.split(",").every((sel) => sel.includes(">"))).toBe(true);
+    });
+
+    it("quietens reference panels (scene, party, roster, GM tools) with a rule border and a spine", () => {
+      const quiet = rulesFor(/^\.scene-card,\s*\.party-strip,/s);
+      expect(declaration(quiet, "border")[0]).toContain("var(--rule-hi)");
+      expect(declaration(quiet, "border-left")[0]).toContain("var(--sa)");
+      // The loud panels still carry the paper border and the riot-shadow stack from the base rule.
+      expect(
+        declaration(rulesFor(/^\.step,\s*\.scene-card,\s*\.landing-resume/s), "border")[0],
+      ).toContain("var(--paper)");
+    });
+
+    it("draws crop marks as decorative, non-interactive, in-box overlays", () => {
+      const marks = rulesFor(/^\.step::after,\s*\.invite-panel::after$/);
+      expect(declaration(marks, "pointer-events")).toEqual(["none"]);
+      expect(declaration(marks, "position")).toEqual(["absolute"]);
+      expect(declaration(marks, "inset")).toEqual(["0.4rem"]);
+      expect(declaration(marks, "content")).toEqual(['""']);
+    });
+
+    it("lets a disclosure's content wrap inside its panel at any width, and relaxes padding on narrow phones", () => {
+      expect(declaration(rulesFor(/^details > :not\(summary\)$/), "overflow-wrap")).toContain(
+        "anywhere",
+      );
+      expect(declaration(rulesFor(/^details$/), "min-width")).toContain("0");
+      expect(mediaBlock("(max-width: 24rem)")).toMatch(/padding-inline:\s*min\(1rem, 3\.2vw\)/);
+    });
+  });
+
   describe("licensing hygiene", () => {
     it("uses only system font stacks and no external resources", () => {
       expect(css).not.toMatch(/@import|@font-face|url\(\s*["']?https?:/i);

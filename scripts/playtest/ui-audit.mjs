@@ -88,6 +88,7 @@ const report = {
   startedAt: new Date().toISOString(),
   states: [],
   modal: [],
+  popouts: [],
   reducedMotion: null,
   routes: [],
   failures: [],
@@ -386,6 +387,75 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
       fail(`${device.name}/${state}@${vp.name}`, `${issue.control}: ${issue.problems.join("; ")}`);
     }
     report.states.push(entry);
+  }
+  await applyViewport(device, original);
+}
+
+// ---------- in-page pop-out inventory (selects, disclosures) ----------
+
+// Native <select> popups are drawn by the OS/browser (a picker sheet on touch, an edge-aware list on
+// desktop) and cannot be inspected through CDP, so what is auditable is everything we own: the closed
+// control and the context kept next to it. Disclosures (<details>) are in-flow and must stay inside
+// the viewport with their content wrapped, never clipped. Both must keep >= 44px targets, and a select
+// whose selected option is truncated must carry its full text in an adjacent `.select-echo`.
+const POPOUT_INVENTORY = `(() => {
+  const vw = document.documentElement.clientWidth;
+  const out = { selects: [], details: [], dialogs: [], overflowPx: document.documentElement.scrollWidth - vw };
+  const visible = (el) => { const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return r.width > 0 && r.height > 0 && cs.display !== "none" && cs.visibility !== "hidden" && !el.closest("[inert]"); };
+  for (const el of document.querySelectorAll("select")) {
+    if (!visible(el)) continue;
+    const r = el.getBoundingClientRect();
+    const label = el.id ? document.querySelector('label[for="' + el.id + '"]') : null;
+    const truncated = el.scrollWidth > el.clientWidth + 1 || (el.selectedOptions[0] && el.selectedOptions[0].text.length * 7 > el.clientWidth - 48);
+    const echoed = Boolean(el.parentElement && el.parentElement.querySelector(".select-echo"));
+    out.selects.push({ id: el.id, left: r.left, right: r.right, height: r.height, font: parseFloat(getComputedStyle(el).fontSize), labelled: Boolean(label || el.getAttribute("aria-label") || el.getAttribute("aria-labelledby")), truncated, echoed, selected: el.selectedOptions[0] ? el.selectedOptions[0].text.length : 0 });
+  }
+  for (const el of document.querySelectorAll("details")) {
+    if (!visible(el)) continue;
+    const sum = el.querySelector("summary").getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    const clipped = [...el.querySelectorAll("*")].filter((c) => c.scrollWidth > c.clientWidth + 1 && getComputedStyle(c).overflowX !== "visible").length;
+    out.details.push({ open: el.open, left: r.left, right: r.right, summaryHeight: sum.height, clipped });
+  }
+  for (const el of document.querySelectorAll('[role="dialog"]')) {
+    const r = el.getBoundingClientRect();
+    const vv = window.visualViewport;
+    out.dialogs.push({ left: r.left, right: r.right, top: r.top, bottom: r.bottom, vvWidth: vv ? vv.width : vw, vvHeight: vv ? vv.height : innerHeight });
+  }
+  return out;
+})()`;
+
+async function auditPopouts(device, scope, { openDetails = false } = {}) {
+  const original = device.vp;
+  if (openDetails) {
+    await ev(device, `document.querySelectorAll("details").forEach((d) => { d.open = true; })`);
+  }
+  for (const vp of VIEWPORTS) {
+    await applyViewport(device, vp);
+    await sleep(250);
+    const inv = await ev(device, POPOUT_INVENTORY);
+    const where = `popouts/${scope}@${vp.name}`;
+    const entry = { scope, viewport: vp.name, ...inv };
+    for (const s of inv.selects) {
+      if (s.left < -0.5 || s.right > vp.width + 0.5) fail(where, `select#${s.id} outside viewport`);
+      if (s.height < 43.5) fail(where, `select#${s.id} target ${Math.round(s.height)}px`);
+      if (s.font < 16) fail(where, `select#${s.id} font ${s.font}px (iOS focus zoom)`);
+      if (!s.labelled) fail(where, `select#${s.id} has no accessible label`);
+      if (s.truncated && !s.echoed)
+        fail(where, `select#${s.id} truncates its selected option with no echo`);
+    }
+    for (const d of inv.details) {
+      if (d.left < -0.5 || d.right > vp.width + 0.5) fail(where, "disclosure outside viewport");
+      if (d.summaryHeight < 43.5)
+        fail(where, `disclosure summary ${Math.round(d.summaryHeight)}px`);
+      if (d.clipped > 0) fail(where, `disclosure has ${d.clipped} clipped descendant(s)`);
+    }
+    if (inv.overflowPx > 1) fail(where, `horizontal overflow ${inv.overflowPx}px`);
+    if (scope === "gm-console" && inv.selects.length === 0)
+      fail(where, "inventory found no selects: selector drift would hide every select check");
+    if (scope === "player-compose" && inv.details.length === 0)
+      fail(where, "inventory found no disclosure: selector drift would hide the disclosure checks");
+    report.popouts.push(entry);
   }
   await applyViewport(device, original);
 }
@@ -933,6 +1003,7 @@ async function main() {
     await ev(player, `document.querySelector("details summary").click()`);
     await sleep(250);
     await captureState(player, "compose-why-open", { axeViewports: ["phone"] });
+    await auditPopouts(player, "player-compose", { openDetails: true });
     await ev(player, `document.querySelector("details summary").click()`);
 
     // Table connects.
@@ -952,6 +1023,7 @@ async function main() {
       "claimed",
     );
     await captureState(gm, "console-scene-loaded");
+    await auditPopouts(gm, "gm-console");
 
     // Player declares; GM sees pending.
     await clickText(player, "button", /^Declare action$/);
@@ -1035,6 +1107,9 @@ async function main() {
           .filter((v) => !isHardAxe(v))
           .map((v) => `${s.surface}/${s.state}@${s.viewport}: ${v.id}`),
       ),
+      popoutChecks: report.popouts.length,
+      popoutSelects: report.popouts.reduce((n, e) => n + e.selects.length, 0),
+      popoutDisclosures: report.popouts.reduce((n, e) => n + e.details.length, 0),
       failures: report.failures.length,
     };
     writeFileSync(join(OUT, "report.json"), JSON.stringify(report, null, 2) + "\n");

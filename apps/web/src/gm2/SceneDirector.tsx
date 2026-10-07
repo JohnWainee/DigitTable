@@ -219,6 +219,7 @@ export function SceneDirector({
             </option>
           ))}
         </select>
+        <SelectedEcho text={selected.title} />
         <p className="form-hint">{selected.gmBriefing}</p>
         {scene && !primaryComplete && (
           <div className="form-field">

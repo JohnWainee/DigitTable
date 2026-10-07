@@ -81,3 +81,19 @@ describe("SceneDirector default scene selection", () => {
     expect(selectedScene()).toBe(ids[2]);
   });
 });
+
+describe("SceneDirector scene select context", () => {
+  it("echoes the full selected scene title under the select, and follows a change", () => {
+    render(director(null));
+    const first = ORIGINAL_MISSION[0]!;
+    const other = ORIGINAL_MISSION[1]!;
+    const echoes = (): string[] =>
+      screen.getAllByTestId("select-echo").map((e) => e.textContent ?? "");
+    expect(echoes()).toContain(first.title);
+    fireEvent.change(screen.getByRole("combobox", { name: "Scene" }), {
+      target: { value: other.sceneId },
+    });
+    expect(echoes()).toContain(other.title);
+    expect(echoes()).not.toContain(first.title);
+  });
+});

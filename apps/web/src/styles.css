@@ -35,11 +35,12 @@
   color-scheme: dark;
 
   /* Ink (surfaces) */
-  --ink-0: #020203;
-  --ink-1: #08080b;
-  --ink-2: #0f0f14;
-  --ink-3: #191922;
-  --rule: #52525f;
+  --ink-0: #000000;
+  --ink-1: #040406;
+  --ink-2: #09090d;
+  --ink-3: #14141b;
+  --rule: #5b5b6a;
+  --rule-hi: #8d8d9d;
 
   /* Paper (text). --dim/--mute keep >= 6:1 on --ink-2. */
   --paper: #f6efdc;
@@ -120,8 +121,8 @@ body {
   background-color: var(--ink-0);
   background-image:
     var(--tape-hazard),
-    radial-gradient(ellipse 80% 100% at 12% 0%, rgba(255, 51, 72, 0.3), transparent 70%),
-    radial-gradient(ellipse 70% 100% at 100% 6%, rgba(31, 233, 255, 0.14), transparent 70%),
+    radial-gradient(ellipse 70% 100% at 12% 0%, rgba(255, 51, 72, 0.2), transparent 70%),
+    radial-gradient(ellipse 60% 100% at 100% 6%, rgba(31, 233, 255, 0.1), transparent 70%),
     var(--streak), var(--dust), var(--grain), var(--halftone);
   background-size:
     auto 0.5rem,
@@ -1888,5 +1889,132 @@ details ul {
   h2,
   legend {
     border: 2px solid CanvasText;
+  }
+}
+
+/* ---------- "gx" pass (2026-10-07): hierarchy, ink and print wear ----------
+   Three tiers so the eye lands on the next decision first:
+     1. the active decision (compose / allocate / resolve / pending actions / invite): full paper
+        border, loud print shadow, crop marks, a tall full-width slab as its one primary action;
+     2. reference panels (scene, roster, GM tools, party): a quiet rule border and a coloured spine,
+        no shadow stack;
+     3. fieldsets inside either: dashed, label as a small stamp.
+   Everything here is presentation of existing elements: no markup, no behaviour. */
+
+/* Tier 1 */
+.step,
+.invite-panel {
+  /* Ink bleeds in from the edges: darker rim, so text sits on near-pure black. */
+  box-shadow:
+    inset 0 0 2.25rem rgba(0, 0, 0, 0.85),
+    6px 6px 0 var(--sb),
+    9px 9px 0 var(--ink-0),
+    11px 11px 0 var(--rule);
+}
+
+/* The invite block stays the loudest panel (acid frame, riot print), as in the base rule. */
+.invite-panel {
+  box-shadow:
+    inset 0 0 2.25rem rgba(0, 0, 0, 0.85),
+    6px 6px 0 var(--riot),
+    9px 9px 0 var(--ink-0),
+    11px 11px 0 var(--acid);
+}
+
+/* Crop marks: a print-room registration tick in each corner, decorative and inside the box. */
+.step::after,
+.invite-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0.4rem;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--rule-hi), var(--rule-hi)) top left / 0.8rem 2px no-repeat,
+    linear-gradient(var(--rule-hi), var(--rule-hi)) top left / 2px 0.8rem no-repeat,
+    linear-gradient(var(--rule-hi), var(--rule-hi)) top right / 0.8rem 2px no-repeat,
+    linear-gradient(var(--rule-hi), var(--rule-hi)) top right / 2px 0.8rem no-repeat,
+    linear-gradient(var(--rule-hi), var(--rule-hi)) bottom left / 0.8rem 2px no-repeat,
+    linear-gradient(var(--rule-hi), var(--rule-hi)) bottom left / 2px 0.8rem no-repeat,
+    linear-gradient(var(--rule-hi), var(--rule-hi)) bottom right / 0.8rem 2px no-repeat,
+    linear-gradient(var(--rule-hi), var(--rule-hi)) bottom right / 2px 0.8rem no-repeat;
+  opacity: 0.8;
+}
+
+/* The one primary action of a decision panel: tall, wide, loud. Not inside the pop-out's action
+   row: that row must stay compact so Apply/Cancel clear an on-screen keyboard. */
+.step > .primary-action,
+.session-form > .primary-action,
+.landing-actions--primary > .primary-action {
+  min-height: 3.5rem;
+  font-size: 1.5rem;
+  letter-spacing: 0.12em;
+  box-shadow: 6px 6px 0 var(--riot);
+}
+
+/* Tier 2: reference panels recede. */
+.scene-card,
+.party-strip,
+.step[aria-labelledby="roster-panel-heading"],
+.step[aria-labelledby="gm-tools-heading"] {
+  border: 2px solid var(--rule-hi);
+  border-left: 0.6rem solid var(--sa);
+  box-shadow:
+    inset 0 0 2rem rgba(0, 0, 0, 0.8),
+    4px 4px 0 var(--ink-3);
+}
+
+.step[aria-labelledby="roster-panel-heading"]::before,
+.step[aria-labelledby="gm-tools-heading"]::before,
+.step[aria-labelledby="roster-panel-heading"]::after,
+.step[aria-labelledby="gm-tools-heading"]::after {
+  display: none;
+}
+
+.step[aria-labelledby="roster-panel-heading"] h2,
+.step[aria-labelledby="gm-tools-heading"] h2,
+.scene-card h2 {
+  background: var(--ink-0);
+  color: var(--sa);
+  outline-color: var(--sa);
+  box-shadow: none;
+}
+
+/* Tier 3: fieldsets inside panels. */
+fieldset {
+  border: 2px dashed var(--rule);
+  border-top: 3px solid var(--sc);
+  background: var(--streak), rgba(0, 0, 0, 0.7);
+}
+
+/* The page's single most important line: a thin riot/acid rule under the title block. */
+.player-screen > h1,
+.gm-screen > h1,
+.table-screen > h1,
+.landing-screen > h1 {
+  border-bottom: 2px solid var(--rule);
+}
+
+/* Disclosures ("Why?") sit in flow: content wraps inside the panel at any width. */
+details {
+  min-width: 0;
+  max-width: 100%;
+}
+
+details > :not(summary) {
+  overflow-wrap: anywhere;
+}
+
+/* Narrow phones and large text: the panels' fixed rem padding must not eat the whole row. */
+@media (max-width: 24rem) {
+  .step,
+  .scene-card,
+  .invite-panel,
+  .landing-resume,
+  .reveal-card {
+    padding-inline: min(1rem, 3.2vw);
+  }
+
+  fieldset {
+    padding-inline: min(0.85rem, 2.6vw);
   }
 }
