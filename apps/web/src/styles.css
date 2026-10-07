@@ -382,7 +382,7 @@ li + li {
 fieldset {
   min-width: 0;
   margin: 0;
-  padding: 1.1rem 0.85rem 0.85rem;
+  padding: 1.1rem min(0.85rem, 2.5vw) 0.85rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -413,7 +413,7 @@ legend {
 .roster-card {
   border: 2px solid var(--rule);
   background: rgba(5, 5, 6, 0.55);
-  padding: 0.85rem;
+  padding: min(0.85rem, 2.5vw);
 }
 
 .pending-actions-list,
@@ -753,9 +753,15 @@ input[type="radio"]:disabled {
 .form-field--checkbox {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: min(0.85rem, 2.5vw);
   min-height: var(--tap);
-  padding: 0.4rem 0.65rem;
+  min-width: 0;
+  /* Padding and gap use min() so they stop growing with the root font size: at 200% text on a 320px
+     phone the rem-scaled chrome of the nested card/fieldset/row would otherwise leave the check box
+     and its label ~65px and push the page into horizontal scroll. Bare text labels (no span) must
+     also be allowed to break inside a long word. */
+  padding: 0.4rem min(0.65rem, 2vw);
+  overflow-wrap: anywhere;
   border: 2px solid transparent;
   font-family: var(--font-body);
   font-size: 1rem;

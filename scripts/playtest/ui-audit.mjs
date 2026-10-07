@@ -734,16 +734,11 @@ async function auditModal(gm) {
   }
 
   // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150% and
-  // 375px at 200% are gating. 320px at 200% is recorded but NOT gating: at that size the (unchanged,
-  // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
-  // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
-  // the handoff.
+  // 200%, and 375px at 200%, are all gating (the 320px/200% console overflow is fixed in styles.css).
   for (const [vp, px, informationalChecks] of [
     [byName["phone-small"], 24, []],
     [byName["phone"], 32, []],
-    // Only the two geometry checks the console's overflow can break are non-gating here; the sheet's own
-    // bodyKeepsRoom / actionsReachable / reasonReachable still gate.
-    [byName["phone-small"], 32, ["dialogInsideViewport", "noPageOverflow"]],
+    [byName["phone-small"], 32, []],
   ]) {
     await scenario(
       `text-${px === 24 ? "150" : "200"}-${vp.name}`,
@@ -785,6 +780,33 @@ async function auditModal(gm) {
       },
       { informationalChecks },
     );
+  }
+  // The same 320px / 200% text case with the sheet CLOSED: here the console itself is what scrolls, so
+  // any horizontal overflow would be real page-level horizontal scroll. This is gating (the open-sheet
+  // variant above cannot see it because the sheet inerts and scroll-locks the page behind it).
+  for (const [vp, px] of [
+    [byName["phone-small"], 32],
+    [byName["phone-small"], 24],
+    [byName["phone"], 32],
+  ]) {
+    await scenario(`text-${px === 24 ? "150" : "200"}-${vp.name}-closed`, vp, async (record) => {
+      await ev(gm, `document.documentElement.style.fontSize = "${px}px"`);
+      await sleep(200);
+      const overflow = await ev(
+        gm,
+        `(() => { const w = document.documentElement.clientWidth; return { pageOverflowPx: document.documentElement.scrollWidth - w, offenders: [...document.querySelectorAll("body *")].filter(e => (e.getBoundingClientRect().right > w + 1 || e.scrollWidth > e.clientWidth + 1) && getComputedStyle(e).display !== "none" && getComputedStyle(e).overflowX === "visible").slice(0, 10).map(e => e.tagName.toLowerCase() + (typeof e.className === "string" && e.className ? "." + e.className.split(" ").join(".") : "") + " right=" + Math.round(e.getBoundingClientRect().right) + " sw=" + e.scrollWidth + "/" + e.clientWidth) }; })()`,
+      );
+      record.geometry = overflow;
+      // Preconditions, so the gate cannot pass vacuously: the sheet is closed and the nested option
+      // rows that caused the original overflow are actually on the page.
+      record.checks.sheetClosed = await ev(gm, `!document.querySelector('[role="dialog"]')`);
+      record.checks.optionRowsPresent = await ev(
+        gm,
+        `document.querySelectorAll(".pending-action-card .gear-option").length > 0`,
+      );
+      record.checks.noPageOverflowClosed = overflow.pageOverflowPx <= 1;
+      record.textPx = px;
+    });
   }
   await applyViewport(gm, byName["desktop"]);
 }

@@ -391,6 +391,33 @@ describe("reskin stylesheet contract", () => {
     });
   });
 
+  describe("nested option chrome at large text (320px, 200% text, sheet closed)", () => {
+    // Regression: the GM pending-action card nests card > fieldset > option row; with rem-only padding
+    // and gaps the check box row was left ~65px at 200% text and the page scrolled sideways.
+    const fluid = /^min\([\d.]+rem,\s*[\d.]+vw\)$/;
+
+    it("lets a bare-text option label shrink and break inside a long word", () => {
+      const rule = rulesFor(/^\.gear-option,\s*\.form-field--checkbox$/);
+      expect(declaration(rule, "min-width")).toContain("0");
+      expect(declaration(rule, "overflow-wrap")).toContain("anywhere");
+    });
+
+    it("caps nested padding and gaps with a viewport-relative bound so they stop growing with root font size", () => {
+      const rule = rulesFor(/^\.gear-option,\s*\.form-field--checkbox$/);
+      expect(declaration(rule, "gap").some((v) => fluid.test(v))).toBe(true);
+      expect(declaration(rule, "padding").some((v) => /min\(/.test(v))).toBe(true);
+      expect(declaration(rulesFor(/^fieldset$/), "padding")[0]).toMatch(/min\(/);
+      expect(
+        declaration(rulesFor(/^\.pending-action-card,/), "padding").some((v) => fluid.test(v)),
+      ).toBe(true);
+    });
+
+    it("keeps the 44px minimum target independent of that padding", () => {
+      const rule = rulesFor(/^\.gear-option,\s*\.form-field--checkbox$/);
+      expect(declaration(rule, "min-height")).toContain("var(--tap)");
+    });
+  });
+
   describe("licensing hygiene", () => {
     it("uses only system font stacks and no external resources", () => {
       expect(css).not.toMatch(/@import|@font-face|url\(\s*["']?https?:/i);

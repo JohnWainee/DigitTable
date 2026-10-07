@@ -506,6 +506,22 @@ deployed build's smoke result as proof for this branch.
 
 Branch `sonnet-fu/reskin-fresh-20261006` on `ccb9f2d`. Fresh pop-out/mobile-viewport audit found no new genuine defect, so only evidence and a review record were added: [`docs/reviews/2026-10-06-fu-fresh-popout-audit-review.md`](docs/reviews/2026-10-06-fu-fresh-popout-audit-review.md), [`docs/evidence/fu-fresh-audit/`](docs/evidence/fu-fresh-audit/ui-audit-report.json). Results: `npm run check` 714 passed/11 todo; build passed; `ui-audit.mjs` 150 states, 1,542 controls, 0 hard failures; smoke 17/17 (local emulators); emulators 18/86/4. Open: closed-sheet 320 px/200% text ~5 px overflow (backlog), physical-device/AT/High Contrast, staging playthrough of this build. Not merged or deployed.
 
+## fy closed-sheet large-text fix (2026-10-07, sonnet-fy) — SOURCE FIX, UNMERGED, UNDEPLOYED
+
+Branch `worktree-digitable-sonnet-fy-reskin-uiux-20261007` fast-forwarded to `354e7c9`, then one narrow fix. The fu audit's recorded limit (320 px, 200% text) was only ever measured with the sheet open; measured with it **closed** it is real horizontal page scroll (5 px): the pending-action check-box rows were laid out 65 px wide with 198 px of content (rem-scaled nested padding, and bare-text labels the `.gear-option > span` wrap rule never reached). Fix is CSS-only in `apps/web/src/styles.css` (`min()`-capped padding/gaps on `.gear-option`, `fieldset` and the shared card rule; `min-width: 0`, `overflow-wrap: anywhere`; 44 px targets untouched). Added three contract assertions in `reskinContract.test.ts` and gating closed-sheet scenarios (with preconditions) to `scripts/playtest/ui-audit.mjs`; the old non-gating exemption for 320 px / 200% is removed. No engine, contracts, template, authorization, projection or Firebase change.
+
+Evidence: [`docs/evidence/fy-closed-text-overflow/`](docs/evidence/fy-closed-text-overflow/README.md). Independent review (separate read-only subagent, approve with changes, all resolved): [`docs/reviews/2026-10-07-fy-closed-text-overflow-independent-review.md`](docs/reviews/2026-10-07-fy-closed-text-overflow-independent-review.md).
+
+Commands and results (local emulators and `vite preview`; nothing deployed):
+
+- `npm run check` — format, lint, typecheck, **717 passed**, 11 todo.
+- `ui-audit.mjs` — 150 states x 6 viewports, 0 control issues, 0 overflow states, 0 axe hard violations, 0 failures (only the intentional `page-has-heading-one` note); closed-sheet 320/150%, 320/200%, 375/200% pass (320/200% failed on `354e7c9`).
+- `PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator` — 18 + 86 + 4 passed.
+- `two-device-smoke.mjs --reload` against local emulators — 17/17.
+- `npm run build` (all workspaces) — passed on the final tree (existing chunk-size warning only); `npm run check` re-run after the last edit: 717 passed, 11 todo. The final audit run (1,518 controls) is the committed `ui-audit-after.json`.
+
+Still open: physical iOS Safari/Android keyboard, screen-reader, Windows High Contrast and real browser text-size passes; staging playthrough of this build. John decides whether and in what order to merge the reskin lineages. Note: during setup this session ran a broad `pkill -f "firebase emulators:start"`; another lane's emulators on the default ports had gone by then and may have been killed by it.
+
 ## Fresh deployed staging playthrough (2026-10-07, Codex hourly follow-up)
 
 - The requested `digitable-staging-playthrough` Sonnet session (`31f4a4ef`) remains unqueryable: `claude logs 31f4a4ef` returns `ECONNREFUSED` for its daemon control socket. Its absence was not counted as a completed run.
