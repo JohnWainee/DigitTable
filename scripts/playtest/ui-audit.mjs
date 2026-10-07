@@ -321,7 +321,7 @@ const CONTROL_AUDIT = `(() => {
     const truncated = sel.scrollWidth > sel.clientWidth + 1;
     if (truncated) truncatedSelects += 1;
     if (!chosen || sel.value === "") continue;
-    const echoId = (sel.getAttribute("aria-describedby") || "").split(" ").find((i) => i.endsWith("-selected"));
+    const echoId = sel.id ? sel.id + "-selected" : "";
     const echo = echoId && document.getElementById(echoId);
     const found = [];
     if (!echo || !visible(echo)) found.push("no visible selected-value echo");
@@ -475,12 +475,12 @@ async function closeCorrection(gm) {
  * Keyboard-open focus sweep: with the layout viewport shrunk to the space above an on-screen
  * keyboard (Chrome Android `resizes-content`), focus every text field and select on the current
  * screen the way a tap or Tab would, and require the focused control to be fully inside the visible
- * area with its selected-value echo (if any) not hidden behind the bottom edge by more than the
- * echo's own height (the control, not its caption, is what must stay visible). Limit: iOS Safari
+ * area and clear of the fixed hazard-stripe masthead. The viewport is restored afterwards. Limit: iOS Safari
  * shrinks only the visual viewport; see KNOWN LIMIT in the header.
  */
 async function auditKeyboardFocus(device, label) {
   const results = [];
+  const original = device.vp;
   for (const base of [byName["phone-small"], byName["phone"], byName["phone-landscape"]]) {
     const keyboard = Math.round(base.height * (base.width > base.height ? 0.5 : 0.45));
     await applyViewport(device, { ...base, height: base.height - keyboard });
@@ -497,7 +497,7 @@ async function auditKeyboardFocus(device, label) {
           el.focus();
           await sleep(30);
           const r = el.getBoundingClientRect();
-          out.push({ id: el.id || el.name || el.tagName, top: Math.round(r.top), bottom: Math.round(r.bottom), ok: r.top >= -0.5 && r.bottom <= vh + 0.5 });
+          out.push({ id: el.id || el.name || el.tagName, top: Math.round(r.top), bottom: Math.round(r.bottom), ok: r.top >= 8 && r.bottom <= vh + 0.5 });
         }
         document.activeElement?.blur();
         return { vh, out };
@@ -513,6 +513,7 @@ async function auditKeyboardFocus(device, label) {
     }
     if (rows.out.length === 0) fail(`${label}-keyboard-focus@${base.name}`, "no fields exercised");
   }
+  await applyViewport(device, original);
   (report.keyboardFocus ??= {})[label] = results;
 }
 

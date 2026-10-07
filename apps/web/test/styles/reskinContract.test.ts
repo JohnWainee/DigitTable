@@ -335,6 +335,14 @@ describe("reskin stylesheet contract", () => {
       expect(
         declaration(rulesFor(/^\.step::after,\s*\.scene-card::after$/s), "pointer-events"),
       ).toEqual(["none"]);
+      expect(
+        declaration(rulesFor(/^\.step,\s*\.scene-card,\s*\.landing-resume/s), "position"),
+      ).toEqual(["relative"]);
+      expect(declaration(rulesFor(/^\.select-echo-tag$/), "color")).toEqual(["var(--pink)"]);
+      expect(declaration(rulesFor(/^fieldset:nth-child\(even\) > legend$/), "background")).toEqual([
+        "var(--pink)",
+      ]);
+      expect(declaration(rulesFor(/^html$/), "scroll-padding-top").length).toBeGreaterThan(0);
       // The echo's tag is pink text over a ~9% pink wash on the panel ink; the wash is lighter than
       // --ink-2, so also pin the worst plausible backdrop (--ink-3).
       expect(contrast("pink", "ink-3")).toBeGreaterThanOrEqual(4.5);
