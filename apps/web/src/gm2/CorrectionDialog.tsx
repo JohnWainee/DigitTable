@@ -209,7 +209,7 @@ export function CorrectionDialog({
                       checked={marked}
                       onChange={() => toggleBox(category.id, boxIndex as 0 | 1, box.marked)}
                     />
-                    Box {boxIndex + 1}
+                    <span>Box {boxIndex + 1}</span>
                   </label>
                 );
               })}
@@ -222,11 +222,11 @@ export function CorrectionDialog({
         <legend>Status</legend>
         <label className="gear-option">
           <input type="checkbox" checked={downed} onChange={(e) => setDowned(e.target.checked)} />
-          Downed
+          <span>Downed</span>
         </label>
         <label className="gear-option">
           <input type="checkbox" checked={retired} onChange={(e) => setRetired(e.target.checked)} />
-          Retired
+          <span>Retired</span>
         </label>
       </fieldset>
 

@@ -96,6 +96,12 @@
   --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffe600' d='M3 8h18l-9 10z'/%3E%3C/svg%3E");
 
   --tap: 3rem;
+
+  /* One rem of nested-panel padding that yields to a narrow screen. At normal text size on any phone
+     >= 320px it is exactly 1rem (5vw >= 16px), so nothing moves; with large text it shrinks, because
+     four nested rem-padded levels (shell, panel, card, fieldset) would otherwise take ~250px of a
+     320px phone at 200% and leave the option rows a ~65px column. */
+  --pad-unit: min(1rem, 5vw);
 }
 
 * {
@@ -254,8 +260,8 @@ li + li {
 .gm-screen,
 .table-screen {
   margin: 0 auto;
-  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
-    max(2.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  padding: max(1rem, env(safe-area-inset-top)) max(var(--pad-unit), env(safe-area-inset-right))
+    max(2.5rem, env(safe-area-inset-bottom)) max(var(--pad-unit), env(safe-area-inset-left));
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -309,7 +315,7 @@ li + li {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1.25rem 1rem 1.25rem;
+  padding: 1.25rem var(--pad-unit) 1.25rem;
   background:
     var(--dust),
     var(--grain),
@@ -382,7 +388,7 @@ li + li {
 fieldset {
   min-width: 0;
   margin: 0;
-  padding: 1.1rem 0.85rem 0.85rem;
+  padding: 1.1rem calc(var(--pad-unit) * 0.85) 0.85rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -413,7 +419,7 @@ legend {
 .roster-card {
   border: 2px solid var(--rule);
   background: rgba(5, 5, 6, 0.55);
-  padding: 0.85rem;
+  padding: 0.85rem calc(var(--pad-unit) * 0.85);
 }
 
 .pending-actions-list,
@@ -753,9 +759,9 @@ input[type="radio"]:disabled {
 .form-field--checkbox {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: calc(var(--pad-unit) * 0.85);
   min-height: var(--tap);
-  padding: 0.4rem 0.65rem;
+  padding: 0.4rem calc(var(--pad-unit) * 0.65);
   border: 2px solid transparent;
   font-family: var(--font-body);
   font-size: 1rem;

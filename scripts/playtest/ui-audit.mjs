@@ -734,22 +734,43 @@ async function auditModal(gm) {
   }
 
   // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150% and
-  // 375px at 200% are gating. 320px at 200% is recorded but NOT gating: at that size the (unchanged,
-  // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
-  // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
-  // the handoff.
+  // 200% and 375px at 200% are all gating, with the sheet closed (console overflow) and open. (The
+  // 320px/200% case used to be non-gating: bare option-row text could not shrink and widened the
+  // page; the rows now keep their text in a shrinkable <span>.)
   for (const [vp, px, informationalChecks] of [
     [byName["phone-small"], 24, []],
     [byName["phone"], 32, []],
-    // Only the two geometry checks the console's overflow can break are non-gating here; the sheet's own
-    // bodyKeepsRoom / actionsReachable / reasonReachable still gate.
-    [byName["phone-small"], 32, ["dialogInsideViewport", "noPageOverflow"]],
+    [byName["phone-small"], 32, []],
   ]) {
     await scenario(
       `text-${px === 24 ? "150" : "200"}-${vp.name}`,
       vp,
       async (record) => {
         await ev(gm, `document.documentElement.style.fontSize = "${px}px"`);
+        // The console itself, sheet CLOSED, must not scroll sideways at this text size (the sheet
+        // being inert and scroll-locked would otherwise hide a real horizontal scroll behind it).
+        await sleep(200);
+        record.checks.closedPageNoOverflow =
+          (await ev(
+            gm,
+            `document.documentElement.scrollWidth - document.documentElement.clientWidth`,
+          )) <= 1;
+        await ev(
+          gm,
+          `(() => { document.querySelector(".pending-action-card")?.scrollIntoView({ block: "start" }); })()`,
+        );
+        await sleep(600);
+        if (SHOTS) {
+          // Not screenshot(): that helper scrolls back to the top, and this frame is the pending card.
+          const closedShot = `gm-console-pending-text-${px === 24 ? "150" : "200"}-${vp.name}.jpg`;
+          const { data } = await gm.cdp.send(
+            "Page.captureScreenshot",
+            { format: "jpeg", quality: 70 },
+            gm.sessionId,
+          );
+          writeFileSync(join(OUT, closedShot), Buffer.from(data, "base64"));
+          record.closedScreenshot = closedShot;
+        }
         await openCorrection(gm);
         const frame = frameOf(vp);
         const geo = await ev(gm, MODAL_GEOMETRY);

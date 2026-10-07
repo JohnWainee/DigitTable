@@ -389,6 +389,29 @@ describe("reskin stylesheet contract", () => {
       expect(mediaBlock("(min-width: 40rem)")).toMatch(/\.gear-row\s*\{[^}]*flex-direction:\s*row/);
       expect(declaration(rulesFor(/^\.gear-option > span$/), "min-width")).toContain("0");
     });
+
+    it("lets nested panel padding yield on a narrow screen without moving anything at normal text size", () => {
+      // 5vw >= 1rem (16px) on every phone >= 320px, so the unit is exactly 1rem unless text is enlarged.
+      expect(declaration(rulesFor(/^:root$/), "--pad-unit")).toContain("min(1rem, 5vw)");
+      for (const selector of [
+        /^\.step,/,
+        /^\.pending-action-card,/,
+        /^fieldset$/,
+        /^\.gear-option,\s*\.form-field--checkbox$/,
+      ]) {
+        const rules = rulesFor(selector);
+        expect(rules.length, String(selector)).toBeGreaterThan(0);
+        expect(rules.join(";"), String(selector)).toContain("var(--pad-unit)");
+      }
+      // The multipliers reproduce the old 0.85rem / 0.65rem values when the unit is 1rem.
+      expect(css).toContain("padding: 0.85rem calc(var(--pad-unit) * 0.85);");
+      expect(css).toContain("padding: 0.4rem calc(var(--pad-unit) * 0.65);");
+      expect(css).toContain("gap: calc(var(--pad-unit) * 0.85);");
+      // The screen shells keep the safe-area floor while yielding to the unit.
+      expect(declaration(rulesFor(/^\.landing-screen,/), "padding")[0]).toContain(
+        "max(var(--pad-unit), env(safe-area-inset-left))",
+      );
+    });
   });
 
   describe("licensing hygiene", () => {

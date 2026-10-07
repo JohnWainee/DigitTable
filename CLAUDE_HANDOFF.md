@@ -511,3 +511,22 @@ Branch `sonnet-fu/reskin-fresh-20261006` on `ccb9f2d`. Fresh pop-out/mobile-view
 - The requested `digitable-staging-playthrough` Sonnet session (`31f4a4ef`) remains unqueryable: `claude logs 31f4a4ef` returns `ECONNREFUSED` for its daemon control socket. Its absence was not counted as a completed run.
 - Independently reran `node scripts/playtest/two-device-smoke.mjs --base https://digitable.signal-bleed.com --out /private/tmp/digitable-staging-smoke-20261006-2350 --reload --no-images` using the reviewed `ccb9f2d` harness. It passed **17/17** GM/player/table steps: session creation, scene load, player/table admission, character claim, cross-device propagation, opposed action/allocation, pause/resume, scene advance, role guidance, direct Resume, and reload recovery. GM/player/table had no positive horizontal overflow at 375/768/1024/1280/1920 px; no browser console errors occurred. The uncommitted private report remains at that temporary output path and is intentionally not versioned because it contains ephemeral room data.
 - This verifies the currently deployed staging build only. It is not evidence that the `ccb9f2d` reskin candidate, or the follow-on closed-sheet fix, has been deployed. The candidate's physical iOS/Android keyboard, assistive-technology, and Windows High Contrast evidence remains outstanding.
+
+## hj option-row reflow fix (2026-10-07, sonnet-hj) — READY FOR JOHN'S DECISION
+
+Branch `sonnet-hj/reskin-orchestrated-20261007` on `354e7c9` (pushed, unmerged, undeployed). Closes the fu backlog item
+(closed-sheet 320 px / 200% overflow): option-row text now sits in a shrinkable `<span>` (14 rows) and
+`--pad-unit: min(1rem, 5vw)` stops nested rem padding stacking at large text (identical at default text on phones
+>= 320 px). `ui-audit.mjs` now gates closed-sheet overflow and 320 px / 200%. Review:
+[`docs/reviews/2026-10-07-hj-option-row-reflow-review.md`](docs/reviews/2026-10-07-hj-option-row-reflow-review.md);
+evidence `docs/evidence/hj-reskin/`.
+
+Results (emulators and previews on remapped 23xxx ports; peers held the defaults; hardcoded test ports patched
+temporarily and reverted, not committed): `npm run check` — 731 passed, 11 todo (baseline 714); `npm run build` passed;
+emulator suites 18 testing + 86 Functions (fresh emulator; IP-throttle tests need clean state) + 4 web;
+`ui-audit.mjs` 150 states, 1,566 controls, 0 control/overflow/axe-hard failures; `two-device-smoke.mjs --reload`
+17/17 against the local build.
+
+**Next action:** John decides merge order versus the other reskin lineages; then physical iOS/Android keyboard,
+AT, Windows High Contrast and a staging playthrough of the merged build. Backlog: mid-word breaks at 320 px / 200%
+(H1, "Station"). Do not represent deployed-staging smoke as evidence for this branch.
