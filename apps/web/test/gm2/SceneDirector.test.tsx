@@ -81,3 +81,21 @@ describe("SceneDirector default scene selection", () => {
     expect(selectedScene()).toBe(ids[2]);
   });
 });
+
+describe("SceneDirector selected-scene context", () => {
+  // A closed <select> ellipsises a long title on a phone (the 320px/375px audit measured
+  // "The Forecourt of the Gare des Ombres" 280px wide in a 213px window at the default text size),
+  // so the full title is echoed, wrapped, under the control and follows the pick.
+  it("echoes the full title of the selected scene under the select, aria-hidden so it is never read twice", () => {
+    render(director(null));
+    const echo = screen.getByTestId("select-echo");
+    expect(echo).toHaveTextContent(ORIGINAL_MISSION[0]!.title);
+    expect(echo).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByRole("combobox", { name: "Scene" }).nextElementSibling).toBe(echo);
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Scene" }), {
+      target: { value: ids[2] },
+    });
+    expect(screen.getByTestId("select-echo")).toHaveTextContent(ORIGINAL_MISSION[2]!.title);
+  });
+});

@@ -1,6 +1,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useBackDismiss } from "./useBackDismiss.js";
+import { useSheetLayout } from "./useSheetLayout.js";
 import { useVisualViewportBox } from "./useVisualViewportBox.js";
 
 const FOCUSABLE_SELECTOR =
@@ -49,6 +50,23 @@ let openSheets = 0;
 /** Text-entry controls: the ones that summon an on-screen keyboard and so must be kept in view. */
 const TEXT_ENTRY_SELECTOR = 'input:not([type="checkbox"]):not([type="radio"]), textarea, select';
 
+/**
+ * Scrolls the focused text field of `root` back into view, instantly and only inside the sheet
+ * (`block: "nearest"`), so it needs no reduced-motion branch. Used when focus arrives, when the
+ * keyboard finishes opening, and after the layout flips (a flip changes which element scrolls).
+ */
+function revealFocusedField(root: HTMLElement): void {
+  const active = document.activeElement;
+  if (
+    active instanceof HTMLElement &&
+    root.contains(active) &&
+    active.matches(TEXT_ENTRY_SELECTOR) &&
+    typeof active.scrollIntoView === "function" // absent in jsdom and very old engines
+  ) {
+    active.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }
+}
+
 export interface SheetDialogProps {
   /** `id` given to the heading, referenced by `aria-labelledby`. */
   readonly titleId: string;
@@ -71,7 +89,11 @@ export interface SheetDialogProps {
  *   reader can reach the page behind it (`aria-modal` alone is only a hint).
  * - Sized from the *visual* viewport (`useVisualViewportBox`) so it never
  *   slides under an on-screen keyboard or off screen with dynamic browser
- *   chrome; the header and footer stay pinned while only the body scrolls.
+ *   chrome; the header and footer stay pinned while only the body scrolls,
+ *   for as long as they and a usable slice of body fit in what is visible.
+ *   When they do not (large text on a small phone, the keyboard up),
+ *   `useSheetLayout` turns the whole sheet into one scrolling page, so
+ *   nothing is clipped and no second scroller nests inside it.
  * - Root scrolling is locked while it is open, and a focused text field is
  *   scrolled back into view when the keyboard appears.
  * - Focus moves to the heading on open and returns to the trigger on close;
@@ -89,9 +111,18 @@ export function SheetDialog({
 }: SheetDialogProps): JSX.Element {
   const backdropRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   useVisualViewportBox(backdropRef);
+  // After useVisualViewportBox: it sizes the backdrop to what is visible, which this measures.
+  useSheetLayout(
+    { backdrop: backdropRef, dialog: dialogRef, header: headerRef, footer: footerRef },
+    () => {
+      if (dialogRef.current) revealFocusedField(dialogRef.current);
+    },
+  );
   useBackDismiss(onClose);
 
   // Focus, inert background, and root scroll lock share one lifecycle so the
@@ -161,15 +192,7 @@ export function SheetDialog({
     if (!dialog) return undefined;
     const root: HTMLElement = dialog;
     function reveal(): void {
-      const active = document.activeElement;
-      if (
-        active instanceof HTMLElement &&
-        root.contains(active) &&
-        active.matches(TEXT_ENTRY_SELECTOR) &&
-        typeof active.scrollIntoView === "function" // absent in jsdom and very old engines
-      ) {
-        active.scrollIntoView({ block: "nearest", inline: "nearest" });
-      }
+      revealFocusedField(root);
     }
     root.addEventListener("focusin", reveal);
     const viewport = window.visualViewport;
@@ -189,14 +212,16 @@ export function SheetDialog({
         className="sheet"
         ref={dialogRef}
       >
-        <div className="sheet-header">
+        <div className="sheet-header" ref={headerRef}>
           <span className="sheet-grip" aria-hidden="true" />
           <h2 id={titleId} tabIndex={-1} ref={headingRef}>
             {title}
           </h2>
         </div>
         <div className="sheet-body">{children}</div>
-        <div className="sheet-footer">{footer}</div>
+        <div className="sheet-footer" ref={footerRef}>
+          {footer}
+        </div>
       </div>
     </div>,
     document.body,

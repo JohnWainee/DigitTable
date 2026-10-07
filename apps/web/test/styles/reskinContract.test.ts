@@ -391,6 +391,154 @@ describe("reskin stylesheet contract", () => {
     });
   });
 
+  describe("fw pass: large text on small phones (320px at 200% text), option rows and the sheet", () => {
+    /** Evaluates `min(<n>rem, <m>vw)` (and `min(<n>rem, <m>px)`) for a viewport width and a root font size. */
+    function evalMin(expression: string, viewportWidth: number, rootPx: number): number {
+      const match = /^min\(([\d.]+)(rem|px|vw),\s*([\d.]+)(rem|px|vw)\)$/.exec(expression.trim());
+      if (!match) throw new Error(`not a two-term min(): ${expression}`);
+      const toPx = (value: string, unit: string): number =>
+        unit === "rem"
+          ? Number(value) * rootPx
+          : unit === "vw"
+            ? (Number(value) * viewportWidth) / 100
+            : Number(value);
+      return Math.min(toPx(match[1]!, match[2]!), toPx(match[3]!, match[4]!));
+    }
+    const rootToken = (name: string): string =>
+      new RegExp(`--${name}:\\s*(min\\([^;]+\\));`).exec(css)?.[1] ?? "";
+
+    it("defines the horizontal gutter unit as min(1rem, 5vw): 1rem from a 320px phone up, but never more than 5vw", () => {
+      const gutter = rootToken("g");
+      expect(gutter).toBe("min(1rem, 5vw)");
+      // Unchanged at the default text size for every width the app supports...
+      for (const width of [320, 360, 375, 412, 768, 1280, 1920]) {
+        expect(evalMin(gutter, width, 16)).toBe(16);
+      }
+      // ...and no longer doubles with the text: a 320px phone keeps a 16px gutter at 200% text.
+      expect(evalMin(gutter, 320, 32)).toBe(16);
+      expect(evalMin(gutter, 375, 32)).toBeCloseTo(18.75);
+      // Wide screens still scale it with the text (there is room).
+      expect(evalMin(gutter, 1280, 32)).toBe(32);
+    });
+
+    it("caps the drawn check/radio box at 32px (1.65rem at the default size), and sizes its mark from the box", () => {
+      const box = rootToken("box");
+      expect(box).toBe("min(1.65rem, 32px)");
+      expect(evalMin(box, 320, 16)).toBeCloseTo(26.4);
+      expect(evalMin(box, 320, 32)).toBe(32);
+      const boxRule = rulesFor(/^input\[type="checkbox"\],\s*input\[type="radio"\]$/s);
+      expect(declaration(boxRule, "width")).toContain("var(--box)");
+      expect(declaration(boxRule, "height")).toContain("var(--box)");
+      expect(declaration(rulesFor(/^input\[type="checkbox"\]::after$/), "width")[0]).toContain(
+        "var(--box)",
+      );
+      expect(declaration(rulesFor(/^input\[type="radio"\]::after$/), "width")[0]).toContain(
+        "var(--box)",
+      );
+    });
+
+    it("builds every nested horizontal gutter on the unit, so five panels cannot add up to the whole line", () => {
+      const sides = (rules: string[]): string => declaration(rules, "padding")[0] ?? "";
+      expect(
+        sides(rulesFor(/^\.landing-screen,\s*\.player-screen,\s*\.gm-screen,\s*\.table-screen$/s)),
+      ).toContain("max(var(--g), env(safe-area-inset-right))");
+      expect(sides(rulesFor(/^\.step,\s*\.scene-card/s))).toBe("1.25rem var(--g) 1.25rem");
+      expect(sides(rulesFor(/^fieldset$/))).toBe("1.1rem calc(var(--g) * 0.85) 0.85rem");
+      expect(sides(rulesFor(/^\.pending-action-card,\s*\.roster-panel-list li/s))).toBe(
+        "0.85rem calc(var(--g) * 0.85)",
+      );
+      const optionRow = rulesFor(/^\.gear-option,\s*\.form-field--checkbox$/);
+      expect(sides(optionRow)).toBe("0.4rem calc(var(--g) * 0.65)");
+      expect(declaration(optionRow, "gap")).toEqual(["calc(var(--g) * 0.85)"]);
+      expect(sides(rulesFor(/^summary$/))).toBe("0.5rem calc(var(--g) * 0.85)");
+      expect(sides(rulesFor(/^details > :not\(summary\)$/))).toBe("0.75rem calc(var(--g) * 0.85)");
+      for (const sheetPart of [/^\.sheet-header$/, /^\.sheet-body$/]) {
+        expect(sides(rulesFor(sheetPart))).toContain("var(--g)");
+      }
+      expect(sides(rulesFor(/^\.sheet-footer$/))).toContain("var(--g)");
+      // Text entry and buttons too (their side padding was 0.8rem / 1.25rem).
+      expect(
+        sides(
+          rulesFor(
+            /^input:not\(\[type="checkbox"\]\):not\(\[type="radio"\]\),\s*select,\s*textarea$/s,
+          ),
+        ),
+      ).toBe("0.65rem calc(var(--g) * 0.8)");
+      expect(sides(rulesFor(/^\.primary-action,\s*\.secondary-action$/s))).toBe(
+        "0.7rem calc(var(--g) * 1.25)",
+      );
+    });
+
+    it("lets an option row's text wrap inside the row (the bare text node needs the rule on the row), but never breaks a button label", () => {
+      const row = rulesFor(/^\.gear-option,\s*\.form-field--checkbox$/);
+      // `anywhere`, not the body's `break-word`: only `anywhere` lowers the min-content width, so the
+      // flex row can shrink the text to its column instead of widening the page.
+      expect(declaration(row, "overflow-wrap")).toEqual(["anywhere"]);
+      expect(declaration(row, "min-width")).toContain("0");
+      expect(declaration(rulesFor(/^\.gear-option button$/), "overflow-wrap")).toEqual(["normal"]);
+      expect(declaration(rulesFor(/^body$/), "overflow-wrap")).toEqual(["break-word"]);
+    });
+
+    it("keeps a decorative icon inside an option row from taking the label's column at 200% text", () => {
+      expect(declaration(rulesFor(/^\.gear-option \.etr-icon$/), "width")).toEqual([
+        "min(1.1em, 24px)",
+      ]);
+      expect(declaration(rulesFor(/^\.gear-option \.stat-icon$/), "margin-right")).toEqual([
+        "min(0.3em, 6px)",
+      ]);
+    });
+
+    it("keeps a closed <select>'s value window open at 200% text: the chevron and its reserve are capped in px", () => {
+      const select = rulesFor(/^select$/);
+      expect(declaration(select, "padding-right")).toEqual(["min(2.75rem, 44px)"]);
+      expect(declaration(select, "background-position")).toEqual([
+        "right min(0.85rem, 14px) center",
+      ]);
+      expect(declaration(select, "background-size")).toEqual(["min(1rem, 18px) min(1rem, 18px)"]);
+      // Default size: 44px and 13.6px / 16px, i.e. unchanged.
+      expect(evalMin("min(2.75rem, 44px)", 320, 16)).toBe(44);
+      expect(evalMin("min(0.85rem, 14px)", 320, 16)).toBeCloseTo(13.6);
+      expect(evalMin("min(1rem, 18px)", 320, 16)).toBe(16);
+    });
+
+    it("sizes button labels so 'Correction' and 'Allocation' fit a 320px button at 200% text, and are untouched at the default size", () => {
+      const label = declaration(rulesFor(/^\.primary-action,\s*\.secondary-action$/s), "font-size");
+      expect(label).toEqual(["min(1.25rem, 7vw)"]);
+      for (const width of [320, 375, 412, 768, 1280])
+        expect(evalMin(label[0]!, width, 16)).toBe(20);
+      expect(evalMin(label[0]!, 320, 32)).toBeCloseTo(22.4);
+    });
+
+    it("has the sheet choose between a pinned layout and one scrolling page from measured sizes", () => {
+      // Pinned: no capped, nested scroller on the action row (the hook proved there is room for all of it).
+      const pinnedFooter = rulesFor(/^\.sheet\[data-layout="pinned"\] \.sheet-footer$/);
+      expect(declaration(pinnedFooter, "max-height")).toEqual(["none"]);
+      expect(declaration(pinnedFooter, "overflow")).toEqual(["visible"]);
+      // Page: the sheet is the one scroller; the body and the action row take their natural height.
+      expect(declaration(rulesFor(/^\.sheet\[data-layout="page"\]$/), "overflow-y")).toEqual([
+        "auto",
+      ]);
+      expect(
+        declaration(rulesFor(/^\.sheet\[data-layout="page"\]$/), "overscroll-behavior"),
+      ).toEqual(["contain"]);
+      const pageBody = rulesFor(/^\.sheet\[data-layout="page"\] \.sheet-body$/);
+      expect(declaration(pageBody, "flex")).toEqual(["none"]);
+      expect(declaration(pageBody, "overflow")).toEqual(["visible"]);
+      const pageFooter = rulesFor(/^\.sheet\[data-layout="page"\] \.sheet-footer$/);
+      expect(declaration(pageFooter, "max-height")).toEqual(["none"]);
+      expect(declaration(pageFooter, "overflow")).toEqual(["visible"]);
+      // They must come after the base rules they override.
+      const baseFooter = css.indexOf(".sheet-footer {");
+      expect(css.indexOf('.sheet[data-layout="pinned"] .sheet-footer')).toBeGreaterThan(baseFooter);
+      expect(css.indexOf('.sheet[data-layout="page"] {')).toBeGreaterThan(baseFooter);
+    });
+
+    it("keeps the base rules as the no-JavaScript fallback (the 40% action-row cap and the 10rem container query)", () => {
+      expect(declaration(rulesFor(/^\.sheet-footer$/), "max-height")[0]).toContain("* 0.4");
+      expect(css).toMatch(/@container sheet \(max-height: 10rem\)/);
+    });
+  });
+
   describe("licensing hygiene", () => {
     it("uses only system font stacks and no external resources", () => {
       expect(css).not.toMatch(/@import|@font-face|url\(\s*["']?https?:/i);

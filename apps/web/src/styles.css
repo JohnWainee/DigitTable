@@ -96,6 +96,16 @@
   --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffe600' d='M3 8h18l-9 10z'/%3E%3C/svg%3E");
 
   --tap: 3rem;
+
+  /* Horizontal gutter unit. A rem at ordinary text sizes (5vw is 16px at 320px, so from a 320px
+     phone up it equals the old fixed 1rem), but never more than 5vw: gutters are rem-based, so at
+     200% text they doubled with the text and five nested panels (page, card, fieldset, option row,
+     check box) left a 2px text column at 320px, which overflowed the page and made mobile
+     browsers shrink it. Every nested horizontal gutter below is a multiple of this unit. */
+  --g: min(1rem, 5vw);
+  /* The drawn check/radio box: 1.65rem, but never more than 32px (it is not text, and the whole
+     option row, not the box, is the tap target). */
+  --box: min(1.65rem, 32px);
 }
 
 * {
@@ -254,8 +264,8 @@ li + li {
 .gm-screen,
 .table-screen {
   margin: 0 auto;
-  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
-    max(2.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  padding: max(1rem, env(safe-area-inset-top)) max(var(--g), env(safe-area-inset-right))
+    max(2.5rem, env(safe-area-inset-bottom)) max(var(--g), env(safe-area-inset-left));
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -309,7 +319,7 @@ li + li {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1.25rem 1rem 1.25rem;
+  padding: 1.25rem var(--g) 1.25rem;
   background:
     var(--dust),
     var(--grain),
@@ -382,7 +392,7 @@ li + li {
 fieldset {
   min-width: 0;
   margin: 0;
-  padding: 1.1rem 0.85rem 0.85rem;
+  padding: 1.1rem calc(var(--g) * 0.85) 0.85rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -413,7 +423,7 @@ legend {
 .roster-card {
   border: 2px solid var(--rule);
   background: rgba(5, 5, 6, 0.55);
-  padding: 0.85rem;
+  padding: 0.85rem calc(var(--g) * 0.85);
 }
 
 .pending-actions-list,
@@ -465,11 +475,13 @@ button {
 
 .primary-action,
 .secondary-action {
-  padding: 0.7rem 1.25rem;
+  padding: 0.7rem calc(var(--g) * 1.25);
   font-family: var(--font-display);
   font-weight: 700;
   font-synthesis-weight: none;
-  font-size: 1.25rem;
+  /* 7vw is 22.4px at 320px, above the 20px a 1.25rem label has at the default size, so nothing
+     changes there; at 200% text a 40px label broke "Correction" and "Allocation" mid-word. */
+  font-size: min(1.25rem, 7vw);
   line-height: 1.1;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -578,7 +590,7 @@ textarea {
   max-width: 100%;
   min-width: 0;
   min-height: var(--tap);
-  padding: 0.65rem 0.8rem;
+  padding: 0.65rem calc(var(--g) * 0.8);
   font: inherit;
   font-size: 1rem; /* 16px: below this iOS Safari zooms the page on focus */
   line-height: 1.3;
@@ -618,11 +630,13 @@ textarea:disabled {
 select {
   appearance: none;
   -webkit-appearance: none;
-  padding-right: 2.75rem;
+  /* The chevron and the room reserved for it are capped in px: at 200% text a 2.75rem reserve took
+     88px of a 320px phone's select and left a 10px window for the value. */
+  padding-right: min(2.75rem, 44px);
   background-image: var(--chevron);
   background-repeat: no-repeat;
-  background-position: right 0.85rem center;
-  background-size: 1rem 1rem;
+  background-position: right min(0.85rem, 14px) center;
+  background-size: min(1rem, 18px) min(1rem, 18px);
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -657,8 +671,8 @@ input[type="radio"] {
   flex: none;
   display: inline-grid;
   place-content: center;
-  width: 1.65rem;
-  height: 1.65rem;
+  width: var(--box);
+  height: var(--box);
   margin: 0;
   background: var(--ink-0);
   border: 2px solid var(--paper);
@@ -672,8 +686,8 @@ input[type="radio"] {
 
 input[type="checkbox"]::after {
   content: "";
-  width: 0.95rem;
-  height: 0.95rem;
+  width: calc(var(--box) * 0.576);
+  height: calc(var(--box) * 0.576);
   background: var(--ink-0);
   clip-path: polygon(12% 48%, 0 66%, 42% 100%, 100% 14%, 84% 0, 40% 62%);
   transform: scale(0);
@@ -681,8 +695,8 @@ input[type="checkbox"]::after {
 
 input[type="radio"]::after {
   content: "";
-  width: 0.75rem;
-  height: 0.75rem;
+  width: calc(var(--box) * 0.455);
+  height: calc(var(--box) * 0.455);
   border-radius: 50%;
   background: var(--ink-0);
   transform: scale(0);
@@ -753,16 +767,27 @@ input[type="radio"]:disabled {
 .form-field--checkbox {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: calc(var(--g) * 0.85);
   min-height: var(--tap);
-  padding: 0.4rem 0.65rem;
+  min-width: 0;
+  padding: 0.4rem calc(var(--g) * 0.65);
   border: 2px solid transparent;
   font-family: var(--font-body);
   font-size: 1rem;
   letter-spacing: 0;
   line-height: 1.3;
+  /* `anywhere` (unlike the body's `break-word`) also lowers the row's min-content width, so a long
+     label wraps inside the row instead of widening it and the page (the text is a bare text node
+     in most rows, so the row itself carries the rule). */
+  overflow-wrap: anywhere;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* An action button sharing a row keeps its label whole: the inherited `anywhere` would let a
+   squeezed row break "Reveal" mid-word. */
+.gear-option button {
+  overflow-wrap: normal;
 }
 
 .form-field--checkbox {
@@ -793,7 +818,7 @@ summary {
   align-items: center;
   gap: 0.6rem;
   min-height: var(--tap);
-  padding: 0.5rem 0.85rem;
+  padding: 0.5rem calc(var(--g) * 0.85);
   font-family: var(--font-mono);
   font-size: 0.9rem;
   font-weight: 700;
@@ -827,11 +852,11 @@ details[open] > summary {
 
 details > :not(summary) {
   margin: 0;
-  padding: 0.75rem 0.85rem;
+  padding: 0.75rem calc(var(--g) * 0.85);
 }
 
 details ul {
-  padding-left: 2rem;
+  padding-left: min(2rem, 10vw);
 }
 
 .pool-summary {
@@ -1298,6 +1323,18 @@ details ul {
   color: var(--cyan);
 }
 
+/* In an option row the icon decorates the label, it is not text: capped in px (the em values are
+   17.6px and 4.8px at the default size, so nothing changes there) so that at 200% text it does not
+   take 45px of a label column that is only about 100px wide on a 320px phone. */
+.gear-option .etr-icon {
+  width: min(1.1em, 24px);
+  height: min(1.1em, 24px);
+}
+
+.gear-option .stat-icon {
+  margin-right: min(0.3em, 6px);
+}
+
 .connection-status-icon {
   margin-right: 0.1em;
 }
@@ -1562,7 +1599,7 @@ details ul {
 
 .sheet-header {
   flex: none;
-  padding: 0.6rem 1rem 0.75rem;
+  padding: 0.6rem var(--g) 0.75rem;
   border-bottom: 3px solid var(--acid);
 }
 
@@ -1584,7 +1621,7 @@ details ul {
 .sheet-body {
   flex: 1 1 auto;
   min-height: 0;
-  padding: 1rem;
+  padding: 1rem var(--g);
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
@@ -1596,7 +1633,7 @@ details ul {
 
 .sheet-footer {
   flex: none;
-  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  padding: 0.75rem var(--g) calc(0.75rem + env(safe-area-inset-bottom));
   background: var(--ink-2);
   border-top: 3px solid var(--rule);
   /* Backstop for large text on a small screen: the action row may scroll, but can never take the
@@ -1693,6 +1730,34 @@ details ul {
   .sheet-backdrop .sheet-header h2 {
     font-size: 1.25rem;
   }
+}
+
+/* The layout is chosen from MEASURED sizes by `useSheetLayout` (a guessed height cannot know how
+   tall the header and action row are: at 150% text on a 320px phone with the keyboard up they took
+   all but 48px, clipped the action row, and left Cancel outside the sheet). "pinned" (the base
+   rules above): header and action row stay put and only the body scrolls, used while both and a
+   usable slice of body fit in what is visible. "page": the whole sheet scrolls as one page, so
+   nothing is clipped and no second scroller is nested. Before the hook has run, or where it cannot
+   (no ResizeObserver), the base rules and the 10rem container query above apply unchanged. */
+.sheet[data-layout="pinned"] .sheet-footer {
+  max-height: none;
+  overflow: visible;
+}
+
+.sheet[data-layout="page"] {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sheet[data-layout="page"] .sheet-body {
+  flex: none;
+  overflow: visible;
+}
+
+.sheet[data-layout="page"] .sheet-footer {
+  max-height: none;
+  overflow: visible;
 }
 
 /* ---------- Larger layouts ---------- */
