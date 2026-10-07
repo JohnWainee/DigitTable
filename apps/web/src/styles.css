@@ -642,6 +642,17 @@ input[type="radio"]:disabled {
   flex-direction: row;
 }
 
+/* Narrow phones and enlarged text (24rem resolves against the browser's default size, so it is 384px at 100% text and wider as the user scales text): the checkbox rows nest inside three padded panels, and their
+   rem gap/padding alone made the engaged-threats list wider than a 320px screen at 200% text. Tighten
+   only the row's own chrome (the 44px target and the label size are untouched). */
+@media (max-width: 24rem) {
+  .gear-option,
+  .form-field--checkbox {
+    gap: 0.5rem;
+    padding-inline: 0.4rem;
+  }
+}
+
 .gear-option:has(:checked) {
   border-color: var(--acid);
   background: rgba(255, 230, 0, 0.1);

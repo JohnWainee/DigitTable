@@ -1,0 +1,16 @@
+(node:86346) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+INFO modal-text-200-phone-small: dialogInsideViewport failed (recorded, not gating)
+INFO modal-text-200-phone-small: noPageOverflow failed (recorded, not gating)
+{
+  "states": 150,
+  "controlsAudited": 1530,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "axeHardViolations": 0,
+  "axeBestPractice": [
+    "anon/route-claim-no-such-room@phone: page-has-heading-one"
+  ],
+  "failures": 0
+}
+UI AUDIT PASSED

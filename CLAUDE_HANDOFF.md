@@ -5,6 +5,20 @@
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
 - **Last updated:** 2026-09-19 by Codex after the sourcebook-roster implementation and independent review
 
+## 2026-10-07 ha reskin audit (Sonnet 5.5, branch `worktree-digitable-sonnet-ha-reskin-20261007`, base `b599abd`)
+
+Fresh real-browser audit of the candidate (not staging). Two real, in-scope defects found and fixed; nothing else invented.
+
+- **Back with the correction sheet open left the GM console** (landed on `#/create`). Reproduced with `scripts/playtest/sheet-history-probe.mjs --expect-failures` (negative control failed as intended). Fixed by cherry-picking the already-reviewed `218bfea` source (`useBackDismiss` + 8 jsdom tests + probe); probe A/B/C now pass. The rest of the eq/fw/fn/fp/fi lane lineage is still NOT in this branch (`218bfea` was not an ancestor of `b599abd`); only this one fix was taken.
+- **320px + 200% text overflowed the page by 4px** (engaged-threats checkbox rows). `@media (max-width: 24rem)` tightens `.gear-option`/`.form-field--checkbox` gap and inline padding only (44px target untouched). `dialogInsideViewport`/`noPageOverflow` at 320/200% are now gating in `ui-audit.mjs`.
+- `ui-audit.mjs` hard-coded the removed placeholder "Rook", so its modal phase failed on this roster; it now finds the "Correct" button on the claimed row.
+- Pop-out inventory (source): one modal (`SheetDialog`, GM correction), six native `<select>`s (OS pickers), one inline `<details>` ("Why?"). No anchored custom menus exist.
+- Not found (recorded, not invented): axe 0 hard violations across 150 states; 0 target/overflow/16px-input issues; one best-practice warning on the intentional nonexistent-room route.
+
+Evidence (`docs/evidence/ha-reskin-audit-20261007/`: before/after reports, logs, curated screenshots at phone/tablet/desktop/table): ui-audit before 150 states/1,530 controls/0 failures (320/200% recorded-failing); after 150 states/1,518 controls/0 failures; smoke on the candidate (isolated emulator stack) 17/17 incl. reload; `npm run check` 698 passed, 11 todo; `npm run build` passed; isolated-port emulator suite 18 + 86 + 4 passed; independent review `docs/reviews/2026-10-07-ha-reskin-audit-independent-review.md` (no blockers, nits fixed, modal audit re-run). The staging smoke at <https://digitable.signal-bleed.com> passed 17/17 but exercises the DEPLOYED build, not this candidate (nothing was deployed). Builds/emulators ran in an APFS clone under /private/tmp (esbuild hangs under ~/Documents) with remapped ports.
+
+Open: real iPhone/Safari keyboard and dynamic-chrome pass (headless Chrome cannot produce the iOS visual-viewport case). Merge and deploy decisions are John's.
+
 ## Mission
 
 Build DigiTable as a reusable narrative-RPG play surface, with *Eat the Reich* as the first template and Signal Bleed as a behavioral reference.

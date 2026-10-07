@@ -419,8 +419,10 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  // The sourcebook roster replaced the placeholder "Rook"; the claimed character is whichever
+  // roster row carries a Correct button (only a claimed seat has one).
+  const finder = `[...document.querySelectorAll(".roster-panel-list li")].map(li => [...li.querySelectorAll("button")].find(b => /correct/i.test(b.textContent))).find(Boolean)`;
+  await waitFor(gm, finder, 20000, "the claimed character's Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
@@ -645,17 +647,14 @@ async function auditModal(gm) {
     });
   }
 
-  // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150% and
-  // 375px at 200% are gating. 320px at 200% is recorded but NOT gating: at that size the (unchanged,
-  // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
-  // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
-  // the handoff.
+  // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150%, 375px at
+  // 200% and 320px at 200% are all gating. 320px at 200% used to be recorded-not-gating: the engaged-threats
+  // checkbox rows (rem gap/padding, nested in three padded panels) were 4px wider than the screen, which
+  // widened the layout viewport; `.gear-option` now tightens its own chrome under 24rem.
   for (const [vp, px, informationalChecks] of [
     [byName["phone-small"], 24, []],
     [byName["phone"], 32, []],
-    // Only the two geometry checks the console's overflow can break are non-gating here; the sheet's own
-    // bodyKeepsRoom / actionsReachable / reasonReachable still gate.
-    [byName["phone-small"], 32, ["dialogInsideViewport", "noPageOverflow"]],
+    [byName["phone-small"], 32, []],
   ]) {
     await scenario(
       `text-${px === 24 ? "150" : "200"}-${vp.name}`,
