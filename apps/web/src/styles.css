@@ -254,8 +254,10 @@ li + li {
 .gm-screen,
 .table-screen {
   margin: 0 auto;
-  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
-    max(2.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  /* Horizontal chrome is capped by the viewport (min(..., Nvw)) as well as scaling with text: nested
+     rem padding alone leaves ~70px of content at 320px + 200% text and widens the page. */
+  padding: max(1rem, env(safe-area-inset-top)) max(min(1rem, 4vw), env(safe-area-inset-right))
+    max(2.5rem, env(safe-area-inset-bottom)) max(min(1rem, 4vw), env(safe-area-inset-left));
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -309,7 +311,7 @@ li + li {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1.25rem 1rem 1.25rem;
+  padding: 1.25rem min(1rem, 3.5vw) 1.25rem;
   background:
     var(--dust),
     var(--grain),
@@ -382,7 +384,7 @@ li + li {
 fieldset {
   min-width: 0;
   margin: 0;
-  padding: 1.1rem 0.85rem 0.85rem;
+  padding: 1.1rem min(0.85rem, 3vw) 0.85rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -413,7 +415,7 @@ legend {
 .roster-card {
   border: 2px solid var(--rule);
   background: rgba(5, 5, 6, 0.55);
-  padding: 0.85rem;
+  padding: 0.85rem min(0.85rem, 3vw);
 }
 
 .pending-actions-list,
@@ -753,9 +755,9 @@ input[type="radio"]:disabled {
 .form-field--checkbox {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: min(0.85rem, 3vw);
   min-height: var(--tap);
-  padding: 0.4rem 0.65rem;
+  padding: 0.4rem min(0.65rem, 2.5vw);
   border: 2px solid transparent;
   font-family: var(--font-body);
   font-size: 1rem;

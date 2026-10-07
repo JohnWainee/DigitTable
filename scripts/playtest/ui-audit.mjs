@@ -733,17 +733,14 @@ async function auditModal(gm) {
     });
   }
 
-  // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150% and
-  // 375px at 200% are gating. 320px at 200% is recorded but NOT gating: at that size the (unchanged,
-  // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
-  // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
-  // the handoff.
+  // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150%
+  // and 200%, and 375px at 200%, all gate. (320px at 200% used to be recorded as non-gating because
+  // nested rem-padded panels left ~70px of content and widened the layout viewport; the horizontal
+  // chrome is now viewport-capped, and the closed-console scenarios below pin the root cause.)
   for (const [vp, px, informationalChecks] of [
     [byName["phone-small"], 24, []],
     [byName["phone"], 32, []],
-    // Only the two geometry checks the console's overflow can break are non-gating here; the sheet's own
-    // bodyKeepsRoom / actionsReachable / reasonReachable still gate.
-    [byName["phone-small"], 32, ["dialogInsideViewport", "noPageOverflow"]],
+    [byName["phone-small"], 32, []],
   ]) {
     await scenario(
       `text-${px === 24 ? "150" : "200"}-${vp.name}`,
@@ -786,6 +783,43 @@ async function auditModal(gm) {
       { informationalChecks },
     );
   }
+  // The same text scaling with NO sheet open: the console itself must not overflow the page. This is
+  // the root cause of the open-sheet overflow above (the sheet inherits the widened layout viewport),
+  // so it is measured on its own, with the offending elements named.
+  for (const [vp, px] of [
+    [byName["phone-small"], 24],
+    [byName["phone-small"], 32],
+    [byName["phone"], 32],
+  ]) {
+    await scenario(`text-${px === 24 ? "150" : "200"}-closed-${vp.name}`, vp, async (record) => {
+      await ev(gm, `document.documentElement.style.fontSize = "${px}px"`);
+      await sleep(250);
+      const probe = await ev(
+        gm,
+        `(() => {
+          const root = document.documentElement;
+          const w = root.clientWidth;
+          const offenders = [...document.querySelectorAll("body *")]
+            .filter(e => getComputedStyle(e).display !== "none" && (e.getBoundingClientRect().right > w + 1 || e.scrollWidth > e.clientWidth + 1))
+            .slice(0, 12)
+            .map(e => e.tagName.toLowerCase() + (typeof e.className === "string" && e.className ? "." + e.className.split(" ").join(".") : "") + " right=" + Math.round(e.getBoundingClientRect().right) + " sw=" + e.scrollWidth + "/" + e.clientWidth);
+          return { dialogOpen: !!document.querySelector('[role="dialog"]'), pageOverflowPx: root.scrollWidth - w, innerWidth, clientWidth: w, offenders };
+        })()`,
+      );
+      record.geometry = probe;
+      record.offenders = probe.offenders;
+      record.checks.sheetClosed = probe.dialogOpen === false;
+      record.checks.noPageOverflow = probe.pageOverflowPx <= 1;
+      record.checks.layoutViewportUnwidened = probe.innerWidth === probe.clientWidth;
+      record.textPx = px;
+      record.screenshot = await screenshot(
+        gm,
+        `gm-console-text-${px === 24 ? "150" : "200"}-closed-${vp.name}.jpg`,
+        { fullPage: false },
+      );
+    });
+  }
+  await ev(gm, `document.documentElement.style.fontSize = ""`);
   await applyViewport(gm, byName["desktop"]);
 }
 
