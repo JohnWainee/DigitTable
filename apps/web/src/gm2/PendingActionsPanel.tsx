@@ -25,7 +25,10 @@ export function PendingActionsPanel({
   onReview,
 }: PendingActionsPanelProps): JSX.Element {
   return (
-    <section className="step" aria-labelledby="pending-actions-heading">
+    <section
+      className={pending.length === 0 ? "step" : "step needs-attention"}
+      aria-labelledby="pending-actions-heading"
+    >
       <h2 id="pending-actions-heading">Pending actions</h2>
       {pending.length === 0 ? (
         <p>No one is waiting on you.</p>

@@ -429,4 +429,21 @@ describe("reskin stylesheet contract", () => {
       expect(fetched.every((u) => u.startsWith("data:image/svg+xml"))).toBe(true);
     });
   });
+
+  describe("hd pass", () => {
+    it("keeps the page wash dark: no corner tint above 0.2 alpha", () => {
+      const body = declaration(rulesFor(/^body$/), "background-image").join(" ");
+      const alphas = [...body.matchAll(/rgba\([^)]*,\s*([0-9.]+)\)/g)].map((m) => Number(m[1]));
+      expect(alphas.length).toBeGreaterThanOrEqual(2);
+      for (const alpha of alphas) expect(alpha).toBeLessThanOrEqual(0.2);
+    });
+
+    it("promotes a non-empty GM review queue with a slab that keeps the print shadow", () => {
+      const rule = rulesFor(/^\.step\.needs-attention$/);
+      expect(declaration(rule, "border-color")).toEqual(["var(--riot)"]);
+      const shadow = declaration(rule, "box-shadow").join(" ");
+      expect(shadow).toContain("inset 0.5rem 0 0 var(--riot)");
+      expect(shadow).toContain("var(--sb)");
+    });
+  });
 });

@@ -142,6 +142,8 @@ describe("GM director console and table display (C03)", () => {
     await screen.findByRole("heading", { name: /pending actions/i });
     const pendingCard = screen.getByRole("heading", { name: "Iryna" }).closest("li")!;
     expect(pendingCard.textContent).toMatch(/pool:\s*6\s*dice/i);
+    // Work waiting on the GM is visually promoted (hd reskin); an empty queue is not.
+    expect(pendingCard.closest("section")).toHaveClass("needs-attention");
 
     // GM strikes the bonus claim: the displayed pool drops to 5.
     const bonusCheckbox = within(pendingCard).getByRole("checkbox", { name: /elevated position/i });
@@ -151,6 +153,9 @@ describe("GM director console and table display (C03)", () => {
 
     await user.click(within(pendingCard).getByRole("button", { name: /roll it/i }));
     expect(screen.getByText(/no one is waiting on you/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /pending actions/i }).closest("section"),
+    ).not.toHaveClass("needs-attention");
 
     // Confirm on the player's side: exactly 5 dice were rolled (no bonus die), never charged twice.
     writeOwnershipRecord(playerOwnership);
