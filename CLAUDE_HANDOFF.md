@@ -501,3 +501,23 @@ emulator `two-device-smoke.mjs --reload` passed **17/17**. See
 This is still an integration candidate, not a deployed build. The open physical-device / AT / Windows
 High Contrast and candidate-against-staging evidence limits above remain real; do not represent the
 deployed build's smoke result as proof for this branch.
+
+## FW reskin recovery status (2026-10-07)
+
+- Branch `sonnet-fw/reskin-orchestrated-20261007` contains `f0c5df6`,
+  `f104946`, `7f6e3fd`, and `97cc9c7` on the reviewed fq candidate `ccb9f2d`.
+  It fixes the 320px/200%-text option-row overflow, dynamic-keyboard sheet
+  clipping, and hidden native-select-value failures without changing any
+  authority, privacy, rules, or provenance boundary.
+- The source gate was independently rerun: `npm run check` passed (736 tests,
+  11 todo) and `npm run build` passed with the existing chunk-size warning.
+  Before/after phone, tablet, desktop, and table captures plus large-text,
+  keyboard, and axe reports are committed in
+  `docs/evidence/fw-reskin/`; the independent review is
+  `docs/reviews/2026-10-07-fw-reskin-independent-review.md`.
+- **Do not mark this release-ready yet.** The recovery attempt at
+  `npm run test:emulator` confirmed the 18-test rules harness but the
+  Functions suite stalled because another lane held a concurrent
+  `demo-digitable` emulator stack. Rerun the full emulator suite and the local
+  GM/player/table smoke on isolated ports, then obtain the required staging
+  playthrough after an authorized deployment. No deployment or merge occurred.

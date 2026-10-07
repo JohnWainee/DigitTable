@@ -1,0 +1,160 @@
+{
+ "statesCompared": 312,
+ "statesMissing": 0,
+ "boxesCompared": 19344,
+ "boxesIdentical": 19344,
+ "boxesDiffering": 0,
+ "boxesZeroSizeIgnored": 1456,
+ "dataDependentTextIgnored": 182,
+ "variableStates": [
+  "player/allocation@phone-smallx1",
+  "player/allocation@w340x1",
+  "player/allocation@w360x1",
+  "player/allocation@phonex1",
+  "player/allocation@w390x1",
+  "player/allocation@phone-412x1",
+  "player/allocation@w430x1",
+  "player/allocation@w540x1",
+  "player/allocation@w600x1",
+  "player/allocation@tabletx1",
+  "player/allocation@w1024x1",
+  "player/allocation@desktopx1",
+  "player/allocation@tablex1",
+  "player/allocation-assigned@phone-smallx1",
+  "player/allocation-assigned@w340x1",
+  "player/allocation-assigned@w360x1",
+  "player/allocation-assigned@phonex1",
+  "player/allocation-assigned@w390x1",
+  "player/allocation-assigned@phone-412x1",
+  "player/allocation-assigned@w430x1",
+  "player/allocation-assigned@w540x1",
+  "player/allocation-assigned@w600x1",
+  "player/allocation-assigned@tabletx1",
+  "player/allocation-assigned@w1024x1",
+  "player/allocation-assigned@desktopx1",
+  "player/allocation-assigned@tablex1"
+ ],
+ "differences": [],
+ "perState": {
+  "anon/landing": {
+   "compared": 182,
+   "differing": 0,
+   "variable": false
+  },
+  "anon/create-form": {
+   "compared": 260,
+   "differing": 0,
+   "variable": false
+  },
+  "anon/join-form": {
+   "compared": 234,
+   "differing": 0,
+   "variable": false
+  },
+  "anon/table-join-form": {
+   "compared": 195,
+   "differing": 0,
+   "variable": false
+  },
+  "anon/route-claim-no-such-room": {
+   "compared": 78,
+   "differing": 0,
+   "variable": false
+  },
+  "anon/route-room-no-such-room-gm": {
+   "compared": 91,
+   "differing": 0,
+   "variable": false
+  },
+  "anon/route-room-no-such-room-player": {
+   "compared": 91,
+   "differing": 0,
+   "variable": false
+  },
+  "gm/secrets-reveal": {
+   "compared": 260,
+   "differing": 0,
+   "variable": false
+  },
+  "gm/console-empty": {
+   "compared": 1300,
+   "differing": 0,
+   "variable": false
+  },
+  "player/join-filled": {
+   "compared": 234,
+   "differing": 0,
+   "variable": false
+  },
+  "player/join-reveal": {
+   "compared": 143,
+   "differing": 0,
+   "variable": false
+  },
+  "player/claim-roster": {
+   "compared": 2353,
+   "differing": 0,
+   "variable": false
+  },
+  "player/compose": {
+   "compared": 1482,
+   "differing": 0,
+   "variable": false
+  },
+  "player/compose-why-open": {
+   "compared": 1482,
+   "differing": 0,
+   "variable": false
+  },
+  "table/idle": {
+   "compared": 546,
+   "differing": 0,
+   "variable": false
+  },
+  "gm/console-scene-loaded": {
+   "compared": 1677,
+   "differing": 0,
+   "variable": false
+  },
+  "player/declared": {
+   "compared": 611,
+   "differing": 0,
+   "variable": false
+  },
+  "gm/console-pending": {
+   "compared": 1937,
+   "differing": 0,
+   "variable": false
+  },
+  "player/allocation": {
+   "compared": 897,
+   "differing": 0,
+   "variable": true
+  },
+  "player/allocation-assigned": {
+   "compared": 897,
+   "differing": 0,
+   "variable": true
+  },
+  "player/resolved": {
+   "compared": 663,
+   "differing": 0,
+   "variable": false
+  },
+  "table/after-roll": {
+   "compared": 546,
+   "differing": 0,
+   "variable": false
+  },
+  "player/paused": {
+   "compared": 1508,
+   "differing": 0,
+   "variable": false
+  },
+  "gm/console-round2": {
+   "compared": 1677,
+   "differing": 0,
+   "variable": false
+  }
+ }
+}

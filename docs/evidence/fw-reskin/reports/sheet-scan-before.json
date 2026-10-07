@@ -1,0 +1,673 @@
+[
+  {
+    "width": 320,
+    "scale": 1,
+    "flagsByH": {
+      "120": [
+        "onePage"
+      ],
+      "150": [
+        "onePage"
+      ],
+      "180": [
+        "onePage"
+      ],
+      "220": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body32"
+      ],
+      "260": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body55"
+      ],
+      "300": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "340": [
+        "footerNestedScroll"
+      ],
+      "380": [],
+      "420": [],
+      "460": [],
+      "520": [],
+      "600": [],
+      "700": [],
+      "800": []
+    },
+    "chrome": {
+      "header": 74.2,
+      "footerNatural": 135,
+      "footerBox": 137.8,
+      "dialogBorder": 3,
+      "rem": 16
+    }
+  },
+  {
+    "width": 320,
+    "scale": 1.25,
+    "flagsByH": {
+      "120": [
+        "onePage"
+      ],
+      "150": [
+        "onePage"
+      ],
+      "180": [
+        "onePage"
+      ],
+      "220": [
+        "onePage"
+      ],
+      "260": [
+        "clipped9",
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body40"
+      ],
+      "300": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body55"
+      ],
+      "340": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "380": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "420": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "460": [
+        "footerNestedScroll"
+      ],
+      "520": [],
+      "600": [],
+      "700": [],
+      "800": []
+    },
+    "chrome": {
+      "header": 92,
+      "footerNatural": 194,
+      "footerBox": 196.5,
+      "dialogBorder": 3,
+      "rem": 20
+    }
+  },
+  {
+    "width": 320,
+    "scale": 1.5,
+    "flagsByH": {
+      "120": [
+        "applyUnreachable",
+        "onePage"
+      ],
+      "150": [
+        "onePage"
+      ],
+      "180": [
+        "onePage"
+      ],
+      "220": [
+        "onePage"
+      ],
+      "260": [
+        "onePage"
+      ],
+      "300": [
+        "clipped17",
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body48"
+      ],
+      "340": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body55"
+      ],
+      "380": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "420": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "460": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "520": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "600": [],
+      "700": [],
+      "800": []
+    },
+    "chrome": {
+      "header": 109.8,
+      "footerNatural": 230,
+      "footerBox": 233.2,
+      "dialogBorder": 3,
+      "rem": 24
+    }
+  },
+  {
+    "width": 320,
+    "scale": 2,
+    "flagsByH": {
+      "120": [
+        "applyUnreachable",
+        "onePage"
+      ],
+      "150": [
+        "applyUnreachable",
+        "onePage"
+      ],
+      "180": [
+        "applyUnreachable",
+        "onePage"
+      ],
+      "220": [
+        "applyUnreachable",
+        "onePage"
+      ],
+      "260": [
+        "onePage"
+      ],
+      "300": [
+        "onePage"
+      ],
+      "340": [
+        "onePage"
+      ],
+      "380": [
+        "clipped77",
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "420": [
+        "clipped53",
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "460": [
+        "clipped29",
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "520": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "600": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "700": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "800": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ]
+    },
+    "chrome": {
+      "header": 190.2,
+      "footerNatural": 349,
+      "footerBox": 351.8,
+      "dialogBorder": 3,
+      "rem": 32
+    }
+  },
+  {
+    "width": 375,
+    "scale": 1,
+    "flagsByH": {
+      "120": [
+        "onePage"
+      ],
+      "150": [
+        "onePage"
+      ],
+      "180": [
+        "onePage"
+      ],
+      "220": [
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body32"
+      ],
+      "260": [
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body55"
+      ],
+      "300": [],
+      "340": [],
+      "380": [],
+      "420": [],
+      "460": [],
+      "520": [],
+      "600": [],
+      "700": [],
+      "800": []
+    },
+    "chrome": {
+      "header": 74.2,
+      "footerNatural": 116,
+      "footerBox": 119.4,
+      "dialogBorder": 3,
+      "rem": 16
+    }
+  },
+  {
+    "width": 375,
+    "scale": 1.25,
+    "flagsByH": {
+      "120": [
+        "onePage"
+      ],
+      "150": [
+        "onePage"
+      ],
+      "180": [
+        "onePage"
+      ],
+      "220": [
+        "onePage"
+      ],
+      "260": [
+        "clipped9",
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body40"
+      ],
+      "300": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body55"
+      ],
+      "340": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "380": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "420": [
+        "footerNestedScroll"
+      ],
+      "460": [],
+      "520": [],
+      "600": [],
+      "700": [],
+      "800": []
+    },
+    "chrome": {
+      "header": 92,
+      "footerNatural": 167,
+      "footerBox": 169.5,
+      "dialogBorder": 3,
+      "rem": 20
+    }
+  },
+  {
+    "width": 375,
+    "scale": 1.5,
+    "flagsByH": {
+      "120": [
+        "applyUnreachable",
+        "onePage"
+      ],
+      "150": [
+        "onePage"
+      ],
+      "180": [
+        "onePage"
+      ],
+      "220": [
+        "onePage"
+      ],
+      "260": [
+        "onePage"
+      ],
+      "300": [
+        "clipped17",
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body48"
+      ],
+      "340": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body55"
+      ],
+      "380": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "420": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "460": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "520": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "600": [],
+      "700": [],
+      "800": []
+    },
+    "chrome": {
+      "header": 109.8,
+      "footerNatural": 230,
+      "footerBox": 233.2,
+      "dialogBorder": 3,
+      "rem": 24
+    }
+  },
+  {
+    "width": 375,
+    "scale": 2,
+    "flagsByH": {
+      "120": [
+        "applyUnreachable",
+        "onePage"
+      ],
+      "150": [
+        "applyUnreachable",
+        "onePage"
+      ],
+      "180": [
+        "applyUnreachable",
+        "onePage"
+      ],
+      "220": [
+        "applyUnreachable",
+        "onePage"
+      ],
+      "260": [
+        "onePage"
+      ],
+      "300": [
+        "onePage"
+      ],
+      "340": [
+        "onePage"
+      ],
+      "380": [
+        "clipped77",
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "420": [
+        "clipped53",
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "460": [
+        "clipped29",
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "520": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "600": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "700": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "800": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ]
+    },
+    "chrome": {
+      "header": 190.2,
+      "footerNatural": 349,
+      "footerBox": 351.8,
+      "dialogBorder": 3,
+      "rem": 32
+    }
+  },
+  {
+    "width": 412,
+    "scale": 1,
+    "flagsByH": {
+      "120": [
+        "onePage"
+      ],
+      "150": [
+        "onePage"
+      ],
+      "180": [
+        "onePage"
+      ],
+      "220": [
+        "footerNestedScroll",
+        "body32"
+      ],
+      "260": [
+        "body61"
+      ],
+      "300": [],
+      "340": [],
+      "380": [],
+      "420": [],
+      "460": [],
+      "520": [],
+      "600": [],
+      "700": [],
+      "800": []
+    },
+    "chrome": {
+      "header": 74.4,
+      "footerNatural": 94,
+      "footerBox": 97.4,
+      "dialogBorder": 3,
+      "rem": 16
+    }
+  },
+  {
+    "width": 412,
+    "scale": 1.25,
+    "flagsByH": {
+      "120": [
+        "onePage"
+      ],
+      "150": [
+        "onePage"
+      ],
+      "180": [
+        "onePage"
+      ],
+      "220": [
+        "onePage"
+      ],
+      "260": [
+        "clipped9",
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body40"
+      ],
+      "300": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body55"
+      ],
+      "340": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "380": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "420": [
+        "footerNestedScroll"
+      ],
+      "460": [],
+      "520": [],
+      "600": [],
+      "700": [],
+      "800": []
+    },
+    "chrome": {
+      "header": 92,
+      "footerNatural": 167,
+      "footerBox": 169.5,
+      "dialogBorder": 3,
+      "rem": 20
+    }
+  },
+  {
+    "width": 412,
+    "scale": 1.5,
+    "flagsByH": {
+      "120": [
+        "onePage"
+      ],
+      "150": [
+        "onePage"
+      ],
+      "180": [
+        "onePage"
+      ],
+      "220": [
+        "onePage"
+      ],
+      "260": [
+        "onePage"
+      ],
+      "300": [
+        "clipped17",
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body48"
+      ],
+      "340": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll",
+        "body55"
+      ],
+      "380": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "420": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "460": [
+        "footerNestedScroll"
+      ],
+      "520": [],
+      "600": [],
+      "700": [],
+      "800": []
+    },
+    "chrome": {
+      "header": 109.8,
+      "footerNatural": 199,
+      "footerBox": 201.6,
+      "dialogBorder": 3,
+      "rem": 24
+    }
+  },
+  {
+    "width": 412,
+    "scale": 2,
+    "flagsByH": {
+      "120": [
+        "applyUnreachable",
+        "onePage"
+      ],
+      "150": [
+        "applyUnreachable",
+        "onePage"
+      ],
+      "180": [
+        "applyUnreachable",
+        "onePage"
+      ],
+      "220": [
+        "onePage"
+      ],
+      "260": [
+        "onePage"
+      ],
+      "300": [
+        "onePage"
+      ],
+      "340": [
+        "onePage"
+      ],
+      "380": [
+        "clipped32",
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "420": [
+        "clipped8",
+        "applyHiddenAtRest",
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "460": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "520": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "600": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "700": [
+        "cancelHiddenAtRest",
+        "footerNestedScroll"
+      ],
+      "800": []
+    },
+    "chrome": {
+      "header": 145.4,
+      "footerNatural": 305,
+      "footerBox": 307.8,
+      "dialogBorder": 3,
+      "rem": 32
+    }
+  }
+]

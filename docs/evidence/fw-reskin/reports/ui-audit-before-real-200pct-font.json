@@ -1,0 +1,5612 @@
+{
+  "label": "fw-before-real200",
+  "base": "http://127.0.0.1:53174",
+  "startedAt": "2026-10-07T03:15:09.037Z",
+  "defaultFontPx": 32,
+  "states": [
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": [
+        {
+          "id": "page-has-heading-one",
+          "impact": "moderate",
+          "tags": [
+            "best-practice"
+          ],
+          "help": "Page should contain a level-one heading",
+          "nodes": [
+            "html ::   Page must have a level-one heading"
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 2,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 2,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": -15,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 20,
+      "overflowPx": 47,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 20,
+      "overflowPx": 47,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 37,
+      "overflowPx": 5,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 6,
+      "overflowPx": 12,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 6,
+      "overflowPx": 12,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 20,
+      "overflowPx": 47,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone",
+      "size": "375x812",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "tablet",
+      "size": "768x1024",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "desktop",
+      "size": "1280x800",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null,
+      "axe": []
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "table",
+      "size": "1920x1080",
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "screenshot": null
+    }
+  ],
+  "modal": [
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "checks": {
+        "dialogInsideViewport": false,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": false,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true,
+        "actionsReachable": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 325,
+          "innerHeight": 577,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 325,
+          "height": 576.875,
+          "scale": 0.9846153855323792
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 576.875,
+          "left": 0,
+          "right": 325,
+          "width": 325,
+          "height": 560.875
+        },
+        "apply": {
+          "top": 365.125,
+          "bottom": 545.90625,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 569.90625,
+          "bottom": 665.90625,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 96
+        },
+        "reason": {
+          "top": 4465.8125,
+          "bottom": 4561.8125,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 4426,
+          "clientHeight": 187,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 159.578125,
+          "bottom": 346.125,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 186.546875
+        },
+        "header": {
+          "top": 19,
+          "bottom": 159.578125,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 140.578125
+        },
+        "footer": {
+          "top": 346.125,
+          "bottom": 576.875,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 230.75
+        },
+        "heading": {
+          "top": 31.88860321044922,
+          "bottom": 140.57418823242188,
+          "left": 34.35507583618164,
+          "right": 290.6258888244629,
+          "width": 256.27081298828125,
+          "height": 108.68558502197266
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 561,
+        "dialogScroll": {
+          "scrollHeight": 558,
+          "clientHeight": 558,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 333,
+          "clientHeight": 228,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 5,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "320x312",
+        "layout": null,
+        "checks": {
+          "dialogInsideViewport": false,
+          "focusedFieldVisible": false,
+          "actionsVisibleWhenPinned": true,
+          "noPageOverflow": false,
+          "actionsReachable": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true,
+        "actionsReachable": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 796
+        },
+        "apply": {
+          "top": 506.203125,
+          "bottom": 686.984375,
+          "left": 35,
+          "right": 340,
+          "width": 305,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 710.984375,
+          "bottom": 806.984375,
+          "left": 35,
+          "right": 340,
+          "width": 305,
+          "height": 96
+        },
+        "reason": {
+          "top": 3638,
+          "bottom": 3734,
+          "left": 35,
+          "right": 340,
+          "width": 305,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 3598,
+          "clientHeight": 328,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 159.578125,
+          "bottom": 487.203125,
+          "left": 3,
+          "right": 372,
+          "width": 369,
+          "height": 327.625
+        },
+        "header": {
+          "top": 19,
+          "bottom": 159.578125,
+          "left": 3,
+          "right": 372,
+          "width": 369,
+          "height": 140.578125
+        },
+        "footer": {
+          "top": 487.203125,
+          "bottom": 812,
+          "left": 3,
+          "right": 372,
+          "width": 369,
+          "height": 324.796875
+        },
+        "heading": {
+          "top": 31.277755737304688,
+          "bottom": 140.57418823242188,
+          "left": 34.35507583618164,
+          "right": 340.62216567993164,
+          "width": 306.26708984375,
+          "height": 109.29643249511719
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 796,
+        "dialogScroll": {
+          "scrollHeight": 793,
+          "clientHeight": 793,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 333,
+          "clientHeight": 322,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "375x447",
+        "layout": null,
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisibleWhenPinned": true,
+          "noPageOverflow": true,
+          "actionsReachable": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true,
+        "actionsReachable": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 375,
+          "left": 0,
+          "right": 812,
+          "width": 812,
+          "height": 359
+        },
+        "apply": {
+          "top": 244,
+          "bottom": 380.78125,
+          "left": 35,
+          "right": 394,
+          "width": 359,
+          "height": 136.78125
+        },
+        "cancel": {
+          "top": 244,
+          "bottom": 380.78125,
+          "left": 418,
+          "right": 777,
+          "width": 359,
+          "height": 136.78125
+        },
+        "reason": {
+          "top": 2594.875,
+          "bottom": 2690.875,
+          "left": 35,
+          "right": 777,
+          "width": 742,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 2600,
+          "clientHeight": 110,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 114.78125,
+          "bottom": 225,
+          "left": 3,
+          "right": 809,
+          "width": 806,
+          "height": 110.21875
+        },
+        "header": {
+          "top": 19,
+          "bottom": 114.78125,
+          "left": 3,
+          "right": 809,
+          "width": 806,
+          "height": 95.78125
+        },
+        "footer": {
+          "top": 225,
+          "bottom": 375,
+          "left": 3,
+          "right": 809,
+          "width": 806,
+          "height": 150
+        },
+        "heading": {
+          "top": 30.877883911132812,
+          "bottom": 95.77898406982422,
+          "left": 34.62871551513672,
+          "right": 372.9398422241211,
+          "width": 338.3111267089844,
+          "height": 64.9011001586914
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 359,
+        "dialogScroll": {
+          "scrollHeight": 356,
+          "clientHeight": 356,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 169,
+          "clientHeight": 147,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "812x206",
+        "layout": null,
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisibleWhenPinned": true,
+          "noPageOverflow": true,
+          "actionsReachable": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true,
+        "actionsReachable": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 375,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 375,
+          "left": 0,
+          "right": 667,
+          "width": 667,
+          "height": 359
+        },
+        "apply": {
+          "top": 244,
+          "bottom": 340,
+          "left": 35,
+          "right": 632,
+          "width": 597,
+          "height": 96
+        },
+        "cancel": {
+          "top": 364,
+          "bottom": 460,
+          "left": 35,
+          "right": 632,
+          "width": 597,
+          "height": 96
+        },
+        "reason": {
+          "top": 2642.875,
+          "bottom": 2738.875,
+          "left": 35,
+          "right": 632,
+          "width": 597,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 2648,
+          "clientHeight": 110,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 114.78125,
+          "bottom": 225,
+          "left": 3,
+          "right": 664,
+          "width": 661,
+          "height": 110.21875
+        },
+        "header": {
+          "top": 19,
+          "bottom": 114.78125,
+          "left": 3,
+          "right": 664,
+          "width": 661,
+          "height": 95.78125
+        },
+        "footer": {
+          "top": 225,
+          "bottom": 375,
+          "left": 3,
+          "right": 664,
+          "width": 661,
+          "height": 150
+        },
+        "heading": {
+          "top": 30.877883911132812,
+          "bottom": 95.77898406982422,
+          "left": 34.62871551513672,
+          "right": 372.9398422241211,
+          "width": 338.3111267089844,
+          "height": 64.9011001586914
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 359,
+        "dialogScroll": {
+          "scrollHeight": 356,
+          "clientHeight": 356,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 248,
+          "clientHeight": 147,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "667x206",
+        "layout": null,
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisibleWhenPinned": true,
+          "noPageOverflow": true,
+          "actionsReachable": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "tablet",
+      "size": "768x1024",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true,
+        "actionsReachable": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 768,
+          "innerHeight": 1024,
+          "clientWidth": 768
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 768,
+          "height": 1024,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 1024,
+          "left": 0,
+          "right": 768,
+          "width": 768,
+          "height": 1008
+        },
+        "apply": {
+          "top": 871.21875,
+          "bottom": 1008,
+          "left": 35,
+          "right": 372,
+          "width": 337,
+          "height": 136.78125
+        },
+        "cancel": {
+          "top": 871.21875,
+          "bottom": 1008,
+          "left": 396,
+          "right": 733,
+          "width": 337,
+          "height": 136.78125
+        },
+        "reason": {
+          "top": 2642.875,
+          "bottom": 2738.875,
+          "left": 35,
+          "right": 733,
+          "width": 698,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 2648,
+          "clientHeight": 737,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 114.78125,
+          "bottom": 852.21875,
+          "left": 3,
+          "right": 765,
+          "width": 762,
+          "height": 737.4375
+        },
+        "header": {
+          "top": 19,
+          "bottom": 114.78125,
+          "left": 3,
+          "right": 765,
+          "width": 762,
+          "height": 95.78125
+        },
+        "footer": {
+          "top": 852.21875,
+          "bottom": 1024,
+          "left": 3,
+          "right": 765,
+          "width": 762,
+          "height": 171.78125
+        },
+        "heading": {
+          "top": 30.877883911132812,
+          "bottom": 95.77898406982422,
+          "left": 34.62871551513672,
+          "right": 372.9398422241211,
+          "width": 338.3111267089844,
+          "height": 64.9011001586914
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 1008,
+        "dialogScroll": {
+          "scrollHeight": 1005,
+          "clientHeight": 1005,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 169,
+          "clientHeight": 169,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "768x563",
+        "layout": null,
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisibleWhenPinned": true,
+          "noPageOverflow": true,
+          "actionsReachable": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "tablet-landscape",
+      "size": "1024x768",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true,
+        "actionsReachable": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 1024,
+          "innerHeight": 768,
+          "clientWidth": 1024
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 1024,
+          "height": 768,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 768,
+          "left": 0,
+          "right": 1024,
+          "width": 1024,
+          "height": 752
+        },
+        "apply": {
+          "top": 656,
+          "bottom": 752,
+          "left": 35,
+          "right": 500,
+          "width": 465,
+          "height": 96
+        },
+        "cancel": {
+          "top": 656,
+          "bottom": 752,
+          "left": 524,
+          "right": 989,
+          "width": 465,
+          "height": 96
+        },
+        "reason": {
+          "top": 2606.390625,
+          "bottom": 2702.390625,
+          "left": 35,
+          "right": 989,
+          "width": 954,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 2600,
+          "clientHeight": 511,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 126.296875,
+          "bottom": 637,
+          "left": 3,
+          "right": 1021,
+          "width": 1018,
+          "height": 510.703125
+        },
+        "header": {
+          "top": 19,
+          "bottom": 126.296875,
+          "left": 3,
+          "right": 1021,
+          "width": 1018,
+          "height": 107.296875
+        },
+        "footer": {
+          "top": 637,
+          "bottom": 768,
+          "left": 3,
+          "right": 1021,
+          "width": 1018,
+          "height": 131
+        },
+        "heading": {
+          "top": 29.978647232055664,
+          "bottom": 107.29417610168457,
+          "left": 34.558372497558594,
+          "right": 446.6453170776367,
+          "width": 412.0869445800781,
+          "height": 77.3155288696289
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 752,
+        "dialogScroll": {
+          "scrollHeight": 749,
+          "clientHeight": 749,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 128,
+          "clientHeight": 128,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "keyboard": {
+        "size": "1024x422",
+        "layout": null,
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisibleWhenPinned": true,
+          "noPageOverflow": true,
+          "actionsReachable": true
+        },
+        "screenshot": null
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "desktop",
+      "size": "1280x800",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true,
+        "actionsReachable": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 1280,
+          "innerHeight": 800,
+          "clientWidth": 1280
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 1280,
+          "height": 800,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 800,
+          "left": 0,
+          "right": 1265,
+          "width": 1265,
+          "height": 784
+        },
+        "apply": {
+          "top": 688,
+          "bottom": 784,
+          "left": 35,
+          "right": 620.5,
+          "width": 585.5,
+          "height": 96
+        },
+        "cancel": {
+          "top": 688,
+          "bottom": 784,
+          "left": 644.5,
+          "right": 1230,
+          "width": 585.5,
+          "height": 96
+        },
+        "reason": {
+          "top": 2610.875,
+          "bottom": 2706.875,
+          "left": 35,
+          "right": 1215,
+          "width": 1180,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 2600,
+          "clientHeight": 538,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 130.78125,
+          "bottom": 669,
+          "left": 3,
+          "right": 1262,
+          "width": 1259,
+          "height": 538.21875
+        },
+        "header": {
+          "top": 19,
+          "bottom": 130.78125,
+          "left": 3,
+          "right": 1262,
+          "width": 1259,
+          "height": 111.78125
+        },
+        "footer": {
+          "top": 669,
+          "bottom": 800,
+          "left": 3,
+          "right": 1262,
+          "width": 1259,
+          "height": 131
+        },
+        "heading": {
+          "top": 29.6289119720459,
+          "bottom": 111.77837944030762,
+          "left": 34.530982971191406,
+          "right": 475.31119537353516,
+          "width": 440.78021240234375,
+          "height": 82.14946746826172
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 784,
+        "dialogScroll": {
+          "scrollHeight": 781,
+          "clientHeight": 781,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 128,
+          "clientHeight": 128,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": -15,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "table",
+      "size": "1920x1080",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true,
+        "actionsReachable": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 1920,
+          "innerHeight": 1080,
+          "clientWidth": 1920
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 1920,
+          "height": 1080,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 1032,
+          "left": 312.5,
+          "right": 1592.5,
+          "width": 1280,
+          "height": 1016
+        },
+        "apply": {
+          "top": 918,
+          "bottom": 1014,
+          "left": 347.5,
+          "right": 940.5,
+          "width": 593,
+          "height": 96
+        },
+        "cancel": {
+          "top": 918,
+          "bottom": 1014,
+          "left": 964.5,
+          "right": 1557.5,
+          "width": 593,
+          "height": 96
+        },
+        "reason": {
+          "top": 2610.875,
+          "bottom": 2706.875,
+          "left": 347.5,
+          "right": 1542.5,
+          "width": 1195,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 2600,
+          "clientHeight": 768,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 130.78125,
+          "bottom": 899,
+          "left": 315.5,
+          "right": 1589.5,
+          "width": 1274,
+          "height": 768.21875
+        },
+        "header": {
+          "top": 19,
+          "bottom": 130.78125,
+          "left": 315.5,
+          "right": 1589.5,
+          "width": 1274,
+          "height": 111.78125
+        },
+        "footer": {
+          "top": 899,
+          "bottom": 1030,
+          "left": 315.5,
+          "right": 1589.5,
+          "width": 1274,
+          "height": 131
+        },
+        "heading": {
+          "top": 29.6289119720459,
+          "bottom": 111.77837944030762,
+          "left": 347.0309753417969,
+          "right": 787.8111572265625,
+          "width": 440.7801818847656,
+          "height": 82.14946746826172
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 1016,
+        "dialogScroll": {
+          "scrollHeight": 1011,
+          "clientHeight": 1011,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 128,
+          "clientHeight": 128,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": -15,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "zoom-emulated",
+      "checks": {
+        "pageScaleApplied": true,
+        "dialogInsideVisualViewportWhenZoomed": true,
+        "actionsInsideVisualViewportWhenZoomed": true,
+        "actionsReachableWhenZoomed": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 234.375,
+          "height": 507.5,
+          "scale": 1.600000023841858
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 507.5,
+          "left": 0,
+          "right": 234.375,
+          "width": 234.375,
+          "height": 491.5
+        },
+        "apply": {
+          "top": 323.5,
+          "bottom": 636.28125,
+          "left": 35,
+          "right": 199.375,
+          "width": 164.375,
+          "height": 312.78125
+        },
+        "cancel": {
+          "top": 660.28125,
+          "bottom": 799.0625,
+          "left": 35,
+          "right": 199.375,
+          "width": 164.375,
+          "height": 138.78125
+        },
+        "reason": {
+          "top": 5770.546875,
+          "bottom": 5866.546875,
+          "left": 35,
+          "right": 199.375,
+          "width": 164.375,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 5686,
+          "clientHeight": 100,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 204.375,
+          "bottom": 304.5,
+          "left": 3,
+          "right": 231.375,
+          "width": 228.375,
+          "height": 100.125
+        },
+        "header": {
+          "top": 19,
+          "bottom": 204.375,
+          "left": 3,
+          "right": 231.375,
+          "width": 228.375,
+          "height": 185.375
+        },
+        "footer": {
+          "top": 304.5,
+          "bottom": 507.5,
+          "left": 3,
+          "right": 231.375,
+          "width": 228.375,
+          "height": 203
+        },
+        "heading": {
+          "top": 32.997440338134766,
+          "bottom": 185.36938858032227,
+          "left": 34.08143615722656,
+          "right": 200.2812957763672,
+          "width": 166.19985961914062,
+          "height": 152.3719482421875
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 492,
+        "dialogScroll": {
+          "scrollHeight": 489,
+          "clientHeight": 489,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 508,
+          "clientHeight": 200,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "pinch-gesture",
+      "checks": {
+        "pinchZoomStillWorksWithSheetOpen": true
+      },
+      "notes": [],
+      "scaleBefore": 1,
+      "scaleAfter": 1.999999761581421,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "scenario": "safe-area-landscape-constrained",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfLeftInset": true,
+        "sheetClearOfRightInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 375,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 375,
+          "left": 47,
+          "right": 620,
+          "width": 573,
+          "height": 359
+        },
+        "apply": {
+          "top": 244,
+          "bottom": 340,
+          "left": 82,
+          "right": 585,
+          "width": 503,
+          "height": 96
+        },
+        "cancel": {
+          "top": 364,
+          "bottom": 460,
+          "left": 82,
+          "right": 585,
+          "width": 503,
+          "height": 96
+        },
+        "reason": {
+          "top": 2642.875,
+          "bottom": 2738.875,
+          "left": 82,
+          "right": 585,
+          "width": 503,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 2648,
+          "clientHeight": 110,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 114.78125,
+          "bottom": 225,
+          "left": 50,
+          "right": 617,
+          "width": 567,
+          "height": 110.21875
+        },
+        "header": {
+          "top": 19,
+          "bottom": 114.78125,
+          "left": 50,
+          "right": 617,
+          "width": 567,
+          "height": 95.78125
+        },
+        "footer": {
+          "top": 225,
+          "bottom": 375,
+          "left": 50,
+          "right": 617,
+          "width": 567,
+          "height": 150
+        },
+        "heading": {
+          "top": 30.877883911132812,
+          "bottom": 95.77898406982422,
+          "left": 81.62871551513672,
+          "right": 419.9398422241211,
+          "width": 338.3111267089844,
+          "height": 64.9011001586914
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 359,
+        "dialogScroll": {
+          "scrollHeight": 356,
+          "clientHeight": 356,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 269,
+          "clientHeight": 147,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 37,
+      "sheetWidth": 573,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "scenario": "safe-area-landscape-812",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfLeftInset": true,
+        "sheetClearOfRightInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 375,
+          "left": 47,
+          "right": 765,
+          "width": 718,
+          "height": 359
+        },
+        "apply": {
+          "top": 244,
+          "bottom": 424.78125,
+          "left": 82,
+          "right": 394,
+          "width": 312,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 244,
+          "bottom": 424.78125,
+          "left": 418,
+          "right": 730,
+          "width": 312,
+          "height": 180.78125
+        },
+        "reason": {
+          "top": 2642.875,
+          "bottom": 2738.875,
+          "left": 82,
+          "right": 730,
+          "width": 648,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 2648,
+          "clientHeight": 110,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 114.78125,
+          "bottom": 225,
+          "left": 50,
+          "right": 762,
+          "width": 712,
+          "height": 110.21875
+        },
+        "header": {
+          "top": 19,
+          "bottom": 114.78125,
+          "left": 50,
+          "right": 762,
+          "width": 712,
+          "height": 95.78125
+        },
+        "footer": {
+          "top": 225,
+          "bottom": 375,
+          "left": 50,
+          "right": 762,
+          "width": 712,
+          "height": 150
+        },
+        "heading": {
+          "top": 30.877883911132812,
+          "bottom": 95.77898406982422,
+          "left": 81.62871551513672,
+          "right": 419.9398422241211,
+          "width": 338.3111267089844,
+          "height": 64.9011001586914
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 359,
+        "dialogScroll": {
+          "scrollHeight": 356,
+          "clientHeight": 356,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 234,
+          "clientHeight": 147,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 37,
+      "sheetWidth": 718,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "safe-area-portrait",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfTopInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 47,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 765
+        },
+        "apply": {
+          "top": 506.203125,
+          "bottom": 686.984375,
+          "left": 35,
+          "right": 340,
+          "width": 305,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 710.984375,
+          "bottom": 806.984375,
+          "left": 35,
+          "right": 340,
+          "width": 305,
+          "height": 96
+        },
+        "reason": {
+          "top": 3669,
+          "bottom": 3765,
+          "left": 35,
+          "right": 340,
+          "width": 305,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 3598,
+          "clientHeight": 297,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 190.578125,
+          "bottom": 487.203125,
+          "left": 3,
+          "right": 372,
+          "width": 369,
+          "height": 296.625
+        },
+        "header": {
+          "top": 50,
+          "bottom": 190.578125,
+          "left": 3,
+          "right": 372,
+          "width": 369,
+          "height": 140.578125
+        },
+        "footer": {
+          "top": 487.203125,
+          "bottom": 812,
+          "left": 3,
+          "right": 372,
+          "width": 369,
+          "height": 324.796875
+        },
+        "heading": {
+          "top": 62.27775573730469,
+          "bottom": 171.57418823242188,
+          "left": 34.35507583618164,
+          "right": 340.62216567993164,
+          "width": 306.26708984375,
+          "height": 109.29643249511719
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 765,
+        "dialogScroll": {
+          "scrollHeight": 762,
+          "clientHeight": 762,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 367,
+          "clientHeight": 322,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 50,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "back-closes-only-the-sheet",
+      "checks": {
+        "sheetClosed": true,
+        "routeUnchanged": true,
+        "consoleStillRendered": true,
+        "rootUnlocked": true,
+        "cancelRemovesEntry": true,
+        "stackNotGrownBeyondOneEntry": true,
+        "entryAddedWhileOpen": true
+      },
+      "notes": [
+        "history.length before/open/after: 4/4/4"
+      ],
+      "informationalChecks": []
+    },
+    {
+      "viewport": "visible-140",
+      "size": "320x140",
+      "scenario": "short-visible-140",
+      "checks": {
+        "dialogInsideViewport": false,
+        "noPageOverflow": false,
+        "containerBranchEngaged": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 325,
+          "innerHeight": 143,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 325,
+          "height": 142.1875,
+          "scale": 0.9846153855323792
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 142.1875,
+          "left": 0,
+          "right": 325,
+          "width": 325,
+          "height": 126.1875
+        },
+        "apply": {
+          "top": 4595.21875,
+          "bottom": 4776,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 4800,
+          "bottom": 4896,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 96
+        },
+        "reason": {
+          "top": 4456.21875,
+          "bottom": 4552.21875,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 4426,
+          "clientHeight": 4426,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "bodyBox": {
+          "top": 149.984375,
+          "bottom": 4576.21875,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 4426.234375
+        },
+        "header": {
+          "top": 19,
+          "bottom": 149.984375,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 130.984375
+        },
+        "footer": {
+          "top": 4576.21875,
+          "bottom": 4912,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 335.78125
+        },
+        "heading": {
+          "top": 31.888246536254883,
+          "bottom": 130.980806350708,
+          "left": 34.41368103027344,
+          "right": 290.5673065185547,
+          "width": 256.15362548828125,
+          "height": 99.09255981445312
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 126,
+        "dialogScroll": {
+          "scrollHeight": 4893,
+          "clientHeight": 123,
+          "overflowY": "auto"
+        },
+        "footerScroll": {
+          "scrollHeight": 333,
+          "clientHeight": 333,
+          "overflowY": "visible"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 5,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "visible-160-landscape",
+      "size": "667x160",
+      "scenario": "short-visible-160-landscape",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "containerBranchEngaged": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 160,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 656.7384643554688,
+          "height": 157.53846740722656,
+          "scale": 1.015625
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 157.53125,
+          "left": 0,
+          "right": 656.734375,
+          "width": 656.734375,
+          "height": 141.53125
+        },
+        "apply": {
+          "top": 2777.078125,
+          "bottom": 2873.078125,
+          "left": 35,
+          "right": 621.734375,
+          "width": 586.734375,
+          "height": 96
+        },
+        "cancel": {
+          "top": 2897.078125,
+          "bottom": 2993.078125,
+          "left": 35,
+          "right": 621.734375,
+          "width": 586.734375,
+          "height": 96
+        },
+        "reason": {
+          "top": 2638.078125,
+          "bottom": 2734.078125,
+          "left": 35,
+          "right": 621.734375,
+          "width": 586.734375,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 2648,
+          "clientHeight": 2648,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "bodyBox": {
+          "top": 109.984375,
+          "bottom": 2758.078125,
+          "left": 3,
+          "right": 653.734375,
+          "width": 650.734375,
+          "height": 2648.09375
+        },
+        "header": {
+          "top": 19,
+          "bottom": 109.984375,
+          "left": 3,
+          "right": 653.734375,
+          "width": 650.734375,
+          "height": 90.984375
+        },
+        "footer": {
+          "top": 2758.078125,
+          "bottom": 3009.078125,
+          "left": 3,
+          "right": 653.734375,
+          "width": 650.734375,
+          "height": 251
+        },
+        "heading": {
+          "top": 31.252614974975586,
+          "bottom": 90.9822826385498,
+          "left": 34.65802001953125,
+          "right": 342.2253112792969,
+          "width": 307.5672912597656,
+          "height": 59.72966766357422
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 142,
+        "dialogScroll": {
+          "scrollHeight": 2990,
+          "clientHeight": 139,
+          "overflowY": "auto"
+        },
+        "footerScroll": {
+          "scrollHeight": 248,
+          "clientHeight": 248,
+          "overflowY": "visible"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "text-200-phone-small",
+      "checks": {
+        "dialogInsideViewport": false,
+        "noPageOverflow": false,
+        "layoutChosen": false,
+        "bodyKeepsRoomOrPageScrolls": false,
+        "noNestedActionScroller": false,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 325,
+          "innerHeight": 577,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 325,
+          "height": 576.875,
+          "scale": 0.9846153855323792
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 576.875,
+          "left": 0,
+          "right": 325,
+          "width": 325,
+          "height": 560.875
+        },
+        "apply": {
+          "top": 365.125,
+          "bottom": 545.90625,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 569.90625,
+          "bottom": 665.90625,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 96
+        },
+        "reason": {
+          "top": 4465.8125,
+          "bottom": 4561.8125,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 4426,
+          "clientHeight": 187,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 159.578125,
+          "bottom": 346.125,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 186.546875
+        },
+        "header": {
+          "top": 19,
+          "bottom": 159.578125,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 140.578125
+        },
+        "footer": {
+          "top": 346.125,
+          "bottom": 576.875,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 230.75
+        },
+        "heading": {
+          "top": 31.88860321044922,
+          "bottom": 140.57418823242188,
+          "left": 34.35507583618164,
+          "right": 290.6258888244629,
+          "width": 256.27081298828125,
+          "height": 108.68558502197266
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 561,
+        "dialogScroll": {
+          "scrollHeight": 558,
+          "clientHeight": 558,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 333,
+          "clientHeight": 228,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 5,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "offenders": [
+        "div right=320 sw=325/320 :: ConnectedDirector console1 act",
+        "main.gm-screen right=320 sw=325/320 :: ConnectedDirector console1 act",
+        "section.step right=288 sw=290/250 :: Pending actionsIrynaStat: CONE",
+        "ul.pending-actions-list right=253 sw=258/186 :: IrynaStat: CONEngaged threatsS",
+        "li.pending-action-card right=253 sw=256/182 :: IrynaStat: CONEngaged threatsS",
+        "fieldset right=224 sw=227/124 :: Engaged threatsStation Patrol ",
+        "div.gear-list right=195 sw=200/69 :: Station Patrol AStation Patrol",
+        "label.gear-option right=195 sw=198/65 :: Station Patrol A",
+        "label.gear-option right=195 sw=198/65 :: Station Patrol B",
+        "div.sheet-backdrop right=325 sw=325/325 :: Correct IrynaBlood change−0+Bl"
+      ],
+      "textPx": 32,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "text-200-phone",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "layoutChosen": false,
+        "bodyKeepsRoomOrPageScrolls": false,
+        "noNestedActionScroller": false,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 3,
+          "width": 369.23077392578125,
+          "height": 799.5076904296875,
+          "scale": 1.015625
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 799.5,
+          "left": 3,
+          "right": 372.21875,
+          "width": 369.21875,
+          "height": 783.5
+        },
+        "apply": {
+          "top": 498.703125,
+          "bottom": 679.484375,
+          "left": 38,
+          "right": 337.21875,
+          "width": 299.21875,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 703.484375,
+          "bottom": 799.484375,
+          "left": 38,
+          "right": 337.21875,
+          "width": 299.21875,
+          "height": 96
+        },
+        "reason": {
+          "top": 3638,
+          "bottom": 3734,
+          "left": 38,
+          "right": 337.21875,
+          "width": 299.21875,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 3598,
+          "clientHeight": 320,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 159.578125,
+          "bottom": 479.703125,
+          "left": 6,
+          "right": 369.21875,
+          "width": 363.21875,
+          "height": 320.125
+        },
+        "header": {
+          "top": 19,
+          "bottom": 159.578125,
+          "left": 6,
+          "right": 369.21875,
+          "width": 363.21875,
+          "height": 140.578125
+        },
+        "footer": {
+          "top": 479.703125,
+          "bottom": 799.5,
+          "left": 6,
+          "right": 369.21875,
+          "width": 363.21875,
+          "height": 319.796875
+        },
+        "heading": {
+          "top": 31.348384857177734,
+          "bottom": 140.5741844177246,
+          "left": 37.35507583618164,
+          "right": 337.8413429260254,
+          "width": 300.48626708984375,
+          "height": 109.22579956054688
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 784,
+        "dialogScroll": {
+          "scrollHeight": 781,
+          "clientHeight": 781,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 333,
+          "clientHeight": 317,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": null,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "sheet-layout-320-x2-kb298",
+      "checks": {
+        "noPageOverflow": false,
+        "layoutChosen": false,
+        "dialogInsideVisibleArea": true,
+        "noNestedActionScroller": true,
+        "pageScrolls": true,
+        "bodyIsNotASecondScroller": true,
+        "focusedFieldVisible": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true,
+        "titleVisibleAtTop": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 325,
+          "innerHeight": 577,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 325,
+          "height": 298,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 298,
+          "left": 0,
+          "right": 325,
+          "width": 325,
+          "height": 282
+        },
+        "apply": {
+          "top": 341.21875,
+          "bottom": 522,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 546,
+          "bottom": 642,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 96
+        },
+        "reason": {
+          "top": 202.21875,
+          "bottom": 298.21875,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 4426,
+          "clientHeight": 4426,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "bodyBox": {
+          "top": -4104.015625,
+          "bottom": 322.21875,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 4426.234375
+        },
+        "header": {
+          "top": -4235,
+          "bottom": -4104.015625,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 130.984375
+        },
+        "footer": {
+          "top": 322.21875,
+          "bottom": 658,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 335.78125
+        },
+        "heading": {
+          "top": -4222.11181640625,
+          "bottom": -4123.01904296875,
+          "left": 34.41368103027344,
+          "right": 290.5673065185547,
+          "width": 256.15362548828125,
+          "height": 99.0927734375
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 282,
+        "dialogScroll": {
+          "scrollHeight": 4893,
+          "clientHeight": 279,
+          "overflowY": "auto"
+        },
+        "footerScroll": {
+          "scrollHeight": 333,
+          "clientHeight": 333,
+          "overflowY": "visible"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 5,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "visibleHeight": 298,
+      "textScale": 2,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "sheet-layout-320-x2-nokb",
+      "checks": {
+        "noPageOverflow": false,
+        "layoutChosen": false,
+        "dialogInsideVisibleArea": true,
+        "noNestedActionScroller": false,
+        "pageScrolls": false,
+        "bodyIsNotASecondScroller": false,
+        "focusedFieldVisible": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true,
+        "titleVisibleAtTop": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 325,
+          "innerHeight": 577,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 325,
+          "height": 576.875,
+          "scale": 0.9846153855323792
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 576.875,
+          "left": 0,
+          "right": 325,
+          "width": 325,
+          "height": 560.875
+        },
+        "apply": {
+          "top": 365.125,
+          "bottom": 545.90625,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 569.90625,
+          "bottom": 665.90625,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 96
+        },
+        "reason": {
+          "top": 226.8125,
+          "bottom": 322.8125,
+          "left": 35,
+          "right": 290,
+          "width": 255,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 4426,
+          "clientHeight": 187,
+          "scrollTop": 4239,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 159.578125,
+          "bottom": 346.125,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 186.546875
+        },
+        "header": {
+          "top": 19,
+          "bottom": 159.578125,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 140.578125
+        },
+        "footer": {
+          "top": 346.125,
+          "bottom": 576.875,
+          "left": 3,
+          "right": 322,
+          "width": 319,
+          "height": 230.75
+        },
+        "heading": {
+          "top": 31.88860321044922,
+          "bottom": 140.57418823242188,
+          "left": 34.35507583618164,
+          "right": 290.6258888244629,
+          "width": 256.27081298828125,
+          "height": 108.68558502197266
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 561,
+        "dialogScroll": {
+          "scrollHeight": 558,
+          "clientHeight": 558,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 333,
+          "clientHeight": 228,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 5,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "visibleHeight": null,
+      "textScale": 2,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "sheet-layout-375-x2-kb400",
+      "checks": {
+        "noPageOverflow": true,
+        "layoutChosen": false,
+        "dialogInsideVisibleArea": true,
+        "noNestedActionScroller": false,
+        "pageScrolls": false,
+        "bodyIsNotASecondScroller": false,
+        "focusedFieldVisible": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true,
+        "titleVisibleAtTop": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 369.23077392578125,
+          "height": 400,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 400,
+          "left": 0,
+          "right": 369.21875,
+          "width": 369.21875,
+          "height": 384
+        },
+        "apply": {
+          "top": 259,
+          "bottom": 439.78125,
+          "left": 35,
+          "right": 334.21875,
+          "width": 299.21875,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 463.78125,
+          "bottom": 559.78125,
+          "left": 35,
+          "right": 334.21875,
+          "width": 299.21875,
+          "height": 96
+        },
+        "reason": {
+          "top": 192,
+          "bottom": 288,
+          "left": 35,
+          "right": 334.21875,
+          "width": 299.21875,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 3598,
+          "clientHeight": 80,
+          "scrollTop": 3446,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 159.578125,
+          "bottom": 240,
+          "left": 3,
+          "right": 366.21875,
+          "width": 363.21875,
+          "height": 80.421875
+        },
+        "header": {
+          "top": 19,
+          "bottom": 159.578125,
+          "left": 3,
+          "right": 366.21875,
+          "width": 363.21875,
+          "height": 140.578125
+        },
+        "footer": {
+          "top": 240,
+          "bottom": 400,
+          "left": 3,
+          "right": 366.21875,
+          "width": 363.21875,
+          "height": 160
+        },
+        "heading": {
+          "top": 31.348384857177734,
+          "bottom": 140.5741844177246,
+          "left": 34.35507583618164,
+          "right": 334.8413429260254,
+          "width": 300.48626708984375,
+          "height": 109.22579956054688
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 384,
+        "dialogScroll": {
+          "scrollHeight": 381,
+          "clientHeight": 381,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 333,
+          "clientHeight": 157,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "visibleHeight": 400,
+      "textScale": 2,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "sheet-layout-375-x2-kb400-scrolled",
+      "checks": {
+        "noPageOverflow": true,
+        "layoutChosen": false,
+        "dialogInsideVisibleArea": true,
+        "noNestedActionScroller": false,
+        "pageScrolls": false,
+        "bodyIsNotASecondScroller": false,
+        "focusedFieldVisible": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true,
+        "titleVisibleAtTop": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 150,
+          "offsetLeft": 0,
+          "width": 369.23077392578125,
+          "height": 400,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 166,
+          "bottom": 550,
+          "left": 0,
+          "right": 369.21875,
+          "width": 369.21875,
+          "height": 384
+        },
+        "apply": {
+          "top": 409,
+          "bottom": 589.78125,
+          "left": 35,
+          "right": 334.21875,
+          "width": 299.21875,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 613.78125,
+          "bottom": 709.78125,
+          "left": 35,
+          "right": 334.21875,
+          "width": 299.21875,
+          "height": 96
+        },
+        "reason": {
+          "top": 342,
+          "bottom": 438,
+          "left": 35,
+          "right": 334.21875,
+          "width": 299.21875,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 3598,
+          "clientHeight": 80,
+          "scrollTop": 3446,
+          "overflowY": "auto"
+        },
+        "bodyBox": {
+          "top": 309.578125,
+          "bottom": 390,
+          "left": 3,
+          "right": 366.21875,
+          "width": 363.21875,
+          "height": 80.421875
+        },
+        "header": {
+          "top": 169,
+          "bottom": 309.578125,
+          "left": 3,
+          "right": 366.21875,
+          "width": 363.21875,
+          "height": 140.578125
+        },
+        "footer": {
+          "top": 390,
+          "bottom": 550,
+          "left": 3,
+          "right": 366.21875,
+          "width": 363.21875,
+          "height": 160
+        },
+        "heading": {
+          "top": 181.348388671875,
+          "bottom": 290.5741882324219,
+          "left": 34.35507583618164,
+          "right": 334.8413429260254,
+          "width": 300.48626708984375,
+          "height": 109.22579956054688
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 384,
+        "dialogScroll": {
+          "scrollHeight": 381,
+          "clientHeight": 381,
+          "overflowY": "hidden"
+        },
+        "footerScroll": {
+          "scrollHeight": 333,
+          "clientHeight": 157,
+          "overflowY": "auto"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "visibleHeight": 400,
+      "textScale": 2,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-568x320",
+      "size": "568x320",
+      "scenario": "sheet-layout-568x320-x2-kb150",
+      "checks": {
+        "noPageOverflow": true,
+        "layoutChosen": false,
+        "dialogInsideVisibleArea": true,
+        "noNestedActionScroller": true,
+        "pageScrolls": true,
+        "bodyIsNotASecondScroller": true,
+        "focusedFieldVisible": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true,
+        "titleVisibleAtTop": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 568,
+          "innerHeight": 320,
+          "clientWidth": 568
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 559.2615356445312,
+          "height": 150,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 16,
+          "bottom": 150,
+          "left": 0,
+          "right": 559.25,
+          "width": 559.25,
+          "height": 134
+        },
+        "apply": {
+          "top": 193.078125,
+          "bottom": 289.078125,
+          "left": 35,
+          "right": 524.25,
+          "width": 489.25,
+          "height": 96
+        },
+        "cancel": {
+          "top": 313.078125,
+          "bottom": 409.078125,
+          "left": 35,
+          "right": 524.25,
+          "width": 489.25,
+          "height": 96
+        },
+        "reason": {
+          "top": 54.078125,
+          "bottom": 150.078125,
+          "left": 35,
+          "right": 524.25,
+          "width": 489.25,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 2648,
+          "clientHeight": 2648,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "bodyBox": {
+          "top": -2474.015625,
+          "bottom": 174.078125,
+          "left": 3,
+          "right": 556.25,
+          "width": 553.25,
+          "height": 2648.09375
+        },
+        "header": {
+          "top": -2565,
+          "bottom": -2474.015625,
+          "left": 3,
+          "right": 556.25,
+          "width": 553.25,
+          "height": 90.984375
+        },
+        "footer": {
+          "top": 174.078125,
+          "bottom": 425.078125,
+          "left": 3,
+          "right": 556.25,
+          "width": 553.25,
+          "height": 251
+        },
+        "heading": {
+          "top": -2552.747314453125,
+          "bottom": -2493.017822265625,
+          "left": 34.65802001953125,
+          "right": 342.2253112792969,
+          "width": 307.5672912597656,
+          "height": 59.7294921875
+        },
+        "dataLayout": null,
+        "backdropContentHeight": 134,
+        "dialogScroll": {
+          "scrollHeight": 2990,
+          "clientHeight": 131,
+          "overflowY": "auto"
+        },
+        "footerScroll": {
+          "scrollHeight": 248,
+          "clientHeight": 248,
+          "overflowY": "visible"
+        },
+        "rem": 32,
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": null,
+      "visibleHeight": 150,
+      "textScale": 2,
+      "informationalChecks": []
+    }
+  ],
+  "largeText": [
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone-small",
+      "scale": 2,
+      "pageOverflowPx": 47,
+      "pageZoomed": true,
+      "innerWidth": 367,
+      "clientWidth": 320,
+      "rootFontPx": 32,
+      "optionRows": 16,
+      "rowOverflow": [
+        "section.step \"Choose an actionStatBrawl (2)Con\" sw=332/cw=250",
+        "fieldset \"StatBrawl (2)Con (4)Fix (2)Searc\" sw=298/cw=182",
+        "label.gear-option \"Brawl (2)\" sw=249/cw=124",
+        "label.gear-option \"Con (4)\" sw=230/cw=124",
+        "label.gear-option \"Fix (2)\" sw=213/cw=124",
+        "label.gear-option \"Search (2)\" sw=269/cw=124",
+        "label.gear-option \"Shoot (3)\" sw=255/cw=124",
+        "label.gear-option \"Sneak (1)\" sw=259/cw=124",
+        "label.gear-option \"Terrify (3)\" sw=258/cw=124",
+        "label.gear-option \"No stat fits (2 dice)\" sw=170/cw=124",
+        "label.gear-option \"Magic cavalry sabre (5/5 uses)\" sw=128/cw=124",
+        "label.gear-option \"Cigarettes taken from the pocket\" sw=128/cw=124",
+        "fieldset \"AbilitiesDark Glamour (1 Blood) \" sw=252/cw=182",
+        "label.gear-option \"Dark Glamour (1 Blood) — not eno\" sw=218/cw=124",
+        "label.gear-option \"Night's Willing Servants (1 Bloo\" sw=222/cw=124",
+        "fieldset \"Engaged threatsStation Patrol AS\" sw=227/cw=182",
+        "label.gear-option \"Station Patrol A\" sw=198/cw=124",
+        "label.gear-option \"Station Patrol B\" sw=198/cw=124"
+      ],
+      "wordBreaks": [
+        "Exquisite :: label.gear-option \"Exquisite hunting rifle (5/5 use\"",
+        "hunting :: label.gear-option \"Exquisite hunting rifle (5/5 use\"",
+        "rifle :: label.gear-option \"Exquisite hunting rifle (5/5 use\"",
+        "uses :: label.gear-option \"Exquisite hunting rifle (5/5 use\"",
+        "Magic :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "cavalry :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "sabre :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "uses :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "Explosive :: label.gear-option \"Explosive runes (3/3 uses)\"",
+        "runes :: label.gear-option \"Explosive runes (3/3 uses)\"",
+        "uses :: label.gear-option \"Explosive runes (3/3 uses)\"",
+        "Cigarettes :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "taken :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "from :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "pockets :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "hanged :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "uses :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "mark :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "regain :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "Blood :: label.gear-option \"Cigarettes taken from the pocket\""
+      ],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [],
+      "selects": 0,
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone",
+      "scale": 2,
+      "pageOverflowPx": 0,
+      "pageZoomed": false,
+      "innerWidth": 375,
+      "clientWidth": 375,
+      "rootFontPx": 32,
+      "optionRows": 16,
+      "rowOverflow": [
+        "section.step \"Choose an actionStatBrawl (2)Con\" sw=332/cw=305",
+        "fieldset \"StatBrawl (2)Con (4)Fix (2)Searc\" sw=298/cw=237",
+        "label.gear-option \"Brawl (2)\" sw=249/cw=179",
+        "label.gear-option \"Con (4)\" sw=230/cw=179",
+        "label.gear-option \"Fix (2)\" sw=213/cw=179",
+        "label.gear-option \"Search (2)\" sw=269/cw=179",
+        "label.gear-option \"Shoot (3)\" sw=255/cw=179",
+        "label.gear-option \"Sneak (1)\" sw=259/cw=179",
+        "label.gear-option \"Terrify (3)\" sw=258/cw=179",
+        "fieldset \"AbilitiesDark Glamour (1 Blood) \" sw=252/cw=237",
+        "label.gear-option \"Dark Glamour (1 Blood) — not eno\" sw=218/cw=179",
+        "label.gear-option \"Night's Willing Servants (1 Bloo\" sw=222/cw=179",
+        "label.gear-option \"Station Patrol A\" sw=198/cw=179",
+        "label.gear-option \"Station Patrol B\" sw=198/cw=179"
+      ],
+      "wordBreaks": [
+        "Exquisite :: label.gear-option \"Exquisite hunting rifle (5/5 use\"",
+        "hunting :: label.gear-option \"Exquisite hunting rifle (5/5 use\"",
+        "uses :: label.gear-option \"Exquisite hunting rifle (5/5 use\"",
+        "Magic :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "cavalry :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "sabre :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "uses :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "Explosive :: label.gear-option \"Explosive runes (3/3 uses)\"",
+        "runes :: label.gear-option \"Explosive runes (3/3 uses)\"",
+        "uses :: label.gear-option \"Explosive runes (3/3 uses)\"",
+        "Cigarettes :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "taken :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "from :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "pockets :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "hanged :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "uses :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "mark :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "regain :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "Blood :: label.gear-option \"Cigarettes taken from the pocket\""
+      ],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [],
+      "selects": 0
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone-small",
+      "scale": 2,
+      "pageOverflowPx": 47,
+      "pageZoomed": true,
+      "innerWidth": 367,
+      "clientWidth": 320,
+      "rootFontPx": 32,
+      "optionRows": 16,
+      "rowOverflow": [
+        "section.step \"Choose an actionStatBrawl (2)Con\" sw=332/cw=250",
+        "fieldset \"StatBrawl (2)Con (4)Fix (2)Searc\" sw=298/cw=182",
+        "label.gear-option \"Brawl (2)\" sw=249/cw=124",
+        "label.gear-option \"Con (4)\" sw=230/cw=124",
+        "label.gear-option \"Fix (2)\" sw=213/cw=124",
+        "label.gear-option \"Search (2)\" sw=269/cw=124",
+        "label.gear-option \"Shoot (3)\" sw=255/cw=124",
+        "label.gear-option \"Sneak (1)\" sw=259/cw=124",
+        "label.gear-option \"Terrify (3)\" sw=258/cw=124",
+        "label.gear-option \"No stat fits (2 dice)\" sw=170/cw=124",
+        "label.gear-option \"Magic cavalry sabre (5/5 uses)\" sw=128/cw=124",
+        "label.gear-option \"Cigarettes taken from the pocket\" sw=128/cw=124",
+        "fieldset \"AbilitiesDark Glamour (1 Blood) \" sw=252/cw=182",
+        "label.gear-option \"Dark Glamour (1 Blood) — not eno\" sw=218/cw=124",
+        "label.gear-option \"Night's Willing Servants (1 Bloo\" sw=222/cw=124",
+        "fieldset \"Engaged threatsStation Patrol AS\" sw=227/cw=182",
+        "label.gear-option \"Station Patrol A\" sw=198/cw=124",
+        "label.gear-option \"Station Patrol B\" sw=198/cw=124"
+      ],
+      "wordBreaks": [
+        "Exquisite :: label.gear-option \"Exquisite hunting rifle (5/5 use\"",
+        "hunting :: label.gear-option \"Exquisite hunting rifle (5/5 use\"",
+        "rifle :: label.gear-option \"Exquisite hunting rifle (5/5 use\"",
+        "uses :: label.gear-option \"Exquisite hunting rifle (5/5 use\"",
+        "Magic :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "cavalry :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "sabre :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "uses :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "Explosive :: label.gear-option \"Explosive runes (3/3 uses)\"",
+        "runes :: label.gear-option \"Explosive runes (3/3 uses)\"",
+        "uses :: label.gear-option \"Explosive runes (3/3 uses)\"",
+        "Cigarettes :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "taken :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "from :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "pockets :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "hanged :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "uses :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "mark :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "regain :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "Blood :: label.gear-option \"Cigarettes taken from the pocket\""
+      ],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [],
+      "selects": 0,
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone",
+      "scale": 2,
+      "pageOverflowPx": 0,
+      "pageZoomed": false,
+      "innerWidth": 375,
+      "clientWidth": 375,
+      "rootFontPx": 32,
+      "optionRows": 16,
+      "rowOverflow": [
+        "section.step \"Choose an actionStatBrawl (2)Con\" sw=332/cw=305",
+        "fieldset \"StatBrawl (2)Con (4)Fix (2)Searc\" sw=298/cw=237",
+        "label.gear-option \"Brawl (2)\" sw=249/cw=179",
+        "label.gear-option \"Con (4)\" sw=230/cw=179",
+        "label.gear-option \"Fix (2)\" sw=213/cw=179",
+        "label.gear-option \"Search (2)\" sw=269/cw=179",
+        "label.gear-option \"Shoot (3)\" sw=255/cw=179",
+        "label.gear-option \"Sneak (1)\" sw=259/cw=179",
+        "label.gear-option \"Terrify (3)\" sw=258/cw=179",
+        "fieldset \"AbilitiesDark Glamour (1 Blood) \" sw=252/cw=237",
+        "label.gear-option \"Dark Glamour (1 Blood) — not eno\" sw=218/cw=179",
+        "label.gear-option \"Night's Willing Servants (1 Bloo\" sw=222/cw=179",
+        "label.gear-option \"Station Patrol A\" sw=198/cw=179",
+        "label.gear-option \"Station Patrol B\" sw=198/cw=179"
+      ],
+      "wordBreaks": [
+        "Exquisite :: label.gear-option \"Exquisite hunting rifle (5/5 use\"",
+        "hunting :: label.gear-option \"Exquisite hunting rifle (5/5 use\"",
+        "uses :: label.gear-option \"Exquisite hunting rifle (5/5 use\"",
+        "Magic :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "cavalry :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "sabre :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "uses :: label.gear-option \"Magic cavalry sabre (5/5 uses)\"",
+        "Explosive :: label.gear-option \"Explosive runes (3/3 uses)\"",
+        "runes :: label.gear-option \"Explosive runes (3/3 uses)\"",
+        "uses :: label.gear-option \"Explosive runes (3/3 uses)\"",
+        "Cigarettes :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "taken :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "from :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "pockets :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "hanged :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "uses :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "mark :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "regain :: label.gear-option \"Cigarettes taken from the pocket\"",
+        "Blood :: label.gear-option \"Cigarettes taken from the pocket\""
+      ],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [],
+      "selects": 0
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone-small",
+      "scale": 2,
+      "pageOverflowPx": 0,
+      "pageZoomed": false,
+      "innerWidth": 320,
+      "clientWidth": 320,
+      "rootFontPx": 32,
+      "optionRows": 0,
+      "rowOverflow": [],
+      "wordBreaks": [],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [
+        "#scene-select \"The Abandoned Métro Platform\" 430>10",
+        "#grant-character \"Iryna\" 68>10",
+        "#advance-character \"Iryna\" 68>10",
+        "#reassign-character \"Iryna\" 68>10"
+      ],
+      "selects": 6,
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone",
+      "scale": 2,
+      "pageOverflowPx": 0,
+      "pageZoomed": false,
+      "innerWidth": 375,
+      "clientWidth": 375,
+      "rootFontPx": 32,
+      "optionRows": 0,
+      "rowOverflow": [],
+      "wordBreaks": [],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [
+        "#scene-select \"The Abandoned Métro Platform\" 430>65",
+        "#grant-character \"Iryna\" 68>65",
+        "#advance-character \"Iryna\" 68>65",
+        "#reassign-character \"Iryna\" 68>65"
+      ],
+      "selects": 6
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone-small",
+      "scale": 2,
+      "pageOverflowPx": 5,
+      "pageZoomed": true,
+      "innerWidth": 325,
+      "clientWidth": 320,
+      "rootFontPx": 32,
+      "optionRows": 2,
+      "rowOverflow": [
+        "section.step \"Pending actionsIrynaStat: CONEng\" sw=290/cw=250",
+        "li.pending-action-card \"IrynaStat: CONEngaged threatsSta\" sw=256/cw=182",
+        "fieldset \"Engaged threatsStation Patrol AS\" sw=227/cw=124",
+        "label.gear-option \"Station Patrol A\" sw=198/cw=65",
+        "label.gear-option \"Station Patrol B\" sw=198/cw=65"
+      ],
+      "wordBreaks": [],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [
+        "#scene-select \"The Abandoned Métro Platform\" 430>10",
+        "#grant-character \"Iryna\" 68>10",
+        "#advance-character \"Iryna\" 68>10",
+        "#reassign-character \"Iryna\" 68>10"
+      ],
+      "selects": 6,
+      "screenshot": null
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone",
+      "scale": 2,
+      "pageOverflowPx": 0,
+      "pageZoomed": false,
+      "innerWidth": 375,
+      "clientWidth": 375,
+      "rootFontPx": 32,
+      "optionRows": 2,
+      "rowOverflow": [
+        "li.pending-action-card \"IrynaStat: CONEngaged threatsSta\" sw=256/cw=237",
+        "fieldset \"Engaged threatsStation Patrol AS\" sw=227/cw=179",
+        "label.gear-option \"Station Patrol A\" sw=198/cw=120",
+        "label.gear-option \"Station Patrol B\" sw=198/cw=120"
+      ],
+      "wordBreaks": [],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [
+        "#scene-select \"The Abandoned Métro Platform\" 430>65",
+        "#grant-character \"Iryna\" 68>65",
+        "#advance-character \"Iryna\" 68>65",
+        "#reassign-character \"Iryna\" 68>65"
+      ],
+      "selects": 6
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone-small",
+      "scale": 2,
+      "pageOverflowPx": 12,
+      "pageZoomed": true,
+      "innerWidth": 332,
+      "clientWidth": 320,
+      "rootFontPx": 32,
+      "optionRows": 4,
+      "rowOverflow": [
+        "section.step \"Your roll4 (success)1 (discarded\" sw=297/cw=250",
+        "fieldset.allocation-die-group \"Die: 4 (success)Get clear of the\" sw=263/cw=182",
+        "label.gear-option \"Get clear of the wreckage and in\" sw=234/cw=124",
+        "label.gear-option \"Station Patrol A\" sw=198/cw=124",
+        "label.gear-option \"Station Patrol B\" sw=198/cw=124",
+        "label.gear-option \"Feed\" sw=169/cw=124"
+      ],
+      "wordBreaks": [],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [],
+      "selects": 0,
+      "screenshot": null
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone",
+      "scale": 2,
+      "pageOverflowPx": 0,
+      "pageZoomed": false,
+      "innerWidth": 375,
+      "clientWidth": 375,
+      "rootFontPx": 32,
+      "optionRows": 4,
+      "rowOverflow": [
+        "fieldset.allocation-die-group \"Die: 4 (success)Get clear of the\" sw=263/cw=237",
+        "label.gear-option \"Get clear of the wreckage and in\" sw=234/cw=179",
+        "label.gear-option \"Station Patrol A\" sw=198/cw=179",
+        "label.gear-option \"Station Patrol B\" sw=198/cw=179"
+      ],
+      "wordBreaks": [],
+      "smallTargets": [],
+      "outside": [],
+      "selectsWithoutEcho": [],
+      "selects": 0
+    }
+  ],
+  "reducedMotion": {
+    "allowed": {
+      "sheetAnimation": "sheet-rise",
+      "sheetDuration": "0.18s",
+      "backdropAnimation": "sheet-fade",
+      "anyLongTransition": true,
+      "matches": false
+    },
+    "reduced": {
+      "sheetAnimation": "none",
+      "sheetDuration": "1e-06s",
+      "backdropAnimation": "none",
+      "anyLongTransition": false,
+      "matches": true
+    }
+  },
+  "routes": [],
+  "failures": [
+    {
+      "scope": "player/compose@phone-small",
+      "message": "horizontal overflow 47px"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "horizontal overflow 47px"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "page zoomed out by overflow (inner 367px, client 320px)"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: section.step \"Choose an actionStatBrawl (2)Con\" sw=332/cw=250"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: fieldset \"StatBrawl (2)Con (4)Fix (2)Searc\" sw=298/cw=182"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Brawl (2)\" sw=249/cw=124"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Con (4)\" sw=230/cw=124"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Fix (2)\" sw=213/cw=124"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Search (2)\" sw=269/cw=124"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Shoot (3)\" sw=255/cw=124"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Sneak (1)\" sw=259/cw=124"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Terrify (3)\" sw=258/cw=124"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"No stat fits (2 dice)\" sw=170/cw=124"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Magic cavalry sabre (5/5 uses)\" sw=128/cw=124"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Cigarettes taken from the pocket\" sw=128/cw=124"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: fieldset \"AbilitiesDark Glamour (1 Blood) \" sw=252/cw=182"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Dark Glamour (1 Blood) — not eno\" sw=218/cw=124"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Night's Willing Servants (1 Bloo\" sw=222/cw=124"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: fieldset \"Engaged threatsStation Patrol AS\" sw=227/cw=182"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol A\" sw=198/cw=124"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol B\" sw=198/cw=124"
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: Exquisite :: label.gear-option \"Exquisite hunting rifle (5/5 use\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: hunting :: label.gear-option \"Exquisite hunting rifle (5/5 use\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: rifle :: label.gear-option \"Exquisite hunting rifle (5/5 use\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Exquisite hunting rifle (5/5 use\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: Magic :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: cavalry :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: sabre :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: Explosive :: label.gear-option \"Explosive runes (3/3 uses)\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: runes :: label.gear-option \"Explosive runes (3/3 uses)\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Explosive runes (3/3 uses)\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: Cigarettes :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: taken :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: from :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: pockets :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: hanged :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: mark :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: regain :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phone-smallx2",
+      "message": "word broken mid-way inside an option row: Blood :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "content wider than its box: section.step \"Choose an actionStatBrawl (2)Con\" sw=332/cw=305"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "content wider than its box: fieldset \"StatBrawl (2)Con (4)Fix (2)Searc\" sw=298/cw=237"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "content wider than its box: label.gear-option \"Brawl (2)\" sw=249/cw=179"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "content wider than its box: label.gear-option \"Con (4)\" sw=230/cw=179"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "content wider than its box: label.gear-option \"Fix (2)\" sw=213/cw=179"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "content wider than its box: label.gear-option \"Search (2)\" sw=269/cw=179"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "content wider than its box: label.gear-option \"Shoot (3)\" sw=255/cw=179"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "content wider than its box: label.gear-option \"Sneak (1)\" sw=259/cw=179"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "content wider than its box: label.gear-option \"Terrify (3)\" sw=258/cw=179"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "content wider than its box: fieldset \"AbilitiesDark Glamour (1 Blood) \" sw=252/cw=237"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "content wider than its box: label.gear-option \"Dark Glamour (1 Blood) — not eno\" sw=218/cw=179"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "content wider than its box: label.gear-option \"Night's Willing Servants (1 Bloo\" sw=222/cw=179"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol A\" sw=198/cw=179"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol B\" sw=198/cw=179"
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: Exquisite :: label.gear-option \"Exquisite hunting rifle (5/5 use\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: hunting :: label.gear-option \"Exquisite hunting rifle (5/5 use\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Exquisite hunting rifle (5/5 use\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: Magic :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: cavalry :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: sabre :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: Explosive :: label.gear-option \"Explosive runes (3/3 uses)\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: runes :: label.gear-option \"Explosive runes (3/3 uses)\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Explosive runes (3/3 uses)\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: Cigarettes :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: taken :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: from :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: pockets :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: hanged :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: mark :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: regain :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose@phonex2",
+      "message": "word broken mid-way inside an option row: Blood :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "player/compose-why-open@phone-small",
+      "message": "horizontal overflow 47px"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "horizontal overflow 47px"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "page zoomed out by overflow (inner 367px, client 320px)"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: section.step \"Choose an actionStatBrawl (2)Con\" sw=332/cw=250"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: fieldset \"StatBrawl (2)Con (4)Fix (2)Searc\" sw=298/cw=182"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Brawl (2)\" sw=249/cw=124"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Con (4)\" sw=230/cw=124"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Fix (2)\" sw=213/cw=124"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Search (2)\" sw=269/cw=124"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Shoot (3)\" sw=255/cw=124"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Sneak (1)\" sw=259/cw=124"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Terrify (3)\" sw=258/cw=124"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"No stat fits (2 dice)\" sw=170/cw=124"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Magic cavalry sabre (5/5 uses)\" sw=128/cw=124"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Cigarettes taken from the pocket\" sw=128/cw=124"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: fieldset \"AbilitiesDark Glamour (1 Blood) \" sw=252/cw=182"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Dark Glamour (1 Blood) — not eno\" sw=218/cw=124"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Night's Willing Servants (1 Bloo\" sw=222/cw=124"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: fieldset \"Engaged threatsStation Patrol AS\" sw=227/cw=182"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol A\" sw=198/cw=124"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol B\" sw=198/cw=124"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: Exquisite :: label.gear-option \"Exquisite hunting rifle (5/5 use\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: hunting :: label.gear-option \"Exquisite hunting rifle (5/5 use\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: rifle :: label.gear-option \"Exquisite hunting rifle (5/5 use\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Exquisite hunting rifle (5/5 use\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: Magic :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: cavalry :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: sabre :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: Explosive :: label.gear-option \"Explosive runes (3/3 uses)\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: runes :: label.gear-option \"Explosive runes (3/3 uses)\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Explosive runes (3/3 uses)\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: Cigarettes :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: taken :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: from :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: pockets :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: hanged :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: mark :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: regain :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phone-smallx2",
+      "message": "word broken mid-way inside an option row: Blood :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "content wider than its box: section.step \"Choose an actionStatBrawl (2)Con\" sw=332/cw=305"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "content wider than its box: fieldset \"StatBrawl (2)Con (4)Fix (2)Searc\" sw=298/cw=237"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "content wider than its box: label.gear-option \"Brawl (2)\" sw=249/cw=179"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "content wider than its box: label.gear-option \"Con (4)\" sw=230/cw=179"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "content wider than its box: label.gear-option \"Fix (2)\" sw=213/cw=179"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "content wider than its box: label.gear-option \"Search (2)\" sw=269/cw=179"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "content wider than its box: label.gear-option \"Shoot (3)\" sw=255/cw=179"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "content wider than its box: label.gear-option \"Sneak (1)\" sw=259/cw=179"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "content wider than its box: label.gear-option \"Terrify (3)\" sw=258/cw=179"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "content wider than its box: fieldset \"AbilitiesDark Glamour (1 Blood) \" sw=252/cw=237"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "content wider than its box: label.gear-option \"Dark Glamour (1 Blood) — not eno\" sw=218/cw=179"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "content wider than its box: label.gear-option \"Night's Willing Servants (1 Bloo\" sw=222/cw=179"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol A\" sw=198/cw=179"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol B\" sw=198/cw=179"
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: Exquisite :: label.gear-option \"Exquisite hunting rifle (5/5 use\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: hunting :: label.gear-option \"Exquisite hunting rifle (5/5 use\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Exquisite hunting rifle (5/5 use\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: Magic :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: cavalry :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: sabre :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Magic cavalry sabre (5/5 uses)\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: Explosive :: label.gear-option \"Explosive runes (3/3 uses)\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: runes :: label.gear-option \"Explosive runes (3/3 uses)\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Explosive runes (3/3 uses)\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: Cigarettes :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: taken :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: from :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: pockets :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: hanged :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: uses :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: mark :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: regain :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text player/compose-why-open@phonex2",
+      "message": "word broken mid-way inside an option row: Blood :: label.gear-option \"Cigarettes taken from the pocket\""
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "closed select hides its value with no echo: #scene-select \"The Abandoned Métro Platform\" 430>10"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "closed select hides its value with no echo: #grant-character \"Iryna\" 68>10"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "closed select hides its value with no echo: #advance-character \"Iryna\" 68>10"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phone-smallx2",
+      "message": "closed select hides its value with no echo: #reassign-character \"Iryna\" 68>10"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "closed select hides its value with no echo: #scene-select \"The Abandoned Métro Platform\" 430>65"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "closed select hides its value with no echo: #grant-character \"Iryna\" 68>65"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "closed select hides its value with no echo: #advance-character \"Iryna\" 68>65"
+    },
+    {
+      "scope": "large-text gm/console-scene-loaded@phonex2",
+      "message": "closed select hides its value with no echo: #reassign-character \"Iryna\" 68>65"
+    },
+    {
+      "scope": "gm/console-pending@phone-small",
+      "message": "horizontal overflow 5px"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "horizontal overflow 5px"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "page zoomed out by overflow (inner 325px, client 320px)"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "content wider than its box: section.step \"Pending actionsIrynaStat: CONEng\" sw=290/cw=250"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "content wider than its box: li.pending-action-card \"IrynaStat: CONEngaged threatsSta\" sw=256/cw=182"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "content wider than its box: fieldset \"Engaged threatsStation Patrol AS\" sw=227/cw=124"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol A\" sw=198/cw=65"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol B\" sw=198/cw=65"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "closed select hides its value with no echo: #scene-select \"The Abandoned Métro Platform\" 430>10"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "closed select hides its value with no echo: #grant-character \"Iryna\" 68>10"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "closed select hides its value with no echo: #advance-character \"Iryna\" 68>10"
+    },
+    {
+      "scope": "large-text gm/console-pending@phone-smallx2",
+      "message": "closed select hides its value with no echo: #reassign-character \"Iryna\" 68>10"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "content wider than its box: li.pending-action-card \"IrynaStat: CONEngaged threatsSta\" sw=256/cw=237"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "content wider than its box: fieldset \"Engaged threatsStation Patrol AS\" sw=227/cw=179"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol A\" sw=198/cw=120"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol B\" sw=198/cw=120"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "closed select hides its value with no echo: #scene-select \"The Abandoned Métro Platform\" 430>65"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "closed select hides its value with no echo: #grant-character \"Iryna\" 68>65"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "closed select hides its value with no echo: #advance-character \"Iryna\" 68>65"
+    },
+    {
+      "scope": "large-text gm/console-pending@phonex2",
+      "message": "closed select hides its value with no echo: #reassign-character \"Iryna\" 68>65"
+    },
+    {
+      "scope": "modal@phone-small",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal@phone-small",
+      "message": "noPageOverflow failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-small",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-small",
+      "message": "focusedFieldVisible failed"
+    },
+    {
+      "scope": "modal-keyboard@phone-small",
+      "message": "noPageOverflow failed"
+    },
+    {
+      "scope": "modal-short-visible-140",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal-short-visible-140",
+      "message": "noPageOverflow failed"
+    },
+    {
+      "scope": "modal-text-200-phone-small",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal-text-200-phone-small",
+      "message": "noPageOverflow failed"
+    },
+    {
+      "scope": "modal-text-200-phone-small",
+      "message": "layoutChosen failed"
+    },
+    {
+      "scope": "modal-text-200-phone-small",
+      "message": "bodyKeepsRoomOrPageScrolls failed"
+    },
+    {
+      "scope": "modal-text-200-phone-small",
+      "message": "noNestedActionScroller failed"
+    },
+    {
+      "scope": "modal-text-200-phone",
+      "message": "layoutChosen failed"
+    },
+    {
+      "scope": "modal-text-200-phone",
+      "message": "bodyKeepsRoomOrPageScrolls failed"
+    },
+    {
+      "scope": "modal-text-200-phone",
+      "message": "noNestedActionScroller failed"
+    },
+    {
+      "scope": "modal-sheet-layout-320-x2-kb298",
+      "message": "noPageOverflow failed"
+    },
+    {
+      "scope": "modal-sheet-layout-320-x2-kb298",
+      "message": "layoutChosen failed"
+    },
+    {
+      "scope": "modal-sheet-layout-320-x2-nokb",
+      "message": "noPageOverflow failed"
+    },
+    {
+      "scope": "modal-sheet-layout-320-x2-nokb",
+      "message": "layoutChosen failed"
+    },
+    {
+      "scope": "modal-sheet-layout-320-x2-nokb",
+      "message": "noNestedActionScroller failed"
+    },
+    {
+      "scope": "modal-sheet-layout-320-x2-nokb",
+      "message": "pageScrolls failed"
+    },
+    {
+      "scope": "modal-sheet-layout-320-x2-nokb",
+      "message": "bodyIsNotASecondScroller failed"
+    },
+    {
+      "scope": "modal-sheet-layout-375-x2-kb400",
+      "message": "layoutChosen failed"
+    },
+    {
+      "scope": "modal-sheet-layout-375-x2-kb400",
+      "message": "noNestedActionScroller failed"
+    },
+    {
+      "scope": "modal-sheet-layout-375-x2-kb400",
+      "message": "pageScrolls failed"
+    },
+    {
+      "scope": "modal-sheet-layout-375-x2-kb400",
+      "message": "bodyIsNotASecondScroller failed"
+    },
+    {
+      "scope": "modal-sheet-layout-375-x2-kb400-scrolled",
+      "message": "layoutChosen failed"
+    },
+    {
+      "scope": "modal-sheet-layout-375-x2-kb400-scrolled",
+      "message": "noNestedActionScroller failed"
+    },
+    {
+      "scope": "modal-sheet-layout-375-x2-kb400-scrolled",
+      "message": "pageScrolls failed"
+    },
+    {
+      "scope": "modal-sheet-layout-375-x2-kb400-scrolled",
+      "message": "bodyIsNotASecondScroller failed"
+    },
+    {
+      "scope": "modal-sheet-layout-568x320-x2-kb150",
+      "message": "layoutChosen failed"
+    },
+    {
+      "scope": "player/allocation@phone-small",
+      "message": "horizontal overflow 12px"
+    },
+    {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "horizontal overflow 12px"
+    },
+    {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "page zoomed out by overflow (inner 332px, client 320px)"
+    },
+    {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "content wider than its box: section.step \"Your roll4 (success)1 (discarded\" sw=297/cw=250"
+    },
+    {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "content wider than its box: fieldset.allocation-die-group \"Die: 4 (success)Get clear of the\" sw=263/cw=182"
+    },
+    {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Get clear of the wreckage and in\" sw=234/cw=124"
+    },
+    {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol A\" sw=198/cw=124"
+    },
+    {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol B\" sw=198/cw=124"
+    },
+    {
+      "scope": "large-text player/allocation@phone-smallx2",
+      "message": "content wider than its box: label.gear-option \"Feed\" sw=169/cw=124"
+    },
+    {
+      "scope": "large-text player/allocation@phonex2",
+      "message": "content wider than its box: fieldset.allocation-die-group \"Die: 4 (success)Get clear of the\" sw=263/cw=237"
+    },
+    {
+      "scope": "large-text player/allocation@phonex2",
+      "message": "content wider than its box: label.gear-option \"Get clear of the wreckage and in\" sw=234/cw=179"
+    },
+    {
+      "scope": "large-text player/allocation@phonex2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol A\" sw=198/cw=179"
+    },
+    {
+      "scope": "large-text player/allocation@phonex2",
+      "message": "content wider than its box: label.gear-option \"Station Patrol B\" sw=198/cw=179"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-small",
+      "message": "horizontal overflow 12px"
+    },
+    {
+      "scope": "player/paused@phone-small",
+      "message": "horizontal overflow 47px"
+    }
+  ],
+  "console": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  },
+  "finishedAt": "2026-10-07T03:17:13.558Z",
+  "ok": false,
+  "summary": {
+    "states": 150,
+    "controlsAudited": 1422,
+    "controlIssues": 0,
+    "overflowStates": 6,
+    "axeHardViolations": 0,
+    "axeBestPractice": [
+      "anon/route-claim-no-such-room@phone: page-has-heading-one"
+    ],
+    "largeTextPasses": 10,
+    "modalScenarios": 23,
+    "failures": 222
+  }
+}
