@@ -16,13 +16,22 @@
 // they actually constrain the sheet; 200% text on a 320px phone; internal scrolling to the last
 // control; and prefers-reduced-motion on/off (motion must exist when allowed and be absent when not).
 //
-// KNOWN LIMIT (recorded, not hidden): the "keyboard" emulation shrinks the LAYOUT viewport, which is
-// what Chrome Android's `interactive-widget=resizes-content` does; there the visual-viewport hook
+// KNOWN LIMIT (recorded, not hidden): the plain "keyboard" emulation shrinks the LAYOUT viewport, which
+// is what Chrome Android's `interactive-widget=resizes-content` does; there the visual-viewport hook
 // correctly does nothing. The iOS-Safari case (visual viewport shrinks while the layout viewport does
-// not) cannot be produced by headless Chrome (Emulation.setVisibleSizeOverride no longer exists). Its
-// mechanism is covered in jsdom (apps/web/test/shared/SheetDialog.test.tsx) and, as far as the
-// sheet's *use* of the --vv-* variables goes, in a real engine by the pinch-zoom scenarios. A physical
-// iPhone pass remains open (CLAUDE_HANDOFF.md).
+// not) cannot be produced by headless Chrome (Emulation.setVisibleSizeOverride no longer exists, and
+// setVisibleSize / setVirtualKeyboardGeometryOverride leave `visualViewport` alone), so the
+// `sheet-layout-*` scenarios install a STAND-IN `window.visualViewport` (an EventTarget the page's own
+// hooks read) before the sheet opens: real layout, real CSS, real scrolling, with the visible area
+// supplied by the audit. Real Mobile Safari with the real software keyboard is a separate rig (the iOS
+// Simulator, see CLAUDE_HANDOFF.md); a physical iPhone pass remains open.
+//
+// LARGE TEXT: "200% text" is what a browser font-size setting does to every rem, emulated by setting
+// the root font-size (`--default-font-px N` instead launches one Chrome per device with a real
+// default-font-size preference, which also scales rem inside media queries). `largeTextPass` audits the
+// option lists and pickers at 320px/150% and 320px/200% (no page overflow, which on a phone makes the
+// browser zoom the page out; option text kept whole; closed selects keep their value in view);
+// `sheet-layout-*` audits the sheet against the stand-in keyboard at 320/375px and 100/150/200% text.
 //
 // No npm dependency beyond axe-core (already a transitive dependency of jest-axe): launches the
 // machine's Google Chrome headless and speaks CDP over Node 22's built-in WebSocket.
@@ -54,6 +63,11 @@ const SHOTS = !args.includes("--no-shots");
 const TOLERATE = args.includes("--tolerate-baseline");
 const DUMP_HTML = args.includes("--dump-html"); // also write a scriptless HTML snapshot per state under <out>/dump
 const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (fast iteration on the pop-out)
+// A REAL browser font-size preference (px) instead of the emulated root font-size: one Chrome per
+// device, each with `webkit.webprefs.default_font_size` in its own profile, so rem in media queries
+// scales too (what a person who set "very large" text gets). 0 = emulate with the root font-size.
+const DEFAULT_FONT_PX = Number(arg("default-font-px", "0"));
+const REAL_TEXT = DEFAULT_FONT_PX > 0;
 const CHROME =
   process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 mkdirSync(OUT, { recursive: true });
@@ -86,8 +100,10 @@ const report = {
   label: LABEL,
   base: BASE,
   startedAt: new Date().toISOString(),
+  defaultFontPx: DEFAULT_FONT_PX,
   states: [],
   modal: [],
+  largeText: [],
   reducedMotion: null,
   routes: [],
   failures: [],
@@ -142,15 +158,53 @@ class Cdp {
 }
 
 const devices = [];
+const ownChromes = [];
 
-async function openDevice(cdp, name, vp) {
-  const { browserContextId } = await cdp.send("Target.createBrowserContext", {
-    disposeOnDetach: true,
-  });
-  const { targetId } = await cdp.send("Target.createTarget", {
-    url: "about:blank",
-    browserContextId,
-  });
+/** One headless Chrome whose profile carries a real default font size (see DEFAULT_FONT_PX). */
+async function launchChromeWithFontPreference(index) {
+  const profile = mkdtempSync(join(tmpdir(), `digitable-ui-audit-font-${index}-`));
+  mkdirSync(join(profile, "Default"), { recursive: true });
+  writeFileSync(
+    join(profile, "Default", "Preferences"),
+    JSON.stringify({
+      webkit: {
+        webprefs: {
+          default_font_size: DEFAULT_FONT_PX,
+          default_fixed_font_size: Math.round(DEFAULT_FONT_PX * 0.8125),
+          minimum_logical_font_size: 6,
+        },
+      },
+    }),
+  );
+  const port = PORT + 10 + index;
+  ownChromes.push(
+    spawn(
+      CHROME,
+      [
+        "--headless=new",
+        `--remote-debugging-port=${port}`,
+        `--user-data-dir=${profile}`,
+        "--no-first-run",
+        "--no-default-browser-check",
+        "about:blank",
+      ],
+      { stdio: "ignore" },
+    ),
+  );
+  return Cdp.connect(port);
+}
+
+async function openDevice(sharedCdp, name, vp) {
+  // Isolated browser contexts keep each device's storage (and so its anonymous identity) separate;
+  // a real font preference needs a profile of its own, so each device then gets its own Chrome.
+  const cdp = REAL_TEXT ? await launchChromeWithFontPreference(devices.length) : sharedCdp;
+  const { browserContextId } = REAL_TEXT
+    ? {}
+    : await cdp.send("Target.createBrowserContext", { disposeOnDetach: true });
+  const { targetId } = await cdp.send(
+    "Target.createTarget",
+    browserContextId ? { url: "about:blank", browserContextId } : { url: "about:blank" },
+  );
   const { sessionId } = await cdp.send("Target.attachToTarget", { targetId, flatten: true });
   const device = { name, cdp, sessionId, vp, consoleErrors: [], failedRequests: [] };
   cdp.listeners.push((message) => {
@@ -411,6 +465,15 @@ const MODAL_GEOMETRY = `(() => {
     cancel: box(cancel),
     reason: box(reason),
     body: { scrollHeight: body.scrollHeight, clientHeight: body.clientHeight, scrollTop: body.scrollTop, overflowY: getComputedStyle(body).overflowY },
+    bodyBox: box(body),
+    header: box(dialog.querySelector(".sheet-header")),
+    footer: box(dialog.querySelector(".sheet-footer")),
+    heading: box(dialog.querySelector("h2")),
+    dataLayout: dialog.dataset.layout ?? null,
+    backdropContentHeight: (() => { const b = dialog.parentElement; const s = getComputedStyle(b); return b.clientHeight - parseFloat(s.paddingTop) - parseFloat(s.paddingBottom); })(),
+    dialogScroll: { scrollHeight: dialog.scrollHeight, clientHeight: dialog.clientHeight, overflowY: cs.overflowY },
+    footerScroll: { scrollHeight: (dialog.querySelector(".sheet-footer") || dialog).scrollHeight, clientHeight: (dialog.querySelector(".sheet-footer") || dialog).clientHeight, overflowY: getComputedStyle(dialog.querySelector(".sheet-footer") || dialog).overflowY },
+    rem: parseFloat(getComputedStyle(document.documentElement).fontSize),
     rootLocked: document.documentElement.classList.contains("sheet-open") && getComputedStyle(document.documentElement).overflow === "hidden",
     pageOverflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     animationName: cs.animationName,
@@ -429,6 +492,155 @@ function within(box, frame, tolerance = 1) {
     box.bottom <= frame.bottom + tolerance
   );
 }
+
+/**
+ * Stand-in `window.visualViewport` (see the KNOWN LIMIT note): an EventTarget with the VisualViewport
+ * numbers, installed BEFORE the sheet opens so the page's own hooks (useVisualViewportBox,
+ * useSheetLayout, the reveal-on-resize listener) subscribe to it. `set({ height, offsetTop })`
+ * dispatches `resize` like the keyboard animation's end state. The layout viewport is untouched,
+ * which is exactly the iOS Safari situation. UNFAKE restores the saved descriptor (a plain
+ * `delete` would remove the real one for the session).
+ */
+const FAKE_VISUAL_VIEWPORT = `(() => {
+  if (window.__fakeVV) return true;
+  window.__savedVVDescriptor = Object.getOwnPropertyDescriptor(window, "visualViewport");
+  const real = window.visualViewport;
+  class Fake extends EventTarget {
+    constructor() { super(); this.offsetTop = 0; this.offsetLeft = 0; this.width = real.width; this.height = real.height; this.scale = 1; }
+    set(next) { Object.assign(this, next); this.dispatchEvent(new Event("resize")); }
+  }
+  const fake = new Fake();
+  window.__fakeVV = fake;
+  Object.defineProperty(window, "visualViewport", { configurable: true, get: () => fake });
+  return true;
+})()`;
+const RESTORE_VISUAL_VIEWPORT = `(() => {
+  if (!window.__fakeVV) return true;
+  Object.defineProperty(window, "visualViewport", window.__savedVVDescriptor);
+  delete window.__fakeVV;
+  return true;
+})()`;
+
+/**
+ * Scrolls every scroller that holds the control (outermost first, and only scrollers a finger can
+ * move: overflow auto/scroll that really overflow) so the control's top sits just inside it, then
+ * reports where the control ended up against the VISUAL viewport and whether a tap at the middle of
+ * its visible part would hit it. (`scrollIntoView` also scrolls overflow:hidden boxes, which no
+ * finger can, so it would call a clipped control reachable.)
+ */
+const reachExpression = (finder) => `(() => {
+  const control = ${finder};
+  if (!control) return { found: false };
+  const holders = [];
+  for (let el = control.parentElement; el && el !== document.body; el = el.parentElement) {
+    if (/(auto|scroll)/.test(getComputedStyle(el).overflowY) && el.scrollHeight > el.clientHeight + 1) holders.unshift(el);
+  }
+  for (const holder of holders) {
+    holder.scrollTop += control.getBoundingClientRect().top - holder.getBoundingClientRect().top - 8;
+  }
+  const r = control.getBoundingClientRect();
+  const vv = window.visualViewport;
+  const frame = { left: vv.offsetLeft, top: vv.offsetTop, right: vv.offsetLeft + vv.width, bottom: vv.offsetTop + vv.height };
+  const visibleH = Math.max(0, Math.min(r.bottom, frame.bottom) - Math.max(r.top, frame.top));
+  const visibleW = Math.max(0, Math.min(r.right, frame.right) - Math.max(r.left, frame.left));
+  const x = Math.max(frame.left, r.left) + visibleW / 2;
+  const y = Math.max(frame.top, r.top) + visibleH / 2;
+  const hit = visibleH > 0 && visibleW > 0 ? document.elementFromPoint(x, y) : null;
+  return {
+    found: true,
+    height: r.height,
+    width: r.width,
+    top: r.top,
+    bottom: r.bottom,
+    visibleH,
+    visibleW,
+    hit: Boolean(hit) && (hit === control || control.contains(hit)),
+  };
+})()`;
+
+/** A control counts as reachable when at least a practical touch target of it (44px, or all of it if smaller) is in view and a tap at its visible middle lands on it. */
+function reachable(reach) {
+  return Boolean(
+    reach?.found &&
+    reach.hit &&
+    reach.visibleH >= Math.min(44, reach.height) - 0.5 &&
+    reach.visibleW >= Math.min(44, reach.width) - 0.5,
+  );
+}
+
+const APPLY_BUTTON = `[...document.querySelectorAll('[role="dialog"] button')].find(b => /apply correction/i.test(b.textContent))`;
+const CANCEL_BUTTON = `[...document.querySelectorAll('[role="dialog"] button')].find(b => /cancel/i.test(b.textContent))`;
+const REASON_FIELD = `document.querySelector('[role="dialog"] #correction-reason')`;
+
+/**
+ * Option lists and pickers at large text: nothing may widen the page (a phone browser then zooms the
+ * whole page out), an option row's text must stay whole and inside its row, every row/summary/select
+ * must keep a practical touch target, and a closed <select> whose value does not fit must echo it.
+ */
+const LARGE_TEXT_PROBE = String.raw`(() => {
+  const de = document.documentElement;
+  const vw = de.clientWidth;
+  const describe = (el) => {
+    const id = el.id ? "#" + el.id : "";
+    const cls = typeof el.className === "string" && el.className ? "." + el.className.trim().split(/\s+/).join(".") : "";
+    const text = (el.getAttribute("aria-label") || el.textContent || "").trim().replace(/\s+/g, " ").slice(0, 32);
+    return el.tagName.toLowerCase() + id + cls + (text ? ' "' + text + '"' : "");
+  };
+  const shown = (el) => { const cs = getComputedStyle(el); return cs.display !== "none" && cs.visibility !== "hidden" && !el.closest("[inert]"); };
+  const out = {
+    pageOverflowPx: de.scrollWidth - vw,
+    pageZoomed: Math.abs(innerWidth - vw) > 1,
+    innerWidth, clientWidth: vw, rootFontPx: parseFloat(getComputedStyle(de).fontSize),
+    optionRows: 0, rowOverflow: [], wordBreaks: [], smallTargets: [], outside: [], selectsWithoutEcho: [], selects: 0,
+  };
+  const containers = "main .gear-option, main fieldset, main .step, main .pending-action-card, main details, main .pool-summary, main .allocation-die-group";
+  for (const el of document.querySelectorAll(containers)) {
+    if (!shown(el)) continue;
+    if (el.classList.contains("gear-option")) out.optionRows += 1;
+    const cs = getComputedStyle(el);
+    if (el.clientWidth > 0 && el.scrollWidth > el.clientWidth + 1 && cs.overflowX === "visible") out.rowOverflow.push(describe(el) + " sw=" + el.scrollWidth + "/cw=" + el.clientWidth);
+  }
+  // Words (4-18 letters) split across lines inside option rows.
+  for (const row of document.querySelectorAll("main .gear-option")) {
+    if (!shown(row)) continue;
+    const walker = document.createTreeWalker(row, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      if (node.parentElement.closest("button")) continue;
+      for (const m of node.nodeValue.matchAll(/\S+/g)) {
+        const word = m[0].replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, "");
+        if (word.length < 4 || word.length > 18 || /^[A-Za-z0-9]+-[A-Za-z0-9-]+$/.test(m[0])) continue;
+        const range = document.createRange();
+        range.setStart(node, m.index);
+        range.setEnd(node, m.index + m[0].length);
+        const rects = [...range.getClientRects()].filter((q) => q.width > 0.5);
+        if (rects.length > 1 && new Set(rects.map((q) => Math.round(q.top / 6))).size > 1) out.wordBreaks.push(word + " :: " + describe(row));
+      }
+    }
+  }
+  for (const el of document.querySelectorAll("main .gear-option, main summary, main select, main input:not([type=checkbox]):not([type=radio]), main button")) {
+    if (!shown(el)) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) continue;
+    if (Math.min(r.width, r.height) < 43.5) out.smallTargets.push(describe(el) + " " + Math.round(r.width) + "x" + Math.round(r.height));
+    if (r.right > vw + 0.5 || r.left < -0.5) out.outside.push(describe(el) + " [" + Math.round(r.left) + ".." + Math.round(r.right) + "]");
+  }
+  const canvas = document.createElement("canvas").getContext("2d");
+  for (const select of document.querySelectorAll("main select")) {
+    if (!shown(select)) continue;
+    out.selects += 1;
+    const cs = getComputedStyle(select);
+    const label = select.options[select.selectedIndex]?.text ?? "";
+    if (select.value === "" || label === "") continue; // a placeholder has nothing to keep
+    canvas.font = cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily;
+    const window_ = select.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    if (canvas.measureText(label).width > window_ + 0.5) {
+      const echo = select.nextElementSibling;
+      const echoed = echo && echo.classList.contains("select-echo") && echo.textContent.trim() === label.trim();
+      if (!echoed) out.selectsWithoutEcho.push("#" + select.id + ' "' + label.slice(0, 40) + '" ' + Math.round(canvas.measureText(label).width) + ">" + Math.round(window_));
+    }
+  }
+  return out;
+})()`;
 
 async function openCorrection(gm) {
   // Roster-agnostic: the first claimed character's Correct button, whatever the roster (the
@@ -470,8 +682,11 @@ async function auditModal(gm) {
     record.geometry = geo;
     const frame = { left: 0, top: 0, right: vp.width, bottom: vp.height };
     record.checks.dialogInsideViewport = within(geo.dialog, frame);
+    // Pinned (room for the header, the action row and a usable body): the actions never leave the
+    // screen. Otherwise (large text on a small viewport) the sheet is one scrolling page and they are
+    // reached by scrolling: `actionsReachable`, checked after the geometry above is recorded.
     record.checks.actionsVisibleWithoutScrolling =
-      within(geo.apply, frame) && within(geo.cancel, frame);
+      geo.dataLayout !== "pinned" || (within(geo.apply, frame) && within(geo.cancel, frame));
     record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
     record.checks.actionTargets44 =
       geo.apply?.height >= 43.5 && geo.cancel?.height >= 43.5 && geo.apply?.width >= 43.5;
@@ -496,6 +711,9 @@ async function auditModal(gm) {
     record.screenshot = await screenshot(gm, `gm-correction-sheet-${vp.name}.jpg`, {
       fullPage: false,
     });
+    record.checks.actionsReachable =
+      reachable(await ev(gm, reachExpression(APPLY_BUTTON))) &&
+      reachable(await ev(gm, reachExpression(CANCEL_BUTTON)));
 
     // Emulated on-screen keyboard: shrink the viewport (what Chrome Android's
     // interactive-widget=resizes-content does) with the reason field focused.
@@ -509,16 +727,23 @@ async function auditModal(gm) {
       const kbFrame = { left: 0, top: 0, right: shrunk.width, bottom: shrunk.height };
       record.keyboard = {
         size: `${shrunk.width}x${shrunk.height}`,
+        layout: kb.dataLayout,
         checks: {
           dialogInsideViewport: within(kb.dialog, kbFrame),
-          focusedFieldVisible: within(kb.reason, kbFrame),
-          actionsVisible: within(kb.apply, kbFrame) && within(kb.cancel, kbFrame),
+          focusedFieldVisible: within(kb.reason, kbFrame) && within(kb.reason, kb.dialog),
+          // Pinned (room for the header, the action row and a usable body): the actions never leave the
+          // screen. Otherwise the sheet is one scrolling page and they are reached by scrolling (below).
+          actionsVisibleWhenPinned:
+            kb.dataLayout !== "pinned" || (within(kb.apply, kbFrame) && within(kb.cancel, kbFrame)),
           noPageOverflow: kb.pageOverflowPx <= 1,
         },
       };
       record.keyboard.screenshot = await screenshot(gm, `gm-correction-keyboard-${vp.name}.jpg`, {
         fullPage: false,
       });
+      record.keyboard.checks.actionsReachable =
+        reachable(await ev(gm, reachExpression(APPLY_BUTTON))) &&
+        reachable(await ev(gm, reachExpression(CANCEL_BUTTON)));
       await applyViewport(gm, vp);
     }
     for (const [k, v] of Object.entries(record.checks)) {
@@ -602,7 +827,11 @@ async function auditModal(gm) {
     };
     record.checks.dialogInsideVisualViewportWhenZoomed = within(zoom.dialog, frame, 2);
     record.checks.actionsInsideVisualViewportWhenZoomed =
-      within(zoom.apply, frame, 2) && within(zoom.cancel, frame, 2);
+      zoom.dataLayout !== "pinned" ||
+      (within(zoom.apply, frame, 2) && within(zoom.cancel, frame, 2));
+    record.checks.actionsReachableWhenZoomed =
+      reachable(await ev(gm, reachExpression(APPLY_BUTTON))) &&
+      reachable(await ev(gm, reachExpression(CANCEL_BUTTON)));
   });
 
   await scenario("pinch-gesture", byName["phone"], async (record) => {
@@ -724,8 +953,10 @@ async function auditModal(gm) {
       );
       await sleep(200);
       const end = await ev(gm, MODAL_GEOMETRY);
-      record.checks.applyReachable = within(end.apply, frame);
-      record.checks.cancelReachable = within(end.cancel, frame);
+      // Reachable = 44px of it in view after scrolling and a tap there lands on it (at 200% text a
+      // button can be taller than the whole visible area, so "fully inside" cannot hold for it).
+      record.checks.applyReachable = reachable(await ev(gm, reachExpression(APPLY_BUTTON)));
+      record.checks.cancelReachable = reachable(await ev(gm, reachExpression(CANCEL_BUTTON)));
       record.checks.actionTargets44 = end.apply?.height >= 43.5 && end.cancel?.height >= 43.5;
       record.screenshot = await screenshot(gm, `gm-correction-short-${vp.name}.jpg`, {
         fullPage: false,
@@ -733,58 +964,160 @@ async function auditModal(gm) {
     });
   }
 
-  // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150% and
-  // 375px at 200% are gating. 320px at 200% is recorded but NOT gating: at that size the (unchanged,
-  // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
-  // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
-  // the handoff.
-  for (const [vp, px, informationalChecks] of [
-    [byName["phone-small"], 24, []],
-    [byName["phone"], 32, []],
-    // Only the two geometry checks the console's overflow can break are non-gating here; the sheet's own
-    // bodyKeepsRoom / actionsReachable / reasonReachable still gate.
-    [byName["phone-small"], 32, ["dialogInsideViewport", "noPageOverflow"]],
-  ]) {
-    await scenario(
-      `text-${px === 24 ? "150" : "200"}-${vp.name}`,
-      vp,
-      async (record) => {
-        await ev(gm, `document.documentElement.style.fontSize = "${px}px"`);
+  // Text scaling: what a browser "font size: large/very large" does to every rem (the root font-size is
+  // set inline, or with --default-font-px a real browser font preference is used and the sizes below are
+  // that one real size). All gating, including 320px at 200%: the panels behind the sheet no longer
+  // overflow the page at that size (nested gutters are capped, see `--g` in styles.css), so the layout
+  // viewport stays put and the sheet can be measured against it. The sheet at 320/375px with the
+  // keyboard up is `sheet-layout-*` below.
+  const textCases = REAL_TEXT
+    ? [
+        [byName["phone-small"], DEFAULT_FONT_PX],
+        [byName["phone"], DEFAULT_FONT_PX],
+      ]
+    : [
+        [byName["phone-small"], 24],
+        [byName["phone"], 32],
+        [byName["phone-small"], 32],
+      ];
+  for (const [vp, px] of textCases) {
+    await scenario(`text-${Math.round((px / 16) * 100)}-${vp.name}`, vp, async (record) => {
+      if (!REAL_TEXT) await ev(gm, `document.documentElement.style.fontSize = "${px}px"`);
+      await openCorrection(gm);
+      const frame = frameOf(vp);
+      const geo = await ev(gm, MODAL_GEOMETRY);
+      record.geometry = geo;
+      record.checks.dialogInsideViewport = within(geo.dialog, frame);
+      record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+      if (geo.pageOverflowPx > 1) {
+        record.offenders = await ev(
+          gm,
+          `(() => { const w = document.documentElement.clientWidth; return [...document.querySelectorAll("body *")].filter(e => (e.getBoundingClientRect().right > w + 1 || e.scrollWidth > e.clientWidth + 1) && getComputedStyle(e).display !== "none").slice(0, 10).map(e => e.tagName.toLowerCase() + (e.className && typeof e.className === "string" ? "." + e.className.split(" ").join(".") : "") + " right=" + Math.round(e.getBoundingClientRect().right) + " sw=" + e.scrollWidth + "/" + e.clientWidth + " :: " + (e.textContent || "").trim().slice(0, 30)); })()`,
+        );
+      }
+      // Pinned: the body keeps room. Page: the sheet is one scroller and the body is not a second one.
+      record.checks.layoutChosen = geo.dataLayout === "pinned" || geo.dataLayout === "page";
+      record.checks.bodyKeepsRoomOrPageScrolls =
+        geo.dataLayout === "pinned"
+          ? geo.body.clientHeight >= 6.5 * geo.rem
+          : geo.dialogScroll.overflowY === "auto" && geo.body.overflowY === "visible";
+      record.checks.noNestedActionScroller =
+        geo.footerScroll.scrollHeight <= geo.footerScroll.clientHeight + 1;
+      // Everything a person must be able to tap can be scrolled into view and tapped.
+      record.checks.actionsReachable =
+        reachable(await ev(gm, reachExpression(APPLY_BUTTON))) &&
+        reachable(await ev(gm, reachExpression(CANCEL_BUTTON)));
+      record.checks.reasonReachable = reachable(await ev(gm, reachExpression(REASON_FIELD)));
+      record.textPx = REAL_TEXT ? DEFAULT_FONT_PX : px;
+      record.screenshot = await screenshot(
+        gm,
+        `gm-correction-text-${Math.round((px / 16) * 100)}-${vp.name}.jpg`,
+        { fullPage: false },
+      );
+    });
+  }
+
+  // The on-screen keyboard and large text together (the "320px at 200% text" family). iOS Safari
+  // shrinks only the VISUAL viewport for its keyboard, so a stand-in visual viewport supplies the
+  // visible area (see FAKE_VISUAL_VIEWPORT). For each case the sheet must: stay inside the visible
+  // area; clip nothing; pin its header and action row only when they and 6.5rem of body fit (else be
+  // one scrolling page, with no second scroller inside it); keep the focused field in view; and keep
+  // Apply and Cancel tappable (>= 44px of each in view after scrolling, tap lands on it).
+  const layoutScales = REAL_TEXT ? [DEFAULT_FONT_PX / 16] : [1, 1.5, 2];
+  const layoutCases = [];
+  for (const scale of layoutScales) {
+    layoutCases.push(
+      // [name, viewport, visible height with the keyboard up (null: no keyboard)]
+      [`320-x${scale}-kb298`, byName["phone-small"], 298],
+      [`320-x${scale}-nokb`, byName["phone-small"], null],
+      [`375-x${scale}-kb400`, byName["phone"], 400],
+      [
+        `568x320-x${scale}-kb150`,
+        { name: "phone-568x320", width: 568, height: 320, mobile: true },
+        150,
+      ],
+    );
+  }
+  for (const [name, vp, visible] of layoutCases) {
+    const scale = name.match(/-x([\d.]+)-/)?.[1];
+    await scenario(`sheet-layout-${name}`, vp, async (record) => {
+      try {
+        if (!REAL_TEXT)
+          await ev(gm, `document.documentElement.style.fontSize = "${16 * Number(scale)}px"`);
+        await sleep(200);
+        const pageBefore = await ev(
+          gm,
+          `document.documentElement.scrollWidth - document.documentElement.clientWidth`,
+        );
+        if (visible !== null) await ev(gm, FAKE_VISUAL_VIEWPORT);
         await openCorrection(gm);
-        const frame = frameOf(vp);
+        await ev(gm, `${REASON_FIELD}.focus()`);
+        if (visible !== null) {
+          await ev(gm, `window.__fakeVV.set({ height: ${visible}, offsetTop: 0 })`);
+          await sleep(450);
+        }
         const geo = await ev(gm, MODAL_GEOMETRY);
         record.geometry = geo;
-        record.checks.dialogInsideViewport = within(geo.dialog, frame);
-        record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
-        if (geo.pageOverflowPx > 1) {
-          record.offenders = await ev(
-            gm,
-            `(() => { const w = document.documentElement.clientWidth; return [...document.querySelectorAll("body *")].filter(e => (e.getBoundingClientRect().right > w + 1 || e.scrollWidth > e.clientWidth + 1) && getComputedStyle(e).display !== "none").slice(0, 10).map(e => e.tagName.toLowerCase() + (e.className && typeof e.className === "string" ? "." + e.className.split(" ").join(".") : "") + " right=" + Math.round(e.getBoundingClientRect().right) + " sw=" + e.scrollWidth + "/" + e.clientWidth + " :: " + (e.textContent || "").trim().slice(0, 30)); })()`,
-          );
+        const v = geo.visual;
+        const frame = {
+          left: v.offsetLeft,
+          top: v.offsetTop,
+          right: v.offsetLeft + v.width,
+          bottom: v.offsetTop + v.height,
+        };
+        record.checks.noPageOverflow = pageBefore <= 1 && geo.pageOverflowPx <= 1;
+        record.checks.layoutChosen = geo.dataLayout === "pinned" || geo.dataLayout === "page";
+        record.checks.dialogInsideVisibleArea = within(geo.dialog, frame, 1.5);
+        record.checks.noNestedActionScroller =
+          geo.footerScroll.scrollHeight <= geo.footerScroll.clientHeight + 1;
+        // The hook's choice must agree with an independent measurement (outside the 12px hysteresis band).
+        const needed =
+          geo.header.height +
+          geo.footerScroll.scrollHeight +
+          (geo.footer.height - geo.footerScroll.clientHeight) +
+          3 +
+          7 * geo.rem;
+        const room = geo.backdropContentHeight;
+        if (geo.dataLayout && Math.abs(needed - room) > 12) {
+          record.checks.layoutMatchesMeasurement = needed <= room === (geo.dataLayout === "pinned");
         }
-        record.checks.bodyKeepsRoom = geo.body.clientHeight >= 96;
-        // The action row may scroll on its own at this size, but its buttons must be reachable.
+        if (geo.dataLayout === "pinned") {
+          record.checks.nothingClipped =
+            geo.dialogScroll.scrollHeight <= geo.dialogScroll.clientHeight + 1;
+          record.checks.actionsVisibleAtRest =
+            within(geo.apply, geo.dialog, 1.5) && within(geo.cancel, geo.dialog, 1.5);
+          record.checks.bodyKeepsRoom = geo.body.clientHeight >= 6.5 * geo.rem;
+        } else {
+          record.checks.pageScrolls = geo.dialogScroll.overflowY === "auto";
+          record.checks.bodyIsNotASecondScroller = geo.body.overflowY === "visible";
+        }
+        record.checks.focusedFieldVisible =
+          within(geo.reason, frame, 1.5) &&
+          within(geo.reason, geo.dialog, 1.5) &&
+          (geo.dataLayout !== "pinned" || within(geo.reason, geo.bodyBox, 1.5));
+        record.screenshot = await screenshot(gm, `gm-correction-sheet-layout-${name}.jpg`, {
+          fullPage: false,
+        });
+        // Apply and Cancel: reachable and big enough to tap, wherever the sheet scrolls to.
+        const apply = await ev(gm, reachExpression(APPLY_BUTTON));
+        const cancel = await ev(gm, reachExpression(CANCEL_BUTTON));
+        record.checks.applyReachable = reachable(apply);
+        record.checks.cancelReachable = reachable(cancel);
+        record.checks.actionTargets44 =
+          apply.found && cancel.found && apply.height >= 43.5 && cancel.height >= 43.5;
+        // And back at the top the title is on screen (the sheet is never opened scrolled past it).
         await ev(
           gm,
-          `(() => { const f = document.querySelector(".sheet-footer"); f.scrollTop = f.scrollHeight; })()`,
+          `(() => { for (const el of [document.querySelector('[role="dialog"]'), document.querySelector(".sheet-body")]) if (el) el.scrollTop = 0; })()`,
         );
-        const end = await ev(gm, MODAL_GEOMETRY);
-        record.checks.actionsReachable = within(end.apply, frame) && within(end.cancel, frame);
-        await ev(
-          gm,
-          `(() => { const b = document.querySelector(".sheet-body"); b.scrollTop = b.scrollHeight; })()`,
-        );
-        const bottom = await ev(gm, MODAL_GEOMETRY);
-        record.checks.reasonReachable = within(bottom.reason, frame);
-        record.textPx = px;
-        record.screenshot = await screenshot(
-          gm,
-          `gm-correction-text-${px === 24 ? "150" : "200"}-${vp.name}.jpg`,
-          { fullPage: false },
-        );
-      },
-      { informationalChecks },
-    );
+        const top = await ev(gm, MODAL_GEOMETRY);
+        record.checks.titleVisibleAtTop = within(top.heading, frame, 1.5);
+        record.visibleHeight = visible;
+        record.textScale = Number(scale);
+      } finally {
+        await ev(gm, RESTORE_VISUAL_VIEWPORT);
+      }
+    });
   }
   await applyViewport(gm, byName["desktop"]);
 }
@@ -836,6 +1169,64 @@ async function auditReducedMotion(gm) {
     fail("reduced-motion", `sheet still animates under reduce: ${JSON.stringify(result.reduced)}`);
   if (result.reduced.anyLongTransition)
     fail("reduced-motion", "a transition longer than 50ms remains under reduce");
+}
+
+// ---------- large text: option lists and pickers ----------
+
+/**
+ * One on-screen state at 320px and 375px under large text (150% and 200% emulated, or the one real
+ * `--default-font-px` size). Everything it reports is gating: it is the "320px at 200% text" family that
+ * used to be recorded and excused as the console's limit.
+ */
+async function largeTextPass(device, state) {
+  if (MODAL_ONLY) return;
+  const original = device.vp;
+  const scales = REAL_TEXT ? [DEFAULT_FONT_PX / 16] : [1.5, 2];
+  for (const vp of [byName["phone-small"], byName["phone"]]) {
+    await applyViewport(device, vp);
+    for (const scale of scales) {
+      try {
+        await device.cdp.send(
+          "Emulation.setPageScaleFactor",
+          { pageScaleFactor: 1 },
+          device.sessionId,
+        );
+      } catch {
+        /* nothing to reset */
+      }
+      if (!REAL_TEXT)
+        await ev(device, `document.documentElement.style.fontSize = "${16 * scale}px"`);
+      await sleep(300);
+      const probe = await ev(device, LARGE_TEXT_PROBE);
+      const where = `${device.name}/${state}@${vp.name}x${scale}`;
+      const entry = { surface: device.name, state, viewport: vp.name, scale, ...probe };
+      if (vp.name === "phone-small" && scale === scales[scales.length - 1]) {
+        entry.screenshot = await screenshot(
+          device,
+          `${device.name}-${state}-${vp.name}-text-${Math.round(scale * 100)}.jpg`,
+        );
+      }
+      report.largeText.push(entry);
+      if (probe.pageOverflowPx > 1)
+        fail(`large-text ${where}`, `horizontal overflow ${probe.pageOverflowPx}px`);
+      if (probe.pageZoomed)
+        fail(
+          `large-text ${where}`,
+          `page zoomed out by overflow (inner ${probe.innerWidth}px, client ${probe.clientWidth}px)`,
+        );
+      for (const [key, label] of [
+        ["rowOverflow", "content wider than its box"],
+        ["wordBreaks", "word broken mid-way inside an option row"],
+        ["smallTargets", "target under 44px"],
+        ["outside", "control outside the viewport"],
+        ["selectsWithoutEcho", "closed select hides its value with no echo"],
+      ]) {
+        for (const item of probe[key]) fail(`large-text ${where}`, `${label}: ${item}`);
+      }
+    }
+    if (!REAL_TEXT) await ev(device, `document.documentElement.style.fontSize = ""`);
+  }
+  await applyViewport(device, original);
 }
 
 // ---------- flow ----------
@@ -928,11 +1319,13 @@ async function main() {
       "compose",
     );
     await captureState(player, "compose");
+    await largeTextPass(player, "compose");
 
     // Disclosure: "Why?" opened.
     await ev(player, `document.querySelector("details summary").click()`);
     await sleep(250);
     await captureState(player, "compose-why-open", { axeViewports: ["phone"] });
+    await largeTextPass(player, "compose-why-open");
     await ev(player, `document.querySelector("details summary").click()`);
 
     // Table connects.
@@ -952,6 +1345,7 @@ async function main() {
       "claimed",
     );
     await captureState(gm, "console-scene-loaded");
+    await largeTextPass(gm, "console-scene-loaded");
 
     // Player declares; GM sees pending.
     await clickText(player, "button", /^Declare action$/);
@@ -959,6 +1353,7 @@ async function main() {
     await captureState(player, "declared", { axeViewports: ["phone"] });
     await waitFor(gm, `${textMatch("button", "/^Roll it$/")}`, 30000, "Roll it");
     await captureState(gm, "console-pending");
+    await largeTextPass(gm, "console-pending");
 
     await auditModal(gm);
     await auditReducedMotion(gm);
@@ -968,6 +1363,7 @@ async function main() {
     await clickText(gm, "button", /^Roll it$/);
     await waitFor(player, `document.body.textContent.includes("Your roll")`, 30000, "allocation");
     await captureState(player, "allocation");
+    await largeTextPass(player, "allocation");
     await ev(
       player,
       `document.querySelectorAll("fieldset.allocation-die-group").forEach(g => g.querySelector("input[type=radio]")?.click())`,
@@ -982,6 +1378,7 @@ async function main() {
     );
     if (await ev(player, `document.body.textContent.includes("Choose an injury")`)) {
       await captureState(player, "injury-choice", { axeViewports: ["phone"] });
+      await largeTextPass(player, "injury-choice");
       await ev(player, `document.querySelector("input[type=radio]").click()`);
       await clickText(player, "button", /confirm|choose|apply/i);
       await waitFor(player, `document.body.textContent.includes("Resolved")`, 30000, "resolved");
@@ -1035,6 +1432,8 @@ async function main() {
           .filter((v) => !isHardAxe(v))
           .map((v) => `${s.surface}/${s.state}@${s.viewport}: ${v.id}`),
       ),
+      largeTextPasses: report.largeText.length,
+      modalScenarios: report.modal.length,
       failures: report.failures.length,
     };
     writeFileSync(join(OUT, "report.json"), JSON.stringify(report, null, 2) + "\n");
@@ -1044,6 +1443,7 @@ async function main() {
       /* ignore */
     }
     chrome.kill();
+    for (const own of ownChromes) own.kill();
     console.log(JSON.stringify(report.summary, null, 2));
     console.log(report.ok ? "UI AUDIT PASSED" : "UI AUDIT FOUND PROBLEMS");
     process.exit(report.ok || TOLERATE ? 0 : 1);
