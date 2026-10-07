@@ -521,6 +521,10 @@ describe("reskin stylesheet contract", () => {
       expect(
         declaration(rulesFor(/^\.sheet\[data-layout="page"\]$/), "overscroll-behavior"),
       ).toEqual(["contain"]);
+      // The sheet is the scroller now, so it keeps a focused field clear of its edges like the body does.
+      expect(
+        declaration(rulesFor(/^\.sheet\[data-layout="page"\]$/), "scroll-padding-block"),
+      ).toEqual(["1rem"]);
       const pageBody = rulesFor(/^\.sheet\[data-layout="page"\] \.sheet-body$/);
       expect(declaration(pageBody, "flex")).toEqual(["none"]);
       expect(declaration(pageBody, "overflow")).toEqual(["visible"]);

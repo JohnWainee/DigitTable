@@ -1748,6 +1748,9 @@ details ul {
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  /* The one scroller is now the sheet itself: keep a focused field a rem clear of its edges (the
+     keyboard sits right below the visible area), as .sheet-body does in the pinned layout. */
+  scroll-padding-block: 1rem;
 }
 
 .sheet[data-layout="page"] .sheet-body {

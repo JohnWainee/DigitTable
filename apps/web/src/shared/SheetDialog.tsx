@@ -72,7 +72,10 @@ export interface SheetDialogProps {
   readonly titleId: string;
   readonly title: ReactNode;
   readonly onClose: () => void;
-  /** Sticky action row (primary and cancel buttons); always reachable without scrolling the body. */
+  /**
+   * Action row (primary and cancel buttons). Pinned below the scrolling body while it and a usable
+   * slice of body fit in what is visible; otherwise the last thing on the one scrolling page.
+   */
   readonly footer: ReactNode;
   readonly children: ReactNode;
 }
