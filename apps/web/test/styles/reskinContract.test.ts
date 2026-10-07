@@ -208,9 +208,25 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(rulesFor(/^legend$/), "overflow-wrap")).toContain("anywhere");
       expect(declaration(rulesFor(/^legend$/), "max-width")).toContain("100%");
       expect(declaration(rulesFor(/^\.stepper-controls$/), "flex-wrap")).toContain("wrap");
-      expect(declaration(rulesFor(/^\.sheet-actions$/), "grid-template-columns")[0]).toMatch(
-        /^repeat\(auto-fit, minmax\(min\(100%, 9rem\), 1fr\)\)$/,
-      );
+    });
+
+    it("keeps two action columns only while each label's longest word fits its half, otherwise stacks them", () => {
+      const row = rulesFor(/^\.sheet-actions$/);
+      expect(declaration(row, "display")).toEqual(["flex"]);
+      expect(declaration(row, "flex-flow")).toEqual(["row wrap"]);
+      const item = rulesFor(/^\.sheet-actions > \*$/);
+      // The automatic content minimum, set explicitly (the buttons' own 44px min-width would replace it),
+      // and clamped by max-width: a word wider than the whole row breaks instead of overflowing and being
+      // clipped by the sheet (an explicit `min-content` would have overridden the clamp).
+      expect(declaration(item, "min-width")).toEqual(["auto"]);
+      expect(declaration(item, "max-width")).toEqual(["100%"]);
+      // Equal halves: basis = 50% less half the gap, so two of them and the gap are exactly one row.
+      const gap = parseFloat(declaration(row, "gap")[0]!);
+      const basis = /^1 1 calc\(50% - ([\d.]+)rem\)$/.exec(declaration(item, "flex")[0] ?? "");
+      expect(basis).not.toBeNull();
+      expect(parseFloat(basis![1]!)).toBeCloseTo(gap / 2, 5);
+      // Not a fixed-minimum grid any more: that cannot know how wide a label word is.
+      expect(declaration(row, "grid-template-columns")).toEqual([]);
     });
 
     it("keeps a dark band between a focused button and its focus ring, over the drop shadow", () => {
@@ -392,17 +408,46 @@ describe("reskin stylesheet contract", () => {
   });
 
   describe("fw pass: large text on small phones (320px at 200% text), option rows and the sheet", () => {
-    /** Evaluates `min(<n>rem, <m>vw)` (and `min(<n>rem, <m>px)`) for a viewport width and a root font size. */
+    /**
+     * Evaluates a CSS length made of rem / px / vw terms and nested `min()` / `max()` calls (what the
+     * gutter, box, chevron, icon and label caps are) for a viewport width and a root font size.
+     */
     function evalMin(expression: string, viewportWidth: number, rootPx: number): number {
-      const match = /^min\(([\d.]+)(rem|px|vw),\s*([\d.]+)(rem|px|vw)\)$/.exec(expression.trim());
-      if (!match) throw new Error(`not a two-term min(): ${expression}`);
-      const toPx = (value: string, unit: string): number =>
-        unit === "rem"
-          ? Number(value) * rootPx
-          : unit === "vw"
-            ? (Number(value) * viewportWidth) / 100
-            : Number(value);
-      return Math.min(toPx(match[1]!, match[2]!), toPx(match[3]!, match[4]!));
+      const src = expression.trim();
+      let at = 0;
+      const skip = (): void => {
+        while (src[at] === " ") at += 1;
+      };
+      function term(): number {
+        skip();
+        const call = /^(min|max)\(/.exec(src.slice(at));
+        if (call) {
+          at += call[0].length;
+          const args = [term()];
+          skip();
+          while (src[at] === ",") {
+            at += 1;
+            args.push(term());
+            skip();
+          }
+          if (src[at] !== ")") throw new Error(`unbalanced ${call[1]}() in: ${expression}`);
+          at += 1;
+          return call[1] === "min" ? Math.min(...args) : Math.max(...args);
+        }
+        const length = /^([\d.]+)(rem|px|vw)/.exec(src.slice(at));
+        if (!length) throw new Error(`cannot evaluate "${src.slice(at)}" in: ${expression}`);
+        at += length[0].length;
+        const value = Number(length[1]);
+        return length[2] === "rem"
+          ? value * rootPx
+          : length[2] === "vw"
+            ? (value * viewportWidth) / 100
+            : value;
+      }
+      const result = term();
+      skip();
+      if (at !== src.length) throw new Error(`trailing input in: ${expression}`);
+      return result;
     }
     const rootToken = (name: string): string =>
       new RegExp(`--${name}:\\s*(min\\([^;]+\\));`).exec(css)?.[1] ?? "";
@@ -475,8 +520,24 @@ describe("reskin stylesheet contract", () => {
       // flex row can shrink the text to its column instead of widening the page.
       expect(declaration(row, "overflow-wrap")).toEqual(["anywhere"]);
       expect(declaration(row, "min-width")).toContain("0");
-      expect(declaration(rulesFor(/^\.gear-option button$/), "overflow-wrap")).toEqual(["normal"]);
+      const rowButton = rulesFor(/^\.gear-option button$/);
+      expect(declaration(rowButton, "overflow-wrap")).toEqual(["normal"]);
+      // ...and never narrows it: a button has an explicit min-width (the tap size), which switches off the
+      // automatic minimum, so without `flex: none` a squeezed row shrank "Reveal" below its own label.
+      expect(declaration(rowButton, "flex")).toEqual(["none"]);
       expect(declaration(rulesFor(/^body$/), "overflow-wrap")).toEqual(["break-word"]);
+    });
+
+    it("wraps a row's own button onto a second line once the text would be narrower than 8rem, and leaves wide rows alone", () => {
+      // Scoped to rows that hold a button: wrapping a checkbox row would drop its box onto its own line.
+      expect(declaration(rulesFor(/^\.gear-option:has\(> button\)$/), "flex-wrap")).toEqual([
+        "wrap",
+      ]);
+      const text = rulesFor(/^\.gear-option:has\(> button\) > span$/);
+      // The basis decides when the button wraps (8rem grows with the text size); growing is capped at the
+      // text's own width, so where there is room the button still follows the text immediately.
+      expect(declaration(text, "flex")).toEqual(["1 1 8rem"]);
+      expect(declaration(text, "max-width")).toEqual(["max-content"]);
     });
 
     it("keeps a decorative icon inside an option row from taking the label's column at 200% text", () => {
@@ -501,12 +562,22 @@ describe("reskin stylesheet contract", () => {
       expect(evalMin("min(1rem, 18px)", 320, 16)).toBe(16);
     });
 
-    it("sizes button labels so 'Correction' and 'Allocation' fit a 320px button at 200% text, and are untouched at the default size", () => {
+    it("sizes button labels so 'Correction' and 'Allocation' fit a 320px button at 200% text, never below the text itself, and untouched at the default size", () => {
       const label = declaration(rulesFor(/^\.primary-action,\s*\.secondary-action$/s), "font-size");
-      expect(label).toEqual(["min(1.25rem, 7vw)"]);
+      expect(label).toEqual(["min(1.25rem, max(1rem, 7vw))"]);
       for (const width of [320, 375, 412, 768, 1280])
         expect(evalMin(label[0]!, width, 16)).toBe(20);
-      expect(evalMin(label[0]!, 320, 32)).toBeCloseTo(22.4);
+      // A label follows the text-size setting: never smaller than the root (body) text, and it never
+      // shrinks as the text grows (a plain 7vw would have frozen it at 22.4px on a 320px phone).
+      let previous = 0;
+      for (const root of [16, 20, 24, 28, 32]) {
+        const size = evalMin(label[0]!, 320, root);
+        expect(size).toBeGreaterThanOrEqual(root);
+        expect(size).toBeGreaterThanOrEqual(previous);
+        previous = size;
+      }
+      expect(evalMin(label[0]!, 320, 20)).toBeCloseTo(22.4);
+      expect(evalMin(label[0]!, 320, 32)).toBe(32);
     });
 
     it("has the sheet choose between a pinned layout and one scrolling page from measured sizes", () => {

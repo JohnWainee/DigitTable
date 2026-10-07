@@ -54,13 +54,13 @@ function px(value: string): number {
  *
  * Why measure: the pinned layout (header and action row fixed, body scrolling) needs the header and
  * the action row to leave the body some room. How tall they are depends on the text size, the
- * width (the two buttons stack below about 21rem) and the title, and how much is VISIBLE depends on
- * the on-screen keyboard, which on iOS shrinks only the visual viewport (so no media query sees
- * it). A fixed height threshold was wrong for the combinations that matter most: at 150% text on a
- * 320px phone with the keyboard up the pinned parts took all but 48px of a 262px sheet, clipped the
- * action row and left Cancel outside the sheet, while the action row's own 40% cap scrolled it
- * inside a second scroller. Measured, the sheet pins when it fits and scrolls as one page when it
- * does not.
+ * width (the two buttons stack once a label's longest word no longer fits its half) and the title,
+ * and how much is VISIBLE depends on the on-screen keyboard, which on iOS shrinks only the visual
+ * viewport (so no media query sees it). A fixed height threshold was wrong for the combinations
+ * that matter most: at 150% text on a 320px phone with the keyboard up the pinned parts took all
+ * but 48px of a 262px sheet, clipped the action row and left Cancel outside the sheet, while the
+ * action row's own 40% cap scrolled it inside a second scroller. Measured, the sheet pins when it
+ * fits and scrolls as one page when it does not.
  *
  * Recomputed whenever the backdrop (which `useVisualViewportBox` sizes to what is visible), the
  * header or the action row changes size, and on viewport resize. `onLayoutChange` runs after a flip

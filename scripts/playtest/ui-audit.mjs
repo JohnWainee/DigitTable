@@ -63,6 +63,7 @@ const SHOTS = !args.includes("--no-shots");
 const TOLERATE = args.includes("--tolerate-baseline");
 const DUMP_HTML = args.includes("--dump-html"); // also write a scriptless HTML snapshot per state under <out>/dump
 const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (fast iteration on the pop-out)
+const ONLY_SCENARIO = arg("only-scenario", ""); // with --modal-only: run just the modal scenarios whose name contains this
 // A REAL browser font-size preference (px) instead of the emulated root font-size: one Chrome per
 // device, each with `webkit.webprefs.default_font_size` in its own profile, so rem in media queries
 // scales too (what a person who set "very large" text gets). 0 = emulate with the root font-size.
@@ -160,6 +161,22 @@ class Cdp {
 const devices = [];
 const ownChromes = [];
 
+/**
+ * `Cdp.connect` attaches to whatever answers on a debugging port, so a port another lane's Chrome already holds
+ * would silently make this run drive someone else's browser (one with no font preference, other tabs, ...).
+ * Chrome binds both address families, so both are asked; either answering means taken.
+ */
+async function assertPortFree(port) {
+  for (const host of ["127.0.0.1", "[::1]"]) {
+    const answered = await fetch(`http://${host}:${port}/json/version`).then(
+      () => true,
+      () => false,
+    );
+    if (answered)
+      throw new Error(`debugging port ${port} is already in use; choose another --port`);
+  }
+}
+
 /** One headless Chrome whose profile carries a real default font size (see DEFAULT_FONT_PX). */
 async function launchChromeWithFontPreference(index) {
   const profile = mkdtempSync(join(tmpdir(), `digitable-ui-audit-font-${index}-`));
@@ -177,6 +194,7 @@ async function launchChromeWithFontPreference(index) {
     }),
   );
   const port = PORT + 10 + index;
+  await assertPortFree(port);
   ownChromes.push(
     spawn(
       CHROME,
@@ -335,8 +353,36 @@ async function screenshot(device, file, { fullPage = true } = {}) {
   return file;
 }
 
+/**
+ * In-page helper shared by the default-text control audit and the large-text probe: a button's label
+ * must sit inside the button's own box (a flex row squeezing the button below its label made "Reveal"
+ * spill out of it) and must not be broken mid-word (4-18 letters, hyphenated compounds exempt).
+ */
+const BUTTON_LABEL_HELPER = String.raw`
+  const labelProblems = (el, r) => {
+    const out = [];
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const text = node.nodeValue;
+      const wordRe = /\S+/g;
+      for (let m = wordRe.exec(text); m; m = wordRe.exec(text)) {
+        const range = document.createRange();
+        range.setStart(node, m.index);
+        range.setEnd(node, m.index + m[0].length);
+        const rects = [...range.getClientRects()].filter((q) => q.width > 0.5 && q.height > 0.5);
+        if (rects.length === 0) continue;
+        if (rects.some((q) => q.left < r.left - 0.5 || q.right > r.right + 0.5)) out.push('label "' + m[0] + '" overflows its button');
+        const word = m[0].replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, "");
+        if (word.length >= 4 && word.length <= 18 && !/^[A-Za-z0-9]+-[A-Za-z0-9-]+$/.test(m[0]) && rects.length > 1 && new Set(rects.map((q) => Math.round(q.top / 6))).size > 1) out.push('label word "' + word + '" broken mid-way');
+      }
+    }
+    return out;
+  };
+`;
+
 /** In-page geometry audit of every interactive control. Runs against whatever is on screen. */
 const CONTROL_AUDIT = `(() => {
+  ${BUTTON_LABEL_HELPER}
   const vw = document.documentElement.clientWidth;
   const visible = (el) => {
     const r = el.getBoundingClientRect();
@@ -363,6 +409,7 @@ const CONTROL_AUDIT = `(() => {
     if (Math.min(r.width, r.height) < 43.5) found.push("target " + Math.round(r.width) + "x" + Math.round(r.height));
     if (r.right > vw + 0.5 || r.left < -0.5) found.push("outside viewport (" + Math.round(r.left) + ".." + Math.round(r.right) + " of " + vw + ")");
     if (el.matches('input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), select, textarea') && parseFloat(cs.fontSize) < 16) found.push("font-size " + cs.fontSize);
+    if (el.tagName === "BUTTON") found.push(...labelProblems(el, r));
     if (found.length) issues.push({ control: describe(el), problems: found });
   }
   const de = document.documentElement;
@@ -578,6 +625,7 @@ const REASON_FIELD = `document.querySelector('[role="dialog"] #correction-reason
  * must keep a practical touch target, and a closed <select> whose value does not fit must echo it.
  */
 const LARGE_TEXT_PROBE = String.raw`(() => {
+  ${BUTTON_LABEL_HELPER}
   const de = document.documentElement;
   const vw = de.clientWidth;
   const describe = (el) => {
@@ -592,8 +640,10 @@ const LARGE_TEXT_PROBE = String.raw`(() => {
     pageZoomed: Math.abs(innerWidth - vw) > 1,
     innerWidth, clientWidth: vw, rootFontPx: parseFloat(getComputedStyle(de).fontSize),
     optionRows: 0, rowOverflow: [], wordBreaks: [], smallTargets: [], outside: [], selectsWithoutEcho: [], selects: 0,
+    buttonLabelProblems: [], buttons: 0,
   };
-  const containers = "main .gear-option, main fieldset, main .step, main .pending-action-card, main details, main .pool-summary, main .allocation-die-group";
+  // Every visible control on screen, the open sheet included (the rest of the page is inert while it is open).
+  const containers = ".gear-option, fieldset, .step, .pending-action-card, details, .pool-summary, .allocation-die-group, .sheet-actions";
   for (const el of document.querySelectorAll(containers)) {
     if (!shown(el)) continue;
     if (el.classList.contains("gear-option")) out.optionRows += 1;
@@ -601,7 +651,7 @@ const LARGE_TEXT_PROBE = String.raw`(() => {
     if (el.clientWidth > 0 && el.scrollWidth > el.clientWidth + 1 && cs.overflowX === "visible") out.rowOverflow.push(describe(el) + " sw=" + el.scrollWidth + "/cw=" + el.clientWidth);
   }
   // Words (4-18 letters) split across lines inside option rows.
-  for (const row of document.querySelectorAll("main .gear-option")) {
+  for (const row of document.querySelectorAll(".gear-option")) {
     if (!shown(row)) continue;
     const walker = document.createTreeWalker(row, NodeFilter.SHOW_TEXT);
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
@@ -617,15 +667,22 @@ const LARGE_TEXT_PROBE = String.raw`(() => {
       }
     }
   }
-  for (const el of document.querySelectorAll("main .gear-option, main summary, main select, main input:not([type=checkbox]):not([type=radio]), main button")) {
+  for (const el of document.querySelectorAll(".gear-option, summary, select, input:not([type=checkbox]):not([type=radio]), button")) {
     if (!shown(el)) continue;
     const r = el.getBoundingClientRect();
     if (r.width === 0 || r.height === 0) continue;
     if (Math.min(r.width, r.height) < 43.5) out.smallTargets.push(describe(el) + " " + Math.round(r.width) + "x" + Math.round(r.height));
     if (r.right > vw + 0.5 || r.left < -0.5) out.outside.push(describe(el) + " [" + Math.round(r.left) + ".." + Math.round(r.right) + "]");
   }
+  for (const button of document.querySelectorAll("button")) {
+    if (!shown(button)) continue;
+    const r = button.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) continue;
+    out.buttons += 1;
+    for (const problem of labelProblems(button, r)) out.buttonLabelProblems.push(describe(button) + " :: " + problem);
+  }
   const canvas = document.createElement("canvas").getContext("2d");
-  for (const select of document.querySelectorAll("main select")) {
+  for (const select of document.querySelectorAll("select")) {
     if (!shown(select)) continue;
     out.selects += 1;
     const cs = getComputedStyle(select);
@@ -769,7 +826,10 @@ async function auditModal(gm) {
 
   // ---- Scenarios that layout-viewport resizing cannot reach. Each MUST execute at least one check;
   // an exception, or an emulation this Chrome cannot perform, is a FAILURE and never a silent skip. ----
+  let scenariosRun = 0;
   async function scenario(name, viewport, body, { informationalChecks = [] } = {}) {
+    if (ONLY_SCENARIO && !name.includes(ONLY_SCENARIO)) return;
+    scenariosRun += 1;
     const record = {
       viewport: viewport.name,
       size: `${viewport.width}x${viewport.height}`,
@@ -811,6 +871,25 @@ async function auditModal(gm) {
   }
 
   const frameOf = (vp) => ({ left: 0, top: 0, right: vp.width, bottom: vp.height });
+
+  /**
+   * The open sheet's own content under the same probe the pages get: no option row or fieldset wider than its box,
+   * no word broken mid-way inside a row, no button label broken or spilling out of its button, no target under 44px,
+   * nothing outside the viewport. (The rest of the page is inert while the sheet is open, so only the sheet is seen.)
+   */
+  async function sheetContentFits(record) {
+    const content = await ev(gm, LARGE_TEXT_PROBE);
+    const problems = {
+      rowOverflow: content.rowOverflow,
+      wordBreaks: content.wordBreaks,
+      buttonLabelProblems: content.buttonLabelProblems,
+      smallTargets: content.smallTargets,
+      outside: content.outside,
+    };
+    const clean = Object.values(problems).every((list) => list.length === 0);
+    if (!clean) record.sheetContentProblems = problems;
+    return clean;
+  }
 
   await scenario("zoom-emulated", byName["phone"], async (record) => {
     await openCorrection(gm);
@@ -989,8 +1068,10 @@ async function auditModal(gm) {
       const frame = frameOf(vp);
       const geo = await ev(gm, MODAL_GEOMETRY);
       record.geometry = geo;
+      if (REAL_TEXT) record.checks.realFontApplied = geo.rem === DEFAULT_FONT_PX;
       record.checks.dialogInsideViewport = within(geo.dialog, frame);
       record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+      record.checks.sheetContentFits = await sheetContentFits(record);
       if (geo.pageOverflowPx > 1) {
         record.offenders = await ev(
           gm,
@@ -1033,6 +1114,8 @@ async function auditModal(gm) {
       [`320-x${scale}-kb298`, byName["phone-small"], 298, 0],
       [`320-x${scale}-nokb`, byName["phone-small"], null, 0],
       [`375-x${scale}-kb400`, byName["phone"], 400, 0],
+      // 360 is the most common Android width: two 155px columns once broke "CORRECTION" mid-word there.
+      [`360-x${scale}-kb400`, { name: "phone-360", width: 360, height: 800, mobile: true }, 400, 0],
       // iOS scrolls the layout viewport under the keyboard to reveal the focused field: the visible
       // area then starts below the top of the layout viewport.
       [`375-x${scale}-kb400-scrolled`, byName["phone"], 400, 150],
@@ -1064,6 +1147,8 @@ async function auditModal(gm) {
         }
         const geo = await ev(gm, MODAL_GEOMETRY);
         record.geometry = geo;
+        if (REAL_TEXT) record.checks.realFontApplied = geo.rem === DEFAULT_FONT_PX;
+        record.checks.sheetContentFits = await sheetContentFits(record);
         const v = geo.visual;
         const frame = {
           left: v.offsetLeft,
@@ -1125,6 +1210,126 @@ async function auditModal(gm) {
       }
     });
   }
+
+  // Where the sheet flips between "pinned" and "page" must be where the header, the whole action row and 7rem of
+  // body stop fitting in the visible area. Every height around the flip is sampled and the layout the hook chose is
+  // compared with what the DOM measures right then (a hook that forgot the backdrop's padding or a border flips a
+  // few px early or late, which no fixed-height scenario can see).
+  const FLIP_SAMPLE = `(() => {
+    const dialog = document.querySelector('[role="dialog"]');
+    const backdrop = dialog.parentElement;
+    const bs = getComputedStyle(backdrop);
+    const ds = getComputedStyle(dialog);
+    const header = dialog.querySelector(".sheet-header");
+    const footer = dialog.querySelector(".sheet-footer");
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const pad = parseFloat(bs.paddingTop) + parseFloat(bs.paddingBottom);
+    return {
+      layout: dialog.dataset.layout ?? null,
+      room: backdrop.clientHeight - pad,
+      pad,
+      needed: header.offsetHeight + footer.scrollHeight + (footer.offsetHeight - footer.clientHeight) + parseFloat(ds.borderTopWidth) + parseFloat(ds.borderBottomWidth) + 7 * rem,
+    };
+  })()`;
+  const flipCases = REAL_TEXT
+    ? [
+        [
+          "412-real",
+          { name: "phone-412", width: 412, height: 915, mobile: true },
+          DEFAULT_FONT_PX / 16,
+        ],
+      ]
+    : [
+        ["320-x1", byName["phone-small"], 1],
+        ["375-x1.5", byName["phone"], 1.5],
+        ["412-x2", { name: "phone-412", width: 412, height: 915, mobile: true }, 2],
+      ];
+  for (const [name, vp, scale] of flipCases) {
+    await scenario(`sheet-flip-${name}`, vp, async (record) => {
+      try {
+        if (!REAL_TEXT) await ev(gm, `document.documentElement.style.fontSize = "${16 * scale}px"`);
+        await sleep(200);
+        await ev(gm, FAKE_VISUAL_VIEWPORT);
+        await openCorrection(gm);
+        await ev(gm, `window.__fakeVV.set({ height: ${vp.height}, offsetTop: 0 })`);
+        await sleep(150);
+        const first = await ev(gm, FLIP_SAMPLE);
+        const centre = Math.ceil(first.needed + first.pad);
+        const samples = [];
+        for (let h = centre + 30; h >= centre - 30; h -= 2) {
+          await ev(gm, `window.__fakeVV.set({ height: ${h}, offsetTop: 0 })`);
+          await sleep(70);
+          samples.push({ h, ...(await ev(gm, FLIP_SAMPLE)) });
+        }
+        record.centre = centre;
+        record.samples = samples.map((x) => [
+          x.h,
+          x.layout,
+          Math.round(x.room * 10) / 10,
+          Math.round(x.needed * 10) / 10,
+        ]);
+        // Outside a 1px band around the threshold the layout must be exactly what the measurement says.
+        const wrong = samples.filter(
+          (x) =>
+            (x.needed <= x.room - 1 && x.layout !== "pinned") ||
+            (x.needed > x.room + 1 && x.layout !== "page"),
+        );
+        record.checks.layoutFollowsMeasurement = wrong.length === 0;
+        if (wrong.length > 0) record.wrongSamples = wrong.slice(0, 6);
+        record.checks.bothLayoutsSeen =
+          samples.some((x) => x.layout === "pinned") && samples.some((x) => x.layout === "page");
+        // Sweeping downwards there is exactly one flip (no flapping).
+        const flips = samples.slice(1).filter((x, i) => x.layout !== samples[i].layout).length;
+        record.checks.oneFlipGoingDown = flips === 1;
+      } finally {
+        await ev(gm, RESTORE_VISUAL_VIEWPORT);
+      }
+    });
+  }
+
+  // A control focused with the keyboard (a checkbox, a button) must still be on screen after the keyboard flips the
+  // layout: the flip changes which element scrolls, which would otherwise strand it below the visible area. The
+  // premise is asserted (`startedPinned`): with a real 200% font a 568px-tall phone is already a scrolling page, so
+  // that case starts from a taller window and the visible area then shrinks to 298px.
+  await scenario(
+    "sheet-flip-keeps-focused-control-in-view",
+    REAL_TEXT
+      ? { name: "phone-320x1100", width: 320, height: 1100, mobile: true }
+      : byName["phone-small"],
+    async (record) => {
+      try {
+        await sleep(200);
+        await ev(gm, FAKE_VISUAL_VIEWPORT);
+        await openCorrection(gm);
+        await ev(
+          gm,
+          `(() => { const label = [...document.querySelectorAll('[role="dialog"] label')].find((l) => /retired/i.test(l.textContent)); label.querySelector("input").focus(); return true; })()`,
+        );
+        await sleep(150);
+        const DUMP = `(() => { const el = document.activeElement; const d = document.querySelector('[role="dialog"]'); const b = d.querySelector(".sheet-body"); const r = el.getBoundingClientRect(); return { top: Math.round(r.top), layout: d.dataset.layout, bodyScrollTop: b.scrollTop, sheetScrollTop: d.scrollTop, sheetScrollHeight: d.scrollHeight, sheetClientHeight: d.clientHeight, sheetOverflow: getComputedStyle(d).overflowY, bodyOverflow: getComputedStyle(b).overflowY, active: el.tagName + "." + (el.type || "") }; })()`;
+        record.before = await ev(gm, DUMP);
+        record.checks.startedPinned = record.before.layout === "pinned";
+        await ev(gm, `window.__fakeVV.set({ height: 298, offsetTop: 0 })`);
+        record.immediately = await ev(gm, DUMP);
+        await sleep(500);
+        record.after = await ev(gm, DUMP);
+        const state = await ev(
+          gm,
+          `(() => { const el = document.activeElement; const r = el.getBoundingClientRect(); const v = window.visualViewport; return { isCheckbox: el.type === "checkbox", layout: document.querySelector('[role="dialog"]').dataset.layout, top: r.top, bottom: r.bottom, frameTop: v.offsetTop, frameBottom: v.offsetTop + v.height }; })()`,
+        );
+        record.state = state;
+        record.checks.flippedToPage = state.layout === "page";
+        record.checks.focusKept = state.isCheckbox;
+        record.checks.focusedControlInView =
+          state.top >= state.frameTop - 1 && state.bottom <= state.frameBottom + 1;
+      } finally {
+        await ev(gm, RESTORE_VISUAL_VIEWPORT);
+      }
+    },
+  );
+  // A typo in --only-scenario would otherwise run nothing and still report a pass.
+  if (ONLY_SCENARIO && scenariosRun === 0)
+    fail("modal", `--only-scenario "${ONLY_SCENARIO}" matched no modal scenario`);
   await applyViewport(gm, byName["desktop"]);
 }
 
@@ -1213,6 +1418,12 @@ async function largeTextPass(device, state) {
         );
       }
       report.largeText.push(entry);
+      // Positive control: a "real 200%" run that silently failed to apply the preference would prove nothing.
+      if (REAL_TEXT && probe.rootFontPx !== DEFAULT_FONT_PX)
+        fail(
+          `large-text ${where}`,
+          `root font is ${probe.rootFontPx}px, expected ${DEFAULT_FONT_PX}px`,
+        );
       if (probe.pageOverflowPx > 1)
         fail(`large-text ${where}`, `horizontal overflow ${probe.pageOverflowPx}px`);
       if (probe.pageZoomed)
@@ -1226,6 +1437,7 @@ async function largeTextPass(device, state) {
         ["smallTargets", "target under 44px"],
         ["outside", "control outside the viewport"],
         ["selectsWithoutEcho", "closed select hides its value with no echo"],
+        ["buttonLabelProblems", "button label"],
       ]) {
         for (const item of probe[key]) fail(`large-text ${where}`, `${label}: ${item}`);
       }
@@ -1238,6 +1450,7 @@ async function largeTextPass(device, state) {
 // ---------- flow ----------
 
 async function main() {
+  await assertPortFree(PORT);
   const profile = mkdtempSync(join(tmpdir(), "digitable-ui-audit-"));
   const chrome = spawn(
     CHROME,
@@ -1411,6 +1624,9 @@ async function main() {
     );
     await captureState(table, "next-scene");
     await captureState(gm, "console-next-scene");
+    // Scenes 2 and 4 carry a hidden threat, so the GM's console has a "Reveal" row that scene 1 lacks (its
+    // button label once spilled out of its box at 320px/150% text).
+    await largeTextPass(gm, "console-next-scene");
   } catch (error) {
     fail("flow", String(error.message));
   } finally {

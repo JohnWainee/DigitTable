@@ -479,9 +479,11 @@ button {
   font-family: var(--font-display);
   font-weight: 700;
   font-synthesis-weight: none;
-  /* 7vw is 22.4px at 320px, above the 20px a 1.25rem label has at the default size, so nothing
-     changes there; at 200% text a 40px label broke "Correction" and "Allocation" mid-word. */
-  font-size: min(1.25rem, 7vw);
+  /* The label grows with the text but is held to 7vw on a narrow phone, never below the text itself
+     (1rem): 7vw is 22.4px at 320px, above the 20px a 1.25rem label has at the default size, so
+     nothing changes there; at 200% text a 40px label broke "Correction" and "Allocation" mid-word,
+     and a plain 7vw would have stopped the label following the text-size setting at all. */
+  font-size: min(1.25rem, max(1rem, 7vw));
   line-height: 1.1;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -784,10 +786,27 @@ input[type="radio"]:disabled {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* An action button sharing a row keeps its label whole: the inherited `anywhere` would let a
-   squeezed row break "Reveal" mid-word. */
+/* An action button sharing a row keeps its whole label: it neither breaks it (the inherited
+   `anywhere` would) nor shrinks below it (an explicit min-width, as the tap size is, switches off the
+   automatic minimum, so `flex: none` is what stops the squeezed row narrowing it: "Reveal" was
+   breaking mid-word at 320px and spilling out of its box); the text beside it wraps instead. */
 .gear-option button {
+  flex: none;
   overflow-wrap: normal;
+}
+
+/* A row that carries its own button (the GM's hidden-threat "Reveal"): the text keeps a readable
+   measure beside it (8rem, which grows with the text) or the button drops to its own line. Without
+   the wrap, large text left the text a few characters wide and broke "Enforcer" mid-word. Where
+   there is room nothing changes: the text stops growing at its own width, so the button still sits
+   right after it. */
+.gear-option:has(> button) {
+  flex-wrap: wrap;
+}
+
+.gear-option:has(> button) > span {
+  flex: 1 1 8rem;
+  max-width: max-content;
 }
 
 .form-field--checkbox {
@@ -1649,11 +1668,25 @@ details ul {
   }
 }
 
-/* Two columns while each button has room, one full-width column otherwise (narrow or large text). */
+/* Two equal columns while the longest word of each label fits in its half, one full-width column
+   otherwise (narrow phone or large text). The browser measures the word from the label itself: a
+   fixed column minimum (this was 9rem) cannot know it, and at 360-390px with default text
+   "CORRECTION" (tracked, uppercase) broke mid-word as "CORRECTIO / N". */
 .sheet-actions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  display: flex;
+  flex-flow: row wrap;
   gap: 0.75rem;
+}
+
+.sheet-actions > * {
+  /* A half, less half the gap: two of them plus the gap are exactly one row. */
+  flex: 1 1 calc(50% - 0.375rem);
+  /* `auto`, set explicitly on purpose: the buttons' own min-width (the 44px target) would otherwise
+     replace the automatic content minimum, and a half would be squeezed below its longest word.
+     `max-width` clamps that minimum, so a word wider than the whole row (a wide font at 200% text on a
+     320px phone) breaks instead of overflowing the row and being clipped by the sheet. */
+  min-width: auto;
+  max-width: 100%;
 }
 
 /* Wide: a centred card with room around it instead of an edge-attached sheet. */

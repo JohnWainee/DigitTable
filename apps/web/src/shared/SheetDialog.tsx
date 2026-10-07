@@ -51,16 +51,19 @@ let openSheets = 0;
 const TEXT_ENTRY_SELECTOR = 'input:not([type="checkbox"]):not([type="radio"]), textarea, select';
 
 /**
- * Scrolls the focused text field of `root` back into view, instantly and only inside the sheet
- * (`block: "nearest"`), so it needs no reduced-motion branch. Used when focus arrives, when the
- * keyboard finishes opening, and after the layout flips (a flip changes which element scrolls).
+ * Scrolls the focused control of `root` back into view, instantly and only inside the sheet
+ * (`block: "nearest"`), so it needs no reduced-motion branch. `textEntryOnly` restricts it to the
+ * controls that summon an on-screen keyboard: that is all a focus event or the keyboard finishing
+ * opening reveals (scrolling a button or checkbox that merely took focus would move the sheet under
+ * the finger). After the layout flips it is `false`: the flip changes which element scrolls, so any
+ * focused control, not just a text field, can be left below the visible area.
  */
-function revealFocusedField(root: HTMLElement): void {
+function revealFocused(root: HTMLElement, textEntryOnly: boolean): void {
   const active = document.activeElement;
   if (
     active instanceof HTMLElement &&
     root.contains(active) &&
-    active.matches(TEXT_ENTRY_SELECTOR) &&
+    (!textEntryOnly || active.matches(TEXT_ENTRY_SELECTOR)) &&
     typeof active.scrollIntoView === "function" // absent in jsdom and very old engines
   ) {
     active.scrollIntoView({ block: "nearest", inline: "nearest" });
@@ -73,8 +76,8 @@ export interface SheetDialogProps {
   readonly title: ReactNode;
   readonly onClose: () => void;
   /**
-   * Action row (primary and cancel buttons). Pinned below the scrolling body while it and a usable
-   * slice of body fit in what is visible; otherwise the last thing on the one scrolling page.
+   * Action row (primary and cancel buttons). Pinned below the body while it and a usable slice of body
+   * fit in what is visible; otherwise the last thing on the one scrolling page. Always reachable.
    */
   readonly footer: ReactNode;
   readonly children: ReactNode;
@@ -123,7 +126,7 @@ export function SheetDialog({
   useSheetLayout(
     { backdrop: backdropRef, dialog: dialogRef, header: headerRef, footer: footerRef },
     () => {
-      if (dialogRef.current) revealFocusedField(dialogRef.current);
+      if (dialogRef.current) revealFocused(dialogRef.current, false);
     },
   );
   useBackDismiss(onClose);
@@ -195,7 +198,7 @@ export function SheetDialog({
     if (!dialog) return undefined;
     const root: HTMLElement = dialog;
     function reveal(): void {
-      revealFocusedField(root);
+      revealFocused(root, true);
     }
     root.addEventListener("focusin", reveal);
     const viewport = window.visualViewport;

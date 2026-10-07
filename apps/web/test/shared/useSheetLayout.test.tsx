@@ -47,8 +47,10 @@ interface Sizes {
   header: number;
   /** Natural height of the action row (scrollHeight). */
   footerNatural: number;
-  /** Rendered height of the action row (clientHeight); less than natural when it is capped. */
+  /** Rendered height of the action row (offsetHeight); less than natural when it is capped. */
   footerBox: number;
+  /** The action row's own border: offsetHeight minus clientHeight (default 0). */
+  footerBorder?: number;
 }
 
 let sizes: Sizes;
@@ -57,7 +59,7 @@ function installSizes(next: Sizes): void {
   sizes = next;
   vi.spyOn(Element.prototype, "clientHeight", "get").mockImplementation(function (this: Element) {
     if (this.classList.contains("sheet-backdrop")) return sizes.backdrop;
-    if (this.classList.contains("sheet-footer")) return sizes.footerBox;
+    if (this.classList.contains("sheet-footer")) return sizes.footerBox - (sizes.footerBorder ?? 0);
     return 0;
   });
   vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(function (
@@ -235,6 +237,174 @@ describe("useSheetLayout (through SheetDialog)", () => {
       viewport.dispatchEvent(new Event("resize"));
     });
     expect(layoutOf()).toBe("page");
+  });
+
+  describe("what the room and the pinned parts are made of", () => {
+    // header 80 + action row 127 + its 3px border + 7rem (112) = 322px needed.
+    const base: Sizes = {
+      backdrop: 700,
+      header: 80,
+      footerNatural: 127,
+      footerBox: 130,
+      footerBorder: 3,
+    };
+    const dialogOf = (): HTMLElement => screen.getByRole("dialog");
+
+    it("subtracts the backdrop's top padding from the room", () => {
+      installSizes({ ...base, backdrop: 400 });
+      render(<Sheet />);
+      expect(layoutOf()).toBe("pinned");
+      dialogOf().parentElement!.style.paddingTop = "24px";
+      installSizes({ ...base, backdrop: 340 }); // 340 - 24 = 316 < 322; without the subtraction 340 would still pin
+      fireResize();
+      expect(layoutOf()).toBe("page");
+    });
+
+    it("subtracts the backdrop's bottom padding from the room", () => {
+      installSizes({ ...base, backdrop: 400 });
+      render(<Sheet />);
+      dialogOf().parentElement!.style.paddingBottom = "24px";
+      installSizes({ ...base, backdrop: 340 });
+      fireResize();
+      expect(layoutOf()).toBe("page");
+    });
+
+    it("counts the action row's own border (offsetHeight - clientHeight) in its natural height", () => {
+      installSizes({ ...base, backdrop: 320 }); // 80 + 127 + 3 + 112 = 322 > 320; without the border 319 <= 320 would pin
+      render(<Sheet />);
+      expect(layoutOf()).toBe("page");
+    });
+
+    it("counts the dialog's own top border in what is pinned", () => {
+      installSizes({ ...base, backdrop: 400 });
+      render(<Sheet />);
+      dialogOf().style.borderTopWidth = "3px";
+      installSizes({ ...base, backdrop: 323 }); // 210 + 3 + 112 = 325 > 323; without the top border 322 <= 323
+      fireResize();
+      expect(layoutOf()).toBe("page");
+    });
+
+    it("counts the dialog's bottom border too (the wide card has one)", () => {
+      installSizes({ ...base, backdrop: 400 });
+      render(<Sheet />);
+      dialogOf().style.borderBottomWidth = "2px";
+      installSizes({ ...base, backdrop: 323 }); // 210 + 2 + 112 = 324 > 323
+      fireResize();
+      expect(layoutOf()).toBe("page");
+    });
+  });
+
+  it("also re-measures on a plain window resize, without any ResizeObserver delivery", () => {
+    render(<Sheet />);
+    expect(layoutOf()).toBe("pinned");
+    installSizes({ backdrop: 300, header: 80, footerNatural: 130, footerBox: 130 });
+    act(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
+    expect(layoutOf()).toBe("page");
+  });
+
+  it("removes every resize listener it added to window and visualViewport when the sheet closes", () => {
+    const viewport = new EventTarget();
+    Object.defineProperty(window, "visualViewport", { configurable: true, value: viewport });
+    const viewportAdded = vi.spyOn(viewport, "addEventListener");
+    const viewportRemoved = vi.spyOn(viewport, "removeEventListener");
+    const windowAdded = vi.spyOn(window, "addEventListener");
+    const windowRemoved = vi.spyOn(window, "removeEventListener");
+    const { unmount } = render(<Sheet />);
+    unmount();
+    const count = (spy: { mock: { calls: unknown[][] } }, type: string): number =>
+      spy.mock.calls.filter(([name]) => name === type).length;
+    expect(count(viewportAdded, "resize")).toBeGreaterThan(0);
+    expect(count(viewportRemoved, "resize")).toBe(count(viewportAdded, "resize"));
+    expect(count(windowAdded, "resize")).toBeGreaterThan(0);
+    expect(count(windowRemoved, "resize")).toBe(count(windowAdded, "resize"));
+  });
+
+  it("keeps one observer and its hysteresis state across a re-render of the parent", () => {
+    installSizes({ backdrop: 300, header: 80, footerNatural: 130, footerBox: 130 });
+    const { rerender } = render(<Sheet />);
+    expect(layoutOf()).toBe("page");
+    installSizes({ backdrop: 330, header: 80, footerNatural: 130, footerBox: 130 }); // inside the 12px band
+    fireResize();
+    rerender(<Sheet />);
+    expect(FakeResizeObserver.instances).toHaveLength(1);
+    expect(layoutOf()).toBe("page");
+  });
+
+  it("flips the layout BEFORE it asks for the focused field to be revealed (the reveal must scroll the new scroller)", async () => {
+    const user = userEvent.setup();
+    render(<Sheet />);
+    await user.click(screen.getByLabelText("Reason"));
+    let layoutWhenScrolled: string | undefined;
+    scrollIntoView.mockImplementation(() => {
+      layoutWhenScrolled = layoutOf();
+    });
+    installSizes({ backdrop: 300, header: 80, footerNatural: 130, footerBox: 130 });
+    fireResize();
+    expect(layoutWhenScrolled).toBe("page");
+  });
+
+  it("after a flip also reveals a focused non-text control, but focusing one never scrolls by itself", () => {
+    render(<Sheet />);
+    const apply = screen.getByRole("button", { name: "Apply" });
+    scrollIntoView.mockClear();
+    act(() => {
+      apply.focus();
+    });
+    // A tap on a button or checkbox must not move the sheet under the finger.
+    expect(scrollIntoView).not.toHaveBeenCalled();
+
+    installSizes({ backdrop: 300, header: 80, footerNatural: 130, footerBox: 130 });
+    fireResize();
+    expect(layoutOf()).toBe("page");
+    // The flip changes which element scrolls: a focused button would otherwise be stranded off screen.
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(scrollIntoView.mock.contexts[0]).toBe(apply);
+  });
+
+  it("never reveals a focused element that is not inside the sheet", () => {
+    render(
+      <>
+        <Sheet />
+        <input aria-label="Elsewhere on the page" />
+      </>,
+    );
+    const outside = screen.getByLabelText("Elsewhere on the page");
+    act(() => {
+      outside.focus();
+    });
+    scrollIntoView.mockClear();
+    installSizes({ backdrop: 300, header: 80, footerNatural: 130, footerBox: 130 });
+    fireResize();
+    expect(layoutOf()).toBe("page");
+    // A flip must not scroll for focus that sits outside the dialog (an inert page behind it).
+    expect(scrollIntoView).not.toHaveBeenCalled();
+  });
+
+  it("a visual viewport resize (the keyboard opening) reveals a focused text field but never a focused button", async () => {
+    const viewport = new EventTarget();
+    Object.defineProperty(window, "visualViewport", { configurable: true, value: viewport });
+    const user = userEvent.setup();
+    render(<Sheet />);
+    act(() => {
+      screen.getByRole("button", { name: "Apply" }).focus();
+    });
+    scrollIntoView.mockClear();
+    act(() => {
+      viewport.dispatchEvent(new Event("resize"));
+    });
+    // Toolbars collapsing under a scrolling finger also resize the visual viewport: a button that merely
+    // holds focus must not be dragged back into view each time.
+    expect(scrollIntoView).not.toHaveBeenCalled();
+
+    await user.click(screen.getByLabelText("Reason"));
+    scrollIntoView.mockClear();
+    act(() => {
+      viewport.dispatchEvent(new Event("resize"));
+    });
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(scrollIntoView.mock.contexts[0]).toBe(screen.getByLabelText("Reason"));
   });
 
   it("leaves no data-layout behind and the page scroll lock released after closing", () => {
