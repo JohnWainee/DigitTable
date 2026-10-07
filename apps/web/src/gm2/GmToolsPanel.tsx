@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SelectField } from "../shared/SelectField.js";
 import type { CharacterFullSheet, RollView, RollViewFull } from "@digitable/template-eat-the-reich";
 
 export interface GmToolsPanelProps {
@@ -106,18 +107,13 @@ export function GmToolsPanel({
 
       <fieldset>
         <legend>Grant an item</legend>
-        <label htmlFor="grant-character">Character</label>
-        <select
+        <SelectField
           id="grant-character"
+          label="Character"
           value={grantCharacterId}
           onChange={(e) => setGrantCharacterId(e.target.value)}
-        >
-          {gmSheets.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
+          options={gmSheets.map((c) => ({ value: c.id, label: c.name }))}
+        />
         <div className="form-field">
           <label htmlFor="grant-item-id">Item id</label>
           <input
@@ -204,35 +200,27 @@ export function GmToolsPanel({
       {gmSheets.some((c) => c.advances.length > 0) && (
         <fieldset>
           <legend>Unlock an advance</legend>
-          <label htmlFor="advance-character">Character</label>
-          <select
+          <SelectField
             id="advance-character"
+            label="Character"
             value={advanceCharacterId}
             onChange={(e) => {
               setAdvanceCharacterId(e.target.value);
               const next = gmSheets.find((c) => c.id === e.target.value);
               setAdvanceId(next?.advances[0]?.id ?? "");
             }}
-          >
-            {gmSheets.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-          <label htmlFor="advance-select">Advance</label>
-          <select
+            options={gmSheets.map((c) => ({ value: c.id, label: c.name }))}
+          />
+          <SelectField
             id="advance-select"
+            label="Advance"
             value={advanceId}
             onChange={(e) => setAdvanceId(e.target.value)}
-          >
-            {(advanceCharacter?.advances ?? []).map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.label}
-                {a.unlocked ? " (already unlocked)" : ""}
-              </option>
-            ))}
-          </select>
+            options={(advanceCharacter?.advances ?? []).map((a) => ({
+              value: a.id,
+              label: `${a.label}${a.unlocked ? " (already unlocked)" : ""}`,
+            }))}
+          />
           <div className="form-field">
             <label htmlFor="advance-reason">Reason</label>
             <input
@@ -262,18 +250,13 @@ export function GmToolsPanel({
 
       <fieldset>
         <legend>Reassign a character</legend>
-        <label htmlFor="reassign-character">Character</label>
-        <select
+        <SelectField
           id="reassign-character"
+          label="Character"
           value={reassignCharacterId}
           onChange={(e) => setReassignCharacterId(e.target.value)}
-        >
-          {gmSheets.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
+          options={gmSheets.map((c) => ({ value: c.id, label: c.name }))}
+        />
         <div className="form-field">
           <label htmlFor="reassign-member-id">New member id (blank to unassign)</label>
           <input

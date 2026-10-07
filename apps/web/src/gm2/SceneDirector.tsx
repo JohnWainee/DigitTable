@@ -6,6 +6,7 @@ import {
 } from "@digitable/template-eat-the-reich";
 import { Icon } from "../shared/Icon.js";
 import { SceneArt } from "../shared/SceneArt.js";
+import { SelectField } from "../shared/SelectField.js";
 
 export interface SceneDirectorProps {
   readonly scene: EatTheReichView["scene"];
@@ -206,18 +207,16 @@ export function SceneDirector({
 
       <fieldset>
         <legend>{scene ? "Advance to a new scene" : "Load the opening scene"}</legend>
-        <label htmlFor="scene-select">Scene</label>
-        <select
+        <SelectField
           id="scene-select"
+          label="Scene"
           value={selectedSceneId}
           onChange={(e) => setChoice({ forSceneId: currentSceneId, sceneId: e.target.value })}
-        >
-          {ORIGINAL_MISSION.map((definition) => (
-            <option key={definition.sceneId} value={definition.sceneId}>
-              {definition.title}
-            </option>
-          ))}
-        </select>
+          options={ORIGINAL_MISSION.map((definition) => ({
+            value: definition.sceneId,
+            label: definition.title,
+          }))}
+        />
         <p className="form-hint">{selected.gmBriefing}</p>
         {scene && !primaryComplete && (
           <div className="form-field">
@@ -274,24 +273,20 @@ export function SceneDirector({
       {scene && editTargets.length > 0 && (
         <fieldset>
           <legend>Edit an Objective or Threat</legend>
-          <label htmlFor="edit-target">Target</label>
-          <select
+          <SelectField
             id="edit-target"
+            label="Target"
             value={editTargetKey}
             onChange={(e) => loadEditTargetDefaults(e.target.value)}
-          >
-            <option value="">Choose one&hellip;</option>
-            {objectives.map((o) => (
-              <option key={`objective:${o.id}`} value={`objective:${o.id}`}>
-                Objective: {o.title}
-              </option>
-            ))}
-            {threats.map((t) => (
-              <option key={`threat:${t.id}`} value={`threat:${t.id}`}>
-                Threat: {t.name}
-              </option>
-            ))}
-          </select>
+            options={[
+              { value: "", label: "Choose one\u2026" },
+              ...objectives.map((o) => ({
+                value: `objective:${o.id}`,
+                label: `Objective: ${o.title}`,
+              })),
+              ...threats.map((t) => ({ value: `threat:${t.id}`, label: `Threat: ${t.name}` })),
+            ]}
+          />
           {editTarget && (editObjective ?? editThreat) && (
             <>
               <div className="form-field">
