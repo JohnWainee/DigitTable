@@ -64,7 +64,12 @@ export function JoinScreen(): JSX.Element {
     const requestId = newUuid();
     setRecoveryRequest({ status: "pending", requestId });
     const normalizedRoomCode = recoveryRoomCode.toUpperCase();
-    const result = await recoverSeat({ roomCode: normalizedRoomCode, recoveryCode });
+    // Minted recovery codes are uppercase with no whitespace and the server compares them exactly,
+    // so a lower-case or padded entry (hardware keyboard, paste) could never match.
+    const result = await recoverSeat({
+      roomCode: normalizedRoomCode,
+      recoveryCode: recoveryCode.trim().toUpperCase(),
+    });
     if (result.ok) {
       setRecoveryRequest({ status: "accepted", requestId, result });
       const ownership = ownershipFromRecoverySeat(

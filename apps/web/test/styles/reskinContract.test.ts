@@ -18,6 +18,7 @@ const css = readFileSync(join(here, "../../src/styles.css"), "utf8").replace(
   "",
 );
 const html = readFileSync(join(here, "../../index.html"), "utf8");
+const uiAudit = readFileSync(join(here, "../../../../scripts/playtest/ui-audit.mjs"), "utf8");
 
 /** All `selector { body }` rules at the top level or inside the named at-rule (or anywhere when omitted). */
 function rulesFor(selectorPattern: RegExp): string[] {
