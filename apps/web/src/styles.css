@@ -197,6 +197,16 @@ h3 {
   color: var(--sc);
 }
 
+/* Table surface: --sc is hot pink here, and small mono pink over the card's dust speckle measured
+   3.0-3.7:1 on its worst-lit pixels (pixel pass in scripts/playtest/ui-audit.mjs). A flat ink chip
+   keeps the hue and gives the label a plain ground; the other surfaces' accents (cyan, acid) already clear 4.5:1. */
+.table-screen h3 {
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.15rem 0.45rem;
+  background: var(--ink-0);
+}
+
 /* Review F7: the player dashboard's page-level heading. Compact so it does
    not push the scene card down on a phone; the step and scene headings below
    it stay the visual focus. */

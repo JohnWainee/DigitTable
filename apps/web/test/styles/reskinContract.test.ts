@@ -418,6 +418,19 @@ describe("reskin stylesheet contract", () => {
     });
   });
 
+  describe("table-surface label contrast over the speckled card", () => {
+    // Regression: the table's --sc is pink; 13.6px pink mono h3s over the dust speckle fell to ~3:1 at
+    // the worst-lit pixels. A flat ink chip is the ground, and pink on it clears 4.5:1 with margin.
+    it("gives the table h3 labels a solid ink ground that carries the accent at >= 4.5:1", () => {
+      const rule = rulesFor(/^\.table-screen h3$/);
+      expect(declaration(rule, "background")).toContain("var(--ink-0)");
+      expect(declaration(rule, "width")).toContain("fit-content");
+      expect(declaration(rule, "max-width")).toContain("100%");
+      expect(declaration(rulesFor(/^\.table-screen$/), "--sc")).toContain("var(--pink)");
+      expect(contrast("pink", "ink-0")).toBeGreaterThanOrEqual(4.5);
+    });
+  });
+
   describe("licensing hygiene", () => {
     it("uses only system font stacks and no external resources", () => {
       expect(css).not.toMatch(/@import|@font-face|url\(\s*["']?https?:/i);

@@ -54,6 +54,10 @@ const SHOTS = !args.includes("--no-shots");
 const TOLERATE = args.includes("--tolerate-baseline");
 const DUMP_HTML = args.includes("--dump-html"); // also write a scriptless HTML snapshot per state under <out>/dump
 const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (fast iteration on the pop-out)
+// Viewports that also get the pixel-level text contrast pass (slower: three full-page PNGs per state).
+const PIXEL_VIEWPORTS = (arg("pixel-viewports", "phone-small,phone,tablet,desktop,table") ?? "")
+  .split(",")
+  .filter(Boolean);
 const CHROME =
   process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 mkdirSync(OUT, { recursive: true });
@@ -332,6 +336,125 @@ async function runAxe(device) {
   );
 }
 
+/**
+ * axe cannot compute a colour for text over a background image or gradient (the grain, dust and
+ * halftone layers sit under most panels), so it reports those nodes as "incomplete", never as a
+ * violation: a green axe run says nothing about them. This is the pixel-level answer. It lists every
+ * visible leaf text element with its computed colour and size, hides all glyphs, screenshots the
+ * page, and measures the contrast of that colour against the worst-lit 2% of the pixels the glyph
+ * boxes actually sit on (colour with alpha is composited over each pixel first). Normal text needs
+ * 4.5:1, large text (>= 24px, or >= 18.66px bold) 3:1 (WCAG 1.4.3). Disabled controls are exempt.
+ */
+const PIXEL_ITEMS = `(() => {
+  const out = [];
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const seen = new Set();
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (!node.nodeValue.trim()) continue;
+    const el = node.parentElement;
+    if (!el || seen.has(el) || el.closest("[inert], script, style, noscript, [aria-hidden='true']")) continue;
+    if (el.closest("button:disabled, input:disabled, select:disabled, textarea:disabled, fieldset:disabled")) continue;
+    seen.add(el);
+    const cs = getComputedStyle(el);
+    if (cs.visibility === "hidden" || cs.display === "none" || Number(cs.opacity) === 0) continue;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    for (const r of range.getClientRects()) {
+      if (r.width < 2 || r.height < 2) continue;
+      out.push({
+        id: el.tagName.toLowerCase() + (el.className && typeof el.className === "string" ? "." + el.className.trim().split(/\\s+/).join(".") : ""),
+        text: node.nodeValue.trim().slice(0, 28),
+        x: r.left + scrollX, y: r.top + scrollY, w: r.width, h: r.height,
+        color: cs.color, fill: cs.webkitTextFillColor, size: parseFloat(cs.fontSize), weight: Number(cs.fontWeight) || 400,
+      });
+    }
+  }
+  return out;
+})()`;
+
+const PIXEL_MEASURE = (items, urls) => `(async () => {
+  const items = ${JSON.stringify(items)};
+  const load = async (url) => {
+    const img = new Image();
+    img.src = url;
+    await img.decode();
+    const canvas = document.createElement("canvas");
+    canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(img, 0, 0);
+    return ctx;
+  };
+  const [hidden, white, black] = await Promise.all(${JSON.stringify(urls)}.map(load));
+  const lin = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  const lum = (r, g, b) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  const parse = (str) => { const m = str.match(/[\\d.]+/g).map(Number); return { r: m[0], g: m[1], b: m[2], a: m.length > 3 ? m[3] : 1 }; };
+  const results = [];
+  let skipped = 0;
+  for (const it of items) {
+    const x = Math.max(0, Math.floor(it.x)), y = Math.max(0, Math.floor(it.y));
+    const w = Math.min(hidden.canvas.width - x, Math.ceil(it.w)), h = Math.min(hidden.canvas.height - y, Math.ceil(it.h));
+    if (w < 1 || h < 1) continue;
+    const text = parse(it.fill && it.fill !== "rgba(0, 0, 0, 0)" ? it.fill : it.color);
+    const bgPx = hidden.getImageData(x, y, w, h).data, wPx = white.getImageData(x, y, w, h).data, kPx = black.getImageData(x, y, w, h).data;
+    const ratios = [];
+    for (let i = 0; i < bgPx.length; i += 4) {
+      const r0 = bgPx[i], g0 = bgPx[i + 1], b0 = bgPx[i + 2];
+      const wMax = 765 - r0 - g0 - b0, kMax = r0 + g0 + b0;
+      const wDiff = Math.abs(wPx[i] - r0) + Math.abs(wPx[i + 1] - g0) + Math.abs(wPx[i + 2] - b0);
+      const kDiff = Math.abs(kPx[i] - r0) + Math.abs(kPx[i + 1] - g0) + Math.abs(kPx[i + 2] - b0);
+      const glyph = (wMax >= 150 && wDiff >= 0.9 * wMax) || (kMax >= 150 && kDiff >= 0.9 * kMax);
+      if (!glyph) continue;
+      const r = text.r * text.a + r0 * (1 - text.a), g = text.g * text.a + g0 * (1 - text.a), b = text.b * text.a + b0 * (1 - text.a);
+      const a = lum(r, g, b), bg = lum(r0, g0, b0);
+      ratios.push((Math.max(a, bg) + 0.05) / (Math.min(a, bg) + 0.05));
+    }
+    if (ratios.length < 4) {
+      skipped += 1;
+      continue;
+    }
+    ratios.sort((p, q) => p - q);
+    const worst = ratios[Math.floor(ratios.length * 0.02)];
+    const large = it.size >= 24 || (it.size >= 18.66 && it.weight >= 700);
+    results.push({ id: it.id, text: it.text, ratio: Math.round(worst * 100) / 100, need: large ? 3 : 4.5, size: it.size });
+  }
+  return { results, skipped };
+})()`;
+
+async function pixelContrast(device) {
+  const items = await ev(device, PIXEL_ITEMS);
+  const styleId = "ui-audit-glyph-paint";
+  const metrics = await device.cdp.send("Page.getLayoutMetrics", {}, device.sessionId);
+  const width = Math.ceil(metrics.cssContentSize.width);
+  const height = Math.min(Math.ceil(metrics.cssContentSize.height), 6000);
+  const urls = [];
+  try {
+    for (const paint of ["transparent", "#fff", "#000"]) {
+      await ev(
+        device,
+        `(() => { document.getElementById(${JSON.stringify(styleId)})?.remove(); const s = document.createElement("style"); s.id = ${JSON.stringify(styleId)}; s.textContent = "*, *::before, *::after, *::placeholder { color: ${paint} !important; -webkit-text-fill-color: ${paint} !important; text-shadow: none !important; caret-color: transparent !important; text-decoration-color: transparent !important; } img, svg, video, canvas { visibility: hidden !important; }"; document.head.append(s); })()`,
+      );
+      await sleep(120);
+      const { data } = await device.cdp.send(
+        "Page.captureScreenshot",
+        {
+          format: "png",
+          captureBeyondViewport: true,
+          clip: { x: 0, y: 0, width, height, scale: 1 },
+        },
+        device.sessionId,
+      );
+      urls.push(`data:image/png;base64,${data}`);
+    }
+    const inRange = items.filter((i) => i.y < height);
+    const out = await ev(device, PIXEL_MEASURE(inRange, urls));
+    // Nothing is dropped silently: a page taller than the capture cap, or text with too few glyph
+    // pixels to judge, is counted in the report.
+    return { ...out, truncatedItems: items.length - inRange.length };
+  } finally {
+    await ev(device, `document.getElementById(${JSON.stringify(styleId)})?.remove()`);
+  }
+}
+
 function isHardAxe(violation) {
   // Best-practice rules are reported but only WCAG rules fail the run.
   return violation.tags.some((t) => t.startsWith("wcag"));
@@ -376,6 +499,23 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
         fail(
           `${device.name}/${state}@${vp.name}`,
           `axe ${v.id} (${v.impact}) x${v.count}: ${v.nodes[0]}`,
+        );
+      }
+    }
+    if (PIXEL_VIEWPORTS.includes(vp.name)) {
+      await ev(device, `scrollTo(0, 0)`);
+      const { results: measured, skipped, truncatedItems } = await pixelContrast(device);
+      const low = measured.filter((m) => m.ratio < m.need);
+      entry.pixelContrast = {
+        measured: measured.length,
+        skipped,
+        truncatedItems,
+        low: low.slice(0, 8),
+      };
+      for (const m of low.slice(0, 3)) {
+        fail(
+          `${device.name}/${state}@${vp.name}`,
+          `pixel contrast ${m.ratio}:1 < ${m.need}:1 for ${m.id} "${m.text}" (${m.size}px) x${low.length}`,
         );
       }
     }
