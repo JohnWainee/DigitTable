@@ -6,6 +6,7 @@ import {
   chooseSheetLayout,
   FLIP_BACK_MARGIN_PX,
   MIN_BODY_REM,
+  type SheetSpace,
 } from "../../src/shared/useSheetLayout.js";
 
 /**
@@ -17,7 +18,7 @@ import {
  */
 
 describe("chooseSheetLayout", () => {
-  const space = (available: number) => ({ available, chrome: 200, minBody: 112 });
+  const space = (available: number): SheetSpace => ({ available, chrome: 200, minBody: 112 });
 
   it("pins exactly when the chrome and the minimum body fit", () => {
     expect(chooseSheetLayout(null, space(312))).toBe("pinned"); // 200 + 112 === 312
@@ -87,7 +88,7 @@ class FakeResizeObserver {
     this.disconnected = true;
   }
   fire(): void {
-    this.callback([], this as unknown as ResizeObserver);
+    this.callback([], this);
   }
 }
 

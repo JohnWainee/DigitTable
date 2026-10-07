@@ -672,7 +672,9 @@ async function auditModal(gm) {
     { name: "phone-landscape", ...byName["phone-landscape"] },
     { name: "phone-667x375", width: 667, height: 375, mobile: true },
     { name: "tablet", ...byName["tablet"] },
+    { name: "tablet-landscape", width: 1024, height: 768, mobile: true },
     { name: "desktop", ...byName["desktop"] },
+    { name: "table", ...byName["table"] },
   ];
   for (const vp of cases) {
     await applyViewport(gm, vp);
@@ -1027,18 +1029,22 @@ async function auditModal(gm) {
   const layoutCases = [];
   for (const scale of layoutScales) {
     layoutCases.push(
-      // [name, viewport, visible height with the keyboard up (null: no keyboard)]
-      [`320-x${scale}-kb298`, byName["phone-small"], 298],
-      [`320-x${scale}-nokb`, byName["phone-small"], null],
-      [`375-x${scale}-kb400`, byName["phone"], 400],
+      // [name, viewport, visible height with the keyboard up (null: no keyboard), visual viewport offsetTop]
+      [`320-x${scale}-kb298`, byName["phone-small"], 298, 0],
+      [`320-x${scale}-nokb`, byName["phone-small"], null, 0],
+      [`375-x${scale}-kb400`, byName["phone"], 400, 0],
+      // iOS scrolls the layout viewport under the keyboard to reveal the focused field: the visible
+      // area then starts below the top of the layout viewport.
+      [`375-x${scale}-kb400-scrolled`, byName["phone"], 400, 150],
       [
         `568x320-x${scale}-kb150`,
         { name: "phone-568x320", width: 568, height: 320, mobile: true },
         150,
+        0,
       ],
     );
   }
-  for (const [name, vp, visible] of layoutCases) {
+  for (const [name, vp, visible, offsetTop] of layoutCases) {
     const scale = name.match(/-x([\d.]+)-/)?.[1];
     await scenario(`sheet-layout-${name}`, vp, async (record) => {
       try {
@@ -1053,7 +1059,7 @@ async function auditModal(gm) {
         await openCorrection(gm);
         await ev(gm, `${REASON_FIELD}.focus()`);
         if (visible !== null) {
-          await ev(gm, `window.__fakeVV.set({ height: ${visible}, offsetTop: 0 })`);
+          await ev(gm, `window.__fakeVV.set({ height: ${visible}, offsetTop: ${offsetTop} })`);
           await sleep(450);
         }
         const geo = await ev(gm, MODAL_GEOMETRY);
