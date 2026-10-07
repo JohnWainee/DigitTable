@@ -7,7 +7,9 @@
 //   * checks horizontal overflow,
 //   * checks every interactive control: >= 44px practical touch target, fully inside the viewport
 //     horizontally, and >= 16px type for text-entry controls (below that iOS zooms the page),
-//   * runs axe-core (WCAG 2.x A/AA + best-practice, INCLUDING colour contrast, which jsdom cannot).
+//   * runs axe-core (WCAG 2.x A/AA + best-practice, INCLUDING colour contrast, which jsdom cannot),
+//   * re-checks the same state at 150%/200% text on 320/375/390px phones with no pop-out open
+//     (horizontal overflow, controls inside the viewport; the culprit element is named on failure).
 //
 // It then audits the one modal pop-out (the GM correction sheet) separately: containment inside the
 // viewport at phone/landscape/tablet/desktop sizes; an emulated on-screen keyboard; real-Chrome
@@ -54,6 +56,7 @@ const SHOTS = !args.includes("--no-shots");
 const TOLERATE = args.includes("--tolerate-baseline");
 const DUMP_HTML = args.includes("--dump-html"); // also write a scriptless HTML snapshot per state under <out>/dump
 const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (fast iteration on the pop-out)
+const TEXT_SCALE_ONLY = args.includes("--text-scale-only"); // skip the per-viewport sweep (fast iteration)
 const CHROME =
   process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 mkdirSync(OUT, { recursive: true });
@@ -75,6 +78,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const VIEWPORTS = [
   { name: "phone-small", width: 320, height: 568, mobile: true },
   { name: "phone", width: 375, height: 812, mobile: true },
+  { name: "phone-large", width: 390, height: 844, mobile: true },
   { name: "phone-landscape", width: 812, height: 375, mobile: true },
   { name: "tablet", width: 768, height: 1024, mobile: true },
   { name: "desktop", width: 1280, height: 800, mobile: false },
@@ -87,6 +91,7 @@ const report = {
   base: BASE,
   startedAt: new Date().toISOString(),
   states: [],
+  textScale: [],
   modal: [],
   reducedMotion: null,
   routes: [],
@@ -355,7 +360,7 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
     mkdirSync(join(OUT, "dump"), { recursive: true });
     writeFileSync(join(OUT, "dump", `${device.name}-${state}.html`), `<!doctype html>\n${html}`);
   }
-  for (const vp of VIEWPORTS) {
+  for (const vp of TEXT_SCALE_ONLY ? [] : VIEWPORTS) {
     await applyViewport(device, vp);
     await sleep(250);
     const audit = await ev(device, CONTROL_AUDIT);
@@ -386,6 +391,103 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
       fail(`${device.name}/${state}@${vp.name}`, `${issue.control}: ${issue.problems.join("; ")}`);
     }
     report.states.push(entry);
+  }
+  await applyViewport(device, original);
+  await captureTextScale(device, state);
+}
+
+// Closed-sheet text scaling: what a browser "font size: large/very large" does to every rem, applied
+// to each captured state with NO pop-out open (the modal scenarios below only measure the page behind
+// an inert, scroll-locked sheet). Phones at 150% and 200% text must not scroll sideways and must keep
+// every control inside the viewport. KNOWN LIMIT: the override scales rem, not the browser default
+// that `em` media queries read, so layouts must rely on width/rem container rules, not em breakpoints.
+const TEXT_SCALES = [
+  { vp: "phone-small", px: 24, label: "150" },
+  { vp: "phone-small", px: 32, label: "200" },
+  { vp: "phone", px: 32, label: "200" },
+  { vp: "phone-large", px: 32, label: "200" },
+];
+
+// Which element is responsible? Hide each in turn and keep the deepest ones whose removal restores
+// the page width. This also finds pseudo-element and transformed overflow that no bounding-box scan
+// of real elements can see.
+const OVERFLOW_OFFENDERS = `(() => {
+  const de = document.documentElement;
+  const limit = de.clientWidth + 1;
+  const fixes = [];
+  for (const e of document.querySelectorAll("body *")) {
+    if (e.closest("svg") || getComputedStyle(e).display === "none") continue;
+    const before = e.style.display;
+    e.style.display = "none";
+    const ok = de.scrollWidth <= limit;
+    e.style.display = before;
+    if (ok) fixes.push(e);
+  }
+  // Two independent offenders: hiding either alone does not restore the width, so fall back to
+  // whatever sticks out past the viewport.
+  const pool = fixes.length
+    ? fixes
+    : [...document.querySelectorAll("body *")].filter((e) => e.getBoundingClientRect().right > limit && !e.closest("svg"));
+  return pool
+    .filter((e) => !pool.some((o) => o !== e && e.contains(o)))
+    .slice(0, 6)
+    .map((e) => e.tagName.toLowerCase() + (typeof e.className === "string" && e.className ? "." + e.className.trim().split(/\\s+/).join(".") : "") + " w=" + Math.round(e.getBoundingClientRect().width));
+})()`;
+
+// Content that spills out of its own box without widening the page (it lands in the chrome to the
+// right, so documentElement.scrollWidth does not move): a label word longer than its row, a party
+// chip wider than its panel. Only boxes that do not scroll or clip on purpose are checked.
+const SPILL_AUDIT = `(() => {
+  const out = [];
+  const selector = ".gear-option, .form-field--checkbox, fieldset, .step, .scene-card, .pending-action-card, .party-member, .connection-status, .roster-card, .threat-list li, .roster-panel-list li";
+  for (const e of document.querySelectorAll(selector)) {
+    const cs = getComputedStyle(e);
+    if (cs.display === "none" || e.closest("[inert]") || e.closest("svg")) continue;
+    if (cs.overflowX !== "visible") continue;
+    if (e.scrollWidth > e.clientWidth + 1)
+      out.push(e.tagName.toLowerCase() + (typeof e.className === "string" && e.className ? "." + e.className.trim().split(/\\s+/).join(".") : "") + " " + e.scrollWidth + ">" + e.clientWidth + " :: " + (e.textContent || "").trim().slice(0, 28));
+  }
+  return out.slice(0, 8);
+})()`;
+
+async function captureTextScale(device, state) {
+  if (MODAL_ONLY) return;
+  const original = device.vp;
+  for (const { vp: vpName, px, label } of TEXT_SCALES) {
+    const vp = byName[vpName];
+    await applyViewport(device, vp);
+    await ev(device, `document.documentElement.style.fontSize = "${px}px"`);
+    await sleep(250);
+    const audit = await ev(device, CONTROL_AUDIT);
+    const entry = {
+      surface: device.name,
+      state,
+      viewport: vp.name,
+      size: `${vp.width}x${vp.height}`,
+      textPercent: Number(label),
+      controls: audit.controls,
+      overflowPx: audit.overflowPx,
+      controlIssues: audit.issues.filter((i) => i.problems.some((p) => p.startsWith("outside"))),
+    };
+    if (audit.overflowPx > 1) entry.offenders = await ev(device, OVERFLOW_OFFENDERS);
+    entry.spills = await ev(device, SPILL_AUDIT);
+    const scope = `${device.name}/${state}@${vp.name}+text${label}`;
+    if (audit.overflowPx > 1) {
+      fail(
+        scope,
+        `horizontal overflow ${audit.overflowPx}px (${(entry.offenders ?? []).join(" | ")})`,
+      );
+    }
+    for (const issue of entry.controlIssues) {
+      fail(scope, `${issue.control}: ${issue.problems.join("; ")}`);
+    }
+    for (const spill of entry.spills) fail(scope, `content spills out of its box: ${spill}`);
+    entry.screenshot = await screenshot(
+      device,
+      `${device.name}-${state}-${vp.name}-text${label}.jpg`,
+    );
+    report.textScale.push(entry);
+    await ev(device, `document.documentElement.style.fontSize = ""`);
   }
   await applyViewport(device, original);
 }
@@ -542,7 +644,7 @@ async function auditModal(gm) {
 
   // ---- Scenarios that layout-viewport resizing cannot reach. Each MUST execute at least one check;
   // an exception, or an emulation this Chrome cannot perform, is a FAILURE and never a silent skip. ----
-  async function scenario(name, viewport, body, { informationalChecks = [] } = {}) {
+  async function scenario(name, viewport, body) {
     const record = {
       viewport: viewport.name,
       size: `${viewport.width}x${viewport.height}`,
@@ -558,13 +660,8 @@ async function auditModal(gm) {
       record.notes.push(`threw: ${error.message}`);
     }
     if (Object.keys(record.checks).length === 0) fail(`modal-${name}`, "no checks were executed");
-    // Only the NAMED checks may be non-gating; any other failing check in the scenario still fails the run.
-    record.informationalChecks = informationalChecks;
     for (const [k, v] of Object.entries(record.checks)) {
-      if (v) continue;
-      if (informationalChecks.includes(k))
-        console.log(`INFO modal-${name}: ${k} failed (recorded, not gating)`);
-      else fail(`modal-${name}`, `${k} failed`);
+      if (!v) fail(`modal-${name}`, `${k} failed`);
     }
     report.modal.push(record);
     // Best-effort cleanup so one scenario cannot leak state into the next.
@@ -733,58 +830,51 @@ async function auditModal(gm) {
     });
   }
 
-  // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150% and
-  // 375px at 200% are gating. 320px at 200% is recorded but NOT gating: at that size the (unchanged,
-  // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
-  // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
-  // the handoff.
-  for (const [vp, px, informationalChecks] of [
-    [byName["phone-small"], 24, []],
-    [byName["phone"], 32, []],
-    // Only the two geometry checks the console's overflow can break are non-gating here; the sheet's own
-    // bodyKeepsRoom / actionsReachable / reasonReachable still gate.
-    [byName["phone-small"], 32, ["dialogInsideViewport", "noPageOverflow"]],
+  // Text scaling: what a browser "font size: large/very large" does to every rem, with the sheet
+  // open. 320px at 150% and 200% and 375px at 200% all gate. (320px at 200% used to be recorded but
+  // not gating, because the rem-padded panels behind the sheet overflowed the page; the --fit-*
+  // chrome caps in styles.css fixed that, and captureTextScale() covers the same sizes with the
+  // sheet closed.)
+  for (const [vp, px] of [
+    [byName["phone-small"], 24],
+    [byName["phone"], 32],
+    [byName["phone-small"], 32],
   ]) {
-    await scenario(
-      `text-${px === 24 ? "150" : "200"}-${vp.name}`,
-      vp,
-      async (record) => {
-        await ev(gm, `document.documentElement.style.fontSize = "${px}px"`);
-        await openCorrection(gm);
-        const frame = frameOf(vp);
-        const geo = await ev(gm, MODAL_GEOMETRY);
-        record.geometry = geo;
-        record.checks.dialogInsideViewport = within(geo.dialog, frame);
-        record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
-        if (geo.pageOverflowPx > 1) {
-          record.offenders = await ev(
-            gm,
-            `(() => { const w = document.documentElement.clientWidth; return [...document.querySelectorAll("body *")].filter(e => (e.getBoundingClientRect().right > w + 1 || e.scrollWidth > e.clientWidth + 1) && getComputedStyle(e).display !== "none").slice(0, 10).map(e => e.tagName.toLowerCase() + (e.className && typeof e.className === "string" ? "." + e.className.split(" ").join(".") : "") + " right=" + Math.round(e.getBoundingClientRect().right) + " sw=" + e.scrollWidth + "/" + e.clientWidth + " :: " + (e.textContent || "").trim().slice(0, 30)); })()`,
-          );
-        }
-        record.checks.bodyKeepsRoom = geo.body.clientHeight >= 96;
-        // The action row may scroll on its own at this size, but its buttons must be reachable.
-        await ev(
+    await scenario(`text-${px === 24 ? "150" : "200"}-${vp.name}`, vp, async (record) => {
+      await ev(gm, `document.documentElement.style.fontSize = "${px}px"`);
+      await openCorrection(gm);
+      const frame = frameOf(vp);
+      const geo = await ev(gm, MODAL_GEOMETRY);
+      record.geometry = geo;
+      record.checks.dialogInsideViewport = within(geo.dialog, frame);
+      record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+      if (geo.pageOverflowPx > 1) {
+        record.offenders = await ev(
           gm,
-          `(() => { const f = document.querySelector(".sheet-footer"); f.scrollTop = f.scrollHeight; })()`,
+          `(() => { const w = document.documentElement.clientWidth; return [...document.querySelectorAll("body *")].filter(e => (e.getBoundingClientRect().right > w + 1 || e.scrollWidth > e.clientWidth + 1) && getComputedStyle(e).display !== "none").slice(0, 10).map(e => e.tagName.toLowerCase() + (e.className && typeof e.className === "string" ? "." + e.className.split(" ").join(".") : "") + " right=" + Math.round(e.getBoundingClientRect().right) + " sw=" + e.scrollWidth + "/" + e.clientWidth + " :: " + (e.textContent || "").trim().slice(0, 30)); })()`,
         );
-        const end = await ev(gm, MODAL_GEOMETRY);
-        record.checks.actionsReachable = within(end.apply, frame) && within(end.cancel, frame);
-        await ev(
-          gm,
-          `(() => { const b = document.querySelector(".sheet-body"); b.scrollTop = b.scrollHeight; })()`,
-        );
-        const bottom = await ev(gm, MODAL_GEOMETRY);
-        record.checks.reasonReachable = within(bottom.reason, frame);
-        record.textPx = px;
-        record.screenshot = await screenshot(
-          gm,
-          `gm-correction-text-${px === 24 ? "150" : "200"}-${vp.name}.jpg`,
-          { fullPage: false },
-        );
-      },
-      { informationalChecks },
-    );
+      }
+      record.checks.bodyKeepsRoom = geo.body.clientHeight >= 96;
+      // The action row may scroll on its own at this size, but its buttons must be reachable.
+      await ev(
+        gm,
+        `(() => { const f = document.querySelector(".sheet-footer"); f.scrollTop = f.scrollHeight; })()`,
+      );
+      const end = await ev(gm, MODAL_GEOMETRY);
+      record.checks.actionsReachable = within(end.apply, frame) && within(end.cancel, frame);
+      await ev(
+        gm,
+        `(() => { const b = document.querySelector(".sheet-body"); b.scrollTop = b.scrollHeight; })()`,
+      );
+      const bottom = await ev(gm, MODAL_GEOMETRY);
+      record.checks.reasonReachable = within(bottom.reason, frame);
+      record.textPx = px;
+      record.screenshot = await screenshot(
+        gm,
+        `gm-correction-text-${px === 24 ? "150" : "200"}-${vp.name}.jpg`,
+        { fullPage: false },
+      );
+    });
   }
   await applyViewport(gm, byName["desktop"]);
 }
@@ -1035,6 +1125,9 @@ async function main() {
           .filter((v) => !isHardAxe(v))
           .map((v) => `${s.surface}/${s.state}@${s.viewport}: ${v.id}`),
       ),
+      textScaleChecks: report.textScale.length,
+      textScaleOverflowStates: report.textScale.filter((s) => s.overflowPx > 1).length,
+      textScaleSpillStates: report.textScale.filter((s) => s.spills.length > 0).length,
       failures: report.failures.length,
     };
     writeFileSync(join(OUT, "report.json"), JSON.stringify(report, null, 2) + "\n");

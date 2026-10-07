@@ -391,6 +391,68 @@ describe("reskin stylesheet contract", () => {
     });
   });
 
+  describe("text-scale chrome caps (200% text on a 320px phone, no pop-out open)", () => {
+    // rem-sized inline chrome nests screen > panel > fieldset > option row > check box. At 200% text
+    // on 320px that is ~10rem of viewport for ~12rem of chrome, so the page scrolled sideways even
+    // with no sheet open (measured by ui-audit.mjs's text-scale sweep).
+    const caps: [string, number][] = [
+      ["fit-gutter", 1],
+      ["fit-inset", 0.85],
+      ["fit-row", 0.65],
+      ["fit-gap", 0.85],
+      ["fit-check", 1.65],
+    ];
+
+    it.each(caps)(
+      "--%s is its rem size, capped at the viewport share that equals it at 320px / 100% text",
+      (name, rem) => {
+        const match = new RegExp(`--${name}:\\s*min\\(([\\d.]+)rem,\\s*([\\d.]+)vw\\)`).exec(css);
+        expect(match, `--${name} must be min(<rem>, <n>vw)`).not.toBeNull();
+        expect(Number(match![1])).toBe(rem);
+        // 1vw is 3.2px on a 320px screen; at the default 16px root the cap must not bite.
+        expect(Number(match![2]) * 3.2).toBeCloseTo(rem * 16, 6);
+      },
+    );
+
+    it("uses the capped chrome on every layer of the nesting", () => {
+      const shells = rulesFor(
+        /^\.landing-screen,\s*\.player-screen,\s*\.gm-screen,\s*\.table-screen$/s,
+      );
+      expect(declaration(shells, "padding").join()).toContain("var(--fit-gutter)");
+      const panels = rulesFor(
+        /^\.step,\s*\.scene-card,\s*\.landing-resume,\s*\.reveal-card,\s*\.invite-panel$/s,
+      );
+      expect(declaration(panels, "padding").join()).toContain("var(--fit-gutter)");
+      expect(declaration(rulesFor(/^fieldset$/), "padding").join()).toContain("var(--fit-inset)");
+      const cards = rulesFor(/^\.pending-action-card,\s*\.roster-panel-list li,/s);
+      expect(declaration(cards, "padding").join()).toContain("var(--fit-inset)");
+      const rows = rulesFor(/^\.gear-option,\s*\.form-field--checkbox$/s);
+      expect(declaration(rows, "padding").join()).toContain("var(--fit-row)");
+      expect(declaration(rows, "gap").join()).toContain("var(--fit-gap)");
+      // Bare label text must be able to break inside the row, whatever the name's longest word.
+      expect(declaration(rows, "overflow-wrap")).toContain("anywhere");
+      expect(declaration(rows, "min-width")).toContain("0");
+      const boxes = rulesFor(/^input\[type="checkbox"\],\s*input\[type="radio"\]$/s);
+      expect(declaration(boxes, "width")).toContain("var(--fit-check)");
+      expect(declaration(boxes, "height")).toContain("var(--fit-check)");
+      // The check glyph and radio dot scale with the box, so they cannot poke out of a shrunken one.
+      const glyph = rulesFor(/^input\[type="checkbox"\]::after$/);
+      const dot = rulesFor(/^input\[type="radio"\]::after$/);
+      expect(declaration(glyph, "width")[0]).toContain("var(--fit-check)");
+      expect(declaration(dot, "width")[0]).toContain("var(--fit-check)");
+    });
+
+    it("keeps the safe-area insets on the screen shells", () => {
+      const padding = declaration(
+        rulesFor(/^\.landing-screen,\s*\.player-screen,\s*\.gm-screen,\s*\.table-screen$/s),
+        "padding",
+      ).join();
+      for (const side of ["top", "right", "bottom", "left"]) {
+        expect(padding).toContain(`env(safe-area-inset-${side})`);
+      }
+    });
+  });
+
   describe("licensing hygiene", () => {
     it("uses only system font stacks and no external resources", () => {
       expect(css).not.toMatch(/@import|@font-face|url\(\s*["']?https?:/i);

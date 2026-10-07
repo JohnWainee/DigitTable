@@ -1,0 +1,3370 @@
+{
+  "label": "tsb",
+  "base": "http://127.0.0.1:4174",
+  "startedAt": "2026-10-07T11:16:17.094Z",
+  "states": [],
+  "textScale": [
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-landing-phone-small-text150.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-landing-phone-small-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-landing-phone-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "landing",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-landing-phone-large-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-create-form-phone-small-text150.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-create-form-phone-small-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-create-form-phone-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "create-form",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 4,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-create-form-phone-large-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-join-form-phone-small-text150.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-join-form-phone-small-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-join-form-phone-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "join-form",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-join-form-phone-large-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-table-join-form-phone-small-text150.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-table-join-form-phone-small-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-table-join-form-phone-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "table-join-form",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 3,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-table-join-form-phone-large-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-route-claim-no-such-room-phone-small-text150.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-route-claim-no-such-room-phone-small-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-route-claim-no-such-room-phone-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-claim-no-such-room",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-route-claim-no-such-room-phone-large-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-route-room-no-such-room-gm-phone-small-text150.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-route-room-no-such-room-gm-phone-small-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-route-room-no-such-room-gm-phone-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-gm",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-route-room-no-such-room-gm-phone-large-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-route-room-no-such-room-player-phone-small-text150.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-route-room-no-such-room-player-phone-small-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-route-room-no-such-room-player-phone-text200.jpg"
+    },
+    {
+      "surface": "anon",
+      "state": "route-room-no-such-room-player",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "anon-route-room-no-such-room-player-phone-large-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-secrets-reveal-phone-small-text150.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "label.gear-option.form-field--checkbox 195>182 :: I have written these down"
+      ],
+      "screenshot": "gm-secrets-reveal-phone-small-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-secrets-reveal-phone-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "secrets-reveal",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-secrets-reveal-phone-large-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-console-empty-phone-small-text150.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-console-empty-phone-small-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-console-empty-phone-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-empty",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 27,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-console-empty-phone-large-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-join-filled-phone-small-text150.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-join-filled-phone-small-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-join-filled-phone-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-filled",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 5,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-join-filled-phone-large-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-join-reveal-phone-small-text150.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-join-reveal-phone-small-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-join-reveal-phone-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "join-reveal",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-join-reveal-phone-large-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-claim-roster-phone-small-text150.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-claim-roster-phone-small-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-claim-roster-phone-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "claim-roster",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 6,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-claim-roster-phone-large-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "fieldset 224>214 :: StatBrawl (2)Con (4)Fix (2)S",
+        "label.gear-option 187>169 :: Brawl (2)",
+        "label.gear-option 172>169 :: Con (4)",
+        "label.gear-option 202>169 :: Search (2)",
+        "label.gear-option 191>169 :: Shoot (3)",
+        "label.gear-option 194>169 :: Sneak (1)",
+        "label.gear-option 194>169 :: Terrify (3)"
+      ],
+      "screenshot": "player-compose-phone-small-text150.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 20,
+      "overflowPx": 47,
+      "controlIssues": [],
+      "offenders": [
+        "fieldset w=186"
+      ],
+      "spills": [
+        "section.step 332>250 :: Choose an actionStatBrawl (2",
+        "fieldset 298>182 :: StatBrawl (2)Con (4)Fix (2)S",
+        "label.gear-option 249>124 :: Brawl (2)",
+        "label.gear-option 230>124 :: Con (4)",
+        "label.gear-option 213>124 :: Fix (2)",
+        "label.gear-option 269>124 :: Search (2)",
+        "label.gear-option 255>124 :: Shoot (3)",
+        "label.gear-option 259>124 :: Sneak (1)"
+      ],
+      "screenshot": "player-compose-phone-small-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "section.step 332>305 :: Choose an actionStatBrawl (2",
+        "fieldset 298>237 :: StatBrawl (2)Con (4)Fix (2)S",
+        "label.gear-option 249>179 :: Brawl (2)",
+        "label.gear-option 230>179 :: Con (4)",
+        "label.gear-option 213>179 :: Fix (2)",
+        "label.gear-option 269>179 :: Search (2)",
+        "label.gear-option 255>179 :: Shoot (3)",
+        "label.gear-option 259>179 :: Sneak (1)"
+      ],
+      "screenshot": "player-compose-phone-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "section.step 332>320 :: Choose an actionStatBrawl (2",
+        "fieldset 298>252 :: StatBrawl (2)Con (4)Fix (2)S",
+        "label.gear-option 249>194 :: Brawl (2)",
+        "label.gear-option 230>194 :: Con (4)",
+        "label.gear-option 213>194 :: Fix (2)",
+        "label.gear-option 269>194 :: Search (2)",
+        "label.gear-option 255>194 :: Shoot (3)",
+        "label.gear-option 259>194 :: Sneak (1)"
+      ],
+      "screenshot": "player-compose-phone-large-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "fieldset 224>214 :: StatBrawl (2)Con (4)Fix (2)S",
+        "label.gear-option 187>169 :: Brawl (2)",
+        "label.gear-option 172>169 :: Con (4)",
+        "label.gear-option 202>169 :: Search (2)",
+        "label.gear-option 191>169 :: Shoot (3)",
+        "label.gear-option 194>169 :: Sneak (1)",
+        "label.gear-option 194>169 :: Terrify (3)"
+      ],
+      "screenshot": "player-compose-why-open-phone-small-text150.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 20,
+      "overflowPx": 47,
+      "controlIssues": [],
+      "offenders": [
+        "fieldset w=186"
+      ],
+      "spills": [
+        "section.step 332>250 :: Choose an actionStatBrawl (2",
+        "fieldset 298>182 :: StatBrawl (2)Con (4)Fix (2)S",
+        "label.gear-option 249>124 :: Brawl (2)",
+        "label.gear-option 230>124 :: Con (4)",
+        "label.gear-option 213>124 :: Fix (2)",
+        "label.gear-option 269>124 :: Search (2)",
+        "label.gear-option 255>124 :: Shoot (3)",
+        "label.gear-option 259>124 :: Sneak (1)"
+      ],
+      "screenshot": "player-compose-why-open-phone-small-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "section.step 332>305 :: Choose an actionStatBrawl (2",
+        "fieldset 298>237 :: StatBrawl (2)Con (4)Fix (2)S",
+        "label.gear-option 249>179 :: Brawl (2)",
+        "label.gear-option 230>179 :: Con (4)",
+        "label.gear-option 213>179 :: Fix (2)",
+        "label.gear-option 269>179 :: Search (2)",
+        "label.gear-option 255>179 :: Shoot (3)",
+        "label.gear-option 259>179 :: Sneak (1)"
+      ],
+      "screenshot": "player-compose-why-open-phone-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "compose-why-open",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "section.step 332>320 :: Choose an actionStatBrawl (2",
+        "fieldset 298>252 :: StatBrawl (2)Con (4)Fix (2)S",
+        "label.gear-option 249>194 :: Brawl (2)",
+        "label.gear-option 230>194 :: Con (4)",
+        "label.gear-option 213>194 :: Fix (2)",
+        "label.gear-option 269>194 :: Search (2)",
+        "label.gear-option 255>194 :: Shoot (3)",
+        "label.gear-option 259>194 :: Sneak (1)"
+      ],
+      "screenshot": "player-compose-why-open-phone-large-text200.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "table-idle-phone-small-text150.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "table-idle-phone-small-text200.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "table-idle-phone-text200.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "idle",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "table-idle-phone-large-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-console-scene-loaded-phone-small-text150.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-console-scene-loaded-phone-small-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-console-scene-loaded-phone-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-scene-loaded",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 32,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-console-scene-loaded-phone-large-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-declared-phone-small-text150.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-declared-phone-small-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-declared-phone-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "declared",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 1,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-declared-phone-large-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "fieldset 171>169 :: Engaged threatsStation Patro",
+        "label.gear-option 149>124 :: Station Patrol A",
+        "label.gear-option 149>124 :: Station Patrol B"
+      ],
+      "screenshot": "gm-console-pending-phone-small-text150.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 37,
+      "overflowPx": 5,
+      "controlIssues": [],
+      "offenders": [
+        "div.gear-list w=69"
+      ],
+      "spills": [
+        "section.step 290>250 :: Pending actionsIrynaStat: CO",
+        "li.pending-action-card 256>182 :: IrynaStat: CONEngaged threat",
+        "fieldset 227>124 :: Engaged threatsStation Patro",
+        "label.gear-option 198>65 :: Station Patrol A",
+        "label.gear-option 198>65 :: Station Patrol B"
+      ],
+      "screenshot": "gm-console-pending-phone-small-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "li.pending-action-card 256>237 :: IrynaStat: CONEngaged threat",
+        "fieldset 227>179 :: Engaged threatsStation Patro",
+        "label.gear-option 198>120 :: Station Patrol A",
+        "label.gear-option 198>120 :: Station Patrol B"
+      ],
+      "screenshot": "gm-console-pending-phone-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-pending",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 37,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "li.pending-action-card 256>252 :: IrynaStat: CONEngaged threat",
+        "fieldset 227>194 :: Engaged threatsStation Patro",
+        "label.gear-option 198>135 :: Station Patrol A",
+        "label.gear-option 198>135 :: Station Patrol B"
+      ],
+      "screenshot": "gm-console-pending-phone-large-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 10,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "label.gear-option 176>169 :: Get clear of the wreckage an",
+        "label.gear-option 176>169 :: Get clear of the wreckage an"
+      ],
+      "screenshot": "player-allocation-phone-small-text150.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 10,
+      "overflowPx": 12,
+      "controlIssues": [],
+      "offenders": [
+        "div.allocation-list w=186"
+      ],
+      "spills": [
+        "section.step 297>250 :: Your roll4 (success)5 (succe",
+        "fieldset.allocation-die-group 263>182 :: Die: 4 (success)Get clear of",
+        "label.gear-option 234>124 :: Get clear of the wreckage an",
+        "label.gear-option 198>124 :: Station Patrol A",
+        "label.gear-option 198>124 :: Station Patrol B",
+        "label.gear-option 169>124 :: Feed",
+        "fieldset.allocation-die-group 263>182 :: Die: 5 (success)Get clear of",
+        "label.gear-option 234>124 :: Get clear of the wreckage an"
+      ],
+      "screenshot": "player-allocation-phone-small-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 10,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "fieldset.allocation-die-group 263>237 :: Die: 4 (success)Get clear of",
+        "label.gear-option 234>179 :: Get clear of the wreckage an",
+        "label.gear-option 198>179 :: Station Patrol A",
+        "label.gear-option 198>179 :: Station Patrol B",
+        "fieldset.allocation-die-group 263>237 :: Die: 5 (success)Get clear of",
+        "label.gear-option 234>179 :: Get clear of the wreckage an",
+        "label.gear-option 198>179 :: Station Patrol A",
+        "label.gear-option 198>179 :: Station Patrol B"
+      ],
+      "screenshot": "player-allocation-phone-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 10,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "fieldset.allocation-die-group 263>252 :: Die: 4 (success)Get clear of",
+        "label.gear-option 234>194 :: Get clear of the wreckage an",
+        "label.gear-option 198>194 :: Station Patrol A",
+        "label.gear-option 198>194 :: Station Patrol B",
+        "fieldset.allocation-die-group 263>252 :: Die: 5 (success)Get clear of",
+        "label.gear-option 234>194 :: Get clear of the wreckage an",
+        "label.gear-option 198>194 :: Station Patrol A",
+        "label.gear-option 198>194 :: Station Patrol B"
+      ],
+      "screenshot": "player-allocation-phone-large-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 10,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "label.gear-option 176>169 :: Get clear of the wreckage an",
+        "label.gear-option 176>169 :: Get clear of the wreckage an"
+      ],
+      "screenshot": "player-allocation-assigned-phone-small-text150.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 10,
+      "overflowPx": 12,
+      "controlIssues": [],
+      "offenders": [
+        "div.allocation-list w=186"
+      ],
+      "spills": [
+        "section.step 297>250 :: Your roll4 (success)5 (succe",
+        "fieldset.allocation-die-group 263>182 :: Die: 4 (success)Get clear of",
+        "label.gear-option 234>124 :: Get clear of the wreckage an",
+        "label.gear-option 198>124 :: Station Patrol A",
+        "label.gear-option 198>124 :: Station Patrol B",
+        "label.gear-option 169>124 :: Feed",
+        "fieldset.allocation-die-group 263>182 :: Die: 5 (success)Get clear of",
+        "label.gear-option 234>124 :: Get clear of the wreckage an"
+      ],
+      "screenshot": "player-allocation-assigned-phone-small-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 10,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "fieldset.allocation-die-group 263>237 :: Die: 4 (success)Get clear of",
+        "label.gear-option 234>179 :: Get clear of the wreckage an",
+        "label.gear-option 198>179 :: Station Patrol A",
+        "label.gear-option 198>179 :: Station Patrol B",
+        "fieldset.allocation-die-group 263>237 :: Die: 5 (success)Get clear of",
+        "label.gear-option 234>179 :: Get clear of the wreckage an",
+        "label.gear-option 198>179 :: Station Patrol A",
+        "label.gear-option 198>179 :: Station Patrol B"
+      ],
+      "screenshot": "player-allocation-assigned-phone-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "allocation-assigned",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 10,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "fieldset.allocation-die-group 263>252 :: Die: 4 (success)Get clear of",
+        "label.gear-option 234>194 :: Get clear of the wreckage an",
+        "label.gear-option 198>194 :: Station Patrol A",
+        "label.gear-option 198>194 :: Station Patrol B",
+        "fieldset.allocation-die-group 263>252 :: Die: 5 (success)Get clear of",
+        "label.gear-option 234>194 :: Get clear of the wreckage an",
+        "label.gear-option 198>194 :: Station Patrol A",
+        "label.gear-option 198>194 :: Station Patrol B"
+      ],
+      "screenshot": "player-allocation-assigned-phone-large-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-resolved-phone-small-text150.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-resolved-phone-small-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-resolved-phone-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "resolved",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 2,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "player-resolved-phone-large-text200.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "table-after-roll-phone-small-text150.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "table-after-roll-phone-small-text200.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "table-after-roll-phone-text200.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "after-roll",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "table-after-roll-phone-large-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "fieldset 224>214 :: StatBrawl (2)Con (4)Fix (2)S",
+        "label.gear-option 187>169 :: Brawl (2)",
+        "label.gear-option 172>169 :: Con (4)",
+        "label.gear-option 202>169 :: Search (2)",
+        "label.gear-option 191>169 :: Shoot (3)",
+        "label.gear-option 194>169 :: Sneak (1)",
+        "label.gear-option 194>169 :: Terrify (3)"
+      ],
+      "screenshot": "player-paused-phone-small-text150.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 20,
+      "overflowPx": 47,
+      "controlIssues": [],
+      "offenders": [
+        "fieldset w=186"
+      ],
+      "spills": [
+        "section.step 332>250 :: Choose an actionStatBrawl (2",
+        "fieldset 298>182 :: StatBrawl (2)Con (4)Fix (2)S",
+        "label.gear-option 249>124 :: Brawl (2)",
+        "label.gear-option 230>124 :: Con (4)",
+        "label.gear-option 213>124 :: Fix (2)",
+        "label.gear-option 269>124 :: Search (2)",
+        "label.gear-option 255>124 :: Shoot (3)",
+        "label.gear-option 259>124 :: Sneak (1)"
+      ],
+      "screenshot": "player-paused-phone-small-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "section.step 332>305 :: Choose an actionStatBrawl (2",
+        "fieldset 298>237 :: StatBrawl (2)Con (4)Fix (2)S",
+        "label.gear-option 249>179 :: Brawl (2)",
+        "label.gear-option 230>179 :: Con (4)",
+        "label.gear-option 213>179 :: Fix (2)",
+        "label.gear-option 269>179 :: Search (2)",
+        "label.gear-option 255>179 :: Shoot (3)",
+        "label.gear-option 259>179 :: Sneak (1)"
+      ],
+      "screenshot": "player-paused-phone-text200.jpg"
+    },
+    {
+      "surface": "player",
+      "state": "paused",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 20,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [
+        "section.step 332>320 :: Choose an actionStatBrawl (2",
+        "fieldset 298>252 :: StatBrawl (2)Con (4)Fix (2)S",
+        "label.gear-option 249>194 :: Brawl (2)",
+        "label.gear-option 230>194 :: Con (4)",
+        "label.gear-option 213>194 :: Fix (2)",
+        "label.gear-option 269>194 :: Search (2)",
+        "label.gear-option 255>194 :: Shoot (3)",
+        "label.gear-option 259>194 :: Sneak (1)"
+      ],
+      "screenshot": "player-paused-phone-large-text200.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "table-next-scene-phone-small-text150.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "table-next-scene-phone-small-text200.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "table-next-scene-phone-text200.jpg"
+    },
+    {
+      "surface": "table",
+      "state": "next-scene",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 0,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "table-next-scene-phone-large-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 150,
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-console-next-scene-phone-small-text150.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-small",
+      "size": "320x568",
+      "textPercent": 200,
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-console-next-scene-phone-small-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone",
+      "size": "375x812",
+      "textPercent": 200,
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-console-next-scene-phone-text200.jpg"
+    },
+    {
+      "surface": "gm",
+      "state": "console-next-scene",
+      "viewport": "phone-large",
+      "size": "390x844",
+      "textPercent": 200,
+      "controls": 33,
+      "overflowPx": 0,
+      "controlIssues": [],
+      "spills": [],
+      "screenshot": "gm-console-next-scene-phone-large-text200.jpg"
+    }
+  ],
+  "modal": [
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 568,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 544
+        },
+        "apply": {
+          "top": 445.25,
+          "bottom": 493.625,
+          "left": 19,
+          "right": 301,
+          "width": 282,
+          "height": 48.375
+        },
+        "cancel": {
+          "top": 505.625,
+          "bottom": 556,
+          "left": 19,
+          "right": 301,
+          "width": 282,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1388.140625,
+          "bottom": 1436.140625,
+          "left": 19,
+          "right": 301,
+          "width": 282,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1351,
+          "clientHeight": 329,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone-small.jpg",
+      "keyboard": {
+        "size": "320x312",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone-small.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 788
+        },
+        "apply": {
+          "top": 707.625,
+          "bottom": 800,
+          "left": 19,
+          "right": 181.5,
+          "width": 162.5,
+          "height": 92.375
+        },
+        "cancel": {
+          "top": 707.625,
+          "bottom": 800,
+          "left": 193.5,
+          "right": 356,
+          "width": 162.5,
+          "height": 92.375
+        },
+        "reason": {
+          "top": 1388.140625,
+          "bottom": 1436.140625,
+          "left": 19,
+          "right": 356,
+          "width": 337,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1351,
+          "clientHeight": 591,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone.jpg",
+      "keyboard": {
+        "size": "375x447",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 86,
+          "right": 726,
+          "width": 640,
+          "height": 343
+        },
+        "apply": {
+          "top": 290.625,
+          "bottom": 341,
+          "left": 105,
+          "right": 400,
+          "width": 295,
+          "height": 50.375
+        },
+        "cancel": {
+          "top": 290.625,
+          "bottom": 341,
+          "left": 412,
+          "right": 707,
+          "width": 295,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1311.359375,
+          "bottom": 1359.359375,
+          "left": 105,
+          "right": 707,
+          "width": 602,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1303,
+          "clientHeight": 211,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone-landscape.jpg",
+      "keyboard": {
+        "size": "812x206",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone-landscape.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 375,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 24,
+          "right": 643,
+          "width": 619,
+          "height": 343
+        },
+        "apply": {
+          "top": 290.625,
+          "bottom": 341,
+          "left": 43,
+          "right": 327.5,
+          "width": 284.5,
+          "height": 50.375
+        },
+        "cancel": {
+          "top": 290.625,
+          "bottom": 341,
+          "left": 339.5,
+          "right": 624,
+          "width": 284.5,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1311.359375,
+          "bottom": 1359.359375,
+          "left": 43,
+          "right": 624,
+          "width": 581,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1303,
+          "clientHeight": 211,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone-667x375.jpg",
+      "keyboard": {
+        "size": "667x206",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone-667x375.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "tablet",
+      "size": "768x1024",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 768,
+          "innerHeight": 1024,
+          "clientWidth": 768
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 768,
+          "height": 1024,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 160,
+          "bottom": 864,
+          "left": 64,
+          "right": 704,
+          "width": 640,
+          "height": 704
+        },
+        "apply": {
+          "top": 799.625,
+          "bottom": 850,
+          "left": 83,
+          "right": 378,
+          "width": 295,
+          "height": 50.375
+        },
+        "cancel": {
+          "top": 799.625,
+          "bottom": 850,
+          "left": 390,
+          "right": 685,
+          "width": 295,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1488.953125,
+          "bottom": 1536.953125,
+          "left": 83,
+          "right": 685,
+          "width": 602,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1327,
+          "clientHeight": 559,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-tablet.jpg",
+      "keyboard": {
+        "size": "768x563",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-tablet.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "desktop",
+      "size": "1280x800",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 1280,
+          "innerHeight": 800,
+          "clientWidth": 1280
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 1280,
+          "height": 800,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 752,
+          "left": 312.5,
+          "right": 952.5,
+          "width": 640,
+          "height": 704
+        },
+        "apply": {
+          "top": 687.625,
+          "bottom": 738,
+          "left": 331.5,
+          "right": 626.5,
+          "width": 295,
+          "height": 50.375
+        },
+        "cancel": {
+          "top": 687.625,
+          "bottom": 738,
+          "left": 638.5,
+          "right": 933.5,
+          "width": 295,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1376.953125,
+          "bottom": 1424.953125,
+          "left": 331.5,
+          "right": 918.5,
+          "width": 587,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1327,
+          "clientHeight": 559,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": -15,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-desktop.jpg",
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "zoom-emulated",
+      "checks": {
+        "pageScaleApplied": true,
+        "dialogInsideVisualViewportWhenZoomed": true,
+        "actionsInsideVisualViewportWhenZoomed": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 234.375,
+          "height": 507.5,
+          "scale": 1.600000023841858
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 507.5,
+          "left": 0,
+          "right": 234.375,
+          "width": 234.375,
+          "height": 483.5
+        },
+        "apply": {
+          "top": 362.75,
+          "bottom": 433.125,
+          "left": 19,
+          "right": 215.375,
+          "width": 196.375,
+          "height": 70.375
+        },
+        "cancel": {
+          "top": 445.125,
+          "bottom": 495.5,
+          "left": 19,
+          "right": 215.375,
+          "width": 196.375,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1714.515625,
+          "bottom": 1762.515625,
+          "left": 19,
+          "right": 215.375,
+          "width": 196.375,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1677,
+          "clientHeight": 247,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "pinch-gesture",
+      "checks": {
+        "pinchZoomStillWorksWithSheetOpen": true
+      },
+      "notes": [],
+      "scaleBefore": 1,
+      "scaleAfter": 2.0000009536743164
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "scenario": "safe-area-landscape-constrained",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfLeftInset": true,
+        "sheetClearOfRightInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 375,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 47,
+          "right": 620,
+          "width": 573,
+          "height": 343
+        },
+        "apply": {
+          "top": 269.625,
+          "bottom": 320,
+          "left": 66,
+          "right": 327.5,
+          "width": 261.5,
+          "height": 50.375
+        },
+        "cancel": {
+          "top": 269.625,
+          "bottom": 320,
+          "left": 339.5,
+          "right": 601,
+          "width": 261.5,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1311.359375,
+          "bottom": 1359.359375,
+          "left": 66,
+          "right": 601,
+          "width": 535,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1303,
+          "clientHeight": 190,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 29,
+      "sheetWidth": 573,
+      "screenshot": "gm-correction-safe-area-landscape-constrained.jpg"
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "scenario": "safe-area-landscape-812",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfLeftInset": true,
+        "sheetClearOfRightInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 86,
+          "right": 726,
+          "width": 640,
+          "height": 343
+        },
+        "apply": {
+          "top": 269.625,
+          "bottom": 320,
+          "left": 105,
+          "right": 400,
+          "width": 295,
+          "height": 50.375
+        },
+        "cancel": {
+          "top": 269.625,
+          "bottom": 320,
+          "left": 412,
+          "right": 707,
+          "width": 295,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1311.359375,
+          "bottom": 1359.359375,
+          "left": 105,
+          "right": 707,
+          "width": 602,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1303,
+          "clientHeight": 190,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 29,
+      "sheetWidth": 640,
+      "screenshot": "gm-correction-safe-area-landscape-812.jpg"
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "safe-area-portrait",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfTopInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 47,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 765
+        },
+        "apply": {
+          "top": 673.625,
+          "bottom": 766,
+          "left": 19,
+          "right": 181.5,
+          "width": 162.5,
+          "height": 92.375
+        },
+        "cancel": {
+          "top": 673.625,
+          "bottom": 766,
+          "left": 193.5,
+          "right": 356,
+          "width": 162.5,
+          "height": 92.375
+        },
+        "reason": {
+          "top": 1411.140625,
+          "bottom": 1459.140625,
+          "left": 19,
+          "right": 356,
+          "width": 337,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1351,
+          "clientHeight": 534,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 46,
+      "screenshot": "gm-correction-safe-area-portrait.jpg"
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "back-closes-only-the-sheet",
+      "checks": {
+        "sheetClosed": true,
+        "routeUnchanged": true,
+        "consoleStillRendered": true,
+        "rootUnlocked": true,
+        "cancelRemovesEntry": true,
+        "stackNotGrownBeyondOneEntry": true,
+        "entryAddedWhileOpen": true
+      },
+      "notes": [
+        "history.length before/open/after: 4/4/4"
+      ]
+    },
+    {
+      "viewport": "visible-140",
+      "size": "320x140",
+      "scenario": "short-visible-140",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "containerBranchEngaged": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 140,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 140,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 140,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 132
+        },
+        "apply": {
+          "top": 1395.953125,
+          "bottom": 1444.328125,
+          "left": 19,
+          "right": 301,
+          "width": 282,
+          "height": 48.375
+        },
+        "cancel": {
+          "top": 1456.328125,
+          "bottom": 1506.703125,
+          "left": 19,
+          "right": 301,
+          "width": 282,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1324.953125,
+          "bottom": 1372.953125,
+          "left": 19,
+          "right": 301,
+          "width": 282,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1327,
+          "clientHeight": 1327,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-short-visible-140.jpg"
+    },
+    {
+      "viewport": "visible-160-landscape",
+      "size": "667x160",
+      "scenario": "short-visible-160-landscape",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "containerBranchEngaged": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 160,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 160,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 136,
+          "left": 24,
+          "right": 643,
+          "width": 619,
+          "height": 128
+        },
+        "apply": {
+          "top": 1371.953125,
+          "bottom": 1422.328125,
+          "left": 43,
+          "right": 327.5,
+          "width": 284.5,
+          "height": 50.375
+        },
+        "cancel": {
+          "top": 1371.953125,
+          "bottom": 1422.328125,
+          "left": 339.5,
+          "right": 624,
+          "width": 284.5,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1300.953125,
+          "bottom": 1348.953125,
+          "left": 43,
+          "right": 624,
+          "width": 581,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1303,
+          "clientHeight": 1303,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-short-visible-160-landscape.jpg"
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "text-150-phone-small",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 36,
+          "bottom": 568,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 532
+        },
+        "apply": {
+          "top": 361.8125,
+          "bottom": 465.40625,
+          "left": 27,
+          "right": 293,
+          "width": 266,
+          "height": 103.59375
+        },
+        "cancel": {
+          "top": 483.40625,
+          "bottom": 556,
+          "left": 27,
+          "right": 293,
+          "width": 266,
+          "height": 72.59375
+        },
+        "reason": {
+          "top": 2565.9375,
+          "bottom": 2637.9375,
+          "left": 27,
+          "right": 293,
+          "width": 266,
+          "height": 72
+        },
+        "body": {
+          "scrollHeight": 2513,
+          "clientHeight": 192,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 24,
+      "screenshot": "gm-correction-text-150-phone-small.jpg"
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "text-200-phone",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 764
+        },
+        "apply": {
+          "top": 514.203125,
+          "bottom": 694.984375,
+          "left": 35,
+          "right": 340,
+          "width": 305,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 718.984375,
+          "bottom": 814.984375,
+          "left": 35,
+          "right": 340,
+          "width": 305,
+          "height": 96
+        },
+        "reason": {
+          "top": 3759.578125,
+          "bottom": 3855.578125,
+          "left": 35,
+          "right": 340,
+          "width": 305,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 3646,
+          "clientHeight": 246,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": "gm-correction-text-200-phone.jpg"
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "text-200-phone-small",
+      "checks": {
+        "dialogInsideViewport": false,
+        "noPageOverflow": false,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 325,
+          "innerHeight": 577,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 9,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 57,
+          "bottom": 577,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 520
+        },
+        "apply": {
+          "top": 376.8125,
+          "bottom": 557.59375,
+          "left": 35,
+          "right": 285,
+          "width": 250,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 581.59375,
+          "bottom": 677.59375,
+          "left": 35,
+          "right": 285,
+          "width": 250,
+          "height": 96
+        },
+        "reason": {
+          "top": 4644.390625,
+          "bottom": 4740.390625,
+          "left": 35,
+          "right": 285,
+          "width": 250,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 4522,
+          "clientHeight": 100,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 5,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "offenders": [
+        "div right=320 sw=325/320 :: ConnectedDirector console1 act",
+        "main.gm-screen right=320 sw=325/320 :: ConnectedDirector console1 act",
+        "section.step right=288 sw=290/250 :: Pending actionsIrynaStat: CONE",
+        "ul.pending-actions-list right=253 sw=258/186 :: IrynaStat: CONEngaged threatsS",
+        "li.pending-action-card right=253 sw=256/182 :: IrynaStat: CONEngaged threatsS",
+        "fieldset right=224 sw=227/124 :: Engaged threatsStation Patrol ",
+        "div.gear-list right=195 sw=200/69 :: Station Patrol AStation Patrol",
+        "label.gear-option right=195 sw=198/65 :: Station Patrol A",
+        "label.gear-option right=195 sw=198/65 :: Station Patrol B",
+        "label.gear-option right=256 sw=216/188 :: Downed"
+      ],
+      "textPx": 32,
+      "screenshot": "gm-correction-text-200-phone-small.jpg"
+    }
+  ],
+  "reducedMotion": {
+    "allowed": {
+      "sheetAnimation": "sheet-rise",
+      "sheetDuration": "0.18s",
+      "backdropAnimation": "sheet-fade",
+      "anyLongTransition": true,
+      "matches": false
+    },
+    "reduced": {
+      "sheetAnimation": "none",
+      "sheetDuration": "1e-06s",
+      "backdropAnimation": "none",
+      "anyLongTransition": false,
+      "matches": true
+    }
+  },
+  "routes": [],
+  "failures": [
+    {
+      "scope": "gm/secrets-reveal@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option.form-field--checkbox 195>182 :: I have written these down"
+    },
+    {
+      "scope": "player/compose@phone-small+text150",
+      "message": "content spills out of its box: fieldset 224>214 :: StatBrawl (2)Con (4)Fix (2)S"
+    },
+    {
+      "scope": "player/compose@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 187>169 :: Brawl (2)"
+    },
+    {
+      "scope": "player/compose@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 172>169 :: Con (4)"
+    },
+    {
+      "scope": "player/compose@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 202>169 :: Search (2)"
+    },
+    {
+      "scope": "player/compose@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 191>169 :: Shoot (3)"
+    },
+    {
+      "scope": "player/compose@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 194>169 :: Sneak (1)"
+    },
+    {
+      "scope": "player/compose@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 194>169 :: Terrify (3)"
+    },
+    {
+      "scope": "player/compose@phone-small+text200",
+      "message": "horizontal overflow 47px (fieldset w=186)"
+    },
+    {
+      "scope": "player/compose@phone-small+text200",
+      "message": "content spills out of its box: section.step 332>250 :: Choose an actionStatBrawl (2"
+    },
+    {
+      "scope": "player/compose@phone-small+text200",
+      "message": "content spills out of its box: fieldset 298>182 :: StatBrawl (2)Con (4)Fix (2)S"
+    },
+    {
+      "scope": "player/compose@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 249>124 :: Brawl (2)"
+    },
+    {
+      "scope": "player/compose@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 230>124 :: Con (4)"
+    },
+    {
+      "scope": "player/compose@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 213>124 :: Fix (2)"
+    },
+    {
+      "scope": "player/compose@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 269>124 :: Search (2)"
+    },
+    {
+      "scope": "player/compose@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 255>124 :: Shoot (3)"
+    },
+    {
+      "scope": "player/compose@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 259>124 :: Sneak (1)"
+    },
+    {
+      "scope": "player/compose@phone+text200",
+      "message": "content spills out of its box: section.step 332>305 :: Choose an actionStatBrawl (2"
+    },
+    {
+      "scope": "player/compose@phone+text200",
+      "message": "content spills out of its box: fieldset 298>237 :: StatBrawl (2)Con (4)Fix (2)S"
+    },
+    {
+      "scope": "player/compose@phone+text200",
+      "message": "content spills out of its box: label.gear-option 249>179 :: Brawl (2)"
+    },
+    {
+      "scope": "player/compose@phone+text200",
+      "message": "content spills out of its box: label.gear-option 230>179 :: Con (4)"
+    },
+    {
+      "scope": "player/compose@phone+text200",
+      "message": "content spills out of its box: label.gear-option 213>179 :: Fix (2)"
+    },
+    {
+      "scope": "player/compose@phone+text200",
+      "message": "content spills out of its box: label.gear-option 269>179 :: Search (2)"
+    },
+    {
+      "scope": "player/compose@phone+text200",
+      "message": "content spills out of its box: label.gear-option 255>179 :: Shoot (3)"
+    },
+    {
+      "scope": "player/compose@phone+text200",
+      "message": "content spills out of its box: label.gear-option 259>179 :: Sneak (1)"
+    },
+    {
+      "scope": "player/compose@phone-large+text200",
+      "message": "content spills out of its box: section.step 332>320 :: Choose an actionStatBrawl (2"
+    },
+    {
+      "scope": "player/compose@phone-large+text200",
+      "message": "content spills out of its box: fieldset 298>252 :: StatBrawl (2)Con (4)Fix (2)S"
+    },
+    {
+      "scope": "player/compose@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 249>194 :: Brawl (2)"
+    },
+    {
+      "scope": "player/compose@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 230>194 :: Con (4)"
+    },
+    {
+      "scope": "player/compose@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 213>194 :: Fix (2)"
+    },
+    {
+      "scope": "player/compose@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 269>194 :: Search (2)"
+    },
+    {
+      "scope": "player/compose@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 255>194 :: Shoot (3)"
+    },
+    {
+      "scope": "player/compose@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 259>194 :: Sneak (1)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text150",
+      "message": "content spills out of its box: fieldset 224>214 :: StatBrawl (2)Con (4)Fix (2)S"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 187>169 :: Brawl (2)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 172>169 :: Con (4)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 202>169 :: Search (2)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 191>169 :: Shoot (3)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 194>169 :: Sneak (1)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 194>169 :: Terrify (3)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text200",
+      "message": "horizontal overflow 47px (fieldset w=186)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text200",
+      "message": "content spills out of its box: section.step 332>250 :: Choose an actionStatBrawl (2"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text200",
+      "message": "content spills out of its box: fieldset 298>182 :: StatBrawl (2)Con (4)Fix (2)S"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 249>124 :: Brawl (2)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 230>124 :: Con (4)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 213>124 :: Fix (2)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 269>124 :: Search (2)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 255>124 :: Shoot (3)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 259>124 :: Sneak (1)"
+    },
+    {
+      "scope": "player/compose-why-open@phone+text200",
+      "message": "content spills out of its box: section.step 332>305 :: Choose an actionStatBrawl (2"
+    },
+    {
+      "scope": "player/compose-why-open@phone+text200",
+      "message": "content spills out of its box: fieldset 298>237 :: StatBrawl (2)Con (4)Fix (2)S"
+    },
+    {
+      "scope": "player/compose-why-open@phone+text200",
+      "message": "content spills out of its box: label.gear-option 249>179 :: Brawl (2)"
+    },
+    {
+      "scope": "player/compose-why-open@phone+text200",
+      "message": "content spills out of its box: label.gear-option 230>179 :: Con (4)"
+    },
+    {
+      "scope": "player/compose-why-open@phone+text200",
+      "message": "content spills out of its box: label.gear-option 213>179 :: Fix (2)"
+    },
+    {
+      "scope": "player/compose-why-open@phone+text200",
+      "message": "content spills out of its box: label.gear-option 269>179 :: Search (2)"
+    },
+    {
+      "scope": "player/compose-why-open@phone+text200",
+      "message": "content spills out of its box: label.gear-option 255>179 :: Shoot (3)"
+    },
+    {
+      "scope": "player/compose-why-open@phone+text200",
+      "message": "content spills out of its box: label.gear-option 259>179 :: Sneak (1)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-large+text200",
+      "message": "content spills out of its box: section.step 332>320 :: Choose an actionStatBrawl (2"
+    },
+    {
+      "scope": "player/compose-why-open@phone-large+text200",
+      "message": "content spills out of its box: fieldset 298>252 :: StatBrawl (2)Con (4)Fix (2)S"
+    },
+    {
+      "scope": "player/compose-why-open@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 249>194 :: Brawl (2)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 230>194 :: Con (4)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 213>194 :: Fix (2)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 269>194 :: Search (2)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 255>194 :: Shoot (3)"
+    },
+    {
+      "scope": "player/compose-why-open@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 259>194 :: Sneak (1)"
+    },
+    {
+      "scope": "gm/console-pending@phone-small+text150",
+      "message": "content spills out of its box: fieldset 171>169 :: Engaged threatsStation Patro"
+    },
+    {
+      "scope": "gm/console-pending@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 149>124 :: Station Patrol A"
+    },
+    {
+      "scope": "gm/console-pending@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 149>124 :: Station Patrol B"
+    },
+    {
+      "scope": "gm/console-pending@phone-small+text200",
+      "message": "horizontal overflow 5px (div.gear-list w=69)"
+    },
+    {
+      "scope": "gm/console-pending@phone-small+text200",
+      "message": "content spills out of its box: section.step 290>250 :: Pending actionsIrynaStat: CO"
+    },
+    {
+      "scope": "gm/console-pending@phone-small+text200",
+      "message": "content spills out of its box: li.pending-action-card 256>182 :: IrynaStat: CONEngaged threat"
+    },
+    {
+      "scope": "gm/console-pending@phone-small+text200",
+      "message": "content spills out of its box: fieldset 227>124 :: Engaged threatsStation Patro"
+    },
+    {
+      "scope": "gm/console-pending@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 198>65 :: Station Patrol A"
+    },
+    {
+      "scope": "gm/console-pending@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 198>65 :: Station Patrol B"
+    },
+    {
+      "scope": "gm/console-pending@phone+text200",
+      "message": "content spills out of its box: li.pending-action-card 256>237 :: IrynaStat: CONEngaged threat"
+    },
+    {
+      "scope": "gm/console-pending@phone+text200",
+      "message": "content spills out of its box: fieldset 227>179 :: Engaged threatsStation Patro"
+    },
+    {
+      "scope": "gm/console-pending@phone+text200",
+      "message": "content spills out of its box: label.gear-option 198>120 :: Station Patrol A"
+    },
+    {
+      "scope": "gm/console-pending@phone+text200",
+      "message": "content spills out of its box: label.gear-option 198>120 :: Station Patrol B"
+    },
+    {
+      "scope": "gm/console-pending@phone-large+text200",
+      "message": "content spills out of its box: li.pending-action-card 256>252 :: IrynaStat: CONEngaged threat"
+    },
+    {
+      "scope": "gm/console-pending@phone-large+text200",
+      "message": "content spills out of its box: fieldset 227>194 :: Engaged threatsStation Patro"
+    },
+    {
+      "scope": "gm/console-pending@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 198>135 :: Station Patrol A"
+    },
+    {
+      "scope": "gm/console-pending@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 198>135 :: Station Patrol B"
+    },
+    {
+      "scope": "modal-text-200-phone-small",
+      "message": "dialogInsideViewport failed"
+    },
+    {
+      "scope": "modal-text-200-phone-small",
+      "message": "noPageOverflow failed"
+    },
+    {
+      "scope": "player/allocation@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 176>169 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 176>169 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation@phone-small+text200",
+      "message": "horizontal overflow 12px (div.allocation-list w=186)"
+    },
+    {
+      "scope": "player/allocation@phone-small+text200",
+      "message": "content spills out of its box: section.step 297>250 :: Your roll4 (success)5 (succe"
+    },
+    {
+      "scope": "player/allocation@phone-small+text200",
+      "message": "content spills out of its box: fieldset.allocation-die-group 263>182 :: Die: 4 (success)Get clear of"
+    },
+    {
+      "scope": "player/allocation@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 234>124 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 198>124 :: Station Patrol A"
+    },
+    {
+      "scope": "player/allocation@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 198>124 :: Station Patrol B"
+    },
+    {
+      "scope": "player/allocation@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 169>124 :: Feed"
+    },
+    {
+      "scope": "player/allocation@phone-small+text200",
+      "message": "content spills out of its box: fieldset.allocation-die-group 263>182 :: Die: 5 (success)Get clear of"
+    },
+    {
+      "scope": "player/allocation@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 234>124 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation@phone+text200",
+      "message": "content spills out of its box: fieldset.allocation-die-group 263>237 :: Die: 4 (success)Get clear of"
+    },
+    {
+      "scope": "player/allocation@phone+text200",
+      "message": "content spills out of its box: label.gear-option 234>179 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation@phone+text200",
+      "message": "content spills out of its box: label.gear-option 198>179 :: Station Patrol A"
+    },
+    {
+      "scope": "player/allocation@phone+text200",
+      "message": "content spills out of its box: label.gear-option 198>179 :: Station Patrol B"
+    },
+    {
+      "scope": "player/allocation@phone+text200",
+      "message": "content spills out of its box: fieldset.allocation-die-group 263>237 :: Die: 5 (success)Get clear of"
+    },
+    {
+      "scope": "player/allocation@phone+text200",
+      "message": "content spills out of its box: label.gear-option 234>179 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation@phone+text200",
+      "message": "content spills out of its box: label.gear-option 198>179 :: Station Patrol A"
+    },
+    {
+      "scope": "player/allocation@phone+text200",
+      "message": "content spills out of its box: label.gear-option 198>179 :: Station Patrol B"
+    },
+    {
+      "scope": "player/allocation@phone-large+text200",
+      "message": "content spills out of its box: fieldset.allocation-die-group 263>252 :: Die: 4 (success)Get clear of"
+    },
+    {
+      "scope": "player/allocation@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 234>194 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 198>194 :: Station Patrol A"
+    },
+    {
+      "scope": "player/allocation@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 198>194 :: Station Patrol B"
+    },
+    {
+      "scope": "player/allocation@phone-large+text200",
+      "message": "content spills out of its box: fieldset.allocation-die-group 263>252 :: Die: 5 (success)Get clear of"
+    },
+    {
+      "scope": "player/allocation@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 234>194 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 198>194 :: Station Patrol A"
+    },
+    {
+      "scope": "player/allocation@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 198>194 :: Station Patrol B"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 176>169 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 176>169 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-small+text200",
+      "message": "horizontal overflow 12px (div.allocation-list w=186)"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-small+text200",
+      "message": "content spills out of its box: section.step 297>250 :: Your roll4 (success)5 (succe"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-small+text200",
+      "message": "content spills out of its box: fieldset.allocation-die-group 263>182 :: Die: 4 (success)Get clear of"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 234>124 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 198>124 :: Station Patrol A"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 198>124 :: Station Patrol B"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 169>124 :: Feed"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-small+text200",
+      "message": "content spills out of its box: fieldset.allocation-die-group 263>182 :: Die: 5 (success)Get clear of"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 234>124 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation-assigned@phone+text200",
+      "message": "content spills out of its box: fieldset.allocation-die-group 263>237 :: Die: 4 (success)Get clear of"
+    },
+    {
+      "scope": "player/allocation-assigned@phone+text200",
+      "message": "content spills out of its box: label.gear-option 234>179 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation-assigned@phone+text200",
+      "message": "content spills out of its box: label.gear-option 198>179 :: Station Patrol A"
+    },
+    {
+      "scope": "player/allocation-assigned@phone+text200",
+      "message": "content spills out of its box: label.gear-option 198>179 :: Station Patrol B"
+    },
+    {
+      "scope": "player/allocation-assigned@phone+text200",
+      "message": "content spills out of its box: fieldset.allocation-die-group 263>237 :: Die: 5 (success)Get clear of"
+    },
+    {
+      "scope": "player/allocation-assigned@phone+text200",
+      "message": "content spills out of its box: label.gear-option 234>179 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation-assigned@phone+text200",
+      "message": "content spills out of its box: label.gear-option 198>179 :: Station Patrol A"
+    },
+    {
+      "scope": "player/allocation-assigned@phone+text200",
+      "message": "content spills out of its box: label.gear-option 198>179 :: Station Patrol B"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-large+text200",
+      "message": "content spills out of its box: fieldset.allocation-die-group 263>252 :: Die: 4 (success)Get clear of"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 234>194 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 198>194 :: Station Patrol A"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 198>194 :: Station Patrol B"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-large+text200",
+      "message": "content spills out of its box: fieldset.allocation-die-group 263>252 :: Die: 5 (success)Get clear of"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 234>194 :: Get clear of the wreckage an"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 198>194 :: Station Patrol A"
+    },
+    {
+      "scope": "player/allocation-assigned@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 198>194 :: Station Patrol B"
+    },
+    {
+      "scope": "player/paused@phone-small+text150",
+      "message": "content spills out of its box: fieldset 224>214 :: StatBrawl (2)Con (4)Fix (2)S"
+    },
+    {
+      "scope": "player/paused@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 187>169 :: Brawl (2)"
+    },
+    {
+      "scope": "player/paused@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 172>169 :: Con (4)"
+    },
+    {
+      "scope": "player/paused@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 202>169 :: Search (2)"
+    },
+    {
+      "scope": "player/paused@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 191>169 :: Shoot (3)"
+    },
+    {
+      "scope": "player/paused@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 194>169 :: Sneak (1)"
+    },
+    {
+      "scope": "player/paused@phone-small+text150",
+      "message": "content spills out of its box: label.gear-option 194>169 :: Terrify (3)"
+    },
+    {
+      "scope": "player/paused@phone-small+text200",
+      "message": "horizontal overflow 47px (fieldset w=186)"
+    },
+    {
+      "scope": "player/paused@phone-small+text200",
+      "message": "content spills out of its box: section.step 332>250 :: Choose an actionStatBrawl (2"
+    },
+    {
+      "scope": "player/paused@phone-small+text200",
+      "message": "content spills out of its box: fieldset 298>182 :: StatBrawl (2)Con (4)Fix (2)S"
+    },
+    {
+      "scope": "player/paused@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 249>124 :: Brawl (2)"
+    },
+    {
+      "scope": "player/paused@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 230>124 :: Con (4)"
+    },
+    {
+      "scope": "player/paused@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 213>124 :: Fix (2)"
+    },
+    {
+      "scope": "player/paused@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 269>124 :: Search (2)"
+    },
+    {
+      "scope": "player/paused@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 255>124 :: Shoot (3)"
+    },
+    {
+      "scope": "player/paused@phone-small+text200",
+      "message": "content spills out of its box: label.gear-option 259>124 :: Sneak (1)"
+    },
+    {
+      "scope": "player/paused@phone+text200",
+      "message": "content spills out of its box: section.step 332>305 :: Choose an actionStatBrawl (2"
+    },
+    {
+      "scope": "player/paused@phone+text200",
+      "message": "content spills out of its box: fieldset 298>237 :: StatBrawl (2)Con (4)Fix (2)S"
+    },
+    {
+      "scope": "player/paused@phone+text200",
+      "message": "content spills out of its box: label.gear-option 249>179 :: Brawl (2)"
+    },
+    {
+      "scope": "player/paused@phone+text200",
+      "message": "content spills out of its box: label.gear-option 230>179 :: Con (4)"
+    },
+    {
+      "scope": "player/paused@phone+text200",
+      "message": "content spills out of its box: label.gear-option 213>179 :: Fix (2)"
+    },
+    {
+      "scope": "player/paused@phone+text200",
+      "message": "content spills out of its box: label.gear-option 269>179 :: Search (2)"
+    },
+    {
+      "scope": "player/paused@phone+text200",
+      "message": "content spills out of its box: label.gear-option 255>179 :: Shoot (3)"
+    },
+    {
+      "scope": "player/paused@phone+text200",
+      "message": "content spills out of its box: label.gear-option 259>179 :: Sneak (1)"
+    },
+    {
+      "scope": "player/paused@phone-large+text200",
+      "message": "content spills out of its box: section.step 332>320 :: Choose an actionStatBrawl (2"
+    },
+    {
+      "scope": "player/paused@phone-large+text200",
+      "message": "content spills out of its box: fieldset 298>252 :: StatBrawl (2)Con (4)Fix (2)S"
+    },
+    {
+      "scope": "player/paused@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 249>194 :: Brawl (2)"
+    },
+    {
+      "scope": "player/paused@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 230>194 :: Con (4)"
+    },
+    {
+      "scope": "player/paused@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 213>194 :: Fix (2)"
+    },
+    {
+      "scope": "player/paused@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 269>194 :: Search (2)"
+    },
+    {
+      "scope": "player/paused@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 255>194 :: Shoot (3)"
+    },
+    {
+      "scope": "player/paused@phone-large+text200",
+      "message": "content spills out of its box: label.gear-option 259>194 :: Sneak (1)"
+    }
+  ],
+  "console": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  },
+  "finishedAt": "2026-10-07T11:20:25.068Z",
+  "ok": false,
+  "summary": {
+    "states": 0,
+    "controlsAudited": 0,
+    "controlIssues": 0,
+    "overflowStates": 0,
+    "axeHardViolations": 0,
+    "axeBestPractice": [],
+    "textScaleChecks": 100,
+    "textScaleOverflowStates": 6,
+    "textScaleSpillStates": 25,
+    "failures": 170
+  }
+}
