@@ -3,7 +3,20 @@
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.
-- **Last updated:** 2026-09-19 by Codex after the sourcebook-roster implementation and independent review
+- **Last updated:** 2026-10-07 by the hd reskin lane (see "hd reskin lane" below); earlier: 2026-09-19 by Codex after the sourcebook-roster implementation and independent review
+
+## hd reskin lane (2026-10-07, branch `sonnet-hd/reskin-orchestrated-20261007`)
+
+- **State:** integrated the newest reviewed reskin lineage (`origin/codex/staging-playthrough-20261007`) plus the cx 320px/200% gutter cap (`319a05a`), then added a blacker page wash, a promoted GM review queue (`.step.needs-attention`), recovery-code normalisation with a regression test, and a reskin-contract hd block. Not merged, not deployed. Evidence, before/after screenshots (phone/tablet/desktop/table) and the complete pop-out inventory are in [`docs/evidence/hd-reskin/`](docs/evidence/hd-reskin/README.md).
+- **Not taken from cx, deliberately:** `5663d7f` and the other mobile-entry commits (fq rewrote the same option rows and text-entry hints; they conflicted or duplicated JSX props). Verify with `git merge-base` before assuming any other lane's fix is present.
+- **Verification (all on commit `0356760` or its source parent `8d31c11`; helper files `firebase.hd*.json`, `apps/web/vite.hd*.config.mjs` are git-excluded rig files that lint/prettier flag, so lint ran with `--ignore-pattern`):**
+  - `npx prettier --check` on tracked files, `npx eslint . --ignore-pattern 'apps/web/vite.hd*.config.mjs'`, `npm run typecheck`, `npm test` — pass; vitest: 719 passed, 11 todo (75 files passed, 1 skipped).
+  - `npm run build` — Functions and web build; the large-chunk warning is unchanged.
+  - Emulator suite on remapped ports (`firebase.hd.emu.json`, 61099/61080/61000/61001, because peers hold the defaults): `firebase emulators:exec --config firebase.hd.emu.json --only auth,firestore,database,functions --project demo-digitable "npm run test:emulator --workspaces --if-present"` — 18 + 86 + 4 tests passed.
+  - `node scripts/playtest/ui-audit.mjs --base http://127.0.0.1:54174 --label after --out <dir> --port 9361` — 150 states, 1,434 controls, 0 control issues, 0 overflow states, 0 axe hard violations, 0 failures, all 17 modal scenarios pass; the only best-practice note is the intentional `page-has-heading-one` on the nonexistent-room route. The baseline (`456f3ec`) audit was 150 states, 1,482 controls, 0 failures.
+  - `node scripts/playtest/two-device-smoke.mjs --base http://127.0.0.1:54174 --out <dir> --port 9362 --reload` against a local emulator build (the local staging-style playthrough) — all 17 GM/player/table steps passed.
+- **Limits:** physical-device (iOS Safari keyboard/visual viewport) evidence is still open for John; headless Chrome cannot reproduce it.
+- **Next action:** John reviews and decides on merge; then a physical-device pass.
 
 ## Mission
 
