@@ -627,6 +627,10 @@ input[type="radio"]:disabled {
   display: flex;
   align-items: center;
   gap: 0.85rem;
+  /* Nested panels leave a 320px phone at 200% text only ~65px for the label: let a word that cannot
+     fit break instead of pushing the whole page sideways (WCAG 1.4.4 / 1.4.10). */
+  min-width: 0;
+  overflow-wrap: anywhere;
   min-height: var(--tap);
   padding: 0.4rem 0.65rem;
   border: 2px solid transparent;
@@ -1862,5 +1866,13 @@ fieldset:nth-child(even) > legend {
 
   .sheet {
     border: 2px solid CanvasText;
+  }
+
+  /* The disclosure marker is a clipped solid-colour box; forced colors repaints a solid background
+     as Canvas, which would erase it (and with it the open/closed state). Opt this one decorative
+     shape out and paint it with the user's own text colour. */
+  summary::before {
+    forced-color-adjust: none;
+    background: CanvasText;
   }
 }

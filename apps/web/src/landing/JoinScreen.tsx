@@ -16,6 +16,7 @@ import type { RecoverSeatResult } from "../session/FirebaseSessionClient.js";
 import type { RoomAdmissionAccepted, SessionRequestState } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
 import { newUuid } from "../shared/uuid.js";
+import { EXACT_TEXT_INPUT, UPPERCASE_CODE_INPUT } from "../shared/textEntry.js";
 import { resumeRoute } from "./resumeRoute.js";
 
 type JoinMode = "join" | "recover";
@@ -112,7 +113,7 @@ export function JoinScreen(): JSX.Element {
                 id="recover-room-code"
                 type="text"
                 required
-                autoCapitalize="characters"
+                {...UPPERCASE_CODE_INPUT}
                 pattern="[A-Za-z0-9-]+"
                 value={recoveryRoomCode}
                 onChange={(event) => setRecoveryRoomCode(event.target.value)}
@@ -124,7 +125,7 @@ export function JoinScreen(): JSX.Element {
                 id="recovery-code"
                 type="text"
                 required
-                autoComplete="off"
+                {...UPPERCASE_CODE_INPUT}
                 value={recoveryCode}
                 onChange={(event) => setRecoveryCode(event.target.value)}
               />
@@ -212,7 +213,7 @@ export function JoinScreen(): JSX.Element {
               id="room-code"
               type="text"
               required
-              autoCapitalize="characters"
+              {...UPPERCASE_CODE_INPUT}
               pattern="[A-Za-z0-9-]+"
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value)}
@@ -224,7 +225,7 @@ export function JoinScreen(): JSX.Element {
               id="join-passphrase"
               type="text"
               required
-              autoComplete="off"
+              {...EXACT_TEXT_INPUT}
               value={passphrase}
               onChange={(e) => setPassphrase(e.target.value)}
             />

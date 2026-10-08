@@ -15,6 +15,7 @@ import { createRoom } from "../session/roomClient.js";
 import type { SessionRequestState } from "@digitable/contracts";
 import type { CreateRoomAccepted } from "@digitable/contracts";
 import { LiveRegion } from "../accessibility/LiveRegion.js";
+import { EXACT_TEXT_INPUT } from "../shared/textEntry.js";
 import { InvitePanel } from "../gm2/InvitePanel.js";
 
 /** docs/ETR_SESSION_FLOW.md section 3: `/create` — Create session (GM). */
@@ -86,7 +87,7 @@ export function CreateSessionScreen(): JSX.Element {
               required
               minLength={4}
               maxLength={128}
-              autoComplete="off"
+              {...EXACT_TEXT_INPUT}
               value={passphrase}
               onChange={(e) => setPassphrase(e.target.value)}
             />

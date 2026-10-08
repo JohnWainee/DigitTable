@@ -1,0 +1,8 @@
+BEFORE (bundle without useBackDismiss, --expect-failures):
+FAIL A. Back with the sheet open closes only the sheet {"afterA":{"hash":"#/create","dialog":false,"console":false,"reason":null},"hashChanges":1}
+negative control: failed as intended
+
+AFTER:
+PASS A. Back with the sheet open closes only the sheet (same route, console still mounted, no hashchange)
+PASS B. The sheet reopens and closes with Back again
+PASS C. After Cancel the very next Back leaves the route (no dead entry swallowed it)

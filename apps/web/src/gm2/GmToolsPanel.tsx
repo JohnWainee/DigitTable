@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { SelectField } from "../shared/SelectField.js";
+import { EXACT_TEXT_INPUT } from "../shared/textEntry.js";
 import type { CharacterFullSheet, RollView, RollViewFull } from "@digitable/template-eat-the-reich";
 
 export interface GmToolsPanelProps {
@@ -119,6 +120,7 @@ export function GmToolsPanel({
           <input
             id="grant-item-id"
             type="text"
+            {...EXACT_TEXT_INPUT}
             value={itemId}
             onChange={(e) => setItemId(e.target.value)}
           />
@@ -262,6 +264,7 @@ export function GmToolsPanel({
           <input
             id="reassign-member-id"
             type="text"
+            {...EXACT_TEXT_INPUT}
             value={reassignMemberId}
             onChange={(e) => setReassignMemberId(e.target.value)}
           />

@@ -383,6 +383,17 @@ describe("reskin stylesheet contract", () => {
     });
   });
 
+  describe("forced colors (Windows High Contrast)", () => {
+    it("keeps the disclosure marker visible: a solid clipped box would be repainted as Canvas and vanish", () => {
+      // The marker is `summary::before` with a solid background clipped to a triangle.
+      const marker = /summary::before\s*\{([^{}]*)\}/.exec(mediaBlock("(forced-colors: active)"));
+      expect(marker, "summary::before rule inside @media (forced-colors: active)").not.toBeNull();
+      const body = [marker![1]!];
+      expect(declaration(body, "forced-color-adjust")).toEqual(["none"]);
+      expect(declaration(body, "background")).toEqual(["CanvasText"]);
+    });
+  });
+
   describe("licensing hygiene", () => {
     it("uses only system font stacks and no external resources", () => {
       expect(css).not.toMatch(/@import|@font-face|url\(\s*["']?https?:/i);
