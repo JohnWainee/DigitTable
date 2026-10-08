@@ -44,6 +44,11 @@ function hasMarker(state: unknown): boolean {
  * Re-mounts (React StrictMode) reuse the existing entry, and the retirement is deferred a tick so a
  * remount cannot have its fresh entry popped by the previous mount's cleanup.
  *
+ * Assumes the sheet opens from a user gesture (every current trigger is a button press): browsers
+ * may skip history entries pushed without one, in which case Back simply behaves as it did before.
+ * A route change made while a sheet is open (`navigate`/`replaceRoute`) leaves one stale same-URL
+ * entry behind, costing one extra Back press; the sheet's host unmounts on such changes.
+ *
  * Presentation only: no game state, projection or authorization is read or written.
  */
 export function useBackDismiss(onClose: () => void): void {

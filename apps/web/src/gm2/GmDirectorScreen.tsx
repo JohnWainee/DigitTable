@@ -107,6 +107,17 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
       ? "No pending actions."
       : `${pending.length} action${pending.length === 1 ? "" : "s"} waiting for review.`;
 
+  const pendingPanel = (
+    <PendingActionsPanel
+      pending={pending}
+      gmSheets={view.gmSheets}
+      threats={view.threats}
+      onReview={(rollId, approvedClaimIds, engagedThreatIds) => {
+        void send({ type: "ReviewAction", rollId, approvedClaimIds, engagedThreatIds });
+      }}
+    />
+  );
+
   return (
     <main className="gm-screen">
       <ConnectionStatusStrip state={connection} />
@@ -158,15 +169,8 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
         )}
       </div>
 
-      {/* Urgent queue first: a waiting player action is what the GM must see before setup panels. */}
-      <PendingActionsPanel
-        pending={pending}
-        gmSheets={view.gmSheets}
-        threats={view.threats}
-        onReview={(rollId, approvedClaimIds, engagedThreatIds) => {
-          void send({ type: "ReviewAction", rollId, approvedClaimIds, engagedThreatIds });
-        }}
-      />
+      {/* Urgent queue first when something is waiting; otherwise it keeps its place after the scene. */}
+      {pending.length > 0 && pendingPanel}
       <InvitePanel
         roomCode={ownership.roomCode}
         claimedCount={claimedCount}
@@ -209,6 +213,7 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
           }
         }}
       />
+      {pending.length === 0 && pendingPanel}
       <RosterPanel gmSheets={view.gmSheets} onOpenCorrection={setCorrectingCharacterId} />
       <GmToolsPanel
         gmSheets={view.gmSheets}

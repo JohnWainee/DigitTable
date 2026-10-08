@@ -1,6 +1,6 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useState } from "react";
+import { StrictMode, useState } from "react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { SheetDialog } from "../../src/shared/SheetDialog.js";
 
@@ -75,6 +75,38 @@ describe("browser Back while a pop-out is open", () => {
     await settle();
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     // And Back still dismisses it.
+    act(() => window.history.back());
+    await settle();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("closes on Escape and leaves no history marker behind", async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+    await user.click(screen.getByRole("button", { name: /open sheet/i }));
+    await user.keyboard("{Escape}");
+    await settle();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(window.history.state ?? {}).not.toHaveProperty("digitableSheetBackDismiss");
+  });
+
+  it("under StrictMode (double effects) keeps exactly one entry: Back closes, a second Back is not swallowed", async () => {
+    const user = userEvent.setup();
+    render(
+      <StrictMode>
+        <Harness />
+      </StrictMode>,
+    );
+    await user.click(screen.getByRole("button", { name: /open sheet/i }));
+    await settle();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    act(() => window.history.back());
+    await settle();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    // The sheet can be opened and dismissed again afterwards.
+    await user.click(screen.getByRole("button", { name: /open sheet/i }));
+    await settle();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
     act(() => window.history.back());
     await settle();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();

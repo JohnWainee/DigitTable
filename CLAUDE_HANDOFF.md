@@ -1,5 +1,30 @@
 # Claude implementation handoff
 
+## HP reskin pass (2026-10-08, branch `sonnet/hp-reskin-orchestrated-20261008`, from `origin/main` `b599abd`)
+
+Presentation-only pass over the existing ink-black punk reskin; no engine, contract, projection, authorization, Firestore-rule, Functions or Firebase-config change, and no new content or asset. **Not deployed, not merged, not verified on staging**; staging serves a different build. No physical-device, assistive-technology or Windows High Contrast evidence exists for this branch.
+
+What changed (`apps/web`):
+
+- **Mobile pop-outs.** Audited every overlay: the only modal is `SheetDialog` (GM correction sheet); the four GM `<select>`s are native (the OS owns the option list on touch, so it cannot clip) and the "Why?" disclosure is inline. Defects found and fixed: (1) with the keyboard up on a landscape phone or iPad the pinned header + action row squeezed the body to ~80px and clipped the label; `.sheet-backdrop` is now a `size` container and `@container sheet-box (max-height: 18rem)` makes the whole sheet scroll with a sticky action row (static below 10rem); (2) browser/OS **Back** with the sheet open navigated away from the console (hash router): new `shared/useBackDismiss.ts` keeps one same-URL history entry while a sheet is open (StrictMode- and retirement-race-safe).
+- **Primary action dock.** Declare action / Confirm allocation / Confirm injury sit in a sticky `.action-dock` (hazard-tape edge, safe-area aware, static under 34rem height, `scroll-padding-block-end` on `html` so it never hides a focused control); alerts and the hat button were moved above it. The "Mark and regain Blood" button was a bare, unstyled `<button>` nested inside a `<label>`; it is now a sibling `.secondary-action` in a `.gear-row` (a contract test forbids buttons inside labels).
+- **Hierarchy/visuals.** Misregistered cyan/red heading plates, inset acid bar on chosen rows, pink accent for work waiting on the GM, pending-actions panel first on the GM console when something is waiting (DOM order = visual order).
+- **Audit tooling.** `ui-audit.mjs`: roster names (was hard-coded "Rook", so the correction sheet audit could not run on the sourcebook roster), whole-sheet scroll in compact mode, sticky-dock-on-screen gate on portrait phones, real-Chrome Back-dismiss scenario.
+
+Independent review (separate agent pass, no blocking findings): hazard `border-image` would stretch (fixed with a stripe pseudo-element), alerts/hat button hidden under the dock (moved above it), empty pending panel pushing the invite down on a fresh room (rendered first only when non-empty), cascade order of the compact rules untested (test added), Escape/StrictMode untested (tests added); two documented residual limits in `useBackDismiss.ts` (a route change while a sheet is open leaves one stale entry; assumes a user-gesture open).
+
+Commands and results (all from `/private/tmp/digitable-sonnet-hp-reskin-orchestrated-20261008`):
+
+- `npm run check` — format, lint, typecheck clean; **701 passed, 11 todo** (72 files, 1 skipped) vs 690 before.
+- `npm run build` — Functions and web builds pass (existing large-chunk warning).
+- `npm run test:emulator` on an APFS clone with every emulator and test port remapped (peers hold the defaults) — 18 + 86 + 4 passed.
+- `node scripts/playtest/ui-audit.mjs --base http://127.0.0.1:24174 --label after --out docs/evidence/hp-reskin/after --port 29350` against a live-mode build on a remapped local emulator stack — 150 states, ~1,470 controls, 0 control issues, 0 overflow states, 0 hard axe violations, **0 failures** (the one best-practice heading note is the intentional nonexistent-room route; the 320px + 200% text console-overflow checks remain recorded, non-gating). The same script on `b599abd` (with only the roster-name fix) passed 150 states / 1,482 controls; it has no dock or Back checks, which is why the new gates exist.
+- `node scripts/playtest/two-device-smoke.mjs --base http://127.0.0.1:24174 --out /private/tmp/hp-evidence/smoke --port 29360 --reload` — all 17 GM/player/table steps passed.
+- Evidence: curated before/after screenshots at phone/tablet/desktop/table plus `report.json` in `docs/evidence/hp-reskin/{before,after}`; full sets and logs in `/private/tmp/hp-evidence/full/` (not committed).
+
+Limits (unchanged): headless Chrome cannot shrink only the visual viewport, so the iOS-Safari keyboard case is proved for the CSS rule (container height), jsdom (`--vv-*` mirroring) and layout-viewport shrink, not on a real iPhone; the iOS Simulator rig from other lanes is not on this lineage. Next action: John's physical-device pass (iPhone landscape + keyboard on the correction sheet, Android Back with the sheet open), then merge decision.
+
+
 - **Status:** The six playable character sheets now match the owner-supplied sourcebook roster (Iryna, Nicole, Cosgrave, Chuck, Astrid, and Flint), including equipment, abilities, advances, injuries, Last Stands, ability bonuses, and typed utility-item behavior. Commit `5e8907b` is deployed to Firebase Hosting and all five callable Functions at <https://digitable.signal-bleed.com>. A fresh-room live smoke passed all 17 GM/player/table steps after the Functions update. Physical-device evidence remains open for John.
 - **Branch:** `factory/today-integration` (worktree `.claude/worktrees/today-integration`; consolidated staging candidate through the 2026-09-18 polish and reskin integration).
 - **PRs:** [#13](https://github.com/JohnWainee/DigitTable/pull/13) (admission boundary), [#15](https://github.com/JohnWainee/DigitTable/pull/15) (A02 contracts), [#18](https://github.com/JohnWainee/DigitTable/pull/18) (A03 createRoom), [#23](https://github.com/JohnWainee/DigitTable/pull/23) (A04 game commands), [#27](https://github.com/JohnWainee/DigitTable/pull/27) (A05 client repository), [#30](https://github.com/JohnWainee/DigitTable/pull/30) (A06 partial: seat recovery), [#32](https://github.com/JohnWainee/DigitTable/pull/32) (A07 partial: region fix + operations runbook, stacked on the other six — see that PR's description for the stacking note). All open, none merged; merge authority is John's.

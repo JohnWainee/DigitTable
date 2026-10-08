@@ -365,6 +365,17 @@ describe("reskin stylesheet contract", () => {
       expect(compact).toMatch(/\.sheet-footer\s*\{[^}]*max-height:\s*none/);
     });
 
+    it("declares the compact rules after the rules they override (cascade order is the contract)", () => {
+      const compactAt = fullCss.indexOf("@container sheet-box (max-height: 18rem)");
+      expect(compactAt).toBeGreaterThan(fullCss.indexOf("\n.sheet-footer {"));
+      expect(compactAt).toBeGreaterThan(fullCss.indexOf("@media (max-height: 34rem)"));
+      expect(compactAt).toBeGreaterThan(fullCss.indexOf("@media (min-width: 40.0625rem)"));
+      // The 10rem fallback must come after the sticky declaration it undoes.
+      expect(fullCss.indexOf("@container sheet-box (max-height: 10rem)")).toBeGreaterThan(
+        compactAt,
+      );
+    });
+
     it("keeps the primary action in a sticky dock that is static in short viewports", () => {
       const dock = rulesFor(/^\.action-dock$/);
       expect(declaration(dock, "position")[0]).toBe("sticky");

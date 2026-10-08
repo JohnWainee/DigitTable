@@ -141,6 +141,7 @@ export function AllocationPanel2({
         ))}
       </div>
 
+      {character.downed && <p role="alert">You&rsquo;re down. A teammate must rescue you.</p>}
       <div className="action-dock">
         <button
           type="button"
@@ -151,7 +152,6 @@ export function AllocationPanel2({
           Confirm allocation
         </button>
       </div>
-      {character.downed && <p role="alert">You&rsquo;re down. A teammate must rescue you.</p>}
     </section>
   );
 }

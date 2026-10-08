@@ -71,6 +71,11 @@ export function ChooseInjuryPanel2({
           ))}
         </fieldset>
       )}
+      {onUseHat && usableHat ? (
+        <button type="button" className="secondary-action" onClick={() => onUseHat(usableHat.id)}>
+          Destroy Cowboy hat to ignore this result
+        </button>
+      ) : null}
       <div className="action-dock">
         <button
           type="button"
@@ -81,11 +86,6 @@ export function ChooseInjuryPanel2({
           Confirm
         </button>
       </div>
-      {onUseHat && usableHat ? (
-        <button type="button" className="secondary-action" onClick={() => onUseHat(usableHat.id)}>
-          Destroy Cowboy hat to ignore this result
-        </button>
-      ) : null}
     </section>
   );
 }
