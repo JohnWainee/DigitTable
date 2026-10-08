@@ -358,6 +358,35 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
       controlIssues: audit.issues,
       screenshot: file,
     };
+    // The step's primary action lives in a sticky dock: with the step scrolled into view on a portrait
+    // phone it must be on screen without scrolling further (landscape and other short viewports let it
+    // scroll with the page instead).
+    const dock = await ev(
+      device,
+      `(async () => { const b = document.querySelector(".action-dock .primary-action"); if (!b) return null; b.closest(".step").scrollIntoView({ block: "start" }); await new Promise(r => setTimeout(r, 200)); const r = b.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, position: getComputedStyle(b.parentElement).position }; })()`,
+    );
+    if (dock) {
+      entry.dock = dock;
+      if (SHOTS) {
+        const { data } = await device.cdp.send(
+          "Page.captureScreenshot",
+          { format: "jpeg", quality: 70 },
+          device.sessionId,
+        );
+        entry.dockFoldScreenshot = `${device.name}-${state}-${vp.name}-fold.jpg`;
+        writeFileSync(join(OUT, entry.dockFoldScreenshot), Buffer.from(data, "base64"));
+      }
+      await ev(device, `scrollTo(0, 0)`);
+      if (vp.mobile && vp.height >= 560 && vp.width < vp.height) {
+        const inView = dock.top >= 0 && dock.bottom <= vp.height + 1 && dock.right <= vp.width + 1;
+        if (!inView || dock.position !== "sticky") {
+          fail(
+            `${device.name}/${state}@${vp.name}`,
+            `primary action not on screen with its step in view (${JSON.stringify(dock)})`,
+          );
+        }
+      }
+    }
     if (axeViewports.includes(vp.name)) {
       entry.axe = await runAxe(device);
       for (const v of entry.axe.filter(isHardAxe)) {
@@ -404,9 +433,13 @@ const MODAL_GEOMETRY = `(() => {
     animationName: cs.animationName,
     background: cs.backgroundColor,
     inertSiblings: (() => { const sibs = [...document.body.children].filter(c => !c.contains(dialog) && c.tagName !== "SCRIPT"); return sibs.length > 0 && sibs.every(c => c.hasAttribute("inert")); })(),
+    sheetScrollable: dialog.scrollHeight > dialog.clientHeight + 1,
     activeIsInside: dialog.contains(document.activeElement),
   };
 })()`;
+
+// Scrolls whichever of the sheet / its body is the scroller (the whole sheet scrolls in compact mode).
+const SCROLL_SHEET_TO_END = `(() => { for (const sel of [".sheet", ".sheet-body"]) { const b = document.querySelector('[role="dialog"]' + (sel === ".sheet" ? "" : " " + sel)); if (b) b.scrollTop = b.scrollHeight; } })()`;
 
 function within(box, frame, tolerance = 1) {
   return (
@@ -419,8 +452,8 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^(rook|iryna|nicole|cosgrave|chuck|astrid|flint)/i.test(li.textContent.trim()))?.querySelector("button")`;
+  await waitFor(gm, finder, 20000, "a roster Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
@@ -461,11 +494,9 @@ async function auditModal(gm) {
     record.checks.actionTargets44 =
       geo.apply?.height >= 43.5 && geo.cancel?.height >= 43.5 && geo.apply?.width >= 43.5;
     // Scroll the sheet body to its end; the last control must then be reachable and visible.
-    if (geo.body.scrollHeight > geo.body.clientHeight) {
-      await ev(
-        gm,
-        `(() => { const b = document.querySelector('[role="dialog"] .sheet-body') || document.querySelector('[role="dialog"]'); b.scrollTop = b.scrollHeight; })()`,
-      );
+    // (compact mode: the whole `.sheet` scrolls instead of its body, so scroll both)
+    if (geo.body.scrollHeight > geo.body.clientHeight || geo.sheetScrollable) {
+      await ev(gm, SCROLL_SHEET_TO_END);
       await sleep(150);
     }
     const end = await ev(gm, MODAL_GEOMETRY);
@@ -650,6 +681,29 @@ async function auditModal(gm) {
   // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
   // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
   // the handoff.
+  // Browser/OS Back with the sheet open must close only the sheet: same route, console still mounted.
+  await scenario("back-dismiss", byName["phone"], async (record) => {
+    const hashBefore = await ev(gm, `location.hash`);
+    await openCorrection(gm);
+    await ev(gm, `history.back()`);
+    await sleep(400);
+    const after = await ev(
+      gm,
+      `({ hash: location.hash, dialog: !!document.querySelector('[role="dialog"]'), console: !!document.querySelector(".gm-screen"), locked: document.documentElement.classList.contains("sheet-open"), inert: [...document.body.children].some(c => c.hasAttribute("inert")) })`,
+    );
+    record.checks.backClosesSheet = !after.dialog && !after.locked && !after.inert;
+    record.checks.routeUnchanged = after.hash === hashBefore && after.console;
+    // The retirement path (Cancel) must not leave a stray entry that makes the next Back a no-op leave.
+    await openCorrection(gm);
+    await closeCorrection(gm);
+    await sleep(300);
+    const closed = await ev(
+      gm,
+      `({ hash: location.hash, console: !!document.querySelector(".gm-screen") })`,
+    );
+    record.checks.cancelLeavesRoute = closed.hash === hashBefore && closed.console;
+  });
+
   for (const [vp, px, informationalChecks] of [
     [byName["phone-small"], 24, []],
     [byName["phone"], 32, []],
@@ -680,12 +734,10 @@ async function auditModal(gm) {
           gm,
           `(() => { const f = document.querySelector(".sheet-footer"); f.scrollTop = f.scrollHeight; })()`,
         );
+        await ev(gm, SCROLL_SHEET_TO_END);
         const end = await ev(gm, MODAL_GEOMETRY);
         record.checks.actionsReachable = within(end.apply, frame) && within(end.cancel, frame);
-        await ev(
-          gm,
-          `(() => { const b = document.querySelector(".sheet-body"); b.scrollTop = b.scrollHeight; })()`,
-        );
+        await ev(gm, SCROLL_SHEET_TO_END);
         const bottom = await ev(gm, MODAL_GEOMETRY);
         record.checks.reasonReachable = within(bottom.reason, frame);
         record.textPx = px;

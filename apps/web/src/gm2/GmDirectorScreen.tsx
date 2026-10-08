@@ -158,6 +158,15 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
         )}
       </div>
 
+      {/* Urgent queue first: a waiting player action is what the GM must see before setup panels. */}
+      <PendingActionsPanel
+        pending={pending}
+        gmSheets={view.gmSheets}
+        threats={view.threats}
+        onReview={(rollId, approvedClaimIds, engagedThreatIds) => {
+          void send({ type: "ReviewAction", rollId, approvedClaimIds, engagedThreatIds });
+        }}
+      />
       <InvitePanel
         roomCode={ownership.roomCode}
         claimedCount={claimedCount}
@@ -198,14 +207,6 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
               updateThreats: [{ threatId: target.id, ...fields }],
             });
           }
-        }}
-      />
-      <PendingActionsPanel
-        pending={pending}
-        gmSheets={view.gmSheets}
-        threats={view.threats}
-        onReview={(rollId, approvedClaimIds, engagedThreatIds) => {
-          void send({ type: "ReviewAction", rollId, approvedClaimIds, engagedThreatIds });
         }}
       />
       <RosterPanel gmSheets={view.gmSheets} onOpenCorrection={setCorrectingCharacterId} />

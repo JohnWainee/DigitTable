@@ -82,6 +82,8 @@ html {
   background: var(--ink-0);
   /* Locking root scroll for a sheet removes the classic scrollbar; keep its gutter so the page does not jump. */
   scrollbar-gutter: stable;
+  /* A sticky action dock must never hide the control keyboard focus just landed on (WCAG 2.4.11). */
+  scroll-padding-block-end: 7rem;
 }
 
 /* A pop-out is open: the page behind it must not scroll. */
@@ -133,7 +135,10 @@ h3 {
 h1 {
   font-size: clamp(2.4rem, 11vw, 4.25rem);
   color: var(--paper);
-  text-shadow: 3px 3px 0 var(--riot-deep);
+  /* Misregistered print: a riot-red plate offset down-right and a cyan plate up-left. */
+  text-shadow:
+    3px 3px 0 var(--riot-deep),
+    -2px -2px 0 rgba(34, 230, 255, 0.55);
   transform: rotate(-0.6deg);
   transform-origin: left center;
 }
@@ -1383,6 +1388,9 @@ details ul {
   padding: max(env(safe-area-inset-top), 1.5rem) env(safe-area-inset-right) 0
     env(safe-area-inset-left);
   background: rgba(3, 3, 4, 0.82);
+  /* Size container: lets the compact rules below react to how much room is VISIBLE (keyboard up,
+     landscape phone) rather than to a guessed media query. */
+  container: sheet-box / size;
   overscroll-behavior: contain;
   /* Deliberately unrestricted. An ancestor's touch-action cannot be re-enabled by a descendant, so
      `none` here would disable pinch-zoom for the whole page while a sheet is open (WCAG 1.4.4), and
@@ -1519,6 +1527,53 @@ details ul {
   .sheet-footer {
     padding-top: 0.5rem;
     padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Compact: when the visible area is too short for a pinned header + pinned action row + a usable body
+   (landscape phone, or a phone/iPad with the on-screen keyboard up) the pinned parts would squeeze the
+   body to nothing and clip the fields and the buttons. The whole sheet then scrolls as one page, so
+   every control stays reachable by scrolling. Presentation only. */
+@container sheet-box (max-height: 18rem) {
+  .sheet {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sheet-header,
+  .sheet-footer,
+  .sheet-body {
+    flex: none;
+  }
+
+  .sheet-body {
+    overflow: visible;
+  }
+
+  .sheet-footer {
+    max-height: none;
+    overflow: visible;
+    /* The action row stays on screen while the header and fields scroll beneath it. */
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+  }
+
+  /* Room for the sticky action row when a focused field is scrolled into view. */
+  .sheet {
+    scroll-padding-block-end: 6rem;
+  }
+
+  .sheet-grip {
+    display: none;
+  }
+}
+
+/* Too short even for a sticky action row (it would take the whole view): it scrolls with the page. */
+@container sheet-box (max-height: 10rem) {
+  .sheet-footer {
+    position: static;
   }
 }
 
@@ -1696,4 +1751,66 @@ details ul {
   .sheet {
     border: 2px solid CanvasText;
   }
+}
+
+/* ---------- HP layer: action dock, item rows, punk hierarchy ---------- */
+
+/* The step's primary action stays on screen on a phone: a sticky dock at the bottom of the card with
+   a hazard-tape top edge. In a short viewport (landscape phone, large text) it scrolls with the page
+   instead, so it can never take the screen. */
+.action-dock {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0 -1rem -1.25rem;
+  padding: 1.1rem 1rem calc(0.9rem + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(13, 13, 16, 0.92), var(--ink-1) 1rem);
+  border-top: 0.45rem solid transparent;
+  border-image: repeating-linear-gradient(-45deg, var(--acid) 0 0.6rem, var(--ink-0) 0.6rem 1.2rem)
+    1;
+}
+
+@media (max-height: 34rem) {
+  .action-dock {
+    position: static;
+  }
+}
+
+/* Item/ability row with its own action: the label (check box + text) and the button are siblings,
+   never a button nested inside a label. */
+.gear-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.gear-row-action {
+  align-self: stretch;
+  font-size: 1rem;
+  padding: 0.5rem 0.85rem;
+}
+
+@media (min-width: 30rem) {
+  .gear-row-action {
+    align-self: flex-start;
+    margin-left: 2.5rem;
+  }
+}
+
+/* A chosen row reads as a stamped, taped choice, not just a tinted one. */
+.gear-option:has(:checked) {
+  box-shadow: inset 0.4rem 0 0 var(--acid);
+}
+
+/* Work waiting on the GM is the loudest thing on the console. */
+.pending-action-card {
+  border-color: var(--pink);
+  box-shadow: 4px 4px 0 rgba(255, 63, 174, 0.45);
+}
+
+.pending-action-card h3 {
+  color: var(--pink);
 }

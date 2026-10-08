@@ -140,27 +140,33 @@ export function ComposeStep2({
         <legend>Items</legend>
         <div className="gear-list">
           {character.items.map((item) => (
-            <label key={item.id} className="gear-option">
-              <input
-                type="checkbox"
-                checked={itemIds.includes(item.id)}
-                disabled={item.usesRemaining <= 0 || item.poolEligible === false}
-                onChange={() => toggleClaimable(itemIds, item.id, setItemIds)}
-              />
-              {item.name} ({item.usesRemaining}/{item.maxUses} uses)
-              {item.usesRemaining <= 0 ? " — no uses left" : ""}
-              {item.useEffect?.kind === "gainBlood"
-                ? ` — mark to regain ${item.useEffect.amount} Blood`
-                : ""}
-              {item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
-                ? " — mark to ignore an Injury or being Downed; then destroy the hat"
-                : ""}
+            <div key={item.id} className="gear-row">
+              <label className="gear-option">
+                <input
+                  type="checkbox"
+                  checked={itemIds.includes(item.id)}
+                  disabled={item.usesRemaining <= 0 || item.poolEligible === false}
+                  onChange={() => toggleClaimable(itemIds, item.id, setItemIds)}
+                />
+                {item.name} ({item.usesRemaining}/{item.maxUses} uses)
+                {item.usesRemaining <= 0 ? " — no uses left" : ""}
+                {item.useEffect?.kind === "gainBlood"
+                  ? ` — mark to regain ${item.useEffect.amount} Blood`
+                  : ""}
+                {item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
+                  ? " — mark to ignore an Injury or being Downed; then destroy the hat"
+                  : ""}
+              </label>
               {item.useEffect?.kind === "gainBlood" && item.usesRemaining > 0 ? (
-                <button type="button" onClick={() => onUseUtilityItem(item.id)}>
+                <button
+                  type="button"
+                  className="secondary-action gear-row-action"
+                  onClick={() => onUseUtilityItem(item.id)}
+                >
                   Mark and regain Blood
                 </button>
               ) : null}
-            </label>
+            </div>
           ))}
         </div>
       </fieldset>
@@ -259,14 +265,16 @@ export function ComposeStep2({
         </details>
       </div>
 
-      <button
-        type="button"
-        className="primary-action"
-        disabled={!canDeclare}
-        onClick={handleDeclare}
-      >
-        Declare action
-      </button>
+      <div className="action-dock">
+        <button
+          type="button"
+          className="primary-action"
+          disabled={!canDeclare}
+          onClick={handleDeclare}
+        >
+          Declare action
+        </button>
+      </div>
       {character.downed && <p role="alert">You&rsquo;re down. A teammate must rescue you.</p>}
       {character.retired && <p role="alert">Your story is told.</p>}
       {actedThisRound && !character.downed && !character.retired && (

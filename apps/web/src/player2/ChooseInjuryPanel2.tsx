@@ -71,16 +71,18 @@ export function ChooseInjuryPanel2({
           ))}
         </fieldset>
       )}
-      <button
-        type="button"
-        className="primary-action"
-        disabled={!categoryId}
-        onClick={() => categoryId && onChoose(categoryId)}
-      >
-        Confirm
-      </button>
+      <div className="action-dock">
+        <button
+          type="button"
+          className="primary-action"
+          disabled={!categoryId}
+          onClick={() => categoryId && onChoose(categoryId)}
+        >
+          Confirm
+        </button>
+      </div>
       {onUseHat && usableHat ? (
-        <button type="button" onClick={() => onUseHat(usableHat.id)}>
+        <button type="button" className="secondary-action" onClick={() => onUseHat(usableHat.id)}>
           Destroy Cowboy hat to ignore this result
         </button>
       ) : null}

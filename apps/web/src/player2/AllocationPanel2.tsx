@@ -141,14 +141,16 @@ export function AllocationPanel2({
         ))}
       </div>
 
-      <button
-        type="button"
-        className="primary-action"
-        disabled={unassignedCount !== 0}
-        onClick={handleConfirm}
-      >
-        Confirm allocation
-      </button>
+      <div className="action-dock">
+        <button
+          type="button"
+          className="primary-action"
+          disabled={unassignedCount !== 0}
+          onClick={handleConfirm}
+        >
+          Confirm allocation
+        </button>
+      </div>
       {character.downed && <p role="alert">You&rsquo;re down. A teammate must rescue you.</p>}
     </section>
   );

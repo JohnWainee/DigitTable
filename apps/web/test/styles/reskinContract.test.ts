@@ -13,10 +13,38 @@ import { describe, expect, it } from "vitest";
 
 const here = dirname(fileURLToPath(import.meta.url));
 // Comments stripped so selectors are never polluted by the prose between rules.
-const css = readFileSync(join(here, "../../src/styles.css"), "utf8").replace(
+const fullCss = readFileSync(join(here, "../../src/styles.css"), "utf8").replace(
   /\/\*[\s\S]*?\*\//g,
   "",
 );
+
+/** The text of the first `@<atRule> … { … }` block starting at `query`, found by brace matching. */
+function blockAt(source: string, header: string): { start: number; end: number; inner: string } {
+  const start = source.indexOf(header);
+  if (start < 0) throw new Error(`no ${header}`);
+  const open = source.indexOf("{", start);
+  let depth = 0;
+  for (let i = open; i < source.length; i += 1) {
+    if (source[i] === "{") depth += 1;
+    if (source[i] === "}") {
+      depth -= 1;
+      if (depth === 0) return { start, end: i + 1, inner: source.slice(open + 1, i) };
+    }
+  }
+  throw new Error("unbalanced braces");
+}
+
+/** `@container` blocks are asserted separately, so the flat rule scan below ignores them. */
+const containerBlocks: string[] = [];
+const css = (() => {
+  let rest = fullCss;
+  for (let at = rest.indexOf("@container"); at >= 0; at = rest.indexOf("@container")) {
+    const block = blockAt(rest, "@container");
+    containerBlocks.push(rest.slice(block.start, block.end));
+    rest = rest.slice(0, block.start) + rest.slice(block.end);
+  }
+  return rest;
+})();
 const html = readFileSync(join(here, "../../index.html"), "utf8");
 
 /** All `selector { body }` rules at the top level or inside the named at-rule (or anywhere when omitted). */
@@ -100,7 +128,12 @@ describe("reskin stylesheet contract", () => {
     });
 
     it("covers every styled <button> in the app: each className token is one the tap rule names", () => {
-      const covered = new Set(["primary-action", "secondary-action", "link-button"]);
+      const covered = new Set([
+        "primary-action",
+        "secondary-action",
+        "link-button",
+        "gear-row-action", // always paired with secondary-action
+      ]);
       const uncovered: string[] = [];
       for (const file of sourceFiles(join(here, "../../src"))) {
         const source = readFileSync(file, "utf8");
@@ -312,6 +345,57 @@ describe("reskin stylesheet contract", () => {
       }
       expect(contrast("acid", "ink-0")).toBeGreaterThanOrEqual(3); // focus ring on ink
       expect(contrast("acid", "ink-3")).toBeGreaterThanOrEqual(3);
+    });
+  });
+
+  describe("HP layer: compact sheet, action dock, item rows", () => {
+    it("scrolls the whole sheet as one page when the visible area is short (keyboard up, landscape)", () => {
+      expect(declaration(rulesFor(/^\.sheet-backdrop$/), "container")).toContain(
+        "sheet-box / size",
+      );
+      const compact = containerBlocks.find((block) => block.includes("(max-height: 18rem)"));
+      expect(compact, "a @container sheet-box (max-height: 18rem) block").toBeDefined();
+      expect(compact).toMatch(/\.sheet\s*\{[^}]*overflow-y:\s*auto/);
+      // Header, body and action row stop being pinned flex regions...
+      expect(compact).toMatch(
+        /\.sheet-header,\s*\.sheet-footer,\s*\.sheet-body\s*\{[^}]*flex:\s*none/,
+      );
+      // ...and the body and action row no longer clip or cap themselves.
+      expect(compact).toMatch(/\.sheet-body\s*\{[^}]*overflow:\s*visible/);
+      expect(compact).toMatch(/\.sheet-footer\s*\{[^}]*max-height:\s*none/);
+    });
+
+    it("keeps the primary action in a sticky dock that is static in short viewports", () => {
+      const dock = rulesFor(/^\.action-dock$/);
+      expect(declaration(dock, "position")[0]).toBe("sticky");
+      expect(declaration(dock, "bottom")[0]).toBe("0");
+      expect(declaration(dock, "padding")[0]).toContain("env(safe-area-inset-bottom)");
+      // The second declaration is the one inside `@media (max-height: 34rem)`.
+      expect(declaration(dock, "position")).toEqual(["sticky", "static"]);
+      expect(css).toMatch(
+        /@media \(max-height: 34rem\)\s*\{\s*\.action-dock\s*\{\s*position:\s*static/,
+      );
+    });
+
+    it("reserves scroll padding so the dock never hides a focused control (WCAG 2.4.11)", () => {
+      expect(declaration(rulesFor(/^html$/), "scroll-padding-block-end")[0]).toMatch(/rem$/);
+    });
+
+    it("never nests a button inside a label (item rows are label + sibling button)", () => {
+      for (const file of sourceFiles(join(here, "../../src"))) {
+        const source = readFileSync(file, "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+        for (const label of source.matchAll(/<label\b[^>]*>([\s\S]*?)<\/label>/g)) {
+          expect(label[1], `${file.split("/src/")[1]} has a <button> inside a <label>`).not.toMatch(
+            /<button\b/,
+          );
+        }
+      }
+    });
+
+    it("keeps the pending-action accent (pink) legible on every card surface", () => {
+      for (const surface of ["ink-0", "ink-1", "ink-2"]) {
+        expect(contrast("pink", surface)).toBeGreaterThanOrEqual(4.5);
+      }
     });
   });
 
