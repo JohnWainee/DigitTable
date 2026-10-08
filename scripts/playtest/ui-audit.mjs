@@ -55,10 +55,11 @@ const TOLERATE = args.includes("--tolerate-baseline");
 const DUMP_HTML = args.includes("--dump-html"); // also write a scriptless HTML snapshot per state under <out>/dump
 const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (fast iteration on the pop-out)
 // Whole-page text scaling (what a browser "font size: large / very large" or iOS Dynamic Type does to
-// every rem), on by default. `--no-text-sweep` skips it; `--text-sweep-gating` makes its findings fail
-// the run instead of being recorded as `report.textScale` only.
+// every rem), on and GATING by default (100/150/200% on 320 and 375px: any overflow, control outside the
+// viewport or mid-word wrap fails the run). `--no-text-sweep` skips it; `--text-sweep-advisory` records its
+// findings in `report.textScale` and the log without failing the run.
 const TEXT_SWEEP = !args.includes("--no-text-sweep");
-const TEXT_SWEEP_GATING = args.includes("--text-sweep-gating");
+const TEXT_SWEEP_GATING = !args.includes("--text-sweep-advisory");
 // A device without Impact/Arial Narrow (Android, most Linux) falls through to the plain system sans,
 // which is much wider than the display face; `--font-fallback sans` applies that stack for the whole run.
 const FONT_FALLBACK = arg("font-fallback", "");
@@ -72,7 +73,7 @@ const TEXT_ONLY = args.includes("--text-only");
 // builds can be diffed with scripts/playtest/layout-diff.mjs: the proof that a CSS change leaves the
 // default-size layout identical where it claims to.
 const LAYOUT_DUMP = arg("layout-dump", "");
-const layoutDump = {}; // only the text-scale sweep (no per-viewport captures, no pop-out scenarios)
+const layoutDump = {}; // filled by the per-viewport capture loop (not by --text-only); written once at the end of the run
 const CHROME =
   process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 mkdirSync(OUT, { recursive: true });
@@ -355,7 +356,7 @@ const BROKEN_WORDS = `(() => {
     const el = node.parentElement;
     // Room/table codes, passphrases and recovery codes are one unbreakable token by design (they
     // wrap anywhere rather than overflow), so they are not "words".
-    if (!el || el.closest("[inert], script, style, svg, [hidden], dd, code, .reveal-code")) continue;
+    if (!el || el.closest("[inert], script, style, svg, [hidden], code, .reveal-code") || (el.closest("dd") && !el.closest("em"))) continue;
     const cs = getComputedStyle(el);
     if (cs.display === "none" || cs.visibility === "hidden") continue;
     const re = /[A-Za-z]{4,}/g;
@@ -403,6 +404,7 @@ async function runAxe(device) {
   return ev(
     device,
     `axe.run(document, {
+      ${FORCED_COLORS ? 'rules: { "color-contrast": { enabled: false } },' : ""}
       runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"] },
       resultTypes: ["violations"],
     }).then(r => r.violations.map(v => ({
@@ -534,6 +536,10 @@ async function textScaleSweep(device, state) {
       }
     }
     await ev(device, `document.documentElement.style.fontSize = ""`);
+  }
+  if (FONT_FALLBACK === "sans") {
+    // Restore the display face so the rest of the run (captures, axe, layout dump) is not affected.
+    await ev(device, `document.documentElement.style.removeProperty("--font-display")`);
   }
 }
 

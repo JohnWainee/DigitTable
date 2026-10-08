@@ -1,7 +1,7 @@
 {
- "label": "after",
+ "label": "final",
  "base": "http://127.0.0.1:62175",
- "startedAt": "2026-10-08T21:41:37.825Z",
+ "startedAt": "2026-10-08T22:27:10.991Z",
  "states": [
   {
    "surface": "anon",
@@ -1037,7 +1037,7 @@
    "state": "allocation",
    "viewport": "phone-small",
    "size": "320x568",
-   "controls": 6,
+   "controls": 10,
    "overflowPx": 0,
    "controlIssues": []
   },
@@ -1046,7 +1046,7 @@
    "state": "allocation",
    "viewport": "phone",
    "size": "375x812",
-   "controls": 6,
+   "controls": 10,
    "overflowPx": 0,
    "controlIssues": [],
    "axe": []
@@ -1056,7 +1056,7 @@
    "state": "allocation",
    "viewport": "phone-landscape",
    "size": "812x375",
-   "controls": 6,
+   "controls": 10,
    "overflowPx": 0,
    "controlIssues": []
   },
@@ -1065,7 +1065,7 @@
    "state": "allocation",
    "viewport": "tablet",
    "size": "768x1024",
-   "controls": 6,
+   "controls": 10,
    "overflowPx": 0,
    "controlIssues": [],
    "axe": []
@@ -1075,7 +1075,7 @@
    "state": "allocation",
    "viewport": "desktop",
    "size": "1280x800",
-   "controls": 6,
+   "controls": 10,
    "overflowPx": 0,
    "controlIssues": [],
    "axe": []
@@ -1085,7 +1085,7 @@
    "state": "allocation",
    "viewport": "table",
    "size": "1920x1080",
-   "controls": 6,
+   "controls": 10,
    "overflowPx": 0,
    "controlIssues": []
   },
@@ -1094,7 +1094,7 @@
    "state": "allocation-assigned",
    "viewport": "phone-small",
    "size": "320x568",
-   "controls": 6,
+   "controls": 10,
    "overflowPx": 0,
    "controlIssues": []
   },
@@ -1103,7 +1103,7 @@
    "state": "allocation-assigned",
    "viewport": "phone",
    "size": "375x812",
-   "controls": 6,
+   "controls": 10,
    "overflowPx": 0,
    "controlIssues": [],
    "axe": []
@@ -1113,7 +1113,7 @@
    "state": "allocation-assigned",
    "viewport": "phone-landscape",
    "size": "812x375",
-   "controls": 6,
+   "controls": 10,
    "overflowPx": 0,
    "controlIssues": []
   },
@@ -1122,7 +1122,7 @@
    "state": "allocation-assigned",
    "viewport": "tablet",
    "size": "768x1024",
-   "controls": 6,
+   "controls": 10,
    "overflowPx": 0,
    "controlIssues": []
   },
@@ -1131,7 +1131,7 @@
    "state": "allocation-assigned",
    "viewport": "desktop",
    "size": "1280x800",
-   "controls": 6,
+   "controls": 10,
    "overflowPx": 0,
    "controlIssues": []
   },
@@ -1140,7 +1140,7 @@
    "state": "allocation-assigned",
    "viewport": "table",
    "size": "1920x1080",
-   "controls": 6,
+   "controls": 10,
    "overflowPx": 0,
    "controlIssues": []
   },
@@ -2631,10 +2631,1509 @@
     "activeIsInside": true
    },
    "textPx": 32,
-   "informationalChecks": [
-    "dialogInsideViewport",
-    "noPageOverflow"
-   ]
+   "informationalChecks": []
+  }
+ ],
+ "textScale": [
+  {
+   "surface": "anon",
+   "state": "landing",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 3,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "landing",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 3,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "landing",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 3,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "landing",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 3,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "landing",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 3,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "landing",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 3,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "create-form",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 4,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "create-form",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 4,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "create-form",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 4,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "create-form",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 4,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "create-form",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 4,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "create-form",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 4,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "join-form",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 5,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "join-form",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 5,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "join-form",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 5,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "join-form",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 5,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "join-form",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 5,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "join-form",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 5,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "table-join-form",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 3,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "table-join-form",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 3,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "table-join-form",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 3,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "table-join-form",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 3,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "table-join-form",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 3,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "table-join-form",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 3,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-claim-no-such-room",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-claim-no-such-room",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-claim-no-such-room",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-claim-no-such-room",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-claim-no-such-room",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-claim-no-such-room",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-room-no-such-room-gm",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-room-no-such-room-gm",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-room-no-such-room-gm",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-room-no-such-room-gm",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-room-no-such-room-gm",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-room-no-such-room-gm",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-room-no-such-room-player",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-room-no-such-room-player",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-room-no-such-room-player",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-room-no-such-room-player",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-room-no-such-room-player",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-room-no-such-room-player",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "secrets-reveal",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "secrets-reveal",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "secrets-reveal",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "secrets-reveal",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "secrets-reveal",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "secrets-reveal",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-empty",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 27,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-empty",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 27,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-empty",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 27,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-empty",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 27,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-empty",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 27,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-empty",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 27,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "join-filled",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 5,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "join-filled",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 5,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "join-filled",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 5,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "join-filled",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 5,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "join-filled",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 5,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "join-filled",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 5,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "join-reveal",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "join-reveal",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "join-reveal",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "join-reveal",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "join-reveal",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "join-reveal",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "claim-roster",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 6,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "claim-roster",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 6,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "claim-roster",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 6,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "claim-roster",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 6,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "claim-roster",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 6,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "claim-roster",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 6,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "compose",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "compose",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "compose",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "compose",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "compose",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "compose",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "compose-why-open",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "compose-why-open",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "compose-why-open",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "compose-why-open",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "compose-why-open",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "compose-why-open",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "idle",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "idle",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "idle",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "idle",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "idle",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "idle",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-scene-loaded",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 32,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-scene-loaded",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 32,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-scene-loaded",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 32,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-scene-loaded",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 32,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-scene-loaded",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 32,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-scene-loaded",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 32,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "declared",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "declared",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "declared",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "declared",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "declared",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "declared",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 1,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-pending",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 37,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-pending",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 37,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-pending",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 37,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-pending",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 37,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-pending",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 37,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-pending",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 37,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 10,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 10,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 10,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 10,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 10,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 10,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation-assigned",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 10,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation-assigned",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 10,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation-assigned",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 10,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation-assigned",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 10,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation-assigned",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 10,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation-assigned",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 10,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "resolved",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "resolved",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "resolved",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "resolved",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "resolved",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "resolved",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 2,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "after-roll",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "after-roll",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "after-roll",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "after-roll",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "after-roll",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "after-roll",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "paused",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "paused",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "paused",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "paused",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "paused",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "player",
+   "state": "paused",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 20,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "next-scene",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "next-scene",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "next-scene",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "next-scene",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "next-scene",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "table",
+   "state": "next-scene",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 0,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-next-scene",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "controls": 33,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-next-scene",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "controls": 33,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-next-scene",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "controls": 33,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-next-scene",
+   "viewport": "phone",
+   "textScale": "100",
+   "controls": 33,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-next-scene",
+   "viewport": "phone",
+   "textScale": "150",
+   "controls": 33,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-next-scene",
+   "viewport": "phone",
+   "textScale": "200",
+   "controls": 33,
+   "overflowPx": 0,
+   "controlIssues": [],
+   "brokenWords": []
   }
  ],
  "reducedMotion": {
@@ -2673,11 +4172,11 @@
    "failedRequests": []
   }
  },
- "finishedAt": "2026-10-08T21:46:27.987Z",
+ "finishedAt": "2026-10-08T22:32:01.428Z",
  "ok": true,
  "summary": {
   "states": 150,
-  "controlsAudited": 1422,
+  "controlsAudited": 1470,
   "controlIssues": 0,
   "overflowStates": 0,
   "axeHardViolations": 0,

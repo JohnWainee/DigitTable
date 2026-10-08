@@ -171,7 +171,10 @@ h3 {
    so contrast is measured on the paper glyphs over ink. */
 h1 {
   /* The vw cap keeps a long title word on one line under larger text (the clamp's rem floor alone
-     grew with the text setting, to 83px at 200%, wider than a 320px phone's column). */
+     grew with the text setting, to 83px at 200%, wider than a 320px phone's column). It never bites
+     at the default size on any viewport >= 320px (h1 needs < 297px). Recorded trade-off: at 200%
+     text on a 320px phone the h1 is ~108% of its default size, so titles, button labels (<= 144%)
+     and legends (<= 138%) grow less than body text; the alternative was words broken mid-way. */
   font-size: min(clamp(2.6rem, 13vw, 4.75rem), 14vw);
   color: var(--paper);
   text-shadow:
@@ -492,7 +495,10 @@ button {
 /* A label is never broken mid-word. The shared 3rem floor above is a tap-target size, not a width the
    label may be squeezed to: in a row with a long neighbour the flex algorithm shrank "Reveal" to that
    floor and the inherited `overflow-wrap: break-word` split it (REV/EAL). A longer label still wraps
-   between words, down to its longest word. */
+   between words, down to its longest word. This replaces the 3rem width floor rather than adding to
+   it (`max(var(--tap), min-content)` is not valid CSS): the 44px width now comes from the label plus
+   the 2 x 1.25 x --gx side padding (>= ~70px for any real label at any width >= 280px). Every label
+   in the app is a word, not a glyph; an icon-only button must use a class that keeps the 3rem floor. */
 .primary-action,
 .secondary-action {
   min-width: min-content;

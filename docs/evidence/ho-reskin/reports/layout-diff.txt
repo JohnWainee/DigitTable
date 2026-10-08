@@ -1,3 +1,15 @@
-MOVED gm/console-next-scene@phone-small #0 div 0,0,320,5698 -> div 0,0,320,5709
-MOVED gm/console-next-scene@phone #0 div 0,0,375,5493.5 -> div 0,0,375,5506
-{"statesCompared":150,"perViewportFirstDivergence":{"phone-small":1,"phone":1},"unexpectedDivergent":2,"structure":0}
+MOVED gm/console-next-scene@phone-small: 99 element(s) differ, 7 with their own x/width/height changed
+   #0 div 0,0,320,5698 -> div 0,0,320,5709
+   #1 main.gm-screen 0,0,320,5698 -> main.gm-screen 0,0,320,5709
+   #13 section.step 16,634,288,1813.5 -> section.step 16,634,288,1825
+   #29 div.gear-list 35,1298,250,111 -> div.gear-list 35,1298,250,122.5
+   #30 div.gear-option 35,1298,250,111 -> div.gear-option 35,1298,250,122.5
+   #31 span 47.5,1322,130.5,62.5 -> span 47.5,1306,225,41.5
+MOVED gm/console-next-scene@phone: 99 element(s) differ, 7 with their own x/width/height changed
+   #0 div 0,0,375,5493.5 -> div 0,0,375,5506
+   #1 main.gm-screen 0,0,375,5493.5 -> main.gm-screen 0,0,375,5506
+   #13 section.step 16,627,343,1639.5 -> section.step 16,627,343,1651.5
+   #29 div.gear-list 35,1243,305,89 -> div.gear-list 35,1243,305,101.5
+   #30 div.gear-option 35,1243,305,89 -> div.gear-option 35,1243,305,101.5
+   #31 span 47.5,1267,174,41.5 -> span 47.5,1251.5,253,21
+{"statesCompared":150,"perViewportDivergentStates":{"phone-small":1,"phone":1},"divergentStates":2,"structure":0}

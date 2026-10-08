@@ -42,26 +42,41 @@ for (const key of Object.keys(before)) {
     structure += 1;
     console.log(`STRUCTURE ${key}: ${a.length} vs ${b.length} elements`);
   }
+  // Compare every element (not just the first divergence): an element whose box merely shifts
+  // down because something above it grew is reported separately from one whose own size or x changed.
+  const diverged = [];
   for (let i = 0; i < Math.min(a.length, b.length); i += 1) {
     const [tagA, ...boxA] = a[i];
     const [tagB, ...boxB] = b[i];
     if (ignoreTags.includes(tagA) && tagA === tagB) continue; // e.g. a per-run room code in <strong>
     if (tagA !== tagB || boxA.some((v, j) => Math.abs(v - boxB[j]) > tolerance)) {
-      perViewport[viewport] = (perViewport[viewport] ?? 0) + 1;
-      if (!allowViewports.includes(viewport)) {
-        moved += 1;
-        if (moved <= 40)
-          console.log(`MOVED ${key} #${i} ${tagA} ${boxA.join(",")} -> ${tagB} ${boxB.join(",")}`);
-      }
-      break; // first divergence per state is enough; later boxes shift as a consequence
+      diverged.push({
+        i,
+        tagA,
+        tagB,
+        boxA,
+        boxB,
+        own: tagA !== tagB || [0, 2, 3].some((j) => Math.abs(boxA[j] - boxB[j]) > tolerance),
+      });
     }
+  }
+  if (diverged.length === 0) continue;
+  perViewport[viewport] = (perViewport[viewport] ?? 0) + 1;
+  if (allowViewports.includes(viewport)) continue;
+  moved += 1;
+  const own = diverged.filter((d) => d.own);
+  console.log(
+    `MOVED ${key}: ${diverged.length} element(s) differ, ${own.length} with their own x/width/height changed`,
+  );
+  for (const d of own.slice(0, 6)) {
+    console.log(`   #${d.i} ${d.tagA} ${d.boxA.join(",")} -> ${d.tagB} ${d.boxB.join(",")}`);
   }
 }
 console.log(
   JSON.stringify({
     statesCompared: Object.keys(before).length,
-    perViewportFirstDivergence: perViewport,
-    unexpectedDivergent: moved,
+    perViewportDivergentStates: perViewport,
+    divergentStates: moved,
     structure,
   }),
 );

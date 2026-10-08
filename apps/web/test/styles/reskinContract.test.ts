@@ -206,6 +206,15 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(box, "height")).toContain("min(1.65rem, 34px)");
     });
 
+    it("keeps the pop-out heading capped like the page headings, and the wrapped row's text from collapsing", () => {
+      expect(declaration(rulesFor(/^\.sheet-header h2$/), "font-size")[0]).toMatch(
+        /^min\(clamp\(.*\), 9vw\)$/,
+      );
+      const span = rulesFor(/^\.gear-option--action > span$/);
+      expect(declaration(span, "flex")).toEqual(["0 1 auto"]);
+      expect(declaration(span, "min-width")[0]).toBe("min(100%, 8rem)");
+    });
+
     it("lets a label-plus-button row wrap the button under the text instead of squeezing the text", () => {
       expect(declaration(rulesFor(/^\.gear-option--action$/), "flex-wrap")).toEqual(["wrap"]);
     });
