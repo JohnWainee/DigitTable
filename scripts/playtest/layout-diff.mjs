@@ -68,7 +68,7 @@ for (const key of Object.keys(before)) {
   console.log(
     `MOVED ${key}: ${diverged.length} element(s) differ, ${own.length} with their own x/width/height changed`,
   );
-  for (const d of own.slice(0, 6)) {
+  for (const d of own) {
     console.log(`   #${d.i} ${d.tagA} ${d.boxA.join(",")} -> ${d.tagB} ${d.boxB.join(",")}`);
   }
 }

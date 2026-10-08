@@ -37,7 +37,7 @@ After: **0 findings** in the same sweep (display font and sans fallback), 0 cont
 
 **Default-size layout is unchanged** except the intended Reveal row: `reports/layout-diff.txt` compares every
 element's box across 150 state x viewport dumps (allocation/resolved states are skipped: their dice are random
-per run; a per-run room code in `<strong>` is ignored). Two states differ, both at phone widths only, and the
+per run; a per-run room code in `<strong>` is ignored). 148 states are identical; 2 differ, both at phone widths only, and the
 the origin of the change is the hidden-threat row
 (`div.gear-list > div.gear-option > span`, which now sits on one line with the button beneath it); every other
 listed element is an ancestor that grew by the same ~11 px or a sibling shifted down.
@@ -46,6 +46,7 @@ real-Safari run.
 
 ## Honest limits
 
+- `ui-audit-after-final-gating.json` and `ui-audit-after-forced-colors.json` carry the same `startedAt` because the two runs were launched together from one command (the forced-colors run used `--no-text-sweep`, hence 0 sweep states and a different control count); they are separate runs against the same final build.
 - `ui-audit.mjs`, the text sweep and the forced-colors run are headless Chrome. Forced colors is an
   **emulation** (`forced-colors: active`, axe `color-contrast` disabled because axe reads the authored colours);
   it is not a Windows High Contrast run.
