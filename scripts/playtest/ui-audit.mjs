@@ -414,6 +414,11 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
 
 // ---------- modal (correction sheet) audit ----------
 
+// Below 288px (18rem at default text) of backdrop content height the whole sheet scrolls as one page (styles.css, @container sheet-box), so
+// "reachable" means reachable after scrolling the sheet, its body and its footer to their ends.
+const SCROLL_SHEET_TO_END = `(() => { for (const q of [".sheet", ".sheet-body", ".sheet-footer"]) { const e = document.querySelector(q); if (e) e.scrollTop = e.scrollHeight; } })()`;
+const SCROLL_SHEET_TO_START = `(() => { for (const q of [".sheet", ".sheet-body", ".sheet-footer"]) { const e = document.querySelector(q); if (e) e.scrollTop = 0; } })()`;
+
 const MODAL_GEOMETRY = `(() => {
   const vv = window.visualViewport;
   const dialog = document.querySelector('[role="dialog"]');
@@ -571,13 +576,15 @@ async function auditModal(gm) {
       await applyViewport(gm, shrunk);
       await sleep(400);
       const kb = await ev(gm, MODAL_GEOMETRY);
+      await ev(gm, SCROLL_SHEET_TO_END);
+      const kbEnd = await ev(gm, MODAL_GEOMETRY);
       const kbFrame = { left: 0, top: 0, right: shrunk.width, bottom: shrunk.height };
       record.keyboard = {
         size: `${shrunk.width}x${shrunk.height}`,
         checks: {
           dialogInsideViewport: within(kb.dialog, kbFrame),
           focusedFieldVisible: within(kb.reason, kbFrame),
-          actionsVisible: within(kb.apply, kbFrame) && within(kb.cancel, kbFrame),
+          actionsVisible: within(kbEnd.apply, kbFrame) && within(kbEnd.cancel, kbFrame),
           noPageOverflow: kb.pageOverflowPx <= 1,
         },
       };
@@ -756,18 +763,23 @@ async function auditModal(gm) {
         }
         record.checks.bodyKeepsRoom = geo.body.clientHeight >= 96;
         // The action row may scroll on its own at this size, but its buttons must be reachable.
-        await ev(
-          gm,
-          `(() => { const f = document.querySelector(".sheet-footer"); f.scrollTop = f.scrollHeight; })()`,
-        );
+        await ev(gm, SCROLL_SHEET_TO_END);
         const end = await ev(gm, MODAL_GEOMETRY);
         record.checks.actionsReachable = within(end.apply, frame) && within(end.cancel, frame);
+        await ev(gm, SCROLL_SHEET_TO_START);
         await ev(
           gm,
-          `(() => { const b = document.querySelector(".sheet-body"); b.scrollTop = b.scrollHeight; })()`,
+          `document.querySelector("#correction-reason").scrollIntoView({ block: "nearest" })`,
         );
         const bottom = await ev(gm, MODAL_GEOMETRY);
-        record.checks.reasonReachable = within(bottom.reason, frame);
+        // Measured against the layout viewport the page actually has: at 320px/200% the console's own overflow
+        // widens it (innerWidth 324 / innerHeight 576), which is the recorded non-gating limit above.
+        record.checks.reasonReachable = within(bottom.reason, {
+          left: 0,
+          top: 0,
+          right: bottom.layout.innerWidth,
+          bottom: bottom.layout.innerHeight,
+        });
         record.textPx = px;
         record.screenshot = await screenshot(
           gm,
@@ -777,6 +789,75 @@ async function auditModal(gm) {
       },
       { informationalChecks },
     );
+  }
+  // iOS-Safari keyboard: the VISUAL viewport shrinks while the layout viewport does not, which headless
+  // Chrome cannot produce (Emulation.setVisibleSize leaves visualViewport alone). So a stand-in
+  // `window.visualViewport` (an EventTarget with live width/height/offset getters) is installed BEFORE
+  // the sheet mounts and then resized, exactly the events the real thing fires. This proves the sheet's
+  // use of the --vv-* variables in a real layout engine; it does not prove iOS itself (see handoff).
+  const STAND_IN = `(() => {
+    if (window.__vvSaved === undefined) window.__vvSaved = Object.getOwnPropertyDescriptor(window, "visualViewport") ?? null;
+    const t = new EventTarget();
+    const s = { width: innerWidth, height: innerHeight, offsetTop: 0, offsetLeft: 0, scale: 1 };
+    for (const k of Object.keys(s)) Object.defineProperty(t, k, { get: () => s[k], configurable: true });
+    t.__set = (o) => { Object.assign(s, o); t.dispatchEvent(new Event("resize")); };
+    Object.defineProperty(window, "visualViewport", { get: () => t, configurable: true });
+    window.__vv = t;
+  })()`;
+  const RESTORE_VV = `(() => { if (window.__vvSaved) Object.defineProperty(window, "visualViewport", window.__vvSaved); else delete window.visualViewport; delete window.__vv; })()`;
+  for (const [vp, visibleHeights] of [
+    [byName["phone"], [476, 300, 200, 140]],
+    [byName["phone-small"], [300, 200, 140]],
+    [{ name: "phone-667x375", width: 667, height: 375, mobile: true }, [200, 140]],
+  ]) {
+    for (const visible of visibleHeights) {
+      await scenario(`vv-keyboard-${vp.name}-${visible}`, vp, async (record) => {
+        await ev(gm, STAND_IN);
+        await openCorrection(gm);
+        await ev(gm, `document.querySelector("#correction-reason").focus()`);
+        // The keyboard covers the bottom of the layout viewport; iOS also pans the page, so test a
+        // non-zero offsetTop too (the sheet must follow the visible area, not the layout one).
+        const offsetTop = visible <= 200 ? 24 : 0;
+        await ev(gm, `window.__vv.__set({ height: ${visible}, offsetTop: ${offsetTop} })`);
+        await sleep(400);
+        const geo = await ev(gm, MODAL_GEOMETRY);
+        record.geometry = geo;
+        const frame = { left: 0, top: offsetTop, right: vp.width, bottom: offsetTop + visible };
+        record.visibleHeight = visible;
+        // Above ~18rem of visible height the header/footer stay pinned and the body keeps room; below
+        // it the whole sheet scrolls as one page, so reachability is measured after scrolling.
+        const compact = visible < 312; // 288px container content box + the backdrop's 1.5rem top padding (312px in portrait)
+        record.compact = compact;
+        record.checks.dialogInsideVisualViewport = within(geo.dialog, frame);
+        record.checks.titleReachable = (geo.dialog?.top ?? 0) >= frame.top - 1;
+        if (!compact) {
+          record.checks.actionsInsideVisualViewport =
+            within(geo.apply, frame) && within(geo.cancel, frame);
+          record.checks.bodyKeepsRoom = geo.body.clientHeight >= 48;
+        }
+        await ev(
+          gm,
+          `(() => { for (const s of [".sheet", ".sheet-body", ".sheet-footer"]) { const e = document.querySelector(s); e.scrollTop = e.scrollHeight; } })()`,
+        );
+        const end = await ev(gm, MODAL_GEOMETRY);
+        record.checks.actionsReachableAfterScroll =
+          within(end.apply, frame) && within(end.cancel, frame);
+        await ev(
+          gm,
+          `(() => { for (const s of [".sheet", ".sheet-body", ".sheet-footer"]) { const e = document.querySelector(s); e.scrollTop = 0; } })()`,
+        );
+        await ev(
+          gm,
+          `document.querySelector("#correction-reason").scrollIntoView({ block: "nearest" })`,
+        );
+        const reason = await ev(gm, MODAL_GEOMETRY);
+        record.checks.reasonReachable = within(reason.reason, frame);
+        record.screenshot = await screenshot(gm, `gm-correction-vv-${vp.name}-${visible}.jpg`, {
+          fullPage: false,
+        });
+        await ev(gm, RESTORE_VV);
+      });
+    }
   }
   await applyViewport(gm, byName["desktop"]);
 }

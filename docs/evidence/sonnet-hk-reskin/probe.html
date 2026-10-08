@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <div id="root">
+      <main class="landing-screen">
+        <h1>Page behind</h1>
+        <p>filler</p>
+      </main>
+    </div>
+    <div class="sheet-backdrop" id="bd">
+      <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="t">
+        <div class="sheet-header">
+          <span class="sheet-grip"></span>
+          <h2 id="t" tabindex="-1">Correct Iryna</h2>
+        </div>
+        <div class="sheet-body">
+          <div class="form-field">
+            <div role="group">
+              <span>Blood change</span>
+              <div class="stepper-controls">
+                <button type="button">−</button><span class="stepper-value">0</span
+                ><button type="button">+</button>
+              </div>
+            </div>
+          </div>
+          <fieldset>
+            <legend>Injuries</legend>
+            <label class="check-row"><input type="checkbox" /> Bruised</label
+            ><label class="check-row"><input type="checkbox" /> Bleeding</label
+            ><label class="check-row"><input type="checkbox" /> Broken</label>
+          </fieldset>
+          <label class="form-field" for="reason"
+            ><span>Reason</span><textarea id="reason" rows="3"></textarea>
+          </label>
+          <label class="form-field" for="r2"><span>Another</span><input id="r2" /></label>
+        </div>
+        <div class="sheet-footer">
+          <div class="landing-actions sheet-actions">
+            <button type="button" class="primary-action" id="apply">Apply correction</button
+            ><button type="button" class="secondary-action" id="cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

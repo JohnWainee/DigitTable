@@ -1522,6 +1522,39 @@ details ul {
   }
 }
 
+/* Compact: when the visible area is short (an on-screen keyboard, in portrait or landscape) a pinned
+   header plus footer leave the body a few lines or none, and the footer can be clipped. Below 288px (18rem at default text; a px query so that large text keeps the pinned layout) of
+   backdrop content height (the visible height minus its padding) the whole sheet scrolls as one page:
+   title first, actions last. `container-type: size` is safe on the backdrop because its width and
+   height are always explicit (--vv-* or 100vw/100dvh). Engines without container queries keep the
+   pinned layout. A landscape phone with no keyboard stays pinned. */
+.sheet-backdrop {
+  container: sheet-box / size;
+}
+
+@container sheet-box (max-height: 288px) {
+  .sheet {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-padding-block: 1rem;
+  }
+
+  .sheet-header,
+  .sheet-footer {
+    flex: none;
+  }
+
+  .sheet-body {
+    flex: none;
+    overflow: visible;
+  }
+
+  .sheet-footer {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
 /* ---------- Larger layouts ---------- */
 
 @media (min-width: 48rem) {

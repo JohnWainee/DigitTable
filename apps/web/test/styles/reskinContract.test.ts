@@ -208,6 +208,7 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(footer, "max-height")).toEqual([
         "calc(var(--vv-height, 100vh) * 0.4)",
         "calc(var(--vv-height, 100dvh) * 0.4)",
+        "none", // the compact @container override, which must come last
       ]);
       expect(declaration(footer, "overflow-y")).toContain("auto");
       // Large text: long legends and stepper rows wrap instead of widening the page.
@@ -234,6 +235,26 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(body, "overscroll-behavior")).toContain("contain");
       expect(declaration(rulesFor(/^\.sheet-header$/), "flex")).toContain("none");
       expect(declaration(rulesFor(/^\.sheet-footer$/), "flex")).toContain("none");
+    });
+
+    it("scrolls the whole sheet when the visible area is short, so a keyboard cannot clip the actions", () => {
+      // jsdom does no layout: the real-browser proof is the vv-keyboard scenarios in ui-audit.mjs.
+      expect(declaration(rulesFor(/^\.sheet-backdrop$/), "container")).toEqual([
+        "sheet-box / size",
+      ]);
+      const start = css.indexOf("@container sheet-box (max-height: 288px)");
+      expect(start).toBeGreaterThan(-1);
+      const open = css.indexOf("{", start);
+      let depth = 0;
+      let end = open;
+      for (; end < css.length; end += 1) {
+        if (css[end] === "{") depth += 1;
+        if (css[end] === "}" && --depth === 0) break;
+      }
+      const block = css.slice(open + 1, end);
+      expect(block).toMatch(/\.sheet\s*\{[^}]*overflow-y:\s*auto[^}]*scroll-padding-block:\s*1rem/);
+      expect(block).toMatch(/\.sheet-body\s*\{[^}]*flex:\s*none[^}]*overflow:\s*visible/);
+      expect(block).toMatch(/\.sheet-footer\s*\{[^}]*max-height:\s*none/);
     });
 
     it("is an edge-attached bottom sheet by default and a centred card from 641px up", () => {
