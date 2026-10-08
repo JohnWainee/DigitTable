@@ -9,6 +9,11 @@
 //     horizontally, and >= 16px type for text-entry controls (below that iOS zooms the page),
 //   * runs axe-core (WCAG 2.x A/AA + best-practice, INCLUDING colour contrast, which jsdom cannot).
 //
+// The per-state sweep covers 320, 375, 390 and 412 portrait, 812x375 landscape, 768x1024 and 1024x768
+// tablet, 1280 desktop and 1920/2560 table widths. It ends with the signed-out recovery form (empty,
+// rejected code, then a lower-case space-padded valid code and the rotated one-time reveal). Recovery
+// runs last because redeeming a code rebinds the seat to that browser identity.
+//
 // It then audits the one modal pop-out (the GM correction sheet) separately: containment inside the
 // viewport at phone/landscape/tablet/desktop sizes; an emulated on-screen keyboard; real-Chrome
 // pinch-zoom (both Emulation.setPageScaleFactor and a synthesized two-finger gesture, which proves the
@@ -74,10 +79,14 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const VIEWPORTS = [
   { name: "phone-small", width: 320, height: 568, mobile: true },
   { name: "phone", width: 375, height: 812, mobile: true },
+  { name: "phone-390", width: 390, height: 844, mobile: true },
+  { name: "phone-412", width: 412, height: 915, mobile: true },
   { name: "phone-landscape", width: 812, height: 375, mobile: true },
   { name: "tablet", width: 768, height: 1024, mobile: true },
+  { name: "tablet-landscape", width: 1024, height: 768, mobile: true },
   { name: "desktop", width: 1280, height: 800, mobile: false },
   { name: "table", width: 1920, height: 1080, mobile: false },
+  { name: "table-qhd", width: 2560, height: 1440, mobile: false },
 ];
 const byName = Object.fromEntries(VIEWPORTS.map((v) => [v.name, v]));
 
@@ -527,6 +536,8 @@ async function auditModal(gm) {
   const cases = [
     { name: "phone-small", ...byName["phone-small"] },
     { name: "phone", ...byName["phone"] },
+    { name: "phone-390", ...byName["phone-390"] },
+    { name: "phone-412", ...byName["phone-412"] },
     { name: "phone-landscape", ...byName["phone-landscape"] },
     { name: "phone-667x375", width: 667, height: 375, mobile: true },
     { name: "tablet", ...byName["tablet"] },
@@ -808,6 +819,8 @@ async function auditModal(gm) {
   for (const [vp, visibleHeights] of [
     [byName["phone"], [476, 300, 200, 140]],
     [byName["phone-small"], [300, 200, 140]],
+    [byName["phone-390"], [476, 200]],
+    [byName["phone-412"], [476, 200]],
     [{ name: "phone-667x375", width: 667, height: 375, mobile: true }, [200, 140]],
   ]) {
     for (const visible of visibleHeights) {
@@ -990,6 +1003,10 @@ async function main() {
     await clickText(player, "button", /^Join session$/);
     await waitFor(player, `document.querySelector(".reveal-card")`, 30000, "player reveal");
     await captureState(player, "join-reveal");
+    codes.playerRecovery = await ev(
+      player,
+      `document.querySelector(".reveal-card .reveal-code")?.textContent.trim() ?? ""`,
+    );
     await clickText(player, "button", /wrote it down/);
     await waitFor(player, `document.querySelector(".roster-grid")`, 30000, "roster");
     await captureState(player, "claim-roster");
@@ -1084,6 +1101,37 @@ async function main() {
     );
     await captureState(table, "next-scene");
     await captureState(gm, "console-next-scene");
+
+    // Recovery surface (a one-time-secret control). It runs last: redeeming a code rebinds the seat
+    // to this browser identity, which would orphan the player device used above.
+    if (!codes.playerRecovery) throw new Error("player recovery code was not captured");
+    await goto(anon, "#/join");
+    await clickText(anon, "button", /Recover your seat/);
+    await waitFor(anon, `document.querySelector("#recover-room-code")`, 30000, "recover form");
+    await captureState(anon, "recover-form");
+    await setInput(anon, "#recover-room-code", codes["Room code"]);
+    await setInput(anon, "#recovery-code", "not-a-real-recovery-code");
+    await setInput(anon, "#recover-display-name", "Ada");
+    await clickText(anon, "button", /^Recover my seat$/);
+    await waitFor(anon, `document.querySelector("[role=alert].error-message")`, 30000, "rejection");
+    await captureState(anon, "recover-rejected", { axeViewports: ["phone"] });
+    // The code is matched exactly, so a phone keyboard's casing or a pasted space must not defeat it.
+    await setInput(anon, "#recovery-code", ` ${codes.playerRecovery.toLowerCase()} `);
+    await clickText(anon, "button", /^Recover my seat$/);
+    await waitFor(
+      anon,
+      `document.querySelector(".reveal-card") || document.querySelector("[role=alert].error-message")`,
+      30000,
+      "recovery outcome",
+    );
+    await captureState(anon, "recover-lowercase-result", { axeViewports: ["phone"] });
+    if (!(await ev(anon, `Boolean(document.querySelector(".reveal-card"))`))) {
+      fail("recovery/lowercase", "a lower-case, space-padded recovery code was rejected");
+      await setInput(anon, "#recovery-code", codes.playerRecovery);
+      await clickText(anon, "button", /^Recover my seat$/);
+      await waitFor(anon, `document.querySelector(".reveal-card")`, 30000, "recovery reveal");
+    }
+    await captureState(anon, "recover-reveal");
   } catch (error) {
     fail("flow", String(error.message));
   } finally {

@@ -1,0 +1,88 @@
+// Ad hoc probe (not committed): signed-out routes under forced-colors and 200% page zoom.
+import { spawn } from "node:child_process";
+import { mkdtempSync, writeFileSync, mkdirSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+const [base, out, port] = process.argv.slice(2);
+mkdirSync(out, { recursive: true });
+const chrome = spawn(
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  [
+    `--remote-debugging-port=${port}`,
+    `--user-data-dir=${mkdtempSync(join(tmpdir(), "hl-fc-"))}`,
+    "--headless=new",
+    "--no-first-run",
+    "--disable-gpu",
+    "about:blank",
+  ],
+  { stdio: "ignore" },
+);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+let targets;
+for (let i = 0; i < 50; i++) {
+  try {
+    targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
+    if (targets.find((t) => t.type === "page")) break;
+  } catch {}
+  await sleep(200);
+}
+const ws = new WebSocket(targets.find((t) => t.type === "page").webSocketDebuggerUrl);
+await new Promise((r) => (ws.onopen = r));
+let id = 0;
+const pending = new Map();
+ws.onmessage = (m) => {
+  const d = JSON.parse(m.data);
+  if (d.id && pending.has(d.id)) {
+    pending.get(d.id)(d);
+    pending.delete(d.id);
+  }
+};
+const send = (method, params = {}) =>
+  new Promise((res) => {
+    const i = ++id;
+    pending.set(i, res);
+    ws.send(JSON.stringify({ id: i, method, params }));
+  });
+const ev = async (expr) =>
+  (await send("Runtime.evaluate", { expression: expr, returnByValue: true, awaitPromise: true }))
+    .result?.result?.value;
+const results = [];
+for (const [label, media, scale] of [
+  ["forced-colors", [{ name: "forced-colors", value: "active" }], 1],
+  ["zoom200", [], 2],
+]) {
+  for (const [w, h] of [
+    [375, 812],
+    [320, 568],
+  ]) {
+    await send("Emulation.setDeviceMetricsOverride", {
+      width: w,
+      height: h,
+      deviceScaleFactor: 2,
+      mobile: true,
+    });
+    await send("Emulation.setEmulatedMedia", { features: media });
+    for (const route of ["#/", "#/join", "#/create", "#/table"]) {
+      await send("Page.navigate", { url: `${base}/${route}` });
+      await sleep(900);
+      if (route === "#/join") {
+        await ev(
+          `[...document.querySelectorAll("button")].find(b=>/Recover your seat/.test(b.textContent))?.click()`,
+        );
+        await sleep(300);
+      }
+      if (scale !== 1) await send("Emulation.setPageScaleFactor", { pageScaleFactor: scale });
+      const m = await ev(
+        `({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth, bodyText: document.body.innerText.slice(0,40), h1: document.querySelectorAll("h1").length, small: [...document.querySelectorAll("input,select,textarea")].filter(e=>parseFloat(getComputedStyle(e).fontSize)<16).length })`,
+      );
+      const shot = await send("Page.captureScreenshot", { format: "jpeg", quality: 60 });
+      const name = `${label}-${w}-${route.replace(/\W/g, "") || "landing"}.jpg`;
+      writeFileSync(join(out, name), Buffer.from(shot.result.data, "base64"));
+      results.push({ label, w, route, ...m });
+      if (scale !== 1) await send("Emulation.setPageScaleFactor", { pageScaleFactor: 1 });
+    }
+  }
+}
+console.log(JSON.stringify(results, null, 1));
+chrome.kill();
+process.exit(0);

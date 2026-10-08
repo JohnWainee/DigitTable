@@ -247,4 +247,42 @@ describe("Landing / create / join / claim (C01)", () => {
     await user.click(screen.getByRole("button", { name: /^recover my seat$/i }));
     expect(await screen.findByRole("alert")).toHaveTextContent(/code not recognised/i);
   });
+
+  it("recovers a seat when the code is typed in lower case or with stray spaces, and asks phones not to alter it", async () => {
+    const user = userEvent.setup();
+    renderApp("#/");
+    const { roomCode } = await createSession(user);
+
+    window.localStorage.clear();
+    goTo("#/join");
+    await user.type(screen.getByLabelText(/room code/i), roomCode);
+    await user.type(screen.getByLabelText(/^passphrase$/i), "wolfbane");
+    await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
+    await user.click(screen.getByRole("button", { name: /^join session$/i }));
+    await screen.findByRole("heading", { name: /your recovery code/i });
+    const originalCode = screen.getByText(/^[A-Z0-9]{6,}$/).textContent;
+
+    window.localStorage.clear();
+    goTo("#/");
+    goTo("#/join");
+    await user.click(screen.getByRole("button", { name: /lost your browser/i }));
+    const codeInput = screen.getByLabelText(/recovery code/i);
+    // A phone keyboard must not capitalise only the first letter, autocorrect, or spell-check a
+    // secret that is matched exactly.
+    expect(codeInput).toHaveAttribute("autocapitalize", "characters");
+    expect(codeInput).toHaveAttribute("autocorrect", "off");
+    expect(codeInput).toHaveAttribute("spellcheck", "false");
+
+    await user.type(screen.getByLabelText(/^room code$/i), roomCode);
+    await user.type(
+      codeInput,
+      ` ${originalCode.slice(0, 5).toLowerCase()} ${originalCode.slice(5).toLowerCase()} `,
+    );
+    await user.type(screen.getByLabelText(/your display name/i), "Rook's Player");
+    await user.click(screen.getByRole("button", { name: /^recover my seat$/i }));
+
+    expect(
+      await screen.findByRole("heading", { name: /your new recovery code/i }),
+    ).toBeInTheDocument();
+  });
 });
