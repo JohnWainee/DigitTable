@@ -183,7 +183,7 @@ export function SceneDirector({
       {hiddenThreats.length > 0 && (
         <div className="gear-list">
           {hiddenThreats.map((threat) => (
-            <div key={threat.id} className="gear-option">
+            <div key={threat.id} className="gear-option gear-option--action">
               <span>{threat.name} (hidden from players)</span>
               <button
                 type="button"

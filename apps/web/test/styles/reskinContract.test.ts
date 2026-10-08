@@ -157,6 +157,60 @@ describe("reskin stylesheet contract", () => {
     });
   });
 
+  describe("large text on a small phone (WCAG 1.4.4 / 1.4.10)", () => {
+    // Proven in a real browser by `ui-audit.mjs` (text-scale sweep: 100/150/200% on 320 and 375px, no
+    // overflow, no word broken mid-way, with the display face and with the system-sans fallback);
+    // these pin the rules that make it hold so an ordinary `npm run check` catches a regression.
+    it("caps the horizontal gutter unit at 1rem and 5vw, so nested panels cannot compound under larger text", () => {
+      expect(css).toMatch(/--gx:\s*min\(1rem, 5vw\)/);
+    });
+
+    it("builds every horizontal gutter in the five-deep panel chain from --gx, not a bare rem", () => {
+      const shell = declaration(rulesFor(/^\.landing-screen,\s*\.player-screen/s), "padding");
+      expect(shell[0]).toContain("max(var(--gx), env(safe-area-inset-left))");
+      expect(shell[0]).toContain("max(var(--gx), env(safe-area-inset-right))");
+      expect(declaration(rulesFor(/^\.step,\s*\.scene-card/s), "padding")[0]).toContain(
+        "var(--gx)",
+      );
+      expect(declaration(rulesFor(/^fieldset$/), "padding")[0]).toContain("var(--gx)");
+      expect(
+        declaration(rulesFor(/^\.gear-option,\s*\.form-field--checkbox$/), "padding")[0],
+      ).toContain("var(--gx)");
+      expect(
+        declaration(rulesFor(/^\.gear-option,\s*\.form-field--checkbox$/), "gap")[0],
+      ).toContain("var(--gx)");
+      for (const part of ["header", "body"]) {
+        expect(declaration(rulesFor(new RegExp(`^\\.sheet-${part}$`)), "padding")[0]).toContain(
+          "var(--gx)",
+        );
+      }
+      expect(declaration(rulesFor(/^\.sheet-footer$/), "padding")[0]).toContain("var(--gx)");
+    });
+
+    it("never lets a button be squeezed below its longest word (the 'Reveal' split to REV/EAL)", () => {
+      const labelled = rulesFor(/^\.primary-action,\s*\.secondary-action$/);
+      expect(declaration(labelled, "min-width")).toContain("min-content");
+      // Display-size button type is capped by viewport width so one long word still fits a phone column.
+      expect(declaration(labelled, "font-size")).toContain("min(1.25rem, 9vw)");
+    });
+
+    it("caps display headings and legends by viewport width as well as by the rem clamp", () => {
+      expect(declaration(rulesFor(/^h1$/), "font-size")[0]).toMatch(/^min\(clamp\(.*\), 14vw\)$/);
+      expect(declaration(rulesFor(/^h2$/), "font-size")[0]).toMatch(/^min\(clamp\(.*\), 9vw\)$/);
+      expect(declaration(rulesFor(/^legend$/), "font-size")[0]).toBe("min(0.8rem, 5.5vw)");
+    });
+
+    it("caps the drawn check/radio box in px, so it stays a box and not a slab at 200% text", () => {
+      const box = rulesFor(/^input\[type="checkbox"\],\s*input\[type="radio"\]$/s);
+      expect(declaration(box, "width")).toContain("min(1.65rem, 34px)");
+      expect(declaration(box, "height")).toContain("min(1.65rem, 34px)");
+    });
+
+    it("lets a label-plus-button row wrap the button under the text instead of squeezing the text", () => {
+      expect(declaration(rulesFor(/^\.gear-option--action$/), "flex-wrap")).toEqual(["wrap"]);
+    });
+  });
+
   describe("pop-out sheet", () => {
     it("sizes the backdrop from the visual viewport, with a vh base and dvh only behind @supports", () => {
       const backdrop = rulesFor(/^\.sheet-backdrop$/);

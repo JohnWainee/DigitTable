@@ -54,6 +54,25 @@ const SHOTS = !args.includes("--no-shots");
 const TOLERATE = args.includes("--tolerate-baseline");
 const DUMP_HTML = args.includes("--dump-html"); // also write a scriptless HTML snapshot per state under <out>/dump
 const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (fast iteration on the pop-out)
+// Whole-page text scaling (what a browser "font size: large / very large" or iOS Dynamic Type does to
+// every rem), on by default. `--no-text-sweep` skips it; `--text-sweep-gating` makes its findings fail
+// the run instead of being recorded as `report.textScale` only.
+const TEXT_SWEEP = !args.includes("--no-text-sweep");
+const TEXT_SWEEP_GATING = args.includes("--text-sweep-gating");
+// A device without Impact/Arial Narrow (Android, most Linux) falls through to the plain system sans,
+// which is much wider than the display face; `--font-fallback sans` applies that stack for the whole run.
+const FONT_FALLBACK = arg("font-fallback", "");
+// Emulates Windows High Contrast / forced colours (`forced-colors: active`) on every device for the whole
+// run. This is an emulation in Chromium, not a Windows run: it proves the layout, controls and axe
+// checks still hold when the browser replaces the palette, not how Windows themes actually look.
+const FORCED_COLORS = args.includes("--forced-colors");
+const TEXT_SHOTS = args.includes("--text-shots"); // screenshot the 200% / 320px sweep frames (needs shots on)
+const TEXT_ONLY = args.includes("--text-only");
+// Writes every visible element's rounded box (default text size, every viewport) to this file, so two
+// builds can be diffed with scripts/playtest/layout-diff.mjs: the proof that a CSS change leaves the
+// default-size layout identical where it claims to.
+const LAYOUT_DUMP = arg("layout-dump", "");
+const layoutDump = {}; // only the text-scale sweep (no per-viewport captures, no pop-out scenarios)
 const CHROME =
   process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 mkdirSync(OUT, { recursive: true });
@@ -88,6 +107,7 @@ const report = {
   startedAt: new Date().toISOString(),
   states: [],
   modal: [],
+  textScale: [],
   reducedMotion: null,
   routes: [],
   failures: [],
@@ -171,6 +191,13 @@ async function openDevice(cdp, name, vp) {
   for (const domain of ["Page", "Runtime", "Network"])
     await cdp.send(`${domain}.enable`, {}, sessionId);
   await applyViewport(device, vp);
+  if (FORCED_COLORS) {
+    await cdp.send(
+      "Emulation.setEmulatedMedia",
+      { features: [{ name: "forced-colors", value: "active" }] },
+      sessionId,
+    );
+  }
   devices.push(device);
   return device;
 }
@@ -315,6 +342,60 @@ const CONTROL_AUDIT = `(() => {
   return { controls: count, overflowPx: de.scrollWidth - de.clientWidth, issues };
 })()`;
 
+/**
+ * Words that wrap mid-word (one word laid out on two or more lines): the signature of a column too
+ * narrow for its text at large type. Causes no horizontal overflow, so the geometry checks cannot
+ * see it. Words of 4+ letters only, so ordinary hyphenated compounds and short tokens are ignored.
+ */
+const BROKEN_WORDS = `(() => {
+  const out = [];
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  let node;
+  while ((node = walker.nextNode())) {
+    const el = node.parentElement;
+    // Room/table codes, passphrases and recovery codes are one unbreakable token by design (they
+    // wrap anywhere rather than overflow), so they are not "words".
+    if (!el || el.closest("[inert], script, style, svg, [hidden], dd, code, .reveal-code")) continue;
+    const cs = getComputedStyle(el);
+    if (cs.display === "none" || cs.visibility === "hidden") continue;
+    const re = /[A-Za-z]{4,}/g;
+    let m;
+    while ((m = re.exec(node.textContent))) {
+      if (/^[A-Z]{4,}$/.test(m[0]) && m[0].length > 7) continue; // code-like token
+      if (/[a-z][A-Z]/.test(m[0])) continue; // CamelCase identifier (a command name quoted in a hint)
+      const range = document.createRange();
+      range.setStart(node, m.index);
+      range.setEnd(node, m.index + m[0].length);
+      const rects = [...range.getClientRects()].filter((r) => r.width > 0 && r.height > 0);
+      if (new Set(rects.map((r) => Math.round(r.top / 4))).size > 1) {
+        const cls = typeof el.className === "string" && el.className ? "." + el.className.trim().split(/\\s+/)[0] : "";
+        out.push(m[0] + " in " + el.tagName.toLowerCase() + cls);
+      }
+    }
+  }
+  return out.slice(0, 20);
+})()`;
+
+/** Every visible element's box, in document order, keyed by tag + first class (positions only). */
+const LAYOUT_BOXES = `(() => {
+  const out = [];
+  for (const el of document.body.querySelectorAll("*")) {
+    if (el.closest("svg, script, style")) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 && r.height === 0) continue;
+    const cls = typeof el.className === "string" && el.className ? "." + el.className.trim().split(/\\s+/)[0] : "";
+    out.push([el.tagName.toLowerCase() + cls, Math.round(r.left * 2) / 2, Math.round((r.top + scrollY) * 2) / 2, Math.round(r.width * 2) / 2, Math.round(r.height * 2) / 2]);
+  }
+  return out;
+})()`;
+
+const TEXT_SCALES = [
+  { label: "100", px: 16 }, // default size on the small phone widths: catches mid-word wraps at 1x too
+  { label: "150", px: 24 },
+  { label: "200", px: 32 },
+];
+const TEXT_SWEEP_VIEWPORTS = ["phone-small", "phone"];
+
 async function runAxe(device) {
   if (!(await ev(device, `typeof axe !== "undefined"`))) {
     await ev(device, AXE_SOURCE.replace(/\n\/\/# sourceMappingURL=.*$/, ""));
@@ -344,6 +425,11 @@ function isHardAxe(violation) {
 async function captureState(device, state, { axeViewports = ["phone", "tablet", "desktop"] } = {}) {
   if (MODAL_ONLY) return;
   const original = device.vp;
+  if (TEXT_ONLY) {
+    if (TEXT_SWEEP) await textScaleSweep(device, state);
+    await applyViewport(device, original);
+    return;
+  }
   if (DUMP_HTML) {
     // Scriptless DOM snapshot of this state, so styling can be iterated on a static page (see
     // the `--dump-html` note in the header). Contains rendered room text only: no tokens or secrets
@@ -359,6 +445,9 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
     await applyViewport(device, vp);
     await sleep(250);
     const audit = await ev(device, CONTROL_AUDIT);
+    if (LAYOUT_DUMP) {
+      layoutDump[`${device.name}/${state}@${vp.name}`] = await ev(device, LAYOUT_BOXES);
+    }
     const file = await screenshot(device, `${device.name}-${state}-${vp.name}.jpg`);
     const entry = {
       surface: device.name,
@@ -387,7 +476,65 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
     }
     report.states.push(entry);
   }
+  if (TEXT_SWEEP) await textScaleSweep(device, state);
   await applyViewport(device, original);
+}
+
+/**
+ * The same state with the root font size scaled to 150% and 200% on the two phone widths, sheet
+ * closed: horizontal overflow, controls inside the viewport and at least 44px, and mid-word wraps.
+ * Every finding is recorded in `report.textScale`; with `--text-sweep-gating` it also fails the run.
+ */
+async function textScaleSweep(device, state) {
+  if (FONT_FALLBACK === "sans") {
+    await ev(
+      device,
+      `document.documentElement.style.setProperty("--font-display", "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif")`,
+    );
+  }
+  for (const vpName of TEXT_SWEEP_VIEWPORTS) {
+    await applyViewport(device, byName[vpName]);
+    for (const scale of TEXT_SCALES) {
+      await ev(device, `document.documentElement.style.fontSize = "${scale.px}px"`);
+      await sleep(200);
+      const audit = await ev(device, CONTROL_AUDIT);
+      const brokenWords = await ev(device, BROKEN_WORDS);
+      const entry = {
+        surface: device.name,
+        state,
+        viewport: vpName,
+        textScale: scale.label,
+        controls: audit.controls,
+        overflowPx: audit.overflowPx,
+        controlIssues: audit.issues,
+        brokenWords,
+      };
+      if (audit.overflowPx > 1) {
+        entry.offenders = await ev(
+          device,
+          `(() => { const w = document.documentElement.clientWidth; return [...document.querySelectorAll("body *")].filter(e => !e.closest("[inert]") && (e.getBoundingClientRect().right > w + 1) && getComputedStyle(e).display !== "none").slice(0, 8).map(e => e.tagName.toLowerCase() + (e.className && typeof e.className === "string" ? "." + e.className.trim().split(/\\s+/).join(".") : "") + " right=" + Math.round(e.getBoundingClientRect().right) + " :: " + (e.textContent || "").trim().slice(0, 28)); })()`,
+        );
+      }
+      if (TEXT_SHOTS && vpName === "phone-small" && scale.label === "200") {
+        entry.screenshot = await screenshot(
+          device,
+          `text200-${device.name}-${state}-${vpName}.jpg`,
+        );
+      }
+      report.textScale.push(entry);
+      const scope = `text${scale.label}/${device.name}/${state}@${vpName}`;
+      const problems = [];
+      if (audit.overflowPx > 1) problems.push(`horizontal overflow ${audit.overflowPx}px`);
+      for (const issue of audit.issues)
+        problems.push(`${issue.control}: ${issue.problems.join("; ")}`);
+      for (const word of brokenWords) problems.push(`word broken across lines: ${word}`);
+      for (const problem of problems) {
+        if (TEXT_SWEEP_GATING) fail(scope, problem);
+        else console.log(`TEXT ${scope}: ${problem}`);
+      }
+    }
+    await ev(device, `document.documentElement.style.fontSize = ""`);
+  }
 }
 
 // ---------- modal (correction sheet) audit ----------
@@ -733,17 +880,13 @@ async function auditModal(gm) {
     });
   }
 
-  // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150% and
-  // 375px at 200% are gating. 320px at 200% is recorded but NOT gating: at that size the (unchanged,
-  // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
-  // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
-  // the handoff.
+  // Text scaling: what a browser "font size: large / very large" does to every rem. 320px at 150% and
+  // 200% and 375px at 200% are all gating. (Until the horizontal gutters were capped by `--gx`, 320px
+  // at 200% overflowed the page behind the sheet by ~5px and was recorded as a non-gating limit.)
   for (const [vp, px, informationalChecks] of [
     [byName["phone-small"], 24, []],
     [byName["phone"], 32, []],
-    // Only the two geometry checks the console's overflow can break are non-gating here; the sheet's own
-    // bodyKeepsRoom / actionsReachable / reasonReachable still gate.
-    [byName["phone-small"], 32, ["dialogInsideViewport", "noPageOverflow"]],
+    [byName["phone-small"], 32, []],
   ]) {
     await scenario(
       `text-${px === 24 ? "150" : "200"}-${vp.name}`,
@@ -960,8 +1103,11 @@ async function main() {
     await waitFor(gm, `${textMatch("button", "/^Roll it$/")}`, 30000, "Roll it");
     await captureState(gm, "console-pending");
 
-    await auditModal(gm);
-    await auditReducedMotion(gm);
+    if (!TEXT_ONLY) {
+      await auditModal(gm);
+      // The reduced-motion probe resets emulated media, which would end a forced-colors run early.
+      if (!FORCED_COLORS) await auditReducedMotion(gm);
+    }
 
     // GM rolls; player allocates.
     await applyViewport(gm, byName["desktop"]);
@@ -1035,9 +1181,14 @@ async function main() {
           .filter((v) => !isHardAxe(v))
           .map((v) => `${s.surface}/${s.state}@${s.viewport}: ${v.id}`),
       ),
+      textScaleFindings: report.textScale.filter(
+        (e) => e.overflowPx > 1 || e.controlIssues.length > 0 || e.brokenWords.length > 0,
+      ).length,
+      textScaleStates: report.textScale.length,
       failures: report.failures.length,
     };
     writeFileSync(join(OUT, "report.json"), JSON.stringify(report, null, 2) + "\n");
+    if (LAYOUT_DUMP) writeFileSync(LAYOUT_DUMP, JSON.stringify(layoutDump) + "\n");
     try {
       cdp?.ws.close();
     } catch {

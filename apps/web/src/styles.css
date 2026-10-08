@@ -96,6 +96,13 @@
   --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffe600' d='M3 8h18l-9 10z'/%3E%3C/svg%3E");
 
   --tap: 3rem;
+
+  /* Horizontal gutter unit. Panels nest five deep (screen > panel > fieldset > option row > checkbox
+     + gap), so plain rem gutters compound under larger text: at 200% on a 320px phone they left a
+     ~35px text column and broke words mid-way. `min(1rem, 5vw)` is exactly 1rem at the default size
+     on any phone >= 320px (so the default layout is unchanged) and stops growing once rem outgrows
+     the screen. Vertical rhythm still scales with text; only these horizontal gutters are capped. */
+  --gx: min(1rem, 5vw);
 }
 
 * {
@@ -163,7 +170,9 @@ h3 {
    shadow down-right) and a slab underline in the surface colour. The ghost is a shadow, never text,
    so contrast is measured on the paper glyphs over ink. */
 h1 {
-  font-size: clamp(2.6rem, 13vw, 4.75rem);
+  /* The vw cap keeps a long title word on one line under larger text (the clamp's rem floor alone
+     grew with the text setting, to 83px at 200%, wider than a 320px phone's column). */
+  font-size: min(clamp(2.6rem, 13vw, 4.75rem), 14vw);
   color: var(--paper);
   text-shadow:
     4px 4px 0 var(--sb),
@@ -179,8 +188,8 @@ h1 {
 h2 {
   width: fit-content;
   max-width: 100%;
-  font-size: clamp(1.5rem, 6.5vw, 2.1rem);
-  padding: 0.3rem 0.8rem 0.2rem;
+  font-size: min(clamp(1.5rem, 6.5vw, 2.1rem), 9vw);
+  padding: 0.3rem calc(var(--gx) * 0.8) 0.2rem;
   color: var(--ink-0);
   background: var(--sa);
   box-shadow: 4px 4px 0 var(--ink-0);
@@ -254,8 +263,8 @@ li + li {
 .gm-screen,
 .table-screen {
   margin: 0 auto;
-  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
-    max(2.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  padding: max(1rem, env(safe-area-inset-top)) max(var(--gx), env(safe-area-inset-right))
+    max(2.5rem, env(safe-area-inset-bottom)) max(var(--gx), env(safe-area-inset-left));
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -309,7 +318,7 @@ li + li {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1.25rem 1rem 1.25rem;
+  padding: 1.25rem var(--gx) 1.25rem;
   background:
     var(--dust),
     var(--grain),
@@ -382,7 +391,7 @@ li + li {
 fieldset {
   min-width: 0;
   margin: 0;
-  padding: 1.1rem 0.85rem 0.85rem;
+  padding: 1.1rem calc(var(--gx) * 0.85) 0.85rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -395,9 +404,9 @@ legend {
   /* At large text sizes a long legend must wrap inside its fieldset, not push the page wider. */
   max-width: 100%;
   overflow-wrap: anywhere;
-  padding: 0.2rem 0.7rem;
+  padding: 0.2rem calc(var(--gx) * 0.7);
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: min(0.8rem, 5.5vw);
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -413,7 +422,7 @@ legend {
 .roster-card {
   border: 2px solid var(--rule);
   background: rgba(5, 5, 6, 0.55);
-  padding: 0.85rem;
+  padding: 0.85rem calc(var(--gx) * 0.85);
 }
 
 .pending-actions-list,
@@ -465,11 +474,12 @@ button {
 
 .primary-action,
 .secondary-action {
-  padding: 0.7rem 1.25rem;
+  padding: 0.7rem calc(var(--gx) * 1.25);
   font-family: var(--font-display);
   font-weight: 700;
   font-synthesis-weight: none;
-  font-size: 1.25rem;
+  /* vw cap: under larger text a single long label word ("ALLOCATION") must still fit a phone column. */
+  font-size: min(1.25rem, 9vw);
   line-height: 1.1;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -477,6 +487,15 @@ button {
   border: 3px solid var(--ink-0);
   border-radius: 0;
   transition: none;
+}
+
+/* A label is never broken mid-word. The shared 3rem floor above is a tap-target size, not a width the
+   label may be squeezed to: in a row with a long neighbour the flex algorithm shrank "Reveal" to that
+   floor and the inherited `overflow-wrap: break-word` split it (REV/EAL). A longer label still wraps
+   between words, down to its longest word. */
+.primary-action,
+.secondary-action {
+  min-width: min-content;
 }
 
 /* Primary: a solid slab in the surface colour with a hard riot print shadow. */
@@ -657,8 +676,8 @@ input[type="radio"] {
   flex: none;
   display: inline-grid;
   place-content: center;
-  width: 1.65rem;
-  height: 1.65rem;
+  width: min(1.65rem, 34px);
+  height: min(1.65rem, 34px);
   margin: 0;
   background: var(--ink-0);
   border: 2px solid var(--paper);
@@ -672,8 +691,8 @@ input[type="radio"] {
 
 input[type="checkbox"]::after {
   content: "";
-  width: 0.95rem;
-  height: 0.95rem;
+  width: min(0.95rem, 20px);
+  height: min(0.95rem, 20px);
   background: var(--ink-0);
   clip-path: polygon(12% 48%, 0 66%, 42% 100%, 100% 14%, 84% 0, 40% 62%);
   transform: scale(0);
@@ -681,8 +700,8 @@ input[type="checkbox"]::after {
 
 input[type="radio"]::after {
   content: "";
-  width: 0.75rem;
-  height: 0.75rem;
+  width: min(0.75rem, 16px);
+  height: min(0.75rem, 16px);
   border-radius: 50%;
   background: var(--ink-0);
   transform: scale(0);
@@ -753,9 +772,9 @@ input[type="radio"]:disabled {
 .form-field--checkbox {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: calc(var(--gx) * 0.85);
   min-height: var(--tap);
-  padding: 0.4rem 0.65rem;
+  padding: 0.4rem calc(var(--gx) * 0.65);
   border: 2px solid transparent;
   font-family: var(--font-body);
   font-size: 1rem;
@@ -771,6 +790,18 @@ input[type="radio"]:disabled {
 
 /* Chosen row: stamped acid frame, a tinted fill and a hard print shadow; the filled check/radio box
    inside also changes, so selection is carried by shape and weight, not hue alone. */
+/* A row that is a label plus its own button (not a checkbox row): the button drops under the text
+   when the two do not fit side by side, instead of squeezing the text into a few-character column. */
+.gear-option--action {
+  flex-wrap: wrap;
+  cursor: default;
+}
+
+.gear-option--action > span {
+  flex: 0 1 auto;
+  min-width: min(100%, 8rem);
+}
+
 .gear-option:has(:checked) {
   border-color: var(--acid);
   background: rgba(255, 238, 0, 0.14);
@@ -793,7 +824,7 @@ summary {
   align-items: center;
   gap: 0.6rem;
   min-height: var(--tap);
-  padding: 0.5rem 0.85rem;
+  padding: 0.5rem calc(var(--gx) * 0.85);
   font-family: var(--font-mono);
   font-size: 0.9rem;
   font-weight: 700;
@@ -827,7 +858,7 @@ details[open] > summary {
 
 details > :not(summary) {
   margin: 0;
-  padding: 0.75rem 0.85rem;
+  padding: 0.75rem calc(var(--gx) * 0.85);
 }
 
 details ul {
@@ -908,7 +939,7 @@ details ul {
 
 [role="alert"],
 .error-message {
-  padding: 0.65rem 0.85rem;
+  padding: 0.65rem calc(var(--gx) * 0.85);
   color: var(--paper);
   font-weight: 600;
   background: rgba(255, 51, 72, 0.16);
@@ -1562,12 +1593,12 @@ details ul {
 
 .sheet-header {
   flex: none;
-  padding: 0.6rem 1rem 0.75rem;
+  padding: 0.6rem var(--gx) 0.75rem;
   border-bottom: 3px solid var(--acid);
 }
 
 .sheet-header h2 {
-  font-size: clamp(1.4rem, 5.5vw, 1.9rem);
+  font-size: min(clamp(1.4rem, 5.5vw, 1.9rem), 9vw);
 }
 
 /* The grip is a strip of hazard tape: the affordance "this is a sheet" without text. */
@@ -1584,7 +1615,7 @@ details ul {
 .sheet-body {
   flex: 1 1 auto;
   min-height: 0;
-  padding: 1rem;
+  padding: 1rem var(--gx);
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
@@ -1596,7 +1627,7 @@ details ul {
 
 .sheet-footer {
   flex: none;
-  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  padding: 0.75rem var(--gx) calc(0.75rem + env(safe-area-inset-bottom));
   background: var(--ink-2);
   border-top: 3px solid var(--rule);
   /* Backstop for large text on a small screen: the action row may scroll, but can never take the

@@ -1,0 +1,3 @@
+MOVED gm/console-next-scene@phone-small #0 div 0,0,320,5698 -> div 0,0,320,5709
+MOVED gm/console-next-scene@phone #0 div 0,0,375,5493.5 -> div 0,0,375,5506
+{"statesCompared":150,"perViewportFirstDivergence":{"phone-small":1,"phone":1},"unexpectedDivergent":2,"structure":0}

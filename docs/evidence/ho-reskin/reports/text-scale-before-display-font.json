@@ -1,0 +1,1004 @@
+{
+ "label": "before-text",
+ "base": "http://127.0.0.1:62174",
+ "checked": 150,
+ "findings": 56,
+ "rows": [
+  {
+   "surface": "anon",
+   "state": "create-form",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "session in h1"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "anon",
+   "state": "join-form",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "session in h1",
+    "browser in button.secondary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "anon",
+   "state": "table-join-form",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "display in h1",
+    "Connect in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-room-no-such-room-gm",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Director in h1",
+    "console in h1"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "anon",
+   "state": "route-room-no-such-room-gm",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Director in h1"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "secrets-reveal",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "session in h1",
+    "shown in h2",
+    "ready in button.primary-action",
+    "continue in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "secrets-reveal",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "continue in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-empty",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Unlock in button.secondary-action",
+    "advance in button.secondary-action",
+    "Reassign in button.secondary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-empty",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Director in h1",
+    "console in h1",
+    "director in h2",
+    "opening in legend",
+    "scene in legend",
+    "introduces in p.form-hint",
+    "themselves in p.form-hint",
+    "Load in button.primary-action",
+    "scene in button.primary-action",
+    "Pending in h2",
+    "actions in h2",
+    "Roster in h2",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Grant in legend",
+    "Character in label"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-empty",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Director in h1",
+    "director in h2",
+    "scene in button.primary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "requirement in label",
+    "Grant in button.secondary-action",
+    "Ravenous in p.select-echo",
+    "Unlock in button.secondary-action",
+    "advance in button.secondary-action",
+    "Reassign in legend",
+    "character in legend",
+    "Reassign in button.secondary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "join-filled",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "session in h1",
+    "browser in button.secondary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "join-reveal",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "overflowPx": 0,
+   "brokenWords": [
+    "character in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "join-reveal",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "session in h1",
+    "recovery in h2",
+    "shown in h2",
+    "wrote in button.primary-action",
+    "down in button.primary-action",
+    "character in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "join-reveal",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "recovery in h2",
+    "character in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "claim-roster",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "overflowPx": 0,
+   "brokenWords": [
+    "character in h1"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "claim-roster",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "character in h1",
+    "Claim in button.primary-action",
+    "Claim in button.primary-action",
+    "Cosgrave in h2",
+    "Claim in button.primary-action",
+    "Claim in button.primary-action",
+    "Claim in button.primary-action",
+    "Claim in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "claim-roster",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "character in h1",
+    "Cosgrave in h2"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "compose",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Exquisite in span",
+    "hunting in span",
+    "Explosive in span",
+    "Cigarettes in span",
+    "pockets in span",
+    "hanged in span"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "compose",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 47,
+   "brokenWords": [
+    "Forecourt in h2",
+    "Ombres in h2",
+    "Choose in h2",
+    "action in h2",
+    "Items in legend",
+    "Exquisite in span",
+    "hunting in span",
+    "rifle in span",
+    "uses in span",
+    "Magic in span",
+    "cavalry in span",
+    "sabre in span",
+    "uses in span",
+    "Explosive in span",
+    "runes in span",
+    "uses in span",
+    "Cigarettes in span",
+    "taken in span",
+    "from in span",
+    "pockets in span"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "compose",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Forecourt in h2",
+    "Exquisite in span",
+    "hunting in span",
+    "uses in span",
+    "Magic in span",
+    "cavalry in span",
+    "sabre in span",
+    "uses in span",
+    "Explosive in span",
+    "runes in span",
+    "uses in span",
+    "Cigarettes in span",
+    "taken in span",
+    "from in span",
+    "pockets in span",
+    "hanged in span",
+    "uses in span",
+    "mark in span",
+    "regain in span",
+    "Blood in span"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "compose-why-open",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Exquisite in span",
+    "hunting in span",
+    "Explosive in span",
+    "Cigarettes in span",
+    "pockets in span",
+    "hanged in span"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "compose-why-open",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 47,
+   "brokenWords": [
+    "Forecourt in h2",
+    "Ombres in h2",
+    "Choose in h2",
+    "action in h2",
+    "Items in legend",
+    "Exquisite in span",
+    "hunting in span",
+    "rifle in span",
+    "uses in span",
+    "Magic in span",
+    "cavalry in span",
+    "sabre in span",
+    "uses in span",
+    "Explosive in span",
+    "runes in span",
+    "uses in span",
+    "Cigarettes in span",
+    "taken in span",
+    "from in span",
+    "pockets in span"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "compose-why-open",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Forecourt in h2",
+    "Exquisite in span",
+    "hunting in span",
+    "uses in span",
+    "Magic in span",
+    "cavalry in span",
+    "sabre in span",
+    "uses in span",
+    "Explosive in span",
+    "runes in span",
+    "uses in span",
+    "Cigarettes in span",
+    "taken in span",
+    "from in span",
+    "pockets in span",
+    "hanged in span",
+    "uses in span",
+    "mark in span",
+    "regain in span",
+    "Blood in span"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "table",
+   "state": "idle",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Forecourt in h2",
+    "Ombres in h2"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "table",
+   "state": "idle",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Forecourt in h2"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-scene-loaded",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Advance in button.primary-action",
+    "Reinforcements in legend",
+    "Switch in button.secondary-action",
+    "simplified in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Unlock in button.secondary-action",
+    "advance in button.secondary-action",
+    "Reassign in button.secondary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-scene-loaded",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Director in h1",
+    "console in h1",
+    "director in h2",
+    "Objectives in h3",
+    "round in button.secondary-action",
+    "Advance in legend",
+    "scene in legend",
+    "unrevealed in p.form-hint",
+    "required in label",
+    "Objective in label",
+    "complete in label",
+    "Advance in button.primary-action",
+    "scene in button.primary-action",
+    "Reinforcements in legend",
+    "required in label",
+    "Switch in button.secondary-action",
+    "simplified in button.secondary-action",
+    "Objective in legend",
+    "Threat in legend",
+    "Pending in h2"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-scene-loaded",
+   "viewport": "phone",
+   "textScale": "150",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Reinforcements in legend"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-scene-loaded",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Director in h1",
+    "director in h2",
+    "Advance in button.primary-action",
+    "scene in button.primary-action",
+    "Reinforcements in legend",
+    "Switch in button.secondary-action",
+    "simplified in button.secondary-action",
+    "Objective in legend",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "requirement in label",
+    "Grant in button.secondary-action",
+    "Ravenous in p.select-echo",
+    "Unlock in button.secondary-action",
+    "advance in button.secondary-action",
+    "Reassign in legend"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "declared",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Forecourt in h2",
+    "Ombres in h2",
+    "Declared in h2"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "declared",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Forecourt in h2",
+    "Declared in h2"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-pending",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Advance in button.primary-action",
+    "Reinforcements in legend",
+    "Switch in button.secondary-action",
+    "simplified in button.secondary-action",
+    "Engaged in legend",
+    "threats in legend",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Unlock in button.secondary-action",
+    "advance in button.secondary-action",
+    "Reassign in button.secondary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-pending",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 5,
+   "brokenWords": [
+    "Director in h1",
+    "console in h1",
+    "director in h2",
+    "Objectives in h3",
+    "round in button.secondary-action",
+    "Advance in legend",
+    "scene in legend",
+    "unrevealed in p.form-hint",
+    "required in label",
+    "Objective in label",
+    "complete in label",
+    "Advance in button.primary-action",
+    "scene in button.primary-action",
+    "Reinforcements in legend",
+    "required in label",
+    "Switch in button.secondary-action",
+    "simplified in button.secondary-action",
+    "Objective in legend",
+    "Threat in legend",
+    "Pending in h2"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-pending",
+   "viewport": "phone",
+   "textScale": "150",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Reinforcements in legend"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-pending",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Director in h1",
+    "director in h2",
+    "Advance in button.primary-action",
+    "scene in button.primary-action",
+    "Reinforcements in legend",
+    "Switch in button.secondary-action",
+    "simplified in button.secondary-action",
+    "Objective in legend",
+    "Engaged in legend",
+    "threats in legend",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "requirement in label",
+    "Grant in button.secondary-action",
+    "Ravenous in p.select-echo",
+    "Unlock in button.secondary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "overflowPx": 0,
+   "brokenWords": [
+    "allocation in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 12,
+   "brokenWords": [
+    "Forecourt in h2",
+    "Ombres in h2",
+    "success in legend",
+    "success in legend",
+    "Confirm in button.primary-action",
+    "allocation in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Forecourt in h2",
+    "success in legend",
+    "success in legend",
+    "Confirm in button.primary-action",
+    "allocation in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation-assigned",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "overflowPx": 0,
+   "brokenWords": [
+    "allocation in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation-assigned",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 12,
+   "brokenWords": [
+    "Forecourt in h2",
+    "Ombres in h2",
+    "success in legend",
+    "success in legend",
+    "Confirm in button.primary-action",
+    "allocation in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "allocation-assigned",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Forecourt in h2",
+    "success in legend",
+    "success in legend",
+    "Confirm in button.primary-action",
+    "allocation in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "resolved",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Forecourt in h2",
+    "Ombres in h2",
+    "Resolved in h2",
+    "wreckage in strong",
+    "Back in button.primary-action",
+    "scene in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "resolved",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Forecourt in h2",
+    "Resolved in h2"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "table",
+   "state": "after-roll",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Forecourt in h2",
+    "Ombres in h2"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "table",
+   "state": "after-roll",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Forecourt in h2"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "paused",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Exquisite in span",
+    "hunting in span",
+    "Explosive in span",
+    "Cigarettes in span",
+    "pockets in span",
+    "hanged in span"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "paused",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 47,
+   "brokenWords": [
+    "Forecourt in h2",
+    "Ombres in h2",
+    "Choose in h2",
+    "action in h2",
+    "Items in legend",
+    "Exquisite in span",
+    "hunting in span",
+    "rifle in span",
+    "uses in span",
+    "Magic in span",
+    "cavalry in span",
+    "sabre in span",
+    "uses in span",
+    "Explosive in span",
+    "runes in span",
+    "uses in span",
+    "Cigarettes in span",
+    "taken in span",
+    "from in span",
+    "pockets in span"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "player",
+   "state": "paused",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Forecourt in h2",
+    "Exquisite in span",
+    "hunting in span",
+    "uses in span",
+    "Magic in span",
+    "cavalry in span",
+    "sabre in span",
+    "uses in span",
+    "Explosive in span",
+    "runes in span",
+    "uses in span",
+    "Cigarettes in span",
+    "taken in span",
+    "from in span",
+    "pockets in span",
+    "hanged in span",
+    "uses in span",
+    "mark in span",
+    "regain in span",
+    "Blood in span"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "table",
+   "state": "next-scene",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Abandoned in h2",
+    "Platform in h2"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "table",
+   "state": "next-scene",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Abandoned in h2",
+    "Platform in h2"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-next-scene",
+   "viewport": "phone-small",
+   "textScale": "100",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Reveal in button.secondary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-next-scene",
+   "viewport": "phone-small",
+   "textScale": "150",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Enforcer in span",
+    "hidden in span",
+    "Reveal in button.secondary-action",
+    "Advance in button.primary-action",
+    "Reinforcements in legend",
+    "Switch in button.secondary-action",
+    "simplified in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Unlock in button.secondary-action",
+    "advance in button.secondary-action",
+    "Reassign in button.secondary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-next-scene",
+   "viewport": "phone-small",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Director in h1",
+    "console in h1",
+    "director in h2",
+    "Objectives in h3",
+    "Foreshadow in span.form-hint",
+    "Enforcer in span",
+    "hidden in span",
+    "from in span",
+    "players in span",
+    "Reveal in button.secondary-action",
+    "round in button.secondary-action",
+    "Advance in legend",
+    "scene in legend",
+    "Completing in p.form-hint",
+    "secondary in p.form-hint",
+    "automated in p.form-hint",
+    "required in label",
+    "Objective in label",
+    "complete in label",
+    "Advance in button.primary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-next-scene",
+   "viewport": "phone",
+   "textScale": "100",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Reveal in button.secondary-action"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-next-scene",
+   "viewport": "phone",
+   "textScale": "150",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Reveal in button.secondary-action",
+    "Reinforcements in legend"
+   ],
+   "controlIssues": []
+  },
+  {
+   "surface": "gm",
+   "state": "console-next-scene",
+   "viewport": "phone",
+   "textScale": "200",
+   "overflowPx": 0,
+   "brokenWords": [
+    "Director in h1",
+    "director in h2",
+    "Enforcer in span",
+    "hidden in span",
+    "players in span",
+    "Reveal in button.secondary-action",
+    "Advance in button.primary-action",
+    "scene in button.primary-action",
+    "Reinforcements in legend",
+    "Switch in button.secondary-action",
+    "simplified in button.secondary-action",
+    "Objective in legend",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "Correct in button.secondary-action",
+    "requirement in label",
+    "Grant in button.secondary-action"
+   ],
+   "controlIssues": []
+  }
+ ]
+}

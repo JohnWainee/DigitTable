@@ -1,0 +1,641 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild build-for-testing -project IosPlaytest.xcodeproj -scheme IosPlaytest -destination "platform=iOS Simulator,id=56AC26AB-01B7-45B2-AD5A-09F2E64B74B0" -derivedDataPath /private/tmp/ho-scratch/tmp/digitable-ios-playtest-dd CODE_SIGNING_ALLOWED=NO
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (2 targets)
+    Target 'IosPlaytestUITests' in project 'IosPlaytest'
+        ➜ Explicit dependency on target 'IosPlaytest' in project 'IosPlaytest'
+    Target 'IosPlaytest' in project 'IosPlaytest' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk /tmp/ho-scratch/tmp/digitable-ios-playtest-dd/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache
+    cd /tmp/digitable-sonnet-ho-reskin-orchestrated-20261008/scripts/playtest/ios-simulator/IosPlaytest.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -o /tmp/ho-scratch/tmp/digitable-ios-playtest-dd/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache
+
+PruneExplicitPrecompiledModules /tmp/ho-scratch/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/ho-scratch/tmp/digitable-ios-playtest-dd/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/ho-scratch/tmp/digitable-ios-playtest-dd/SDKExplicitPrecompiledModules
+
+** TEST BUILD SUCCEEDED **
+
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test-without-building -project IosPlaytest.xcodeproj -scheme IosPlaytest -destination "platform=iOS Simulator,id=56AC26AB-01B7-45B2-AD5A-09F2E64B74B0" -derivedDataPath /private/tmp/ho-scratch/tmp/digitable-ios-playtest-dd "-only-testing:IosPlaytestUITests/SafariFlowUITests/testJoinFormValidationWithKeyboard" "-only-testing:IosPlaytestUITests/SafariFlowUITests/testCorrectionSheetWithKeyboardAndPicker" "-only-testing:IosPlaytestUITests/SafariFlowUITests/testBackClosesOnlyTheSheet" CODE_SIGNING_ALLOWED=NO
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+2026-10-08 12:12:07.581996-1000 IosPlaytestUITests-Runner[32016:27469093] [Default] Running tests...
+objc[32016]: Class UIAccessibilityLoaderWebShared is implemented in both /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x109bf4310) and /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x10888c398). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-10-08 12:12:10.776.
+Test Suite 'IosPlaytestUITests.xctest' started at 2026-10-08 12:12:10.777.
+Test Suite 'SafariFlowUITests' started at 2026-10-08 12:12:10.777.
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testBackClosesOnlyTheSheet]' started.
+    t =     0.00s Start Test at 2026-10-08 12:12:10.778
+    t =     0.34s Set Up
+    t =     0.34s     Open com.apple.mobilesafari
+    t =     0.34s         Launch com.apple.mobilesafari
+    t =     0.69s             Setting up automation session
+    t =     1.18s             Wait for com.apple.mobilesafari to idle
+    t =     3.72s     Wait for com.apple.mobilesafari to become Running Foreground
+    t =     3.72s Opening default application for URL http://127.0.0.1:62175/?t=1791497534493#/create
+    t =     3.76s     Wait for com.apple.mobilesafari to idle
+    t =     6.83s Waiting 10.0s for "Session name" TextField to exist
+    t =     7.89s     Checking `Expect predicate `existsNoRetry == 1` for object "Session name" TextField`
+    t =     7.89s         Checking existence of `"Session name" TextField`
+    t =     7.96s Tap "Session name" TextField
+    t =     7.96s     Wait for com.apple.mobilesafari to idle
+    t =     7.96s     Find the "Session name" TextField
+    t =     7.98s     Check for interrupting elements affecting "Session name" TextField
+    t =     8.02s     Synthesize event
+    t =     8.42s     Wait for com.apple.mobilesafari to idle
+    t =     9.54s Type 'iOS Audit' into "Session name" TextField
+    t =     9.54s     Wait for com.apple.mobilesafari to idle
+    t =     9.54s     Find the "Session name" TextField
+    t =     9.59s     Check for interrupting elements affecting "Session name" TextField
+    t =     9.63s     Synthesize event
+    t =     9.98s     Wait for com.apple.mobilesafari to idle
+    t =     9.99s Waiting 10.0s for "Passphrase" TextField to exist
+    t =    11.04s     Checking `Expect predicate `existsNoRetry == 1` for object "Passphrase" TextField`
+    t =    11.04s         Checking existence of `"Passphrase" TextField`
+    t =    11.09s Tap "Passphrase" TextField
+    t =    11.09s     Wait for com.apple.mobilesafari to idle
+    t =    11.09s     Find the "Passphrase" TextField
+    t =    11.13s     Check for interrupting elements affecting "Passphrase" TextField
+    t =    11.16s     Synthesize event
+    t =    11.44s     Wait for com.apple.mobilesafari to idle
+    t =    12.49s Type 'audit-pass-1' into "Passphrase" TextField
+    t =    12.49s     Wait for com.apple.mobilesafari to idle
+    t =    12.50s     Find the "Passphrase" TextField
+    t =    12.54s     Check for interrupting elements affecting "Passphrase" TextField
+    t =    12.58s     Synthesize event
+    t =    12.98s     Wait for com.apple.mobilesafari to idle
+    t =    12.99s Waiting 10.0s for "Your display name" TextField to exist
+    t =    14.04s     Checking `Expect predicate `existsNoRetry == 1` for object "Your display name" TextField`
+    t =    14.04s         Checking existence of `"Your display name" TextField`
+    t =    14.08s Tap "Your display name" TextField
+    t =    14.08s     Wait for com.apple.mobilesafari to idle
+    t =    14.08s     Find the "Your display name" TextField
+    t =    14.11s     Check for interrupting elements affecting "Your display name" TextField
+    t =    14.14s     Synthesize event
+    t =    14.43s     Wait for com.apple.mobilesafari to idle
+    t =    15.43s Type 'Gamemaster' into "Your display name" TextField
+    t =    15.43s     Wait for com.apple.mobilesafari to idle
+    t =    15.44s     Find the "Your display name" TextField
+    t =    15.48s     Check for interrupting elements affecting "Your display name" TextField
+    t =    15.52s     Synthesize event
+    t =    15.88s     Wait for com.apple.mobilesafari to idle
+    t =    16.02s Find the Button (First Match)
+    t =    16.06s Tap "CREATE SESSION" Button
+    t =    16.06s     Wait for com.apple.mobilesafari to idle
+    t =    16.06s     Find the "CREATE SESSION" Button
+    t =    16.09s     Check for interrupting elements affecting "CREATE SESSION" Button
+    t =    16.12s     Synthesize event
+    t =    16.41s     Wait for com.apple.mobilesafari to idle
+    t =    17.58s Waiting 30.0s for Any (First Match) to exist
+    t =    18.64s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    18.64s         Checking existence of `Any (First Match)`
+    t =    18.80s Waiting 5.0s for Any (First Match) to exist
+    t =    19.86s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    19.87s         Checking existence of `Any (First Match)`
+    t =    19.91s Find the Any (First Match)
+[ios] room code captured: yes
+    t =    19.93s Find the Any (First Match)
+    t =    19.97s Tap "I have written these down" Switch
+    t =    19.97s     Wait for com.apple.mobilesafari to idle
+    t =    19.97s     Find the "I have written these down" Switch
+    t =    19.99s     Check for interrupting elements affecting "I have written these down" Switch
+    t =    20.02s     Synthesize event
+    t =    20.30s     Wait for com.apple.mobilesafari to idle
+    t =    20.30s Find the Button (First Match)
+    t =    20.34s Tap "I'M READY — CONTINUE" Button
+    t =    20.34s     Wait for com.apple.mobilesafari to idle
+    t =    20.34s     Find the "I'M READY — CONTINUE" Button
+    t =    20.36s     Check for interrupting elements affecting "I'M READY — CONTINUE" Button
+    t =    20.38s     Synthesize event
+    t =    20.68s     Wait for com.apple.mobilesafari to idle
+    t =    20.68s Waiting 20.0s for Button (First Match) to exist
+    t =    21.73s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    21.73s         Checking existence of `Button (First Match)`
+    t =    21.75s Find the Button (First Match)
+    t =    21.78s Tap "OPEN THE DIRECTOR CONSOLE" Button
+    t =    21.78s     Wait for com.apple.mobilesafari to idle
+    t =    21.79s     Find the "OPEN THE DIRECTOR CONSOLE" Button
+    t =    21.81s     Check for interrupting elements affecting "OPEN THE DIRECTOR CONSOLE" Button
+    t =    21.83s     Synthesize event
+    t =    22.12s     Wait for com.apple.mobilesafari to idle
+    t =    22.99s Waiting 30.0s for Any (First Match) to exist
+    t =    24.03s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    24.03s         Checking existence of `Any (First Match)`
+    t =    24.10s Find the Button (First Match)
+    t =    24.16s Swipe up WebView (First Match)
+    t =    24.16s     Wait for com.apple.mobilesafari to idle
+    t =    24.16s     Find the WebView (First Match)
+    t =    24.17s     Check for interrupting elements affecting "WebView" WebView
+    t =    24.20s     Synthesize event
+    t =    24.71s     Wait for com.apple.mobilesafari to idle
+    t =    27.22s Find the "LOAD SCENE" Button
+    t =    27.28s Tap "LOAD SCENE" Button
+    t =    27.28s     Wait for com.apple.mobilesafari to idle
+    t =    27.29s     Find the "LOAD SCENE" Button
+    t =    27.33s     Check for interrupting elements affecting "LOAD SCENE" Button
+    t =    27.37s     Synthesize event
+    t =    27.65s     Wait for com.apple.mobilesafari to idle
+    t =    28.19s Waiting 30.0s for Button (First Match) to exist
+    t =    29.25s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    29.25s         Checking existence of `Button (First Match)`
+    t =    29.45s Waiting 10.0s for Button (First Match) to exist
+    t =    30.50s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    30.50s         Checking existence of `Button (First Match)`
+    t =    30.58s Find the Button (First Match)
+    t =    30.65s Swipe up WebView (First Match)
+    t =    30.65s     Wait for com.apple.mobilesafari to idle
+    t =    30.65s     Find the WebView (First Match)
+    t =    30.66s     Check for interrupting elements affecting "WebView" WebView
+    t =    30.70s     Synthesize event
+    t =    31.21s     Wait for com.apple.mobilesafari to idle
+    t =    33.89s Find the "CORRECT" Button
+    t =    33.98s Swipe up WebView (First Match)
+    t =    33.98s     Wait for com.apple.mobilesafari to idle
+    t =    33.99s     Find the WebView (First Match)
+    t =    34.00s     Check for interrupting elements affecting "WebView" WebView
+    t =    34.04s     Synthesize event
+    t =    34.56s     Wait for com.apple.mobilesafari to idle
+    t =    36.49s Find the "CORRECT" Button
+    t =    36.57s Tap "CORRECT" Button
+    t =    36.57s     Wait for com.apple.mobilesafari to idle
+    t =    36.58s     Find the "CORRECT" Button
+    t =    36.63s     Check for interrupting elements affecting "CORRECT" Button
+    t =    36.68s     Synthesize event
+    t =    36.98s     Wait for com.apple.mobilesafari to idle
+    t =    38.08s Waiting 10.0s for StaticText (First Match) to exist
+    t =    39.12s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    39.12s         Checking existence of `StaticText (First Match)`
+    t =    40.33s Checking existence of `Any (First Match)`
+    t =    40.37s Tap Window (First Match)[0.50, 0.93]
+    t =    40.37s     Wait for com.apple.mobilesafari to idle
+    t =    40.37s     Find the Window (First Match)
+    t =    40.37s     Check for interrupting elements affecting Window
+    t =    40.40s     Synthesize event
+    t =    40.40s         Find the Window at {{0.0, 0.0}, {402.0, 874.0}}
+    t =    40.41s         Find the Window at {{0.0, 0.0}, {402.0, 874.0}}
+    t =    40.41s         Find the Window at {{0.0, 0.0}, {402.0, 874.0}}
+    t =    40.70s     Wait for com.apple.mobilesafari to idle
+    t =    42.30s Waiting 5.0s for Any (First Match) to exist
+    t =    43.34s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    43.34s         Checking existence of `Any (First Match)`
+    t =    43.37s Tap Any (First Match)
+    t =    43.37s     Wait for com.apple.mobilesafari to idle
+    t =    43.37s     Find the Any (First Match)
+    t =    43.39s     Check for interrupting elements affecting "BackButton" Button
+    t =    43.43s     Synthesize event
+    t =    43.72s     Wait for com.apple.mobilesafari to idle
+    t =    44.87s Find the "BackButton" Button
+    t =    44.89s Find the "BackButton" Button
+[ios] back: tapped Safari's Back control (type 9, id 'BackButton')
+    t =    47.09s Checking existence of `StaticText (First Match)`
+    t =    47.17s Waiting 10.0s for Button (First Match) to exist
+    t =    48.21s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    48.21s         Checking existence of `Button (First Match)`
+    t =    48.28s Checking existence of `StaticText (First Match)`
+[ios] back: sheet closed=true, console mounted=true
+    t =    48.36s Tear Down
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testBackClosesOnlyTheSheet]' passed (48.964 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' started.
+    t =     0.00s Start Test at 2026-10-08 12:12:59.743
+    t =     0.04s Set Up
+    t =     0.04s     Open com.apple.mobilesafari
+    t =     0.04s         Launch com.apple.mobilesafari
+    t =     0.04s             Terminate com.apple.mobilesafari:32350
+    t =     1.20s             Wait for accessibility to load
+    t =     1.20s             Setting up automation session
+    t =     1.72s             Wait for com.apple.mobilesafari to idle
+    t =     4.25s     Wait for com.apple.mobilesafari to become Running Foreground
+    t =     4.25s Opening default application for URL http://127.0.0.1:62175/?t=1791497583992#/create
+    t =     4.27s     Wait for com.apple.mobilesafari to idle
+    t =     9.10s Waiting 10.0s for "Session name" TextField to exist
+    t =    10.16s     Checking `Expect predicate `existsNoRetry == 1` for object "Session name" TextField`
+    t =    10.16s         Checking existence of `"Session name" TextField`
+    t =    10.23s Tap "Session name" TextField
+    t =    10.23s     Wait for com.apple.mobilesafari to idle
+    t =    10.24s     Find the "Session name" TextField
+    t =    10.26s     Check for interrupting elements affecting "Session name" TextField
+    t =    10.30s     Synthesize event
+    t =    10.60s     Wait for com.apple.mobilesafari to idle
+    t =    10.67s Type 'iOS Audit' into "Session name" TextField
+    t =    10.67s     Wait for com.apple.mobilesafari to idle
+    t =    11.95s     Find the "Session name" TextField
+    t =    12.01s     Check for interrupting elements affecting "Session name" TextField
+    t =    12.05s     Synthesize event
+    t =    12.40s     Wait for com.apple.mobilesafari to idle
+    t =    12.40s Waiting 10.0s for "Passphrase" TextField to exist
+    t =    13.46s     Checking `Expect predicate `existsNoRetry == 1` for object "Passphrase" TextField`
+    t =    13.46s         Checking existence of `"Passphrase" TextField`
+    t =    13.50s Tap "Passphrase" TextField
+    t =    13.50s     Wait for com.apple.mobilesafari to idle
+    t =    13.51s     Find the "Passphrase" TextField
+    t =    13.54s     Check for interrupting elements affecting "Passphrase" TextField
+    t =    13.57s     Synthesize event
+    t =    13.85s     Wait for com.apple.mobilesafari to idle
+    t =    14.97s Type 'audit-pass-1' into "Passphrase" TextField
+    t =    14.97s     Wait for com.apple.mobilesafari to idle
+    t =    14.97s     Find the "Passphrase" TextField
+    t =    15.01s     Check for interrupting elements affecting "Passphrase" TextField
+    t =    15.04s     Synthesize event
+    t =    15.44s     Wait for com.apple.mobilesafari to idle
+    t =    15.44s Waiting 10.0s for "Your display name" TextField to exist
+    t =    16.49s     Checking `Expect predicate `existsNoRetry == 1` for object "Your display name" TextField`
+    t =    16.49s         Checking existence of `"Your display name" TextField`
+    t =    16.54s Tap "Your display name" TextField
+    t =    16.54s     Wait for com.apple.mobilesafari to idle
+    t =    16.54s     Find the "Your display name" TextField
+    t =    16.57s     Check for interrupting elements affecting "Your display name" TextField
+    t =    16.60s     Synthesize event
+    t =    16.89s     Wait for com.apple.mobilesafari to idle
+    t =    17.72s Type 'Gamemaster' into "Your display name" TextField
+    t =    17.72s     Wait for com.apple.mobilesafari to idle
+    t =    17.72s     Find the "Your display name" TextField
+    t =    17.77s     Check for interrupting elements affecting "Your display name" TextField
+    t =    17.80s     Synthesize event
+    t =    18.17s     Wait for com.apple.mobilesafari to idle
+    t =    18.29s Find the Button (First Match)
+    t =    18.33s Tap "CREATE SESSION" Button
+    t =    18.33s     Wait for com.apple.mobilesafari to idle
+    t =    18.33s     Find the "CREATE SESSION" Button
+    t =    18.37s     Check for interrupting elements affecting "CREATE SESSION" Button
+    t =    18.40s     Synthesize event
+    t =    18.68s     Wait for com.apple.mobilesafari to idle
+    t =    19.86s Waiting 30.0s for Any (First Match) to exist
+    t =    20.91s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    20.91s         Checking existence of `Any (First Match)`
+    t =    21.08s Waiting 5.0s for Any (First Match) to exist
+    t =    22.10s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    22.10s         Checking existence of `Any (First Match)`
+    t =    22.15s Find the Any (First Match)
+[ios] room code captured: yes
+    t =    22.17s Find the Any (First Match)
+    t =    22.21s Tap "I have written these down" Switch
+    t =    22.21s     Wait for com.apple.mobilesafari to idle
+    t =    22.21s     Find the "I have written these down" Switch
+    t =    22.23s     Check for interrupting elements affecting "I have written these down" Switch
+    t =    22.26s     Synthesize event
+    t =    22.55s     Wait for com.apple.mobilesafari to idle
+    t =    22.55s Find the Button (First Match)
+    t =    22.59s Tap "I'M READY — CONTINUE" Button
+    t =    22.59s     Wait for com.apple.mobilesafari to idle
+    t =    22.59s     Find the "I'M READY — CONTINUE" Button
+    t =    22.61s     Check for interrupting elements affecting "I'M READY — CONTINUE" Button
+    t =    22.64s     Synthesize event
+    t =    22.95s     Wait for com.apple.mobilesafari to idle
+    t =    22.95s Waiting 20.0s for Button (First Match) to exist
+    t =    23.99s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    23.99s         Checking existence of `Button (First Match)`
+    t =    24.02s Find the Button (First Match)
+    t =    24.05s Tap "OPEN THE DIRECTOR CONSOLE" Button
+    t =    24.05s     Wait for com.apple.mobilesafari to idle
+    t =    24.06s     Find the "OPEN THE DIRECTOR CONSOLE" Button
+    t =    24.07s     Check for interrupting elements affecting "OPEN THE DIRECTOR CONSOLE" Button
+    t =    24.09s     Synthesize event
+    t =    24.38s     Wait for com.apple.mobilesafari to idle
+    t =    25.22s Waiting 30.0s for Any (First Match) to exist
+    t =    26.26s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    26.26s         Checking existence of `Any (First Match)`
+    t =    26.34s Find the Button (First Match)
+    t =    26.40s Swipe up WebView (First Match)
+    t =    26.40s     Wait for com.apple.mobilesafari to idle
+    t =    26.40s     Find the WebView (First Match)
+    t =    26.41s     Check for interrupting elements affecting "WebView" WebView
+    t =    26.44s     Synthesize event
+    t =    26.95s     Wait for com.apple.mobilesafari to idle
+    t =    29.53s Find the "LOAD SCENE" Button
+    t =    29.60s Tap "LOAD SCENE" Button
+    t =    29.60s     Wait for com.apple.mobilesafari to idle
+    t =    29.60s     Find the "LOAD SCENE" Button
+    t =    29.64s     Check for interrupting elements affecting "LOAD SCENE" Button
+    t =    29.68s     Synthesize event
+    t =    29.97s     Wait for com.apple.mobilesafari to idle
+    t =    30.13s Waiting 30.0s for Button (First Match) to exist
+    t =    31.19s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    31.19s         Checking existence of `Button (First Match)`
+    t =    31.40s Checking existence of `PopUpButton (First Match)`
+    t =    31.45s Checking existence of `Any (First Match)`
+    t =    31.51s Find the Any (First Match)
+[ios] scene select found: true type=1
+    t =    31.57s Checking existence of `"Scene" Other`
+    t =    31.62s Find the "Scene" Other
+    t =    31.69s Find the Window (First Match)
+    t =    31.69s Checking existence of `Keyboard (First Match)`
+    t =    31.73s Find the "Scene" Other
+    t =    31.81s Find the "Scene" Other
+[ios] scene select: frame=(50.0, 717.0, 302.0, 22.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=874.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    31.88s Tap "Scene" Other
+    t =    31.88s     Wait for com.apple.mobilesafari to idle
+    t =    31.88s     Find the "Scene" Other
+    t =    31.93s     Check for interrupting elements affecting "Scene" Other
+    t =    31.98s     Synthesize event
+    t =    32.26s     Wait for com.apple.mobilesafari to idle
+    t =    35.68s Get number of matches for: Descendants matching type PickerWheel
+    t =    35.72s Checking existence of `"Done" Button`
+[ios] picker keyboards/pickers: pickerWheels=0 buttons Done=false
+    t =    35.79s Checking existence of `"Done" Button`
+    t =    35.86s Tap WebView (First Match)[0.50, 0.10]
+    t =    35.86s     Wait for com.apple.mobilesafari to idle
+    t =    35.86s     Find the WebView (First Match)
+    t =    35.88s     Check for interrupting elements affecting "WebView" WebView
+    t =    35.92s     Synthesize event
+    t =    35.92s         Find the "WebView" WebView
+    t =    35.94s         Find the "WebView" WebView
+    t =    35.95s         Find the "WebView" WebView
+    t =    36.25s     Wait for com.apple.mobilesafari to idle
+    t =    38.06s Waiting 10.0s for Button (First Match) to exist
+    t =    39.09s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    39.10s         Checking existence of `Button (First Match)`
+    t =    39.16s Find the Button (First Match)
+    t =    39.23s Swipe up WebView (First Match)
+    t =    39.23s     Wait for com.apple.mobilesafari to idle
+    t =    39.23s     Find the WebView (First Match)
+    t =    39.24s     Check for interrupting elements affecting "WebView" WebView
+    t =    39.28s     Synthesize event
+    t =    39.79s     Wait for com.apple.mobilesafari to idle
+    t =    41.72s Find the "CORRECT" Button
+    t =    41.80s Swipe up WebView (First Match)
+    t =    41.80s     Wait for com.apple.mobilesafari to idle
+    t =    42.07s     Find the WebView (First Match)
+    t =    42.09s     Check for interrupting elements affecting "WebView" WebView
+    t =    42.15s     Synthesize event
+    t =    42.67s     Wait for com.apple.mobilesafari to idle
+    t =    44.82s Find the "CORRECT" Button
+    t =    44.89s Tap "CORRECT" Button
+    t =    44.89s     Wait for com.apple.mobilesafari to idle
+    t =    44.89s     Find the "CORRECT" Button
+    t =    44.95s     Check for interrupting elements affecting "CORRECT" Button
+    t =    45.00s     Synthesize event
+    t =    45.28s     Wait for com.apple.mobilesafari to idle
+    t =    45.28s Waiting 10.0s for StaticText (First Match) to exist
+    t =    46.32s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    46.32s         Checking existence of `StaticText (First Match)`
+    t =    47.51s Find the StaticText (First Match)
+    t =    47.54s Find the Window (First Match)
+    t =    47.55s Checking existence of `Keyboard (First Match)`
+    t =    47.57s Find the Button (First Match)
+    t =    47.61s Find the "APPLY CORRECTION" Button
+[ios] sheet apply (no keyboard): frame=(19.0, 733.0, 176.0, 72.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=874.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    47.64s Find the Window (First Match)
+    t =    47.65s Checking existence of `Keyboard (First Match)`
+    t =    47.67s Find the Button (First Match)
+    t =    47.71s Find the "CANCEL" Button
+[ios] sheet cancel (no keyboard): frame=(207.0, 733.0, 176.0, 72.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=874.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    47.74s Setting device orientation to Landscape Left
+    t =    47.74s     Device orientation changed to Landscape Left
+    t =    47.83s     Interface orientation changed to Landscape Right
+    t =    47.83s     Wait for com.apple.mobilesafari to idle
+    t =    50.13s Find the Window (First Match)
+    t =    50.14s Checking existence of `Keyboard (First Match)`
+    t =    50.16s Find the "APPLY CORRECTION" Button
+    t =    50.19s Find the "APPLY CORRECTION" Button
+[ios] landscape (no keyboard) apply: frame=(136.0, 277.0, 295.0, 71.0) screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=402.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    50.23s Find the Window (First Match)
+    t =    50.23s Checking existence of `Keyboard (First Match)`
+    t =    50.25s Find the "CANCEL" Button
+    t =    50.29s Find the "CANCEL" Button
+[ios] landscape (no keyboard) cancel: frame=(443.0, 277.0, 295.0, 71.0) screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=402.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    50.32s Setting device orientation to Portrait
+    t =    50.32s     Device orientation changed to Portrait
+    t =    50.35s     Interface orientation changed to Portrait
+    t =    50.35s     Wait for com.apple.mobilesafari to idle
+    t =    52.47s Find the "Reason (required)" TextField
+    t =    52.54s Swipe up WebView (First Match)
+    t =    52.54s     Wait for com.apple.mobilesafari to idle
+    t =    52.54s     Find the WebView (First Match)
+    t =    52.55s     Check for interrupting elements affecting "WebView" WebView
+    t =    52.58s     Synthesize event
+    t =    53.09s     Wait for com.apple.mobilesafari to idle
+    t =    55.01s Find the "Reason (required)" TextField
+    t =    55.06s Swipe up WebView (First Match)
+    t =    55.06s     Wait for com.apple.mobilesafari to idle
+    t =    55.07s     Find the WebView (First Match)
+    t =    55.08s     Check for interrupting elements affecting "WebView" WebView
+    t =    55.11s     Synthesize event
+    t =    55.62s     Wait for com.apple.mobilesafari to idle
+    t =    56.27s Find the "Reason (required)" TextField
+    t =    56.35s Find the Window (First Match)
+    t =    56.35s Checking existence of `Keyboard (First Match)`
+    t =    56.38s Find the "Reason (required)" TextField
+    t =    56.42s Find the "Reason (required)" TextField
+[ios] sheet reason before focus: frame=(19.0, 615.0, 364.0, 49.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=874.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    56.46s Tap "Reason (required)" TextField
+    t =    56.46s     Wait for com.apple.mobilesafari to idle
+    t =    56.47s     Find the "Reason (required)" TextField
+    t =    56.51s     Check for interrupting elements affecting "Reason (required)" TextField
+    t =    56.54s     Synthesize event
+    t =    56.83s     Wait for com.apple.mobilesafari to idle
+    t =    57.88s Waiting 8.0s for Keyboard (First Match) to exist
+    t =    58.94s     Checking `Expect predicate `existsNoRetry == 1` for object Keyboard (First Match)`
+    t =    58.94s         Checking existence of `Keyboard (First Match)`
+    t =    60.10s Find the Window (First Match)
+    t =    60.10s Checking existence of `Keyboard (First Match)`
+    t =    60.11s Find the Keyboard (First Match)
+    t =    60.12s Find the "Reason (required)" TextField
+    t =    60.19s Find the "Reason (required)" TextField
+[ios] sheet reason with keyboard up: frame=(19.0, 278.0, 364.0, 49.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    60.31s Find the Window (First Match)
+    t =    60.32s Checking existence of `Keyboard (First Match)`
+    t =    60.33s Find the Keyboard (First Match)
+    t =    60.34s Find the "Reason (required)" TextField
+    t =    60.41s Find the Window (First Match)
+    t =    60.41s Checking existence of `Keyboard (First Match)`
+    t =    60.42s Find the Keyboard (First Match)
+    t =    60.43s Find the "APPLY CORRECTION" Button
+    t =    60.49s Find the "APPLY CORRECTION" Button
+[ios] sheet apply with keyboard up: frame=(19.0, 356.0, 176.0, 71.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    60.54s Find the Window (First Match)
+    t =    60.54s Checking existence of `Keyboard (First Match)`
+    t =    60.55s Find the Keyboard (First Match)
+    t =    60.56s Find the "APPLY CORRECTION" Button
+    t =    60.61s Find the Window (First Match)
+    t =    60.61s Checking existence of `Keyboard (First Match)`
+    t =    60.62s Find the Keyboard (First Match)
+    t =    60.63s Find the "CANCEL" Button
+    t =    60.69s Find the "CANCEL" Button
+[ios] sheet cancel with keyboard up: frame=(207.0, 356.0, 176.0, 71.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    60.75s Find the Window (First Match)
+    t =    60.75s Checking existence of `Keyboard (First Match)`
+    t =    60.76s Find the Keyboard (First Match)
+    t =    60.77s Find the "CANCEL" Button
+    t =    60.83s Find the Window (First Match)
+    t =    60.83s Checking existence of `Keyboard (First Match)`
+    t =    60.83s Find the Keyboard (First Match)
+    t =    60.84s Find the "CORRECT IRYNA" StaticText
+    t =    60.89s Find the "CORRECT IRYNA" StaticText
+[ios] sheet heading with keyboard up: frame=(31.0, 117.0, 145.0, 31.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    60.95s Find the Window (First Match)
+    t =    60.96s Checking existence of `Keyboard (First Match)`
+    t =    60.97s Find the Keyboard (First Match)
+    t =    60.98s Find the "CORRECT IRYNA" StaticText
+    t =    61.03s Find the "Reason (required)" TextField
+    t =    61.08s Find the "APPLY CORRECTION" Button
+    t =    61.13s Type 'iOS keyboard check' into "Reason (required)" TextField
+    t =    61.13s     Wait for com.apple.mobilesafari to idle
+    t =    61.13s     Find the "Reason (required)" TextField
+    t =    61.18s     Check for interrupting elements affecting "Reason (required)" TextField
+    t =    61.23s     Synthesize event
+    t =    61.73s     Wait for com.apple.mobilesafari to idle
+    t =    62.87s Setting device orientation to Landscape Left
+    t =    62.87s     Device orientation changed to Landscape Left
+    t =    62.94s     Interface orientation changed to Landscape Right
+    t =    62.94s     Wait for com.apple.mobilesafari to idle
+    t =    65.26s Find the Window (First Match)
+    t =    65.27s Checking existence of `Keyboard (First Match)`
+    t =    65.28s Find the Keyboard (First Match)
+    t =    65.29s Find the "Reason (required)" TextField
+    t =    65.34s Find the "Reason (required)" TextField
+[ios] landscape reason: frame=(136.0, 24.0, 602.0, 49.0) screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    65.40s Find the Window (First Match)
+    t =    65.40s Checking existence of `Keyboard (First Match)`
+    t =    65.41s Find the Keyboard (First Match)
+    t =    65.41s Find the "Reason (required)" TextField
+    t =    65.46s Find the "Reason (required)" TextField
+    t =    65.51s Find the "APPLY CORRECTION" Button
+    t =    65.56s Find the Window (First Match)
+    t =    65.56s Checking existence of `Keyboard (First Match)`
+    t =    65.57s Find the Keyboard (First Match)
+    t =    65.57s Find the "APPLY CORRECTION" Button
+    t =    65.62s Find the "APPLY CORRECTION" Button
+[ios] landscape apply (scrolls): frame=(136.0, 95.0, 295.0, 51.0) screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    65.67s Find the Window (First Match)
+    t =    65.68s Checking existence of `Keyboard (First Match)`
+    t =    65.68s Find the Keyboard (First Match)
+    t =    65.69s Find the "CANCEL" Button
+    t =    65.74s Find the "CANCEL" Button
+[ios] landscape cancel (scrolls): frame=(443.0, 95.0, 295.0, 51.0) screen=(0.0, 0.0, 874.0, 402.0) keyboardTop=238.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    65.80s Setting device orientation to Portrait
+    t =    65.81s     Device orientation changed to Portrait
+    t =    65.87s     Interface orientation changed to Portrait
+    t =    65.87s     Wait for com.apple.mobilesafari to idle
+    t =    68.13s Find the "CANCEL" Button
+    t =    68.21s Tap "CANCEL" Button
+    t =    68.21s     Wait for com.apple.mobilesafari to idle
+    t =    68.21s     Find the "CANCEL" Button
+    t =    68.25s     Check for interrupting elements affecting "CANCEL" Button
+    t =    68.29s     Synthesize event
+    t =    68.58s     Wait for com.apple.mobilesafari to idle
+    t =    70.67s Checking existence of `"CORRECT IRYNA" StaticText`
+[ios] sheet closed: true
+    t =    70.76s Tear Down
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testCorrectionSheetWithKeyboardAndPicker]' passed (71.262 seconds).
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' started.
+    t =     0.00s Start Test at 2026-10-08 12:14:11.006
+    t =     0.02s Set Up
+    t =     0.02s     Open com.apple.mobilesafari
+    t =     0.02s         Launch com.apple.mobilesafari
+    t =     0.02s             Terminate com.apple.mobilesafari:33116
+    t =     1.21s             Setting up automation session
+    t =     1.64s             Wait for com.apple.mobilesafari to idle
+    t =     3.24s     Wait for com.apple.mobilesafari to become Running Foreground
+    t =     3.24s Opening default application for URL http://127.0.0.1:62175/?t=1791497654245#/join
+    t =     3.26s     Wait for com.apple.mobilesafari to idle
+    t =     8.23s Waiting 10.0s for "Room code" TextField to exist
+    t =     9.27s     Checking `Expect predicate `existsNoRetry == 1` for object "Room code" TextField`
+    t =     9.28s         Checking existence of `"Room code" TextField`
+    t =     9.32s Tap "Room code" TextField
+    t =     9.32s     Wait for com.apple.mobilesafari to idle
+    t =     9.33s     Find the "Room code" TextField
+    t =     9.34s     Check for interrupting elements affecting "Room code" TextField
+    t =     9.38s     Synthesize event
+    t =     9.68s     Wait for com.apple.mobilesafari to idle
+    t =    10.93s Waiting 8.0s for Keyboard (First Match) to exist
+    t =    11.95s     Checking `Expect predicate `existsNoRetry == 1` for object Keyboard (First Match)`
+    t =    11.95s         Checking existence of `Keyboard (First Match)`
+    t =    11.96s Find the Window (First Match)
+    t =    11.97s Checking existence of `Keyboard (First Match)`
+    t =    11.97s Find the Keyboard (First Match)
+    t =    11.98s Find the "Room code" TextField
+    t =    12.03s Find the "Room code" TextField
+[ios] join room-code field with keyboard up: frame=(16.0, 239.0, 370.0, 50.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    12.07s Find the Window (First Match)
+    t =    12.07s Checking existence of `Keyboard (First Match)`
+    t =    12.08s Find the Keyboard (First Match)
+    t =    12.08s Find the "Room code" TextField
+    t =    12.22s Checking existence of `Button (First Match)`
+    t =    12.23s Tap Button (First Match)
+    t =    12.23s     Wait for com.apple.mobilesafari to idle
+    t =    12.23s     Find the Button (First Match)
+    t =    12.24s     Check for interrupting elements affecting "Return" Button
+    t =    12.27s     Synthesize event
+    t =    12.56s     Wait for com.apple.mobilesafari to idle
+    t =    13.82s Checking existence of `Any (First Match)`
+[ios] inline room-code error present: false (native bubble is not in the accessibility tree)
+    t =    13.86s Checking existence of `Any (First Match)`
+    t =    13.89s Find the Window (First Match)
+    t =    13.90s Checking existence of `Keyboard (First Match)`
+    t =    13.90s Find the Keyboard (First Match)
+    t =    13.91s Find the "Room code" TextField
+    t =    13.96s Find the "Room code" TextField
+[ios] room-code field after failed submit: frame=(16.0, 239.0, 370.0, 50.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    14.00s Find the Window (First Match)
+    t =    14.00s Checking existence of `Keyboard (First Match)`
+    t =    14.01s Find the Keyboard (First Match)
+    t =    14.02s Find the "Room code" TextField
+    t =    14.05s Checking existence of `Keyboard (First Match)`
+    t =    14.06s Type 'bad code!' into "Room code" TextField
+    t =    14.06s     Wait for com.apple.mobilesafari to idle
+    t =    14.06s     Find the "Room code" TextField
+    t =    14.09s     Check for interrupting elements affecting "Room code" TextField
+    t =    14.12s     Synthesize event
+    t =    14.47s     Wait for com.apple.mobilesafari to idle
+    t =    15.58s Checking existence of `"Return" Button`
+    t =    15.59s Tap "Return" Button
+    t =    15.59s     Wait for com.apple.mobilesafari to idle
+    t =    15.60s     Find the "Return" Button
+    t =    15.61s     Check for interrupting elements affecting "Return" Button
+    t =    15.63s     Synthesize event
+    t =    15.93s     Wait for com.apple.mobilesafari to idle
+    t =    18.22s Checking existence of `Any (First Match)`
+[ios] pattern error present: false (native bubble is not in the accessibility tree)
+    t =    18.28s Find the Window (First Match)
+    t =    18.28s Checking existence of `Keyboard (First Match)`
+    t =    18.29s Find the Keyboard (First Match)
+    t =    18.30s Find the "Room code" TextField
+    t =    18.34s Find the "Room code" TextField
+[ios] room-code field after the malformed submit: frame=(16.0, 148.0, 370.0, 50.0) screen=(0.0, 0.0, 402.0, 874.0) keyboardTop=583.0 inScreen=true aboveKeyboard=true hittable=true
+    t =    18.38s Find the Window (First Match)
+    t =    18.38s Checking existence of `Keyboard (First Match)`
+    t =    18.39s Find the Keyboard (First Match)
+    t =    18.40s Find the "Room code" TextField
+    t =    18.56s Tear Down
+Test Case '-[IosPlaytestUITests.SafariFlowUITests testJoinFormValidationWithKeyboard]' passed (18.844 seconds).
+Test Suite 'SafariFlowUITests' passed at 2026-10-08 12:14:29.850.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 139.070 (139.073) seconds
+Test Suite 'IosPlaytestUITests.xctest' passed at 2026-10-08 12:14:29.851.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 139.070 (139.074) seconds
+Test Suite 'Selected tests' passed at 2026-10-08 12:14:29.851.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 139.070 (139.075) seconds
+2026-10-08 12:14:30.243 xcodebuild[31136:27467213] [MT] IDETestOperationsObserverDebug: 151.462 elapsed -- Testing started completed.
+2026-10-08 12:14:30.243 xcodebuild[31136:27467213] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-08 12:14:30.243 xcodebuild[31136:27467213] [MT] IDETestOperationsObserverDebug: 151.462 sec, +151.462 sec -- end
+
+Test session results, code coverage, and logs:
+	/tmp/ho-scratch/tmp/digitable-ios-playtest-dd/Logs/Test/Test-IosPlaytest-2026.10.08_12-11-58--1000.xcresult
+
+** TEST EXECUTE SUCCEEDED **
+
+Testing started

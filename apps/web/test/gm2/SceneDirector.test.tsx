@@ -81,3 +81,38 @@ describe("SceneDirector default scene selection", () => {
     expect(selectedScene()).toBe(ids[2]);
   });
 });
+
+describe("SceneDirector hidden-threat rows", () => {
+  it("keeps the Reveal button beside the text, never inside a label, in a wrapping action row", () => {
+    const onRevealThreat = vi.fn();
+    render(
+      <SceneDirector
+        scene={sceneView(ids[0]!)}
+        objectives={[]}
+        threats={[
+          {
+            id: "threat-hidden-1",
+            name: "Ambush Squad",
+            status: "active",
+            revealed: false,
+            notes: "",
+          } as never,
+        ]}
+        onLoadScene={noop}
+        onNextScene={noop}
+        onRevealThreat={onRevealThreat}
+        onEndRound={noop}
+        onSetSceneRules={noop}
+        onEditRating={noop}
+      />,
+    );
+    const reveal = screen.getByRole("button", { name: "Reveal" });
+    // Not a <label>: a button inside a label is interactive content in the label's name and its
+    // tap target overlaps the row.
+    expect(reveal.closest("label")).toBeNull();
+    // The row wraps (`.gear-option--action`), so at large text the button drops under the text.
+    expect(reveal.parentElement?.className).toContain("gear-option--action");
+    fireEvent.click(reveal);
+    expect(onRevealThreat).toHaveBeenCalledWith("threat-hidden-1");
+  });
+});
