@@ -533,3 +533,12 @@ Branch `sonnet/hq-reskin-orchestrated-20261009` on `c7415d4` (reviewed candidate
 Results (local emulators, `demo-digitable`): base build with the new script fails 3 checks at 320/200%; this change passes. `npm run check` 715 passed / 11 todo; `npm run build` passed; `ui-audit.mjs` 150 states, 17 modal scenarios, 0 failures; `two-device-smoke.mjs --reload` 17/17; `npm run test:emulator` 18 + 86 + 4. Independent review: no high/medium findings.
 
 Open: real iOS/Android keyboard, screen reader, Windows High Contrast, physical-device pass, staging playthrough of this build. Next action: John decides merge order and an authorized staging redeploy.
+
+## hu reskin increment (2026-10-09, sonnet-hu) — READY FOR JOHN'S DECISION
+
+Branch `sonnet/hu-reskin-orchestrated-20261009` on `9a01f1d`; presentation and audit script only, not merged, not deployed. A fresh select/pop-out audit found two uncovered defects on the GM console: the scene picker (`#scene-select`, titles up to 36 chars) ellipsised with no full-text echo, and at 320 px / 200% text the rem-only nested gutters left selects a ~10 px text area. Fixes: `SceneDirector` prints the pick through `SelectedEcho`; screen/card/fieldset/control gutters and the select chevron zone are `min(<rem>, <vw>)` (equal to the 100%-text value at 320 px, so nothing changes at 100% text); "Choose one…" is now "Choose…". `ui-audit.mjs` gained `auditSelects`. Evidence: [`docs/evidence/hu-reskin/`](docs/evidence/hu-reskin/README.md); review: [`docs/reviews/2026-10-09-hu-reskin-independent-review.md`](docs/reviews/2026-10-09-hu-reskin-independent-review.md) (no high/medium findings).
+
+Results (local emulators on remapped ports, `demo-hu`): base build with the new audit fails 8 select checks; this change passes the full `ui-audit.mjs` (150 states, 1,422 controls, 0 axe hard violations, 17 modal scenarios + select audit). `npm run check` 718 passed / 11 todo (+3 regression tests, each failing without the fix); `npm run build` passed; `two-device-smoke.mjs --reload` 17/17; emulator suite 18 + 86 + 4 (run on a copy of the tree with remapped ports because a peer lane held the default ones).
+
+Open: real iOS/Android keyboard and native pickers, screen reader, Windows High Contrast, physical-device pass, staging playthrough of this build. Next action: John decides merge order and an authorized staging redeploy.
+
