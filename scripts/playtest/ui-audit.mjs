@@ -734,16 +734,12 @@ async function auditModal(gm) {
   }
 
   // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150% and
-  // 375px at 200% are gating. 320px at 200% is recorded but NOT gating: at that size the (unchanged,
-  // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
-  // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
-  // the handoff.
+  // 375px at 200% and 320px at 200% are all gating, with the sheet open AND closed (the closed-sheet
+  // console used to overflow ~5px at 320px/200% until nested gutters were capped by vw).
   for (const [vp, px, informationalChecks] of [
     [byName["phone-small"], 24, []],
     [byName["phone"], 32, []],
-    // Only the two geometry checks the console's overflow can break are non-gating here; the sheet's own
-    // bodyKeepsRoom / actionsReachable / reasonReachable still gate.
-    [byName["phone-small"], 32, ["dialogInsideViewport", "noPageOverflow"]],
+    [byName["phone-small"], 32, []],
   ]) {
     await scenario(
       `text-${px === 24 ? "150" : "200"}-${vp.name}`,
@@ -782,6 +778,15 @@ async function auditModal(gm) {
           `gm-correction-text-${px === 24 ? "150" : "200"}-${vp.name}.jpg`,
           { fullPage: false },
         );
+        // Sheet closed: the console itself must not scroll sideways at this text size (fu backlog;
+        // the open-sheet measurement above cannot see it because the page behind is scroll-locked).
+        await closeCorrection(gm);
+        record.closedPageOverflowPx = await ev(
+          gm,
+          `document.documentElement.scrollWidth - document.documentElement.clientWidth`,
+        );
+        record.checks.closedNoPageOverflow = record.closedPageOverflowPx <= 1;
+        await ev(gm, `document.documentElement.style.fontSize = ""`);
       },
       { informationalChecks },
     );

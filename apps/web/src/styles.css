@@ -413,7 +413,7 @@ legend {
 .roster-card {
   border: 2px solid var(--rule);
   background: rgba(5, 5, 6, 0.55);
-  padding: 0.85rem;
+  padding: min(0.85rem, 3.2vw);
 }
 
 .pending-actions-list,
@@ -753,9 +753,12 @@ input[type="radio"]:disabled {
 .form-field--checkbox {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  /* Gutters are capped by the viewport as well as by rem: with 200% text on a 320px phone the
+     rem-only padding of a row nested in a card nested in a panel left under 70px for the label
+     and widened the page (fu audit backlog). min() never exceeds the old value. */
+  gap: min(0.85rem, 3vw);
   min-height: var(--tap);
-  padding: 0.4rem 0.65rem;
+  padding: 0.4rem min(0.65rem, 2.4vw);
   border: 2px solid transparent;
   font-family: var(--font-body);
   font-size: 1rem;

@@ -389,6 +389,16 @@ describe("reskin stylesheet contract", () => {
       expect(mediaBlock("(min-width: 40rem)")).toMatch(/\.gear-row\s*\{[^}]*flex-direction:\s*row/);
       expect(declaration(rulesFor(/^\.gear-option > span$/), "min-width")).toContain("0");
     });
+
+    it("caps nested card and option-row gutters by viewport width so enlarged text cannot widen the page", () => {
+      // Closed-sheet 320px + 200% root text (fu backlog): rem-only padding on card > row > panel
+      // left ~65px for the label. min(rem, vw) never exceeds the old rem gutter.
+      const optionRule = rulesFor(/^\.gear-option,\s*\.form-field--checkbox$/);
+      expect(declaration(optionRule, "padding")[0]).toMatch(/min\(0\.65rem,\s*[\d.]+vw\)/);
+      expect(declaration(optionRule, "gap")[0]).toMatch(/min\(0\.85rem,\s*[\d.]+vw\)/);
+      const cardRule = rulesFor(/^\.pending-action-card,\s*\.roster-panel-list li/);
+      expect(declaration(cardRule, "padding")[0]).toMatch(/min\(0\.85rem,\s*[\d.]+vw\)/);
+    });
   });
 
   describe("licensing hygiene", () => {
