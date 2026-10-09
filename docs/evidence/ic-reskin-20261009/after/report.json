@@ -1,7 +1,7 @@
 {
   "label": "after",
   "base": "http://127.0.0.1:4182",
-  "startedAt": "2026-10-09T16:48:41.858Z",
+  "startedAt": "2026-10-09T16:57:50.923Z",
   "states": [
     {
       "surface": "anon",
@@ -1145,7 +1145,7 @@
       "state": "allocation",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 16,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-small.jpg"
@@ -1155,7 +1155,7 @@
       "state": "allocation",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 16,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone.jpg",
@@ -1166,7 +1166,7 @@
       "state": "allocation",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 16,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-phone-landscape.jpg"
@@ -1176,7 +1176,7 @@
       "state": "allocation",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 16,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-tablet.jpg",
@@ -1187,7 +1187,7 @@
       "state": "allocation",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 16,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-desktop.jpg",
@@ -1198,7 +1198,7 @@
       "state": "allocation",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 16,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-table.jpg"
@@ -1208,7 +1208,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-small",
       "size": "320x568",
-      "controls": 16,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-small.jpg"
@@ -1218,7 +1218,7 @@
       "state": "allocation-assigned",
       "viewport": "phone",
       "size": "375x812",
-      "controls": 16,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone.jpg",
@@ -1229,7 +1229,7 @@
       "state": "allocation-assigned",
       "viewport": "phone-landscape",
       "size": "812x375",
-      "controls": 16,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-phone-landscape.jpg"
@@ -1239,7 +1239,7 @@
       "state": "allocation-assigned",
       "viewport": "tablet",
       "size": "768x1024",
-      "controls": 16,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-tablet.jpg"
@@ -1249,7 +1249,7 @@
       "state": "allocation-assigned",
       "viewport": "desktop",
       "size": "1280x800",
-      "controls": 16,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-desktop.jpg"
@@ -1259,7 +1259,7 @@
       "state": "allocation-assigned",
       "viewport": "table",
       "size": "1920x1080",
-      "controls": 16,
+      "controls": 6,
       "overflowPx": 0,
       "controlIssues": [],
       "screenshot": "player-allocation-assigned-table.jpg"
@@ -2183,7 +2183,7 @@
       },
       "notes": [],
       "scaleBefore": 1,
-      "scaleAfter": 2.000000238418579,
+      "scaleAfter": 1.9999995231628418,
       "informationalChecks": []
     },
     {
@@ -2633,8 +2633,8 @@
       "offenders": [
         "div right=320 sw=324/320 :: ConnectedDirector console1 act",
         "main.gm-screen right=320 sw=324/320 :: ConnectedDirector console1 act",
-        "span.picker-trigger-value right=135 sw=430/12 :: The Abandoned Métro Platform",
-        "span.picker-trigger-value right=135 sw=765/12 :: Objective: Get clear of the wr",
+        "span.picker-trigger-value right=135 sw=27/12 :: The Abandoned Métro Platform",
+        "span.picker-trigger-value right=135 sw=22/12 :: Choose one…",
         "section.step right=288 sw=290/252 :: Pending actionsIrynaStat: CONE",
         "ul.pending-actions-list right=254 sw=258/188 :: IrynaStat: CONEngaged threatsS",
         "li.pending-action-card right=254 sw=256/184 :: IrynaStat: CONEngaged threatsS",
@@ -2747,12 +2747,12 @@
       "geometry": {
         "open": true,
         "dialog": {
-          "top": 168.453125,
+          "top": 106.859375,
           "bottom": 568,
           "left": 0,
           "right": 320,
           "width": 320,
-          "height": 399.546875
+          "height": 461.140625
         },
         "cancel": {
           "top": 508,
@@ -2763,30 +2763,30 @@
           "height": 48
         },
         "current": {
-          "top": 248.4375,
-          "bottom": 272.4375,
+          "top": 186.84375,
+          "bottom": 210.84375,
           "left": 18,
           "right": 302,
           "width": 284,
           "height": 24
         },
         "title": {
-          "top": 196.03125,
-          "bottom": 218.4375,
+          "top": 134.4375,
+          "bottom": 156.84375,
           "left": 18,
           "right": 302,
           "width": 284,
           "height": 22.40625
         },
-        "optionCount": 3,
+        "optionCount": 4,
         "optionMinHeight": 48,
         "optionMinFont": 16,
         "optionsOverflowX": false,
-        "selectedCount": 0,
-        "selectedText": null,
+        "selectedCount": 1,
+        "selectedText": "Choose one…Selected",
         "body": {
-          "scrollHeight": 262,
-          "clientHeight": 262,
+          "scrollHeight": 323,
+          "clientHeight": 323,
           "overflowY": "auto"
         },
         "pageOverflowPx": 0,
@@ -3199,12 +3199,12 @@
       "geometry": {
         "open": true,
         "dialog": {
-          "top": 367.65625,
+          "top": 350.859375,
           "bottom": 812,
           "left": 0,
           "right": 375,
           "width": 375,
-          "height": 444.34375
+          "height": 461.140625
         },
         "cancel": {
           "top": 752,
@@ -3215,30 +3215,30 @@
           "height": 48
         },
         "current": {
-          "top": 447.640625,
-          "bottom": 495.640625,
+          "top": 430.84375,
+          "bottom": 454.84375,
           "left": 18,
           "right": 357,
           "width": 339,
-          "height": 48
+          "height": 24
         },
         "title": {
-          "top": 395.234375,
-          "bottom": 417.640625,
+          "top": 378.4375,
+          "bottom": 400.84375,
           "left": 18,
           "right": 357,
           "width": 339,
           "height": 22.40625
         },
-        "optionCount": 3,
+        "optionCount": 4,
         "optionMinHeight": 48,
         "optionMinFont": 16,
         "optionsOverflowX": false,
         "selectedCount": 1,
-        "selectedText": "Objective: Get clear of the wreckage and into the streetsSelected",
+        "selectedText": "Choose one…Selected",
         "body": {
-          "scrollHeight": 306,
-          "clientHeight": 306,
+          "scrollHeight": 323,
+          "clientHeight": 323,
           "overflowY": "auto"
         },
         "pageOverflowPx": 0,
@@ -3680,14 +3680,14 @@
           "width": 604,
           "height": 30.40625
         },
-        "optionCount": 3,
+        "optionCount": 4,
         "optionMinHeight": 48,
         "optionMinFont": 16,
         "optionsOverflowX": false,
         "selectedCount": 1,
-        "selectedText": "Objective: Get clear of the wreckage and into the streetsSelected",
+        "selectedText": "Choose one…Selected",
         "body": {
-          "scrollHeight": 233,
+          "scrollHeight": 294,
           "clientHeight": 225,
           "overflowY": "auto"
         },
@@ -4124,11 +4124,11 @@
         },
         "current": {
           "top": 62.40625,
-          "bottom": 110.40625,
+          "bottom": 86.40625,
           "left": 18,
           "right": 342,
           "width": 324,
-          "height": 48
+          "height": 24
         },
         "title": {
           "top": 18,
@@ -4138,14 +4138,14 @@
           "width": 324,
           "height": 22.40625
         },
-        "optionCount": 3,
+        "optionCount": 4,
         "optionMinHeight": 48,
         "optionMinFont": 16,
         "optionsOverflowX": false,
         "selectedCount": 1,
-        "selectedText": "Objective: Get clear of the wreckage and into the streetsSelected",
+        "selectedText": "Choose one…Selected",
         "body": {
-          "scrollHeight": 294,
+          "scrollHeight": 311,
           "clientHeight": 184,
           "overflowY": "auto"
         },
@@ -4561,46 +4561,46 @@
       "geometry": {
         "open": true,
         "dialog": {
-          "top": 323.609375,
-          "bottom": 700.390625,
+          "top": 292.8125,
+          "bottom": 731.1875,
           "left": 64,
           "right": 704,
           "width": 640,
-          "height": 376.78125
+          "height": 438.375
         },
         "cancel": {
-          "top": 638.390625,
-          "bottom": 686.390625,
+          "top": 669.1875,
+          "bottom": 717.1875,
           "left": 82,
           "right": 686,
           "width": 604,
           "height": 48
         },
         "current": {
-          "top": 395.609375,
-          "bottom": 419.609375,
+          "top": 364.8125,
+          "bottom": 388.8125,
           "left": 82,
           "right": 686,
           "width": 604,
           "height": 24
         },
         "title": {
-          "top": 335.203125,
-          "bottom": 365.609375,
+          "top": 304.40625,
+          "bottom": 334.8125,
           "left": 82,
           "right": 686,
           "width": 604,
           "height": 30.40625
         },
-        "optionCount": 3,
+        "optionCount": 4,
         "optionMinHeight": 48,
         "optionMinFont": 16,
         "optionsOverflowX": false,
         "selectedCount": 1,
-        "selectedText": "Objective: Get clear of the wreckage and into the streetsSelected",
+        "selectedText": "Choose one…Selected",
         "body": {
-          "scrollHeight": 245,
-          "clientHeight": 245,
+          "scrollHeight": 306,
+          "clientHeight": 306,
           "overflowY": "auto"
         },
         "pageOverflowPx": 0,
@@ -5007,46 +5007,46 @@
       "geometry": {
         "open": true,
         "dialog": {
-          "top": 211.609375,
-          "bottom": 588.390625,
+          "top": 180.8125,
+          "bottom": 619.1875,
           "left": 312.5,
           "right": 952.5,
           "width": 640,
-          "height": 376.78125
+          "height": 438.375
         },
         "cancel": {
-          "top": 526.390625,
-          "bottom": 574.390625,
+          "top": 557.1875,
+          "bottom": 605.1875,
           "left": 330.5,
           "right": 934.5,
           "width": 604,
           "height": 48
         },
         "current": {
-          "top": 283.609375,
-          "bottom": 307.609375,
+          "top": 252.8125,
+          "bottom": 276.8125,
           "left": 330.5,
           "right": 934.5,
           "width": 604,
           "height": 24
         },
         "title": {
-          "top": 223.203125,
-          "bottom": 253.609375,
+          "top": 192.40625,
+          "bottom": 222.8125,
           "left": 330.5,
           "right": 934.5,
           "width": 604,
           "height": 30.40625
         },
-        "optionCount": 3,
+        "optionCount": 4,
         "optionMinHeight": 48,
         "optionMinFont": 16,
         "optionsOverflowX": false,
         "selectedCount": 1,
-        "selectedText": "Objective: Get clear of the wreckage and into the streetsSelected",
+        "selectedText": "Choose one…Selected",
         "body": {
-          "scrollHeight": 245,
-          "clientHeight": 245,
+          "scrollHeight": 306,
+          "clientHeight": 306,
           "overflowY": "auto"
         },
         "pageOverflowPx": -15,
@@ -5398,11 +5398,11 @@
     "before": "metro-platform",
     "after": "drop-forecourt"
   },
-  "finishedAt": "2026-10-09T16:53:20.924Z",
+  "finishedAt": "2026-10-09T17:02:30.309Z",
   "ok": true,
   "summary": {
     "states": 150,
-    "controlsAudited": 1542,
+    "controlsAudited": 1422,
     "controlIssues": 0,
     "overflowStates": 0,
     "axeHardViolations": 0,

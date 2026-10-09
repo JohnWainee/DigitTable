@@ -70,6 +70,26 @@ describe("OptionPicker", () => {
     expect(screen.getByRole("button", { name: /^Scene/ })).toHaveTextContent("Choose one");
   });
 
+  it("offers a clearing entry first when emptyLabel is given, and choosing it reports the empty value", async () => {
+    const user = userEvent.setup();
+    const seen: string[] = [];
+    render(
+      <OptionPicker
+        id="e"
+        label="Target"
+        value="a"
+        options={OPTIONS}
+        emptyLabel="Choose one…"
+        onChange={(v) => seen.push(v)}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: /^Target/ }));
+    const rows = within(screen.getByRole("dialog")).getAllByRole("button");
+    expect(rows[0]).toHaveTextContent("Choose one…");
+    await user.click(rows[0]!);
+    expect(seen).toEqual([""]);
+  });
+
   it("makes the page behind the open list inert", async () => {
     const user = userEvent.setup();
     const { container } = render(<Harness />);

@@ -14,6 +14,8 @@ export interface OptionPickerProps {
   readonly onChange: (value: string) => void;
   /** Shown on the closed control when `value` matches no option. */
   readonly placeholder?: string;
+  /** When set, adds a leading option with value "" (the old select's blank entry) so a choice can be cleared. */
+  readonly emptyLabel?: string;
   /** Stable id for the trigger, so tests and the audit can find the control. */
   readonly id: string;
 }
@@ -34,11 +36,14 @@ export function OptionPicker({
   options,
   onChange,
   placeholder = "Choose one…",
+  emptyLabel,
   id,
 }: OptionPickerProps): JSX.Element {
   const [open, setOpen] = useState(false);
   const titleId = useId();
-  const current = options.find((option) => option.value === value);
+  const allOptions =
+    emptyLabel === undefined ? options : [{ value: "", label: emptyLabel }, ...options];
+  const current = allOptions.find((option) => option.value === value);
   const currentText = current?.label ?? placeholder;
 
   return (
@@ -76,7 +81,7 @@ export function OptionPicker({
             Current: <strong>{currentText}</strong>
           </p>
           <ul className="picker-options">
-            {options.map((option) => {
+            {allOptions.map((option) => {
               const selected = option.value === value;
               return (
                 <li key={option.value}>

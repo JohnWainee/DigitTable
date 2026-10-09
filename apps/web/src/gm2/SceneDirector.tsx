@@ -276,6 +276,7 @@ export function SceneDirector({
           <OptionPicker
             id="edit-target"
             label="Target"
+            emptyLabel="Choose one…"
             value={editTargetKey}
             onChange={loadEditTargetDefaults}
             options={[
