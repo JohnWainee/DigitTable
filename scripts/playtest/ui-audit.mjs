@@ -143,6 +143,37 @@ class Cdp {
 
 const devices = [];
 
+// ---------- mid-word wrap probe ----------
+// A label that wraps inside a word ("APPLY CORRECTIO / N") reads as a rendering bug and is hard
+// for low-vision and dyslexic readers. For every visible control/heading text node this walks the
+// characters with Range rects and reports any word whose letters sit on different lines. Spaces
+// and hyphens are legitimate break points, so only letters inside one unbroken run count.
+const WORD_BREAK_PROBE = `(() => {
+  const found = [];
+  const sel = "button, a, label, legend, summary, h1, h2, h3, th, option, .select-echo";
+  for (const el of document.querySelectorAll(sel)) {
+    const box = el.getBoundingClientRect();
+    if (box.width === 0 || box.height === 0 || getComputedStyle(el).visibility === "hidden") continue;
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const text = node.nodeValue;
+      let top = null, word = "", broken = false;
+      const flush = () => { if (broken && word.length > 1) found.push({ control: el.tagName.toLowerCase() + (el.id ? "#" + el.id : ""), word }); top = null; word = ""; broken = false; };
+      for (let i = 0; i < text.length; i += 1) {
+        if (/[\\s\\-\\u2010-\\u2014/]/.test(text[i])) { flush(); continue; }
+        const range = document.createRange();
+        range.setStart(node, i); range.setEnd(node, i + 1);
+        const rect = range.getClientRects()[0];
+        if (!rect) continue;
+        if (top !== null && Math.abs(rect.top - top) > rect.height / 2) broken = true;
+        top = rect.top; word += text[i];
+      }
+      flush();
+    }
+  }
+  return found;
+})()`;
+
 async function openDevice(cdp, name, vp) {
   const { browserContextId } = await cdp.send("Target.createBrowserContext", {
     disposeOnDetach: true,
@@ -364,6 +395,9 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
     await applyViewport(device, vp);
     await sleep(250);
     const audit = await ev(device, CONTROL_AUDIT);
+    const brokenWords = await ev(device, WORD_BREAK_PROBE);
+    for (const w of brokenWords)
+      fail(`${device.name}/${state}@${vp.name}`, `word "${w.word}" wraps mid-word in ${w.control}`);
     const file = await screenshot(device, `${device.name}-${state}-${vp.name}.jpg`);
     const entry = {
       surface: device.name,
@@ -589,6 +623,27 @@ async function auditModal(gm) {
   }
 
   const frameOf = (vp) => ({ left: 0, top: 0, right: vp.width, bottom: vp.height });
+
+  // The sheet's own labels and its Apply/Cancel row must never break inside a word.
+  for (const [vp, textPx] of [
+    [byName["phone-small"], null],
+    [byName["phone"], null],
+    [byName["tablet"], null],
+    [byName["phone-small"], 24],
+  ]) {
+    await scenario(
+      `word-breaks-${vp.name}${textPx ? `-${(textPx / 16) * 100}` : ""}`,
+      vp,
+      async (record) => {
+        if (textPx) await ev(gm, `document.documentElement.style.fontSize = "${textPx}px"`);
+        await openCorrection(gm);
+        await sleep(300);
+        const broken = await ev(gm, WORD_BREAK_PROBE);
+        record.brokenWords = broken;
+        record.checks.noMidWordWraps = broken.length === 0;
+      },
+    );
+  }
 
   await scenario("zoom-emulated", byName["phone"], async (record) => {
     await openCorrection(gm);

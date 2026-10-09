@@ -209,7 +209,7 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(rulesFor(/^legend$/), "max-width")).toContain("100%");
       expect(declaration(rulesFor(/^\.stepper-controls$/), "flex-wrap")).toContain("wrap");
       expect(declaration(rulesFor(/^\.sheet-actions$/), "grid-template-columns")[0]).toMatch(
-        /^repeat\(auto-fit, minmax\(min\(100%, 9rem\), 1fr\)\)$/,
+        /^repeat\(auto-fit, minmax\(min\(100%, 13rem\), 1fr\)\)$/,
       );
     });
 
@@ -355,6 +355,24 @@ describe("reskin stylesheet contract", () => {
       expect(declaration(rulesFor(/^\.primary-action$/), "background")).toContain("var(--sa)");
       expect(declaration(rulesFor(/^\.secondary-action$/), "background")).toContain("var(--ink-0)");
       expect(declaration(rulesFor(/^\.secondary-action$/), "border-color")).toContain("var(--sc)");
+    });
+
+    it("keeps labels whole: sheet actions stack before a label can split, buttons and legends cap their gutters", () => {
+      // 13rem fits "Apply correction" on one line; below that the pair stacks full width.
+      expect(declaration(rulesFor(/^\.sheet-actions$/), "grid-template-columns").join()).toContain(
+        "minmax(min(100%, 13rem), 1fr)",
+      );
+      // Inline gutters/tracking are min(<100%-text value>, <vw>): identical at 320px/100% text.
+      expect(
+        declaration(rulesFor(/^\.primary-action,\s*\.secondary-action$/s), "padding"),
+      ).toContain("0.7rem min(1.25rem, 6.25vw)");
+      expect(declaration(rulesFor(/^legend$/), "padding")).toContain("0.2rem min(0.7rem, 3.5vw)");
+      expect(declaration(rulesFor(/^legend$/), "letter-spacing")).toContain("min(0.14em, 0.56vw)");
+      // A row with its own button (Reveal) keeps the button at natural width and wraps instead.
+      expect(declaration(rulesFor(/^\.gear-option:has\(> button\)$/), "flex-wrap")).toContain(
+        "wrap",
+      );
+      expect(declaration(rulesFor(/^\.gear-option > button$/), "flex")).toContain("0 0 auto");
     });
 
     it("draws the toner scuff and photocopy streaks procedurally and only as background layers", () => {

@@ -395,11 +395,13 @@ legend {
   /* At large text sizes a long legend must wrap inside its fieldset, not push the page wider. */
   max-width: 100%;
   overflow-wrap: anywhere;
-  padding: 0.2rem 0.7rem;
+  padding: 0.2rem min(0.7rem, 3.5vw);
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  /* Tracking is capped by the viewport too (0.14em at 100% text on a 320px phone is 1.8px): at
+     150% text the longest legend ("Reinforcements mode") otherwise split mid-word. */
+  letter-spacing: min(0.14em, 0.56vw);
   text-transform: uppercase;
   color: var(--ink-0);
   background: var(--sc);
@@ -465,7 +467,9 @@ button {
 
 .primary-action,
 .secondary-action {
-  padding: 0.7rem 1.25rem;
+  /* Inline gutter capped by the viewport (== 1.25rem at 320px, 100% text) so enlarged text keeps
+     its room for the label instead of breaking it mid-word. */
+  padding: 0.7rem min(1.25rem, 6.25vw);
   font-family: var(--font-display);
   font-weight: 700;
   font-synthesis-weight: none;
@@ -730,6 +734,18 @@ input[type="radio"]:disabled {
 .gear-option > span {
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+/* A row whose own action button sits beside its text (Reveal on a hidden threat): the button keeps
+   its natural width and never breaks its label; the text wraps, then the button drops below. */
+.gear-option:has(> button) {
+  flex-wrap: wrap;
+  cursor: default;
+}
+
+.gear-option > button {
+  flex: 0 0 auto;
+  max-width: 100%;
 }
 
 @media (min-width: 40rem) {
@@ -1615,10 +1631,11 @@ details ul {
   }
 }
 
-/* Two columns while each button has room, one full-width column otherwise (narrow or large text). */
+/* Two columns while each button has room (13rem fits "Apply correction" on one line), one
+   full-width column otherwise (a phone, or large text). */
 .sheet-actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
   gap: 0.75rem;
 }
 
