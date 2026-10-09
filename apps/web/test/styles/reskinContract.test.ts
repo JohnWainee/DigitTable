@@ -84,6 +84,14 @@ function sourceFiles(dir: string): string[] {
 }
 
 describe("reskin stylesheet contract", () => {
+  it("gives the player, GM and table surfaces three distinct role accents", () => {
+    const roles = [/^\.player-screen$/, /^\.gm-screen$/, /^\.table-screen$/].map(
+      (selector) => declaration(rulesFor(selector), "--role")[0],
+    );
+    expect(roles.every(Boolean)).toBe(true);
+    expect(new Set(roles).size).toBe(3);
+  });
+
   describe("touch targets and text-entry size", () => {
     it("defines the tap size as 3rem (48px at the default root, and it scales with user font size)", () => {
       expect(css).toMatch(/--tap:\s*3rem/);
@@ -100,7 +108,13 @@ describe("reskin stylesheet contract", () => {
     });
 
     it("covers every styled <button> in the app: each className token is one the tap rule names", () => {
-      const covered = new Set(["primary-action", "secondary-action", "link-button"]);
+      const covered = new Set([
+        "primary-action",
+        "secondary-action",
+        "link-button",
+        "picker-trigger",
+        "picker-option",
+      ]);
       const uncovered: string[] = [];
       for (const file of sourceFiles(join(here, "../../src"))) {
         const source = readFileSync(file, "utf8");
@@ -116,6 +130,17 @@ describe("reskin stylesheet contract", () => {
       // Class-less buttons are only the +/- steppers inside .stepper-controls (rule names them).
       const buttonRule = rulesFor(/\.primary-action.*\.stepper-controls button/s);
       expect(declaration(buttonRule, "min-height")).toContain("var(--tap)");
+    });
+
+    it("gives the option picker's closed control and every option row the tap size and 1rem type", () => {
+      for (const selector of [/^\.picker-trigger$/, /^\.picker-option$/]) {
+        const rule = rulesFor(selector);
+        expect(declaration(rule, "min-height")).toContain("var(--tap)");
+        expect(declaration(rule, "font-size")).toEqual(["1rem"]);
+      }
+      expect(declaration(rulesFor(/^\.picker-trigger$/), "max-width")).toContain("100%");
+      // Long option text wraps in the sheet rather than widening it.
+      expect(declaration(rulesFor(/^\.picker-option$/), "overflow-wrap")).toEqual(["anywhere"]);
     });
 
     it("keeps the read-only stepper value (role=spinbutton, focusable) at the tap size too", () => {

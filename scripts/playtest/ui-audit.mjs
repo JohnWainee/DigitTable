@@ -87,6 +87,7 @@ const report = {
   startedAt: new Date().toISOString(),
   states: [],
   modal: [],
+  pickers: [],
   reducedMotion: null,
   routes: [],
   failures: [],
@@ -378,6 +379,165 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
   await applyViewport(device, original);
 }
 
+// ---------- option pickers (the replacement for native <select>) ----------
+
+const PICKER_GEOMETRY = `(() => {
+  const dialog = document.querySelector('[role="dialog"]');
+  if (!dialog) return { open: false };
+  const box = (el) => { if (!el) return null; const r = el.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, width: r.width, height: r.height }; };
+  const body = dialog.querySelector(".sheet-body");
+  const options = [...dialog.querySelectorAll(".picker-option")];
+  const cancel = [...dialog.querySelectorAll("button")].find(b => /cancel/i.test(b.textContent));
+  const current = dialog.querySelector(".picker-current");
+  const selected = dialog.querySelector('.picker-option[aria-current="true"]');
+  const title = dialog.querySelector("h2");
+  return {
+    open: true,
+    dialog: box(dialog), cancel: box(cancel), current: box(current), title: box(title),
+    optionCount: options.length,
+    optionMinHeight: Math.min(...options.map(o => o.getBoundingClientRect().height)),
+    optionMinFont: Math.min(...options.map(o => parseFloat(getComputedStyle(o).fontSize))),
+    optionsOverflowX: options.some(o => o.scrollWidth > o.clientWidth + 1),
+    selectedCount: dialog.querySelectorAll('.picker-option[aria-current="true"]').length,
+    selectedText: selected ? selected.textContent : null,
+    body: { scrollHeight: body.scrollHeight, clientHeight: body.clientHeight, overflowY: getComputedStyle(body).overflowY },
+    pageOverflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    rootLocked: document.documentElement.classList.contains("sheet-open"),
+    activeIsInside: dialog.contains(document.activeElement),
+    inertSiblings: (() => { const s = [...document.body.children].filter(c => !c.contains(dialog) && c.tagName !== "SCRIPT"); return s.length > 0 && s.every(c => c.hasAttribute("inert")); })(),
+  };
+})()`;
+
+async function auditPickers(gm) {
+  const cases = [
+    { name: "phone-small", ...byName["phone-small"] },
+    { name: "phone", ...byName["phone"] },
+    { name: "phone-landscape", ...byName["phone-landscape"] },
+    { name: "keyboard-short-360x300", width: 360, height: 300, mobile: true },
+    { name: "tablet", ...byName["tablet"] },
+    { name: "desktop", ...byName["desktop"] },
+  ];
+  const triggers = await ev(gm, `[...document.querySelectorAll(".picker-trigger")].map(b => b.id)`);
+  if (triggers.length < 3)
+    fail(
+      "pickers",
+      `expected at least 3 picker triggers on the GM console, found ${triggers.length}`,
+    );
+  for (const vp of cases) {
+    await applyViewport(gm, vp);
+    for (const id of triggers) {
+      const record = {
+        picker: id,
+        viewport: vp.name,
+        size: `${vp.width}x${vp.height}`,
+        checks: {},
+      };
+      await ev(
+        gm,
+        `(() => { const b = document.getElementById(${JSON.stringify(id)}); b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
+      );
+      await waitFor(
+        gm,
+        `document.querySelector('[role="dialog"] .picker-option')`,
+        10000,
+        `picker ${id} open`,
+      );
+      await sleep(350);
+      const geo = await ev(gm, PICKER_GEOMETRY);
+      record.geometry = geo;
+      const frame = { left: 0, top: 0, right: vp.width, bottom: vp.height };
+      record.checks.dialogInsideViewport = within(geo.dialog, frame);
+      record.checks.titleVisible = within(geo.title, frame);
+      record.checks.currentChoiceVisible = within(geo.current, frame);
+      record.checks.cancelVisibleAndTappable =
+        within(geo.cancel, frame) && geo.cancel.height >= 43.5;
+      record.checks.optionsAtLeast44 = geo.optionCount > 0 && geo.optionMinHeight >= 43.5;
+      record.checks.optionsAtLeast16px = geo.optionMinFont >= 16;
+      record.checks.noOptionHorizontalClip = !geo.optionsOverflowX;
+      record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+      record.checks.exactlyOneSelected = geo.selectedCount === 1 || id === "edit-target";
+      record.checks.rootScrollLocked = geo.rootLocked;
+      record.checks.backgroundInert = geo.inertSiblings;
+      record.checks.focusInsideDialog = geo.activeIsInside;
+      if (geo.body.scrollHeight > geo.body.clientHeight) {
+        record.checks.bodyScrolls =
+          geo.body.overflowY === "auto" || geo.body.overflowY === "scroll";
+        await ev(
+          gm,
+          `(() => { const b = document.querySelector('[role="dialog"] .sheet-body'); b.scrollTop = b.scrollHeight; })()`,
+        );
+        await sleep(150);
+        const lastOption = await ev(
+          gm,
+          `(() => { const o = [...document.querySelectorAll('[role="dialog"] .picker-option')].pop(); const r = o.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, left: r.left, right: r.right }; })()`,
+        );
+        record.checks.lastOptionReachable = within(lastOption, frame);
+      }
+      if (id === "scene-select" || id === "grant-character") {
+        record.screenshot = await screenshot(gm, `gm-picker-${id}-${vp.name}.jpg`, {
+          fullPage: false,
+        });
+      }
+      for (const [k, v] of Object.entries(record.checks)) {
+        if (!v) fail(`picker-${id}@${vp.name}`, `${k} failed`);
+      }
+      // Choose the current option (no state change), confirm it closes and focus returns to the control.
+      await ev(
+        gm,
+        `(document.querySelector('.picker-option[aria-current="true"]') || document.querySelector('.picker-option')).click()`,
+      );
+      await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 10000, `picker ${id} closed`);
+      record.afterClose = await ev(
+        gm,
+        `({ focusOnTrigger: document.activeElement?.id === ${JSON.stringify(id)}, anyInert: [...document.body.children].some(c => c.hasAttribute("inert")), rootLocked: document.documentElement.classList.contains("sheet-open") })`,
+      );
+      if (!record.afterClose.focusOnTrigger)
+        fail(`picker-${id}@${vp.name}`, "focus did not return to the control");
+      if (record.afterClose.anyInert)
+        fail(`picker-${id}@${vp.name}`, "background still inert after close");
+      if (record.afterClose.rootLocked)
+        fail(`picker-${id}@${vp.name}`, "scroll lock left on after close");
+      report.pickers.push(record);
+    }
+  }
+  // A real choice through the picker changes the field's value (scene-select).
+  await applyViewport(gm, byName["phone"]);
+  const before = await ev(gm, `document.getElementById("scene-select").dataset.value`);
+  await ev(gm, `document.getElementById("scene-select").click()`);
+  await waitFor(
+    gm,
+    `document.querySelector('[role="dialog"] .picker-option')`,
+    10000,
+    "scene picker",
+  );
+  await ev(
+    gm,
+    `[...document.querySelectorAll('.picker-option')].find(o => o.getAttribute("aria-current") !== "true").click()`,
+  );
+  await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 10000, "scene picker closed");
+  const after = await ev(gm, `document.getElementById("scene-select").dataset.value`);
+  if (before === after)
+    fail("pickers", "choosing a different option did not change the control's value");
+  report.pickersChanged = { before, after };
+  // Put the GM's selection back so the rest of the flow advances to the scene it expects.
+  await ev(gm, `document.getElementById("scene-select").click()`);
+  await waitFor(
+    gm,
+    `document.querySelector('[role="dialog"] .picker-option')`,
+    10000,
+    "scene picker",
+  );
+  await ev(
+    gm,
+    `document.querySelector('.picker-option[data-value=${JSON.stringify(before)}]').click()`,
+  );
+  await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 10000, "scene picker closed");
+  if ((await ev(gm, `document.getElementById("scene-select").dataset.value`)) !== before) {
+    fail("pickers", "could not restore the original scene selection");
+  }
+  await applyViewport(gm, byName["desktop"]);
+}
+
 // ---------- modal (correction sheet) audit ----------
 
 const MODAL_GEOMETRY = `(() => {
@@ -419,8 +579,8 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /— claimed/.test(li.textContent))?.querySelector("button")`;
+  await waitFor(gm, finder, 20000, "the claimed character's Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
@@ -872,6 +1032,7 @@ async function main() {
     await waitFor(gm, `${textMatch("button", "/^Roll it$/")}`, 30000, "Roll it");
     await captureState(gm, "console-pending");
 
+    await auditPickers(gm);
     await auditModal(gm);
     await auditReducedMotion(gm);
 

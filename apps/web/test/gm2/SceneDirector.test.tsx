@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { ORIGINAL_MISSION, type SceneView } from "@digitable/template-eat-the-reich";
 import { SceneDirector } from "../../src/gm2/SceneDirector.js";
@@ -21,8 +21,18 @@ function director(scene: SceneView | null): JSX.Element {
   );
 }
 
+function pickerTrigger(): HTMLElement {
+  return screen.getByRole("button", { name: /^Scene/ });
+}
+
+function chooseScene(id: string): void {
+  fireEvent.click(pickerTrigger());
+  const title = ORIGINAL_MISSION.find((s) => s.sceneId === id)!.title;
+  fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: title }));
+}
+
 function selectedScene(): string {
-  return screen.getByRole<HTMLSelectElement>("combobox", { name: "Scene" }).value;
+  return pickerTrigger().dataset.value ?? "";
 }
 
 function sceneView(id: string): SceneView {
@@ -61,9 +71,9 @@ describe("SceneDirector default scene selection", () => {
   it("re-defaults when the loaded scene changes, without remounting", () => {
     const { rerender } = render(director(null));
     expect(selectedScene()).toBe(ids[0]);
-    const select = screen.getByRole("combobox", { name: "Scene" });
+    const select = pickerTrigger();
     rerender(director(sceneView(ids[0]!)));
-    expect(screen.getByRole("combobox", { name: "Scene" })).toBe(select);
+    expect(pickerTrigger()).toBe(select);
     expect(selectedScene()).toBe(ids[1]);
     rerender(director(sceneView(ids[1]!)));
     expect(selectedScene()).toBe(ids[2]);
@@ -71,9 +81,7 @@ describe("SceneDirector default scene selection", () => {
 
   it("keeps the GM's explicit pick while the scene is unchanged, and drops it once the scene changes", () => {
     const { rerender } = render(director(sceneView(ids[0]!)));
-    fireEvent.change(screen.getByRole("combobox", { name: "Scene" }), {
-      target: { value: ids[3] },
-    });
+    chooseScene(ids[3]!);
     expect(selectedScene()).toBe(ids[3]);
     rerender(director(sceneView(ids[0]!)));
     expect(selectedScene()).toBe(ids[3]);

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { OptionPicker } from "../shared/OptionPicker.js";
 import {
   ORIGINAL_MISSION,
   type EatTheReichView,
@@ -206,18 +207,16 @@ export function SceneDirector({
 
       <fieldset>
         <legend>{scene ? "Advance to a new scene" : "Load the opening scene"}</legend>
-        <label htmlFor="scene-select">Scene</label>
-        <select
+        <OptionPicker
           id="scene-select"
+          label="Scene"
           value={selectedSceneId}
-          onChange={(e) => setChoice({ forSceneId: currentSceneId, sceneId: e.target.value })}
-        >
-          {ORIGINAL_MISSION.map((definition) => (
-            <option key={definition.sceneId} value={definition.sceneId}>
-              {definition.title}
-            </option>
-          ))}
-        </select>
+          onChange={(sceneId) => setChoice({ forSceneId: currentSceneId, sceneId })}
+          options={ORIGINAL_MISSION.map((definition) => ({
+            value: definition.sceneId,
+            label: definition.title,
+          }))}
+        />
         <p className="form-hint">{selected.gmBriefing}</p>
         {scene && !primaryComplete && (
           <div className="form-field">
@@ -274,24 +273,19 @@ export function SceneDirector({
       {scene && editTargets.length > 0 && (
         <fieldset>
           <legend>Edit an Objective or Threat</legend>
-          <label htmlFor="edit-target">Target</label>
-          <select
+          <OptionPicker
             id="edit-target"
+            label="Target"
             value={editTargetKey}
-            onChange={(e) => loadEditTargetDefaults(e.target.value)}
-          >
-            <option value="">Choose one&hellip;</option>
-            {objectives.map((o) => (
-              <option key={`objective:${o.id}`} value={`objective:${o.id}`}>
-                Objective: {o.title}
-              </option>
-            ))}
-            {threats.map((t) => (
-              <option key={`threat:${t.id}`} value={`threat:${t.id}`}>
-                Threat: {t.name}
-              </option>
-            ))}
-          </select>
+            onChange={loadEditTargetDefaults}
+            options={[
+              ...objectives.map((o) => ({
+                value: `objective:${o.id}`,
+                label: `Objective: ${o.title}`,
+              })),
+              ...threats.map((t) => ({ value: `threat:${t.id}`, label: `Threat: ${t.name}` })),
+            ]}
+          />
           {editTarget && (editObjective ?? editThreat) && (
             <>
               <div className="form-field">
