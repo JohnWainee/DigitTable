@@ -261,12 +261,17 @@ async function setInput(device, selector, value) {
   );
 }
 
-async function screenshot(device, file, { fullPage = true } = {}) {
+async function screenshot(device, file, { fullPage = true, focus = null } = {}) {
   if (!SHOTS) return null;
   await ev(
     device,
     `(async () => { const step = Math.max(200, innerHeight - 100); for (let y = 0; y < document.documentElement.scrollHeight; y += step) { scrollTo(0, y); await new Promise(r => setTimeout(r, 80)); } scrollTo(0, 0); })()`,
   );
+  if (focus)
+    await ev(
+      device,
+      `document.querySelector(${JSON.stringify(focus)})?.scrollIntoView({ block: "center" })`,
+    );
   await sleep(350);
   const params = { format: "jpeg", quality: 70 };
   if (fullPage) {
@@ -794,6 +799,74 @@ async function auditModal(gm) {
   await applyViewport(gm, byName["desktop"]);
 }
 
+// Every native <select> on the GM console is a pop-out surface the OS draws (a picker wheel on iOS, a
+// dialog on Android), so it cannot clip, but the CLOSED control can only ellipsise. Whenever the
+// selected option's text does not fit the closed control, the full text must be printed beside it in a
+// visible `.select-echo` (SelectedEcho) so the person keeps their context. Measured per select at
+// phone/tablet/desktop widths and at 200% text on a 320px phone; also fails a select that leaves the
+// viewport horizontally or is under 44px tall.
+const SELECT_PROBE = `(() => {
+  const canvas = document.createElement("canvas").getContext("2d");
+  return [...document.querySelectorAll("select")].filter(s => s.getClientRects().length > 0).map(s => {
+    const cs = getComputedStyle(s);
+    const opt = s.options[s.selectedIndex];
+    const text = (opt ? opt.textContent : "").replace(/\\s+/g, " ").trim();
+    canvas.font = cs.fontStyle + " " + cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily;
+    const textPx = canvas.measureText(text).width;
+    const room = s.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const echo = s.nextElementSibling && s.nextElementSibling.classList.contains("select-echo") ? s.nextElementSibling : null;
+    const r = s.getBoundingClientRect();
+    const er = echo ? echo.getBoundingClientRect() : null;
+    return {
+      id: s.id, text, textPx: Math.round(textPx), roomPx: Math.round(room),
+      truncated: textPx > room - 1,
+      echoText: echo ? echo.textContent.trim() : null,
+      echoVisible: Boolean(er && er.width > 0 && er.height > 0),
+      left: r.left, right: r.right, height: r.height, width: Math.round(r.width),
+      chain: (() => { const out = []; for (let e = s.parentElement; e && e !== document.body; e = e.parentElement) { const c = getComputedStyle(e); out.push(e.tagName.toLowerCase() + (typeof e.className === "string" && e.className ? "." + e.className.trim().split(/\\s+/).join(".") : "") + " w=" + Math.round(e.getBoundingClientRect().width) + " pad=" + c.paddingLeft + "/" + c.paddingRight + " bw=" + c.borderLeftWidth + "/" + c.borderRightWidth + " m=" + c.marginLeft + "/" + c.marginRight); } return out; })(),
+      selectPad: cs.paddingLeft + "/" + cs.paddingRight,
+      viewportWidth: document.documentElement.clientWidth,
+    };
+  });
+})()`;
+
+async function auditSelects(gm) {
+  const cases = [
+    [byName["phone-small"], null],
+    [byName["phone"], null],
+    [byName["tablet"], null],
+    [byName["desktop"], null],
+    [byName["phone-small"], 32],
+  ];
+  report.selects = [];
+  for (const [vp, textPx] of cases) {
+    await applyViewport(gm, vp);
+    if (textPx) await ev(gm, `document.documentElement.style.fontSize = "${textPx}px"`);
+    await sleep(250);
+    const rows = await ev(gm, SELECT_PROBE);
+    const tag = `${vp.name}${textPx ? `@${(textPx / 16) * 100}%` : ""}`;
+    if (rows.length === 0) fail(`selects@${tag}`, "no visible <select> found to audit");
+    for (const row of rows) {
+      report.selects.push({ viewport: tag, ...row });
+      if (row.truncated && !(row.echoVisible && row.echoText === row.text))
+        fail(
+          `selects@${tag}`,
+          `#${row.id} "${row.text}" is ellipsised (${row.textPx}px > ${row.roomPx}px) with no full-text echo`,
+        );
+      if (row.left < -1 || row.right > row.viewportWidth + 1)
+        fail(`selects@${tag}`, `#${row.id} leaves the viewport horizontally`);
+      if (row.height < 44) fail(`selects@${tag}`, `#${row.id} is ${Math.round(row.height)}px tall`);
+    }
+    // Frame the scene picker (longest option text) so the evidence shows the control and its echo.
+    await screenshot(gm, `gm-selects-${tag.replace("@", "-")}.jpg`, {
+      fullPage: false,
+      focus: "#scene-select",
+    });
+    if (textPx) await ev(gm, `document.documentElement.style.fontSize = ""`);
+  }
+  await applyViewport(gm, byName["desktop"]);
+}
+
 async function auditReducedMotion(gm) {
   const result = { allowed: {}, reduced: {} };
   async function probe() {
@@ -965,6 +1038,7 @@ async function main() {
     await waitFor(gm, `${textMatch("button", "/^Roll it$/")}`, 30000, "Roll it");
     await captureState(gm, "console-pending");
 
+    await auditSelects(gm);
     await auditModal(gm);
     await auditReducedMotion(gm);
 

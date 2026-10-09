@@ -81,3 +81,16 @@ describe("SceneDirector default scene selection", () => {
     expect(selectedScene()).toBe(ids[2]);
   });
 });
+
+describe("SceneDirector scene picker context", () => {
+  it("prints the full title of the picked scene beside the ellipsising select and follows the pick", () => {
+    render(director(null));
+    const echo = screen.getByTestId("select-echo");
+    expect(echo).toHaveTextContent(ORIGINAL_MISSION[0]!.title);
+    // The echo duplicates what the select announces, so it is hidden from assistive technology.
+    expect(echo).toHaveAttribute("aria-hidden", "true");
+    const picker = screen.getByRole<HTMLSelectElement>("combobox", { name: "Scene" });
+    fireEvent.change(picker, { target: { value: ids[2]! } });
+    expect(screen.getByTestId("select-echo")).toHaveTextContent(ORIGINAL_MISSION[2]!.title);
+  });
+});

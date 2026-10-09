@@ -401,6 +401,34 @@ describe("reskin stylesheet contract", () => {
     });
   });
 
+  describe("large-text gutters on the console column", () => {
+    it("caps the screen, card, fieldset and control gutters by viewport width (320px + 200% text left a 10px select)", () => {
+      // Each cap equals the 100%-text rem value at 320px (rem x 5vw/rem), so it never binds below
+      // 200% text on a 320px phone and never changes a wider layout.
+      expect(
+        declaration(rulesFor(/^\.landing-screen,\s*\.player-screen,\s*\.gm-screen/), "padding")[0],
+      ).toMatch(/min\(1rem,\s*5vw\)[\s\S]*min\(1rem,\s*5vw\)/);
+      expect(declaration(rulesFor(/^\.step,\s*\.scene-card/), "padding")[0]).toMatch(
+        /min\(1rem,\s*5vw\)/,
+      );
+      expect(declaration(rulesFor(/^fieldset$/), "padding")[0]).toMatch(
+        /min\(0\.85rem,\s*4\.25vw\)/,
+      );
+      expect(declaration(rulesFor(/^input:not[\s\S]*textarea$/), "padding")[0]).toMatch(
+        /min\(0\.8rem,\s*4vw\)/,
+      );
+    });
+
+    it("keeps the select's text area when the chevron zone would otherwise take it all", () => {
+      const selectRule = rulesFor(/^select$/).filter((body) => body.includes("--chevron"));
+      expect(declaration(selectRule, "padding-right")[0]).toMatch(/min\(2\.75rem,\s*[\d.]+vw\)/);
+      expect(declaration(selectRule, "background-position")[0]).toMatch(
+        /min\(0\.85rem,\s*[\d.]+vw\)/,
+      );
+      expect(declaration(selectRule, "background-size")[0]).toMatch(/min\(1rem,\s*[\d.]+vw\)/);
+    });
+  });
+
   describe("licensing hygiene", () => {
     it("uses only system font stacks and no external resources", () => {
       expect(css).not.toMatch(/@import|@font-face|url\(\s*["']?https?:/i);

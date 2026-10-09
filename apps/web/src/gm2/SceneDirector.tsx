@@ -219,6 +219,7 @@ export function SceneDirector({
             </option>
           ))}
         </select>
+        <SelectedEcho text={selected.title} />
         <p className="form-hint">{selected.gmBriefing}</p>
         {scene && !primaryComplete && (
           <div className="form-field">
@@ -281,7 +282,7 @@ export function SceneDirector({
             value={editTargetKey}
             onChange={(e) => loadEditTargetDefaults(e.target.value)}
           >
-            <option value="">Choose one&hellip;</option>
+            <option value="">Choose&hellip;</option>
             {objectives.map((o) => (
               <option key={`objective:${o.id}`} value={`objective:${o.id}`}>
                 Objective: {o.title}

@@ -1,0 +1,1975 @@
+{
+  "label": "hu-before",
+  "base": "http://127.0.0.1:14180",
+  "startedAt": "2026-10-09T05:25:33.549Z",
+  "states": [],
+  "modal": [
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 568,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 544
+        },
+        "apply": {
+          "top": 445.25,
+          "bottom": 493.625,
+          "left": 19,
+          "right": 301,
+          "width": 282,
+          "height": 48.375
+        },
+        "cancel": {
+          "top": 505.625,
+          "bottom": 556,
+          "left": 19,
+          "right": 301,
+          "width": 282,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1388.140625,
+          "bottom": 1436.140625,
+          "left": 19,
+          "right": 301,
+          "width": 282,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1351,
+          "clientHeight": 329,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone-small.jpg",
+      "keyboard": {
+        "size": "320x312",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone-small.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 788
+        },
+        "apply": {
+          "top": 707.625,
+          "bottom": 800,
+          "left": 19,
+          "right": 181.5,
+          "width": 162.5,
+          "height": 92.375
+        },
+        "cancel": {
+          "top": 707.625,
+          "bottom": 800,
+          "left": 193.5,
+          "right": 356,
+          "width": 162.5,
+          "height": 92.375
+        },
+        "reason": {
+          "top": 1388.140625,
+          "bottom": 1436.140625,
+          "left": 19,
+          "right": 356,
+          "width": 337,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1351,
+          "clientHeight": 591,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone.jpg",
+      "keyboard": {
+        "size": "375x447",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 86,
+          "right": 726,
+          "width": 640,
+          "height": 343
+        },
+        "apply": {
+          "top": 290.625,
+          "bottom": 341,
+          "left": 105,
+          "right": 400,
+          "width": 295,
+          "height": 50.375
+        },
+        "cancel": {
+          "top": 290.625,
+          "bottom": 341,
+          "left": 412,
+          "right": 707,
+          "width": 295,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1311.359375,
+          "bottom": 1359.359375,
+          "left": 105,
+          "right": 707,
+          "width": 602,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1303,
+          "clientHeight": 211,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone-landscape.jpg",
+      "keyboard": {
+        "size": "812x206",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone-landscape.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 375,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 24,
+          "right": 643,
+          "width": 619,
+          "height": 343
+        },
+        "apply": {
+          "top": 290.625,
+          "bottom": 341,
+          "left": 43,
+          "right": 327.5,
+          "width": 284.5,
+          "height": 50.375
+        },
+        "cancel": {
+          "top": 290.625,
+          "bottom": 341,
+          "left": 339.5,
+          "right": 624,
+          "width": 284.5,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1311.359375,
+          "bottom": 1359.359375,
+          "left": 43,
+          "right": 624,
+          "width": 581,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1303,
+          "clientHeight": 211,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-phone-667x375.jpg",
+      "keyboard": {
+        "size": "667x206",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-phone-667x375.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "tablet",
+      "size": "768x1024",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 768,
+          "innerHeight": 1024,
+          "clientWidth": 768
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 768,
+          "height": 1024,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 160,
+          "bottom": 864,
+          "left": 64,
+          "right": 704,
+          "width": 640,
+          "height": 704
+        },
+        "apply": {
+          "top": 799.625,
+          "bottom": 850,
+          "left": 83,
+          "right": 378,
+          "width": 295,
+          "height": 50.375
+        },
+        "cancel": {
+          "top": 799.625,
+          "bottom": 850,
+          "left": 390,
+          "right": 685,
+          "width": 295,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1488.953125,
+          "bottom": 1536.953125,
+          "left": 83,
+          "right": 685,
+          "width": 602,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1327,
+          "clientHeight": 559,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-tablet.jpg",
+      "keyboard": {
+        "size": "768x563",
+        "checks": {
+          "dialogInsideViewport": true,
+          "focusedFieldVisible": true,
+          "actionsVisible": true,
+          "noPageOverflow": true
+        },
+        "screenshot": "gm-correction-keyboard-tablet.jpg"
+      },
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "desktop",
+      "size": "1280x800",
+      "checks": {
+        "dialogInsideViewport": true,
+        "actionsVisibleWithoutScrolling": true,
+        "noPageOverflow": true,
+        "actionTargets44": true,
+        "reasonReachableAfterScroll": true,
+        "rootScrollLocked": true,
+        "backgroundInert": true,
+        "focusInsideDialog": true
+      },
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 1280,
+          "innerHeight": 800,
+          "clientWidth": 1280
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 1280,
+          "height": 800,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 752,
+          "left": 312.5,
+          "right": 952.5,
+          "width": 640,
+          "height": 704
+        },
+        "apply": {
+          "top": 687.625,
+          "bottom": 738,
+          "left": 331.5,
+          "right": 626.5,
+          "width": 295,
+          "height": 50.375
+        },
+        "cancel": {
+          "top": 687.625,
+          "bottom": 738,
+          "left": 638.5,
+          "right": 933.5,
+          "width": 295,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1376.953125,
+          "bottom": 1424.953125,
+          "left": 331.5,
+          "right": 918.5,
+          "width": 587,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1327,
+          "clientHeight": 559,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": -15,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-sheet-desktop.jpg",
+      "afterClose": {
+        "focusOnTrigger": true,
+        "anyInert": false,
+        "rootLocked": false
+      }
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "zoom-emulated",
+      "checks": {
+        "pageScaleApplied": true,
+        "dialogInsideVisualViewportWhenZoomed": true,
+        "actionsInsideVisualViewportWhenZoomed": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 234.375,
+          "height": 507.5,
+          "scale": 1.600000023841858
+        },
+        "dialog": {
+          "top": 24,
+          "bottom": 507.5,
+          "left": 0,
+          "right": 234.375,
+          "width": 234.375,
+          "height": 483.5
+        },
+        "apply": {
+          "top": 362.75,
+          "bottom": 433.125,
+          "left": 19,
+          "right": 215.375,
+          "width": 196.375,
+          "height": 70.375
+        },
+        "cancel": {
+          "top": 445.125,
+          "bottom": 495.5,
+          "left": 19,
+          "right": 215.375,
+          "width": 196.375,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1714.515625,
+          "bottom": 1762.515625,
+          "left": 19,
+          "right": 215.375,
+          "width": 196.375,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1677,
+          "clientHeight": 247,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "pinch-gesture",
+      "checks": {
+        "pinchZoomStillWorksWithSheetOpen": true
+      },
+      "notes": [],
+      "scaleBefore": 1,
+      "scaleAfter": 1.999998927116394,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-667x375",
+      "size": "667x375",
+      "scenario": "safe-area-landscape-constrained",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfLeftInset": true,
+        "sheetClearOfRightInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 375,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 47,
+          "right": 620,
+          "width": 573,
+          "height": 343
+        },
+        "apply": {
+          "top": 269.625,
+          "bottom": 320,
+          "left": 66,
+          "right": 327.5,
+          "width": 261.5,
+          "height": 50.375
+        },
+        "cancel": {
+          "top": 269.625,
+          "bottom": 320,
+          "left": 339.5,
+          "right": 601,
+          "width": 261.5,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1311.359375,
+          "bottom": 1359.359375,
+          "left": 66,
+          "right": 601,
+          "width": 535,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1303,
+          "clientHeight": 190,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 29,
+      "sheetWidth": 573,
+      "screenshot": "gm-correction-safe-area-landscape-constrained.jpg",
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-landscape",
+      "size": "812x375",
+      "scenario": "safe-area-landscape-812",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfLeftInset": true,
+        "sheetClearOfRightInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 812,
+          "innerHeight": 375,
+          "clientWidth": 812
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 812,
+          "height": 375,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 351,
+          "left": 86,
+          "right": 726,
+          "width": 640,
+          "height": 343
+        },
+        "apply": {
+          "top": 269.625,
+          "bottom": 320,
+          "left": 105,
+          "right": 400,
+          "width": 295,
+          "height": 50.375
+        },
+        "cancel": {
+          "top": 269.625,
+          "bottom": 320,
+          "left": 412,
+          "right": 707,
+          "width": 295,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1311.359375,
+          "bottom": 1359.359375,
+          "left": 105,
+          "right": 707,
+          "width": 602,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1303,
+          "clientHeight": 190,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 29,
+      "sheetWidth": 640,
+      "screenshot": "gm-correction-safe-area-landscape-812.jpg",
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "safe-area-portrait",
+      "checks": {
+        "dialogInsideViewport": true,
+        "footerClearsHomeIndicator": true,
+        "sheetClearOfTopInset": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 47,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 765
+        },
+        "apply": {
+          "top": 673.625,
+          "bottom": 766,
+          "left": 19,
+          "right": 181.5,
+          "width": 162.5,
+          "height": 92.375
+        },
+        "cancel": {
+          "top": 673.625,
+          "bottom": 766,
+          "left": 193.5,
+          "right": 356,
+          "width": 162.5,
+          "height": 92.375
+        },
+        "reason": {
+          "top": 1411.140625,
+          "bottom": 1459.140625,
+          "left": 19,
+          "right": 356,
+          "width": 337,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1351,
+          "clientHeight": 534,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "footerPaddingBottom": 46,
+      "screenshot": "gm-correction-safe-area-portrait.jpg",
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "back-closes-only-the-sheet",
+      "checks": {
+        "sheetClosed": true,
+        "routeUnchanged": true,
+        "consoleStillRendered": true,
+        "rootUnlocked": true,
+        "cancelRemovesEntry": true,
+        "stackNotGrownBeyondOneEntry": true,
+        "entryAddedWhileOpen": true
+      },
+      "notes": [
+        "history.length before/open/after: 4/4/4"
+      ],
+      "informationalChecks": []
+    },
+    {
+      "viewport": "visible-140",
+      "size": "320x140",
+      "scenario": "short-visible-140",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "containerBranchEngaged": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 140,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 140,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 140,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 132
+        },
+        "apply": {
+          "top": 1395.953125,
+          "bottom": 1444.328125,
+          "left": 19,
+          "right": 301,
+          "width": 282,
+          "height": 48.375
+        },
+        "cancel": {
+          "top": 1456.328125,
+          "bottom": 1506.703125,
+          "left": 19,
+          "right": 301,
+          "width": 282,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1324.953125,
+          "bottom": 1372.953125,
+          "left": 19,
+          "right": 301,
+          "width": 282,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1327,
+          "clientHeight": 1327,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-short-visible-140.jpg",
+      "informationalChecks": []
+    },
+    {
+      "viewport": "visible-160-landscape",
+      "size": "667x160",
+      "scenario": "short-visible-160-landscape",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "containerBranchEngaged": true,
+        "applyReachable": true,
+        "cancelReachable": true,
+        "actionTargets44": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 667,
+          "innerHeight": 160,
+          "clientWidth": 667
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 667,
+          "height": 160,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 8,
+          "bottom": 136,
+          "left": 24,
+          "right": 643,
+          "width": 619,
+          "height": 128
+        },
+        "apply": {
+          "top": 1371.953125,
+          "bottom": 1422.328125,
+          "left": 43,
+          "right": 327.5,
+          "width": 284.5,
+          "height": 50.375
+        },
+        "cancel": {
+          "top": 1371.953125,
+          "bottom": 1422.328125,
+          "left": 339.5,
+          "right": 624,
+          "width": 284.5,
+          "height": 50.375
+        },
+        "reason": {
+          "top": 1300.953125,
+          "bottom": 1348.953125,
+          "left": 43,
+          "right": 624,
+          "width": 581,
+          "height": 48
+        },
+        "body": {
+          "scrollHeight": 1303,
+          "clientHeight": 1303,
+          "scrollTop": 0,
+          "overflowY": "visible"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "screenshot": "gm-correction-short-visible-160-landscape.jpg",
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "text-150-phone-small",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true,
+        "closedNoPageOverflow": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 36,
+          "bottom": 568,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 532
+        },
+        "apply": {
+          "top": 361.8125,
+          "bottom": 465.40625,
+          "left": 27,
+          "right": 293,
+          "width": 266,
+          "height": 103.59375
+        },
+        "cancel": {
+          "top": 483.40625,
+          "bottom": 556,
+          "left": 27,
+          "right": 293,
+          "width": 266,
+          "height": 72.59375
+        },
+        "reason": {
+          "top": 2565.9375,
+          "bottom": 2637.9375,
+          "left": 27,
+          "right": 293,
+          "width": 266,
+          "height": 72
+        },
+        "body": {
+          "scrollHeight": 2513,
+          "clientHeight": 192,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 24,
+      "screenshot": "gm-correction-text-150-phone-small.jpg",
+      "closedPageOverflowPx": 0,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone",
+      "size": "375x812",
+      "scenario": "text-200-phone",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true,
+        "closedNoPageOverflow": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 375,
+          "innerHeight": 812,
+          "clientWidth": 375
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 375,
+          "height": 812,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 812,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 764
+        },
+        "apply": {
+          "top": 514.203125,
+          "bottom": 694.984375,
+          "left": 35,
+          "right": 340,
+          "width": 305,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 718.984375,
+          "bottom": 814.984375,
+          "left": 35,
+          "right": 340,
+          "width": 305,
+          "height": 96
+        },
+        "reason": {
+          "top": 3759.578125,
+          "bottom": 3855.578125,
+          "left": 35,
+          "right": 340,
+          "width": 305,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 3646,
+          "clientHeight": 246,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": "gm-correction-text-200-phone.jpg",
+      "closedPageOverflowPx": 0,
+      "informationalChecks": []
+    },
+    {
+      "viewport": "phone-small",
+      "size": "320x568",
+      "scenario": "text-200-phone-small",
+      "checks": {
+        "dialogInsideViewport": true,
+        "noPageOverflow": true,
+        "bodyKeepsRoom": true,
+        "actionsReachable": true,
+        "reasonReachable": true,
+        "closedNoPageOverflow": true
+      },
+      "notes": [],
+      "geometry": {
+        "open": true,
+        "layout": {
+          "innerWidth": 320,
+          "innerHeight": 568,
+          "clientWidth": 320
+        },
+        "visual": {
+          "offsetTop": 0,
+          "offsetLeft": 0,
+          "width": 320,
+          "height": 568,
+          "scale": 1
+        },
+        "dialog": {
+          "top": 48,
+          "bottom": 568,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 520
+        },
+        "apply": {
+          "top": 367.8125,
+          "bottom": 548.59375,
+          "left": 35,
+          "right": 285,
+          "width": 250,
+          "height": 180.78125
+        },
+        "cancel": {
+          "top": 572.59375,
+          "bottom": 668.59375,
+          "left": 35,
+          "right": 285,
+          "width": 250,
+          "height": 96
+        },
+        "reason": {
+          "top": 4534.703125,
+          "bottom": 4630.703125,
+          "left": 35,
+          "right": 285,
+          "width": 250,
+          "height": 96
+        },
+        "body": {
+          "scrollHeight": 4422,
+          "clientHeight": 100,
+          "scrollTop": 0,
+          "overflowY": "auto"
+        },
+        "rootLocked": true,
+        "pageOverflowPx": 0,
+        "animationName": "sheet-rise",
+        "background": "rgb(8, 8, 11)",
+        "inertSiblings": true,
+        "activeIsInside": true
+      },
+      "textPx": 32,
+      "screenshot": "gm-correction-text-200-phone-small.jpg",
+      "closedPageOverflowPx": 0,
+      "informationalChecks": []
+    }
+  ],
+  "reducedMotion": {
+    "allowed": {
+      "sheetAnimation": "sheet-rise",
+      "sheetDuration": "0.18s",
+      "backdropAnimation": "sheet-fade",
+      "anyLongTransition": true,
+      "matches": false
+    },
+    "reduced": {
+      "sheetAnimation": "none",
+      "sheetDuration": "1e-06s",
+      "backdropAnimation": "none",
+      "anyLongTransition": false,
+      "matches": true
+    }
+  },
+  "routes": [],
+  "failures": [
+    {
+      "scope": "selects@phone-small",
+      "message": "#scene-select \"The Abandoned Métro Platform\" is ellipsised (228px > 158px) with no full-text echo"
+    },
+    {
+      "scope": "selects@phone",
+      "message": "#scene-select \"The Abandoned Métro Platform\" is ellipsised (228px > 213px) with no full-text echo"
+    },
+    {
+      "scope": "selects@phone-small@200%",
+      "message": "#scene-select \"The Abandoned Métro Platform\" is ellipsised (430px > 10px) with no full-text echo"
+    },
+    {
+      "scope": "selects@phone-small@200%",
+      "message": "#edit-target \"Choose one…\" is ellipsised (185px > 10px) with no full-text echo"
+    },
+    {
+      "scope": "selects@phone-small@200%",
+      "message": "#grant-character \"Iryna\" is ellipsised (68px > 10px) with no full-text echo"
+    },
+    {
+      "scope": "selects@phone-small@200%",
+      "message": "#advance-character \"Iryna\" is ellipsised (68px > 10px) with no full-text echo"
+    },
+    {
+      "scope": "selects@phone-small@200%",
+      "message": "#reassign-character \"Iryna\" is ellipsised (68px > 10px) with no full-text echo"
+    }
+  ],
+  "console": {
+    "gm": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "player": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "table": {
+      "consoleErrors": [],
+      "failedRequests": []
+    },
+    "anon": {
+      "consoleErrors": [],
+      "failedRequests": []
+    }
+  },
+  "selects": [
+    {
+      "viewport": "phone-small",
+      "id": "scene-select",
+      "text": "The Abandoned Métro Platform",
+      "textPx": 228,
+      "roomPx": 158,
+      "truncated": true,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 269.40625,
+      "height": 48,
+      "width": 219,
+      "chain": [
+        "fieldset w=250 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=288 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=320 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=320 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 320
+    },
+    {
+      "viewport": "phone-small",
+      "id": "edit-target",
+      "text": "Choose one…",
+      "textPx": 99,
+      "roomPx": 158,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 269.40625,
+      "height": 48,
+      "width": 219,
+      "chain": [
+        "fieldset w=250 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=288 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=320 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=320 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 320
+    },
+    {
+      "viewport": "phone-small",
+      "id": "grant-character",
+      "text": "Iryna",
+      "textPx": 36,
+      "roomPx": 158,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 269.40625,
+      "height": 48,
+      "width": 219,
+      "chain": [
+        "fieldset w=250 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=288 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=320 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=320 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 320
+    },
+    {
+      "viewport": "phone-small",
+      "id": "advance-character",
+      "text": "Iryna",
+      "textPx": 36,
+      "roomPx": 158,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 269.40625,
+      "height": 48,
+      "width": 219,
+      "chain": [
+        "fieldset w=250 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=288 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=320 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=320 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 320
+    },
+    {
+      "viewport": "phone-small",
+      "id": "advance-select",
+      "text": "Hell's Ravenous Fire",
+      "textPx": 146,
+      "roomPx": 158,
+      "truncated": false,
+      "echoText": "Hell's Ravenous Fire",
+      "echoVisible": true,
+      "left": 50.59375,
+      "right": 269.40625,
+      "height": 48,
+      "width": 219,
+      "chain": [
+        "fieldset w=250 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=288 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=320 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=320 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 320
+    },
+    {
+      "viewport": "phone-small",
+      "id": "reassign-character",
+      "text": "Iryna",
+      "textPx": 36,
+      "roomPx": 158,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 269.40625,
+      "height": 48,
+      "width": 219,
+      "chain": [
+        "fieldset w=250 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=288 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=320 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=320 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 320
+    },
+    {
+      "viewport": "phone",
+      "id": "scene-select",
+      "text": "The Abandoned Métro Platform",
+      "textPx": 228,
+      "roomPx": 213,
+      "truncated": true,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 324.40625,
+      "height": 48,
+      "width": 274,
+      "chain": [
+        "fieldset w=305 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=343 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=375 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=375 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 375
+    },
+    {
+      "viewport": "phone",
+      "id": "edit-target",
+      "text": "Choose one…",
+      "textPx": 99,
+      "roomPx": 213,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 324.40625,
+      "height": 48,
+      "width": 274,
+      "chain": [
+        "fieldset w=305 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=343 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=375 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=375 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 375
+    },
+    {
+      "viewport": "phone",
+      "id": "grant-character",
+      "text": "Iryna",
+      "textPx": 36,
+      "roomPx": 213,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 324.40625,
+      "height": 48,
+      "width": 274,
+      "chain": [
+        "fieldset w=305 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=343 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=375 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=375 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 375
+    },
+    {
+      "viewport": "phone",
+      "id": "advance-character",
+      "text": "Iryna",
+      "textPx": 36,
+      "roomPx": 213,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 324.40625,
+      "height": 48,
+      "width": 274,
+      "chain": [
+        "fieldset w=305 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=343 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=375 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=375 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 375
+    },
+    {
+      "viewport": "phone",
+      "id": "advance-select",
+      "text": "Hell's Ravenous Fire",
+      "textPx": 146,
+      "roomPx": 213,
+      "truncated": false,
+      "echoText": "Hell's Ravenous Fire",
+      "echoVisible": true,
+      "left": 50.59375,
+      "right": 324.40625,
+      "height": 48,
+      "width": 274,
+      "chain": [
+        "fieldset w=305 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=343 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=375 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=375 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 375
+    },
+    {
+      "viewport": "phone",
+      "id": "reassign-character",
+      "text": "Iryna",
+      "textPx": 36,
+      "roomPx": 213,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 324.40625,
+      "height": 48,
+      "width": 274,
+      "chain": [
+        "fieldset w=305 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=343 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=375 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=375 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 375
+    },
+    {
+      "viewport": "tablet",
+      "id": "scene-select",
+      "text": "The Abandoned Métro Platform",
+      "textPx": 228,
+      "roomPx": 606,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 717.40625,
+      "height": 48,
+      "width": 667,
+      "chain": [
+        "fieldset w=698 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=736 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=768 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=768 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 768
+    },
+    {
+      "viewport": "tablet",
+      "id": "edit-target",
+      "text": "Choose one…",
+      "textPx": 99,
+      "roomPx": 606,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 717.40625,
+      "height": 48,
+      "width": 667,
+      "chain": [
+        "fieldset w=698 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=736 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=768 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=768 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 768
+    },
+    {
+      "viewport": "tablet",
+      "id": "grant-character",
+      "text": "Iryna",
+      "textPx": 36,
+      "roomPx": 606,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 717.40625,
+      "height": 48,
+      "width": 667,
+      "chain": [
+        "fieldset w=698 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=736 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=768 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=768 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 768
+    },
+    {
+      "viewport": "tablet",
+      "id": "advance-character",
+      "text": "Iryna",
+      "textPx": 36,
+      "roomPx": 606,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 717.40625,
+      "height": 48,
+      "width": 667,
+      "chain": [
+        "fieldset w=698 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=736 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=768 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=768 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 768
+    },
+    {
+      "viewport": "tablet",
+      "id": "advance-select",
+      "text": "Hell's Ravenous Fire",
+      "textPx": 146,
+      "roomPx": 606,
+      "truncated": false,
+      "echoText": "Hell's Ravenous Fire",
+      "echoVisible": true,
+      "left": 50.59375,
+      "right": 717.40625,
+      "height": 48,
+      "width": 667,
+      "chain": [
+        "fieldset w=698 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=736 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=768 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=768 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 768
+    },
+    {
+      "viewport": "tablet",
+      "id": "reassign-character",
+      "text": "Iryna",
+      "textPx": 36,
+      "roomPx": 606,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 50.59375,
+      "right": 717.40625,
+      "height": 48,
+      "width": 667,
+      "chain": [
+        "fieldset w=698 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=736 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=768 pad=16px/16px bw=0px/0px m=0px/0px",
+        "div w=768 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 768
+    },
+    {
+      "viewport": "desktop",
+      "id": "scene-select",
+      "text": "The Abandoned Métro Platform",
+      "textPx": 228,
+      "roomPx": 378,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 139.09375,
+      "right": 577.90625,
+      "height": 48,
+      "width": 439,
+      "chain": [
+        "fieldset w=470 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=508 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=1088 pad=16px/16px bw=0px/0px m=88.5px/88.5px",
+        "div w=1265 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 1265
+    },
+    {
+      "viewport": "desktop",
+      "id": "edit-target",
+      "text": "Choose one…",
+      "textPx": 99,
+      "roomPx": 378,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 139.09375,
+      "right": 577.90625,
+      "height": 48,
+      "width": 439,
+      "chain": [
+        "fieldset w=470 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=508 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=1088 pad=16px/16px bw=0px/0px m=88.5px/88.5px",
+        "div w=1265 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 1265
+    },
+    {
+      "viewport": "desktop",
+      "id": "grant-character",
+      "text": "Iryna",
+      "textPx": 36,
+      "roomPx": 378,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 687.09375,
+      "right": 1125.90625,
+      "height": 48,
+      "width": 439,
+      "chain": [
+        "fieldset w=470 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=508 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=1088 pad=16px/16px bw=0px/0px m=88.5px/88.5px",
+        "div w=1265 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 1265
+    },
+    {
+      "viewport": "desktop",
+      "id": "advance-character",
+      "text": "Iryna",
+      "textPx": 36,
+      "roomPx": 378,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 687.09375,
+      "right": 1125.90625,
+      "height": 48,
+      "width": 439,
+      "chain": [
+        "fieldset w=470 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=508 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=1088 pad=16px/16px bw=0px/0px m=88.5px/88.5px",
+        "div w=1265 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 1265
+    },
+    {
+      "viewport": "desktop",
+      "id": "advance-select",
+      "text": "Hell's Ravenous Fire",
+      "textPx": 146,
+      "roomPx": 378,
+      "truncated": false,
+      "echoText": "Hell's Ravenous Fire",
+      "echoVisible": true,
+      "left": 687.09375,
+      "right": 1125.90625,
+      "height": 48,
+      "width": 439,
+      "chain": [
+        "fieldset w=470 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=508 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=1088 pad=16px/16px bw=0px/0px m=88.5px/88.5px",
+        "div w=1265 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 1265
+    },
+    {
+      "viewport": "desktop",
+      "id": "reassign-character",
+      "text": "Iryna",
+      "textPx": 36,
+      "roomPx": 378,
+      "truncated": false,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 687.09375,
+      "right": 1125.90625,
+      "height": 48,
+      "width": 439,
+      "chain": [
+        "fieldset w=470 pad=13.6px/13.6px bw=2px/2px m=0px/0px",
+        "section.step w=508 pad=16px/16px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=1088 pad=16px/16px bw=0px/0px m=88.5px/88.5px",
+        "div w=1265 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "12.8px/44px",
+      "viewportWidth": 1265
+    },
+    {
+      "viewport": "phone-small@200%",
+      "id": "scene-select",
+      "text": "The Abandoned Métro Platform",
+      "textPx": 430,
+      "roomPx": 10,
+      "truncated": true,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 96.1875,
+      "right": 223.8125,
+      "height": 96,
+      "width": 128,
+      "chain": [
+        "fieldset w=186 pad=27.2px/27.2px bw=2px/2px m=0px/0px",
+        "section.step w=256 pad=32px/32px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=320 pad=32px/32px bw=0px/0px m=0px/0px",
+        "div w=320 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "25.6px/88px",
+      "viewportWidth": 320
+    },
+    {
+      "viewport": "phone-small@200%",
+      "id": "edit-target",
+      "text": "Choose one…",
+      "textPx": 185,
+      "roomPx": 10,
+      "truncated": true,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 96.1875,
+      "right": 223.8125,
+      "height": 96,
+      "width": 128,
+      "chain": [
+        "fieldset w=186 pad=27.2px/27.2px bw=2px/2px m=0px/0px",
+        "section.step w=256 pad=32px/32px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=320 pad=32px/32px bw=0px/0px m=0px/0px",
+        "div w=320 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "25.6px/88px",
+      "viewportWidth": 320
+    },
+    {
+      "viewport": "phone-small@200%",
+      "id": "grant-character",
+      "text": "Iryna",
+      "textPx": 68,
+      "roomPx": 10,
+      "truncated": true,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 96.1875,
+      "right": 223.8125,
+      "height": 96,
+      "width": 128,
+      "chain": [
+        "fieldset w=186 pad=27.2px/27.2px bw=2px/2px m=0px/0px",
+        "section.step w=256 pad=32px/32px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=320 pad=32px/32px bw=0px/0px m=0px/0px",
+        "div w=320 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "25.6px/88px",
+      "viewportWidth": 320
+    },
+    {
+      "viewport": "phone-small@200%",
+      "id": "advance-character",
+      "text": "Iryna",
+      "textPx": 68,
+      "roomPx": 10,
+      "truncated": true,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 96.1875,
+      "right": 223.8125,
+      "height": 96,
+      "width": 128,
+      "chain": [
+        "fieldset w=186 pad=27.2px/27.2px bw=2px/2px m=0px/0px",
+        "section.step w=256 pad=32px/32px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=320 pad=32px/32px bw=0px/0px m=0px/0px",
+        "div w=320 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "25.6px/88px",
+      "viewportWidth": 320
+    },
+    {
+      "viewport": "phone-small@200%",
+      "id": "advance-select",
+      "text": "Hell's Ravenous Fire",
+      "textPx": 277,
+      "roomPx": 10,
+      "truncated": true,
+      "echoText": "Hell's Ravenous Fire",
+      "echoVisible": true,
+      "left": 96.1875,
+      "right": 223.8125,
+      "height": 96,
+      "width": 128,
+      "chain": [
+        "fieldset w=186 pad=27.2px/27.2px bw=2px/2px m=0px/0px",
+        "section.step w=256 pad=32px/32px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=320 pad=32px/32px bw=0px/0px m=0px/0px",
+        "div w=320 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "25.6px/88px",
+      "viewportWidth": 320
+    },
+    {
+      "viewport": "phone-small@200%",
+      "id": "reassign-character",
+      "text": "Iryna",
+      "textPx": 68,
+      "roomPx": 10,
+      "truncated": true,
+      "echoText": null,
+      "echoVisible": false,
+      "left": 96.1875,
+      "right": 223.8125,
+      "height": 96,
+      "width": 128,
+      "chain": [
+        "fieldset w=186 pad=27.2px/27.2px bw=2px/2px m=0px/0px",
+        "section.step w=256 pad=32px/32px bw=3px/3px m=0px/0px",
+        "main.gm-screen w=320 pad=32px/32px bw=0px/0px m=0px/0px",
+        "div w=320 pad=0px/0px bw=0px/0px m=0px/0px"
+      ],
+      "selectPad": "25.6px/88px",
+      "viewportWidth": 320
+    }
+  ],
+  "finishedAt": "2026-10-09T05:26:53.164Z",
+  "ok": false,
+  "summary": {
+    "states": 0,
+    "controlsAudited": 0,
+    "controlIssues": 0,
+    "overflowStates": 0,
+    "axeHardViolations": 0,
+    "axeBestPractice": [],
+    "failures": 7
+  }
+}
