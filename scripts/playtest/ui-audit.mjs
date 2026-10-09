@@ -419,8 +419,9 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  // The first roster entry (the sourcebook roster's Iryna; the placeholder "Rook" no longer exists).
+  const finder = `document.querySelector(".roster-panel-list li button")`;
+  await waitFor(gm, finder, 20000, "first roster Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
@@ -435,6 +436,16 @@ async function closeCorrection(gm) {
     `[...document.querySelectorAll('[role="dialog"] button')].find(b => /cancel/i.test(b.textContent))?.click()`,
   );
   await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 10000, "dialog closed");
+}
+
+/** In one-page mode (almost nothing visible) the whole `.sheet` scrolls instead of its body/footer. */
+const SHEET_ONE_PAGE = `getComputedStyle(document.querySelector(".sheet-body")).overflowY === "visible"`;
+async function scrollSheetToEnd(gm) {
+  await ev(
+    gm,
+    `(() => { if (${SHEET_ONE_PAGE}) { const s = document.querySelector(".sheet"); s.scrollTop = s.scrollHeight; } })()`,
+  );
+  await sleep(120);
 }
 
 async function auditModal(gm) {
@@ -490,6 +501,8 @@ async function auditModal(gm) {
       const shrunk = { ...vp, height: vp.height - keyboardHeight };
       await applyViewport(gm, shrunk);
       await sleep(400);
+      // Tiny visible area: the sheet is one scrolling page, so reaching Apply/Cancel means scrolling it.
+      await scrollSheetToEnd(gm);
       const kb = await ev(gm, MODAL_GEOMETRY);
       const kbFrame = { left: 0, top: 0, right: shrunk.width, bottom: shrunk.height };
       record.keyboard = {
@@ -674,18 +687,21 @@ async function auditModal(gm) {
             `(() => { const w = document.documentElement.clientWidth; return [...document.querySelectorAll("body *")].filter(e => (e.getBoundingClientRect().right > w + 1 || e.scrollWidth > e.clientWidth + 1) && getComputedStyle(e).display !== "none").slice(0, 10).map(e => e.tagName.toLowerCase() + (e.className && typeof e.className === "string" ? "." + e.className.split(" ").join(".") : "") + " right=" + Math.round(e.getBoundingClientRect().right) + " sw=" + e.scrollWidth + "/" + e.clientWidth + " :: " + (e.textContent || "").trim().slice(0, 30)); })()`,
           );
         }
-        record.checks.bodyKeepsRoom = geo.body.clientHeight >= 96;
+        record.checks.bodyKeepsRoom = geo.body.clientHeight >= 96 || (await ev(gm, SHEET_ONE_PAGE));
         // The action row may scroll on its own at this size, but its buttons must be reachable.
         await ev(
           gm,
           `(() => { const f = document.querySelector(".sheet-footer"); f.scrollTop = f.scrollHeight; })()`,
         );
+        await scrollSheetToEnd(gm);
         const end = await ev(gm, MODAL_GEOMETRY);
         record.checks.actionsReachable = within(end.apply, frame) && within(end.cancel, frame);
         await ev(
           gm,
           `(() => { const b = document.querySelector(".sheet-body"); b.scrollTop = b.scrollHeight; })()`,
         );
+        await ev(gm, `document.querySelector(".sheet").scrollTop = 0`);
+        await scrollSheetToEnd(gm);
         const bottom = await ev(gm, MODAL_GEOMETRY);
         record.checks.reasonReachable = within(bottom.reason, frame);
         record.textPx = px;
@@ -698,6 +714,93 @@ async function auditModal(gm) {
       { informationalChecks },
     );
   }
+  // Browser/Android Back with the sheet open must dismiss the sheet, not leave the console (the app
+  // routes by location.hash). The negative controls matter: the history entry the sheet added must be
+  // gone again after Cancel, so a later Back leaves the page rather than doing nothing.
+  await scenario("back-dismiss", byName["phone"], async (record) => {
+    const hashBefore = await ev(gm, `location.hash`);
+    await openCorrection(gm);
+    // (history.length is no evidence: earlier scenarios leave forward entries that a push replaces.)
+    record.checks.sheetAddedItsEntry = await ev(
+      gm,
+      `Boolean(history.state && history.state.digitableSheetEntry)`,
+    );
+    record.checks.urlUnchangedWhileOpen = (await ev(gm, `location.hash`)) === hashBefore;
+    await ev(gm, `history.back()`);
+    await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 5000, "dialog closed by Back");
+    await sleep(200);
+    record.checks.backClosedSheet = true;
+    record.checks.backStayedOnConsole =
+      (await ev(gm, `location.hash`)) === hashBefore &&
+      (await ev(gm, `Boolean(document.querySelector(".roster-panel-list"))`));
+    record.checks.backgroundInteractiveAfterBack = await ev(
+      gm,
+      `![...document.body.children].some(c => c.hasAttribute("inert")) && !document.documentElement.classList.contains("sheet-open")`,
+    );
+    // Cancel path: the extra entry must be popped again.
+    await openCorrection(gm);
+    await closeCorrection(gm);
+    await sleep(300);
+    record.checks.cancelPoppedItsEntry = !(await ev(
+      gm,
+      `Boolean(history.state && history.state.digitableSheetEntry)`,
+    ));
+    record.checks.urlUnchangedAfterCancel = (await ev(gm, `location.hash`)) === hashBefore;
+  });
+
+  // Almost nothing visible (landscape phone + keyboard, split-screen): the sheet becomes one scrolling
+  // page so Apply/Cancel stay reachable. The 375x640 case is the negative control (pinned layout).
+  for (const vp of [
+    { name: "tiny-375x200", width: 375, height: 200, mobile: true },
+    { name: "tiny-667x150", width: 667, height: 150, mobile: true },
+    { name: "tiny-320x160", width: 320, height: 160, mobile: true },
+  ]) {
+    await scenario(`short-visible-${vp.name}`, vp, async (record) => {
+      await openCorrection(gm);
+      const frame = frameOf(vp);
+      const mode = await ev(
+        gm,
+        `({ bodyOverflow: getComputedStyle(document.querySelector(".sheet-body")).overflowY, sheetOverflow: getComputedStyle(document.querySelector(".sheet")).overflowY })`,
+      );
+      record.mode = mode;
+      record.checks.onePageModeEngaged =
+        mode.bodyOverflow === "visible" && mode.sheetOverflow === "auto";
+      await ev(
+        gm,
+        `(() => { const s = document.querySelector(".sheet"); s.scrollTop = s.scrollHeight; })()`,
+      );
+      await sleep(150);
+      const end = await ev(gm, MODAL_GEOMETRY);
+      record.geometry = end;
+      record.checks.actionsReachableByScrollingTheSheet =
+        within(end.apply, frame) && within(end.cancel, frame);
+      record.checks.actionTargets44 = end.apply?.height >= 43.5 && end.cancel?.height >= 43.5;
+      record.checks.noPageOverflow = end.pageOverflowPx <= 1;
+      await ev(gm, `(() => { const s = document.querySelector(".sheet"); s.scrollTop = 0; })()`);
+      await sleep(100);
+      const top = await ev(
+        gm,
+        `document.querySelector("#correction-heading").getBoundingClientRect().top`,
+      );
+      record.checks.titleReachableByScrollingBack = top >= -1 && top < vp.height;
+      record.screenshot = await screenshot(gm, `gm-correction-${vp.name}.jpg`, { fullPage: false });
+    });
+  }
+  await scenario(
+    "short-visible-negative-control",
+    { name: "phone-375x640", width: 375, height: 640, mobile: true },
+    async (record) => {
+      await openCorrection(gm);
+      const mode = await ev(
+        gm,
+        `({ bodyOverflow: getComputedStyle(document.querySelector(".sheet-body")).overflowY })`,
+      );
+      record.mode = mode;
+      // At a normal height the header/footer stay pinned and only the body scrolls.
+      record.checks.pinnedLayoutKeptAtNormalHeight = mode.bodyOverflow === "auto";
+    },
+  );
+
   await applyViewport(gm, byName["desktop"]);
 }
 

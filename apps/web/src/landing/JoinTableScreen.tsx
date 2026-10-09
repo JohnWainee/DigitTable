@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { navigate } from "../router.js";
+import { EXACT_TEXT_ENTRY, ROOM_CODE_ENTRY } from "../shared/textEntry.js";
 import {
   ConnectionStatusStrip,
   useFixtureConnectionState,
@@ -68,6 +69,7 @@ export function JoinTableScreen(): JSX.Element {
               id="table-room-code"
               type="text"
               required
+              {...ROOM_CODE_ENTRY}
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value)}
             />
@@ -78,6 +80,7 @@ export function JoinTableScreen(): JSX.Element {
               id="table-code"
               type="text"
               required
+              {...EXACT_TEXT_ENTRY}
               value={tableCode}
               onChange={(e) => setTableCode(e.target.value)}
             />

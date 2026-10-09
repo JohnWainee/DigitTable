@@ -54,6 +54,22 @@ function mediaBlock(query: string): string {
   throw new Error("unbalanced braces");
 }
 
+/** The text of the first `@<atRule> …{ … }` block whose prelude contains `prelude`, by brace matching. */
+function atBlock(atRule: string, prelude: string): string {
+  const start = css.indexOf(`@${atRule} ${prelude}`);
+  if (start < 0) throw new Error(`no @${atRule} ${prelude}`);
+  const open = css.indexOf("{", start);
+  let depth = 0;
+  for (let i = open; i < css.length; i += 1) {
+    if (css[i] === "{") depth += 1;
+    if (css[i] === "}") {
+      depth -= 1;
+      if (depth === 0) return css.slice(open + 1, i);
+    }
+  }
+  throw new Error("unbalanced braces");
+}
+
 function token(name: string): string {
   const match = new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{6})`).exec(css);
   if (!match) throw new Error(`token --${name} not a hex colour in :root`);
@@ -199,7 +215,8 @@ describe("reskin stylesheet contract", () => {
     it("lets the action row scroll on its own and stack to one column, so large text cannot squeeze the body away", () => {
       const footer = rulesFor(/^\.sheet-footer$/);
       // vh base, dvh override behind @supports (an invalid var() would otherwise drop the cap).
-      expect(declaration(footer, "max-height")).toEqual([
+      // (`none` is the one-page-scroll override inside the @container block, tested separately.)
+      expect(declaration(footer, "max-height").filter((value) => value !== "none")).toEqual([
         "calc(var(--vv-height, 100vh) * 0.4)",
         "calc(var(--vv-height, 100dvh) * 0.4)",
       ]);
@@ -238,6 +255,42 @@ describe("reskin stylesheet contract", () => {
 
     it("reclaims vertical room on short viewports (landscape phone / keyboard open)", () => {
       expect(mediaBlock("(max-height: 34rem)")).toMatch(/\.sheet-grip\s*\{[^}]*display:\s*none/);
+    });
+
+    it("turns into one scrolling page when almost nothing is visible, so Apply/Cancel are never clipped", () => {
+      // The backdrop is the size container: it follows the VISIBLE box (--vv-*), which media queries
+      // (layout viewport) cannot see on iOS with the keyboard up.
+      expect(declaration(rulesFor(/^\.sheet-backdrop$/), "container")).toContain(
+        "sheet-viewport / size",
+      );
+      const tiny = atBlock("container", "sheet-viewport (max-height: 18rem)");
+      expect(tiny).toMatch(/\.sheet\s*\{[^}]*overflow-y:\s*auto/);
+      expect(tiny).toMatch(/\.sheet-body\s*\{[^}]*flex:\s*none[^}]*overflow:\s*visible/s);
+      expect(tiny).toMatch(/\.sheet-footer\s*\{[^}]*max-height:\s*none[^}]*overflow:\s*visible/s);
+      // rem, not px: the threshold must grow with the text-size preference.
+      expect(css).not.toMatch(/@container[^{]*\(max-height:\s*\d+px\)/);
+    });
+
+    it("caps nested gutters so large text cannot squeeze a row to a sliver", () => {
+      expect(css).toMatch(/--g:\s*min\(1rem,\s*5vw\)/);
+      for (const selector of [/^\.sheet-body$/, /^\.sheet-header$/, /^\.sheet-footer$/]) {
+        expect(rulesFor(selector).join()).toMatch(/var\(--g\)/);
+      }
+      expect(declaration(rulesFor(/^\.step,\s*\.scene-card/s), "padding").join()).toContain(
+        "var(--g)",
+      );
+      expect(declaration(rulesFor(/^fieldset$/), "padding").join()).toContain("var(--g)");
+      // The drawn box is px so it does not triple at 200% text; the row stays the tap target.
+      const box = rulesFor(/^input\[type="checkbox"\],\s*input\[type="radio"\]$/s);
+      expect(declaration(box, "width")).toContain("26px");
+      expect(declaration(box, "height")).toContain("26px");
+    });
+
+    it("keeps the disclosure marker, select arrow and picked row visible in Windows High Contrast", () => {
+      const forced = mediaBlock("(forced-colors: active)");
+      expect(forced).toMatch(/summary::before\s*\{[^}]*background:\s*CanvasText/s);
+      expect(forced).toMatch(/select\s*\{[^}]*appearance:\s*auto[^}]*background-image:\s*none/s);
+      expect(forced).toMatch(/\.gear-option:has\(:checked\)\s*\{[^}]*border:\s*3px double/s);
     });
 
     it("locks root scroll only while a sheet is open, without the page jumping", () => {

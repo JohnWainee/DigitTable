@@ -81,3 +81,22 @@ describe("SceneDirector default scene selection", () => {
     expect(selectedScene()).toBe(ids[2]);
   });
 });
+
+describe("SceneDirector selected-scene echo", () => {
+  it("shows the full title of the chosen scene next to the closed select, and follows a change", () => {
+    render(director(null));
+    const picker = screen.getByRole<HTMLSelectElement>("combobox", { name: "Scene" });
+    const echo = (): string =>
+      document.querySelector(".select-echo")?.textContent?.replace(/\s+/g, " ").trim() ?? "";
+    const firstTitle = ORIGINAL_MISSION.find((s) => s.sceneId === picker.value)!.title;
+    expect(echo()).toBe(`Picked ${firstTitle}`);
+    const other = ORIGINAL_MISSION.find((s) => s.sceneId !== picker.value)!;
+    fireEvent.change(picker, { target: { value: other.sceneId } });
+    expect(echo()).toBe(`Picked ${other.title}`);
+  });
+
+  it("is hidden from assistive technology: the select already carries the value", () => {
+    render(director(null));
+    expect(document.querySelector(".select-echo")?.getAttribute("aria-hidden")).toBe("true");
+  });
+});

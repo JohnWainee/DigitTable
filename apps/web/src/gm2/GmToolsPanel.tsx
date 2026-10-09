@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { SelectedEcho } from "../shared/SelectedEcho.js";
+import { EXACT_TEXT_ENTRY } from "../shared/textEntry.js";
 import type { CharacterFullSheet, RollView, RollViewFull } from "@digitable/template-eat-the-reich";
 
 export interface GmToolsPanelProps {
@@ -118,11 +120,13 @@ export function GmToolsPanel({
             </option>
           ))}
         </select>
+        <SelectedEcho text={gmSheets.find((c) => c.id === grantCharacterId)?.name ?? ""} />
         <div className="form-field">
           <label htmlFor="grant-item-id">Item id</label>
           <input
             id="grant-item-id"
             type="text"
+            {...EXACT_TEXT_ENTRY}
             value={itemId}
             onChange={(e) => setItemId(e.target.value)}
           />
@@ -220,6 +224,7 @@ export function GmToolsPanel({
               </option>
             ))}
           </select>
+          <SelectedEcho text={advanceCharacter?.name ?? ""} />
           <label htmlFor="advance-select">Advance</label>
           <select
             id="advance-select"
@@ -233,6 +238,9 @@ export function GmToolsPanel({
               </option>
             ))}
           </select>
+          <SelectedEcho
+            text={advanceCharacter?.advances.find((a) => a.id === advanceId)?.label ?? ""}
+          />
           <div className="form-field">
             <label htmlFor="advance-reason">Reason</label>
             <input
@@ -274,11 +282,13 @@ export function GmToolsPanel({
             </option>
           ))}
         </select>
+        <SelectedEcho text={gmSheets.find((c) => c.id === reassignCharacterId)?.name ?? ""} />
         <div className="form-field">
           <label htmlFor="reassign-member-id">New member id (blank to unassign)</label>
           <input
             id="reassign-member-id"
             type="text"
+            {...EXACT_TEXT_ENTRY}
             value={reassignMemberId}
             onChange={(e) => setReassignMemberId(e.target.value)}
           />

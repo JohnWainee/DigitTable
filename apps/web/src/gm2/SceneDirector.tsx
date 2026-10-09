@@ -6,6 +6,7 @@ import {
 } from "@digitable/template-eat-the-reich";
 import { Icon } from "../shared/Icon.js";
 import { SceneArt } from "../shared/SceneArt.js";
+import { SelectedEcho } from "../shared/SelectedEcho.js";
 
 export interface SceneDirectorProps {
   readonly scene: EatTheReichView["scene"];
@@ -218,6 +219,7 @@ export function SceneDirector({
             </option>
           ))}
         </select>
+        <SelectedEcho text={selected.title} />
         <p className="form-hint">{selected.gmBriefing}</p>
         {scene && !primaryComplete && (
           <div className="form-field">
@@ -292,6 +294,15 @@ export function SceneDirector({
               </option>
             ))}
           </select>
+          <SelectedEcho
+            text={
+              editObjective
+                ? `Objective: ${editObjective.title}`
+                : editThreat
+                  ? `Threat: ${editThreat.name}`
+                  : ""
+            }
+          />
           {editTarget && (editObjective ?? editThreat) && (
             <>
               <div className="form-field">

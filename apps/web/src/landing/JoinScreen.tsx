@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { EXACT_TEXT_ENTRY, ROOM_CODE_ENTRY } from "../shared/textEntry.js";
 import { navigate } from "../router.js";
 import {
   ConnectionStatusStrip,
@@ -112,7 +113,7 @@ export function JoinScreen(): JSX.Element {
                 id="recover-room-code"
                 type="text"
                 required
-                autoCapitalize="characters"
+                {...ROOM_CODE_ENTRY}
                 pattern="[A-Za-z0-9-]+"
                 value={recoveryRoomCode}
                 onChange={(event) => setRecoveryRoomCode(event.target.value)}
@@ -124,7 +125,7 @@ export function JoinScreen(): JSX.Element {
                 id="recovery-code"
                 type="text"
                 required
-                autoComplete="off"
+                {...EXACT_TEXT_ENTRY}
                 value={recoveryCode}
                 onChange={(event) => setRecoveryCode(event.target.value)}
               />
@@ -212,7 +213,7 @@ export function JoinScreen(): JSX.Element {
               id="room-code"
               type="text"
               required
-              autoCapitalize="characters"
+              {...ROOM_CODE_ENTRY}
               pattern="[A-Za-z0-9-]+"
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value)}
@@ -224,7 +225,7 @@ export function JoinScreen(): JSX.Element {
               id="join-passphrase"
               type="text"
               required
-              autoComplete="off"
+              {...EXACT_TEXT_ENTRY}
               value={passphrase}
               onChange={(e) => setPassphrase(e.target.value)}
             />

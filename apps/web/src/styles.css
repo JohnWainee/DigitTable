@@ -1,5 +1,8 @@
 /*
- * Ink-black punk reskin ("D" reskin, 2026-09-18).
+ * Ink-black punk reskin ("D" reskin, 2026-09-18), second pass "HR" (2026-10-09): louder
+ * hierarchy (misregistered two-colour headings, hazard rules, alternating stamp legends, a
+ * "picked" stamp on selected rows), a scratch-and-dust layer over the print grain, a Back-
+ * dismissible short-viewport-safe sheet, large-text gutter caps, and forced-colors fixes.
  *
  * Visual language: near-black ink surfaces, hard-offset "misregistered" print
  * shadows, condensed uppercase display type, mono stamp labels, and a
@@ -71,6 +74,17 @@
   --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffe600' d='M3 8h18l-9 10z'/%3E%3C/svg%3E");
 
   --tap: 3rem;
+
+  /* Gutter unit for nested panels: 1rem, but never more than 5vw. Rem gutters five panels deep
+     (screen > step > card > fieldset > option row) eat the whole line at 320px with 200% text and
+     leave a 2px text column; vw does not scale with the text-size preference, so the cap holds. */
+  --g: min(1rem, 5vw);
+
+  /* Sparse scratches and dust on top of the grain: a photocopier that has seen things. Two white
+     hairline scratches and a handful of specks per 360px tile, ~9% alpha. */
+  --dust: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360'%3E%3Cg stroke='%23f3ecda' stroke-opacity='.09' fill='none' stroke-linecap='round'%3E%3Cpath d='M18 40 L132 52' stroke-width='.8'/%3E%3Cpath d='M240 210 L214 330' stroke-width='.7'/%3E%3Cpath d='M300 20 L340 70' stroke-width='.6'/%3E%3C/g%3E%3Cg fill='%23f3ecda' fill-opacity='.12'%3E%3Ccircle cx='70' cy='190' r='1.3'/%3E%3Ccircle cx='160' cy='110' r='.9'/%3E%3Ccircle cx='286' cy='146' r='1.6'/%3E%3Ccircle cx='38' cy='310' r='1'/%3E%3Ccircle cx='198' cy='260' r='.8'/%3E%3Ccircle cx='330' cy='300' r='1.2'/%3E%3C/g%3E%3C/svg%3E");
+  /* Hazard rule: used as a decorative divider under display headings and above sheets. */
+  --hazard: repeating-linear-gradient(-45deg, var(--acid) 0 0.55rem, var(--ink-0) 0.55rem 1.1rem);
 }
 
 * {
@@ -96,13 +110,14 @@ body {
   background-image:
     radial-gradient(ellipse 80% 100% at 15% 0%, rgba(255, 51, 72, 0.2), transparent 70%),
     radial-gradient(ellipse 70% 100% at 100% 8%, rgba(34, 230, 255, 0.1), transparent 70%),
-    var(--grain), var(--halftone);
+    var(--dust), var(--grain), var(--halftone);
   background-size:
     100% 34rem,
     100% 34rem,
+    360px 360px,
     180px 180px,
     7px 7px;
-  background-repeat: no-repeat, no-repeat, repeat, repeat;
+  background-repeat: no-repeat, no-repeat, repeat, repeat, repeat;
   color: var(--paper);
   font-family: var(--font-body);
   font-size: 1rem;
@@ -133,9 +148,15 @@ h3 {
 h1 {
   font-size: clamp(2.4rem, 11vw, 4.25rem);
   color: var(--paper);
-  text-shadow: 3px 3px 0 var(--riot-deep);
+  /* Misregistered two-colour print: a cyan plate offset up-left, a red plate down-right. */
+  text-shadow:
+    3px 3px 0 var(--riot-deep),
+    -2px -2px 0 rgba(34, 230, 255, 0.55);
   transform: rotate(-0.6deg);
   transform-origin: left center;
+  padding-bottom: 0.55rem;
+  /* Hazard rule under the title, as wide as the title block. */
+  background: linear-gradient(var(--acid), var(--acid)) left bottom / 4.5rem 0.4rem no-repeat;
 }
 
 h2 {
@@ -143,6 +164,8 @@ h2 {
   padding-left: 0.65rem;
   border-left: 0.5rem solid var(--acid);
   color: var(--paper);
+  /* A skewed highlighter swipe behind the first words: hierarchy without hiding the text. */
+  background: linear-gradient(100deg, rgba(255, 230, 0, 0.16), transparent 70%);
 }
 
 h3 {
@@ -209,8 +232,8 @@ li + li {
 .gm-screen,
 .table-screen {
   margin: 0 auto;
-  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
-    max(2.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  padding: max(var(--g), env(safe-area-inset-top)) max(var(--g), env(safe-area-inset-right))
+    max(2.5rem, env(safe-area-inset-bottom)) max(var(--g), env(safe-area-inset-left));
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -248,15 +271,20 @@ li + li {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1.25rem 1rem 1.25rem;
+  padding: 1.25rem var(--g) 1.25rem;
   background:
+    var(--dust),
     var(--grain),
     linear-gradient(180deg, var(--ink-2), var(--ink-1)) padding-box;
   background-size:
+    360px 360px,
     180px 180px,
     auto;
   border: 2px solid var(--paper);
-  box-shadow: 6px 6px 0 var(--riot-deep);
+  /* Red plate down-right, a thin cyan plate up-left: the card looks mis-registered on the press. */
+  box-shadow:
+    6px 6px 0 var(--riot-deep),
+    -2px -2px 0 rgba(34, 230, 255, 0.5);
 }
 
 /* Masking-tape strip: purely decorative, clipped to the card so it can never overflow. */
@@ -279,7 +307,9 @@ li + li {
 .invite-panel,
 .reveal-card {
   border-color: var(--acid);
-  box-shadow: 6px 6px 0 var(--riot-deep);
+  box-shadow:
+    6px 6px 0 var(--riot-deep),
+    -2px -2px 0 rgba(255, 230, 0, 0.45);
   background-color: var(--ink-1);
 }
 
@@ -308,7 +338,7 @@ li + li {
 fieldset {
   min-width: 0;
   margin: 0;
-  padding: 1.1rem 0.85rem 0.85rem;
+  padding: 1.1rem calc(var(--g) * 0.85) 0.85rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -331,13 +361,24 @@ legend {
   transform: rotate(-1deg);
 }
 
+/* Stamp colours rotate through the original palette so a long console reads as separate slips. */
+fieldset:nth-of-type(3n + 2) > legend {
+  background: var(--acid);
+  transform: rotate(0.8deg);
+}
+
+fieldset:nth-of-type(3n) > legend {
+  background: var(--pink);
+  transform: rotate(-0.6deg);
+}
+
 .pending-action-card,
 .roster-panel-list li,
 .threat-list li,
 .roster-card {
   border: 2px solid var(--rule);
   background: rgba(5, 5, 6, 0.55);
-  padding: 0.85rem;
+  padding: calc(var(--g) * 0.85);
 }
 
 .pending-actions-list,
@@ -551,6 +592,30 @@ select {
   cursor: pointer;
 }
 
+/* What the closed select has chosen, in full (the control itself ellipsises). */
+.select-echo {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.6rem;
+  padding: 0.35rem 0.65rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--paper);
+  border-left: 0.4rem solid var(--acid);
+  background: rgba(255, 230, 0, 0.08);
+  overflow-wrap: anywhere;
+}
+
+.select-echo-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--acid);
+}
+
 option,
 optgroup {
   background: var(--ink-2);
@@ -566,8 +631,10 @@ input[type="radio"] {
   flex: none;
   display: inline-grid;
   place-content: center;
-  width: 1.65rem;
-  height: 1.65rem;
+  /* px, not rem: at 200% text a 52px box would take a third of a 320px row. The row (the label) is
+     the tap target, not the box. */
+  width: 26px;
+  height: 26px;
   margin: 0;
   background: var(--ink-0);
   border: 2px solid var(--paper);
@@ -628,8 +695,10 @@ input[type="radio"]:disabled {
   align-items: center;
   gap: 0.85rem;
   min-height: var(--tap);
-  padding: 0.4rem 0.65rem;
+  padding: 0.4rem calc(var(--g) * 0.65);
   border: 2px solid transparent;
+  /* Reserved so the picked row's red bar never shifts the text. */
+  border-left: 0.4rem solid transparent;
   font-family: var(--font-body);
   font-size: 1rem;
   letter-spacing: 0;
@@ -642,8 +711,11 @@ input[type="radio"]:disabled {
   flex-direction: row;
 }
 
+/* The picked row: acid frame, a red bar down the left edge and a tint, so the choice reads at a
+   glance without relying on the (small) drawn box or on colour alone. */
 .gear-option:has(:checked) {
   border-color: var(--acid);
+  border-left-color: var(--riot);
   background: rgba(255, 230, 0, 0.1);
 }
 
@@ -1384,6 +1456,9 @@ details ul {
     env(safe-area-inset-left);
   background: rgba(3, 3, 4, 0.82);
   overscroll-behavior: contain;
+  /* Lets the sheet react to how much room is actually VISIBLE (the box above follows the visual
+     viewport), not to the layout viewport that media queries see: see the container query below. */
+  container: sheet-viewport / size;
   /* Deliberately unrestricted. An ancestor's touch-action cannot be re-enabled by a descendant, so
      `none` here would disable pinch-zoom for the whole page while a sheet is open (WCAG 1.4.4), and
      `pinch-zoom` alone would forbid one-finger panning of a zoomed page, stranding the sheet's title
@@ -1418,9 +1493,18 @@ details ul {
   touch-action: auto;
 }
 
+/* Hazard rule across the top edge: decorative, so it is a pseudo-element, not content. */
+.sheet::before {
+  content: "";
+  flex: none;
+  height: 0.5rem;
+  background: var(--hazard);
+  border-bottom: 2px solid var(--paper);
+}
+
 .sheet-header {
   flex: none;
-  padding: 0.6rem 1rem 0.75rem;
+  padding: 0.6rem var(--g) 0.75rem;
   border-bottom: 2px solid var(--rule);
 }
 
@@ -1439,7 +1523,7 @@ details ul {
 .sheet-body {
   flex: 1 1 auto;
   min-height: 0;
-  padding: 1rem;
+  padding: var(--g);
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
@@ -1451,7 +1535,7 @@ details ul {
 
 .sheet-footer {
   flex: none;
-  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  padding: 0.75rem var(--g) calc(0.75rem + env(safe-area-inset-bottom));
   background: var(--ink-2);
   border-top: 2px solid var(--rule);
   /* Backstop for large text on a small screen: the action row may scroll, but can never take the
@@ -1472,6 +1556,27 @@ details ul {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
   gap: 0.75rem;
+}
+
+/* Almost nothing visible (a landscape phone with the keyboard up, or a tiny split-screen window):
+   pinning a header and a footer would leave the body zero height and clip the action buttons. Below
+   this, the whole sheet is one scrolling page instead, so every control stays reachable. The
+   threshold is in rem so it scales with the text-size preference. */
+@container sheet-viewport (max-height: 18rem) {
+  .sheet {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .sheet-body {
+    flex: none;
+    overflow: visible;
+  }
+
+  .sheet-footer {
+    max-height: none;
+    overflow: visible;
+  }
 }
 
 /* Wide: a centred card with room around it instead of an edge-attached sheet. */
@@ -1695,5 +1800,39 @@ details ul {
 
   .sheet {
     border: 2px solid CanvasText;
+  }
+
+  /* Backgrounds are replaced in forced colours, so shapes drawn with one would vanish. */
+  summary::before {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+
+  .sheet-grip {
+    background: CanvasText;
+  }
+
+  .sheet::before,
+  .step::before,
+  .scene-card::before,
+  .fixture-banner::before {
+    display: none;
+  }
+
+  /* The drawn chevron is a fixed-colour background image: use the system arrow instead. */
+  select {
+    appearance: auto;
+    -webkit-appearance: menulist;
+    background-image: none;
+    padding-right: 0.8rem;
+  }
+
+  /* The tint that marks a picked row is a background; give it a border that survives. */
+  .gear-option:has(:checked) {
+    border: 3px double CanvasText;
+  }
+
+  .select-echo {
+    border-left-color: CanvasText;
   }
 }

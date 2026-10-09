@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { navigate } from "../router.js";
+import { EXACT_TEXT_ENTRY } from "../shared/textEntry.js";
 import {
   ConnectionStatusStrip,
   useFixtureConnectionState,
@@ -86,7 +87,7 @@ export function CreateSessionScreen(): JSX.Element {
               required
               minLength={4}
               maxLength={128}
-              autoComplete="off"
+              {...EXACT_TEXT_ENTRY}
               value={passphrase}
               onChange={(e) => setPassphrase(e.target.value)}
             />
