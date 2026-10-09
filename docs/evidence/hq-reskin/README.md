@@ -5,7 +5,7 @@ Base `c7415d4` (reviewed candidate `9c6d254`). Local Firebase emulators (`demo-d
 ## Defect found and fixed
 The fu audit's recorded backlog item: with the correction sheet **closed**, the GM console overflowed the page horizontally at 320 px and 200% root text (rem-only gutters on card > option row > panel). The old script only measured it with the sheet open.
 
-- Fix: `.gear-option`/`.form-field--checkbox` gap+inline padding and `.pending-action-card` etc. padding are now `min(<old rem>, <n>vw)`, never larger than before.
+- Fix: `.gear-option`/`.form-field--checkbox` gap+inline padding and `.pending-action-card` etc. padding are now `min(<old rem>, <n>vw)`, never larger than before. Side effect (independent review, low): below ~425 px viewport width even at 100% text the inline gutters shrink slightly (about 1.5 px at 375 px); at wider viewports they are unchanged.
 - Audit: `ui-audit.mjs` text-scaling scenarios now also measure the closed page (`closedNoPageOverflow`) and the 320 px/200% scenario is **gating** (was informational).
 - Regression: `reskinContract.test.ts` pins the `min(rem, vw)` gutters.
 
