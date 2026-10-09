@@ -645,6 +645,55 @@ async function auditModal(gm) {
     );
   }
 
+  // A stepper button that disables itself on reaching its bound must not strand focus on <body>:
+  // keyboard and screen-reader users would be dropped out of the sheet mid-adjustment. Activate the
+  // first item-uses "+" until it is exhausted, then "-" until zero, and require after every
+  // activation that focus is on an enabled control inside the sheet.
+  for (const vp of [byName["phone"], byName["tablet"], byName["desktop"], byName["table"]]) {
+    await scenario(`stepper-focus-${vp.name}`, vp, async (record) => {
+      await openCorrection(gm);
+      const label = (dir) =>
+        `[...document.querySelectorAll('[role="dialog"] [role="group"] button')].find(b => b.getAttribute("aria-label")?.startsWith("${dir} ") && /uses$/.test(b.getAttribute("aria-label")))`;
+      const hasStepper = await ev(gm, `Boolean(${label("Increase")})`);
+      record.notes.push(`item-uses stepper present: ${hasStepper}`);
+      if (!hasStepper) {
+        fail(`modal-stepper-focus-${vp.name}`, "no item-uses stepper on the first character");
+        return;
+      }
+      const focusState = `(() => { const a = document.activeElement; return { inSheet: Boolean(a && a.closest('[role="dialog"]')), enabled: Boolean(a && !a.disabled), tag: a?.tagName }; })()`;
+      let allHeld = true;
+      let steps = 0;
+      for (const dir of ["Increase", "Decrease"]) {
+        for (let i = 0; i < 12; i += 1) {
+          const clicked = await ev(
+            gm,
+            `(() => { const b = ${label(dir)}; if (!b || b.disabled) return false; b.focus(); b.click(); return true; })()`,
+          );
+          if (!clicked) break;
+          steps += 1;
+          await sleep(120); // Chrome's focus fix-up for a newly disabled control runs at the next frame
+          const state = await ev(gm, focusState);
+          if (!state.inSheet || !state.enabled) {
+            allHeld = false;
+            record.notes.push(`${dir} #${i + 1}: focus on ${state.tag}, inSheet=${state.inSheet}`);
+          }
+        }
+      }
+      record.notes.push(`stepper activations: ${steps}`);
+      // Evidence: the sheet right after the last tap, the stepper scrolled into view. On a correct
+      // build a focus ring sits on the enabled "+" beside the exhausted "-".
+      await ev(
+        gm,
+        `(document.querySelector('[role="dialog"] [role="group"] button:not(:disabled)')?.closest('[role="group"]') ?? document.activeElement)?.scrollIntoView({ block: "center" })`,
+      );
+      record.screenshot = await screenshot(gm, `gm-stepper-focus-${vp.name}.jpg`, {
+        fullPage: false,
+      });
+      record.checks.steppedToBothBounds = steps >= 2;
+      record.checks.focusStayedOnAnEnabledControlInTheSheet = allHeld;
+    });
+  }
+
   await scenario("zoom-emulated", byName["phone"], async (record) => {
     await openCorrection(gm);
     await gm.cdp.send("Emulation.setPageScaleFactor", { pageScaleFactor: 1.6 }, gm.sessionId);

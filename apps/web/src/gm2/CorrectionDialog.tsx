@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import type {
   CharacterCorrectionPatch,
   CharacterFullSheet,
@@ -9,6 +9,69 @@ export interface CorrectionDialogProps {
   readonly character: CharacterFullSheet;
   readonly onApply: (patch: CharacterCorrectionPatch, reason: string) => void;
   readonly onClose: () => void;
+}
+
+/**
+ * One item's remaining-uses stepper. Tapping a button until its bound is reached disables that very
+ * button, and a disabled control cannot keep focus: the browser drops it to the page, stranding a
+ * keyboard or screen-reader user outside the sheet. Focus is therefore handed to the opposite
+ * button once the new value has rendered (in a layout effect, before the browser's next frame):
+ * only then is that button certainly enabled, even for a one-use item where it was disabled at the
+ * moment of the tap.
+ */
+function UsesStepper({
+  name,
+  value,
+  max,
+  onChange,
+}: {
+  readonly name: string;
+  readonly value: number;
+  readonly max: number;
+  readonly onChange: (next: number) => void;
+}): JSX.Element {
+  const decrease = useRef<HTMLButtonElement>(null);
+  const increase = useRef<HTMLButtonElement>(null);
+  const handOffTo = useRef<"increase" | "decrease" | null>(null);
+  useLayoutEffect(() => {
+    if (handOffTo.current === null) return;
+    (handOffTo.current === "increase" ? increase : decrease).current?.focus();
+    handOffTo.current = null;
+  });
+  function step(delta: -1 | 1): void {
+    const next = Math.max(0, Math.min(max, value + delta));
+    if (next === 0 && max > 0) handOffTo.current = "increase";
+    else if (next === max) handOffTo.current = "decrease";
+    onChange(next);
+  }
+  return (
+    <div role="group" aria-label={`${name} uses`} className="form-field">
+      <span>{name}</span>
+      <div className="stepper-controls">
+        <button
+          type="button"
+          ref={decrease}
+          aria-label={`Decrease ${name} uses`}
+          disabled={value <= 0}
+          onClick={() => step(-1)}
+        >
+          −
+        </button>
+        <span className="stepper-value">
+          {value}/{max}
+        </span>
+        <button
+          type="button"
+          ref={increase}
+          aria-label={`Increase ${name} uses`}
+          disabled={value >= max}
+          onClick={() => step(1)}
+        >
+          +
+        </button>
+      </div>
+    </div>
+  );
 }
 
 /**
@@ -152,42 +215,13 @@ export function CorrectionDialog({
           {character.items.map((item) => {
             const value = itemUses[item.id] ?? item.usesRemaining;
             return (
-              <div
+              <UsesStepper
                 key={item.id}
-                role="group"
-                aria-label={`${item.name} uses`}
-                className="form-field"
-              >
-                <span>{item.name}</span>
-                <div className="stepper-controls">
-                  <button
-                    type="button"
-                    aria-label={`Decrease ${item.name} uses`}
-                    disabled={value <= 0}
-                    onClick={() =>
-                      setItemUses((prev) => ({ ...prev, [item.id]: Math.max(0, value - 1) }))
-                    }
-                  >
-                    −
-                  </button>
-                  <span className="stepper-value">
-                    {value}/{item.maxUses}
-                  </span>
-                  <button
-                    type="button"
-                    aria-label={`Increase ${item.name} uses`}
-                    disabled={value >= item.maxUses}
-                    onClick={() =>
-                      setItemUses((prev) => ({
-                        ...prev,
-                        [item.id]: Math.min(item.maxUses, value + 1),
-                      }))
-                    }
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
+                name={item.name}
+                value={value}
+                max={item.maxUses}
+                onChange={(next) => setItemUses((prev) => ({ ...prev, [item.id]: next }))}
+              />
             );
           })}
         </fieldset>

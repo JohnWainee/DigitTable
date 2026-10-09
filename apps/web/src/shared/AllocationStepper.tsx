@@ -1,4 +1,4 @@
-import type { KeyboardEvent } from "react";
+import { useRef, type KeyboardEvent } from "react";
 import type { AllocationOption } from "@digitable/contracts";
 
 export interface AllocationStepperProps {
@@ -58,6 +58,15 @@ export function AllocationStepper({
     }
   }
 
+  // Reaching a bound disables the tapped button, which would drop focus to the page; the spinbutton
+  // is always enabled, so hand focus to it first.
+  const spinbutton = useRef<HTMLDivElement>(null);
+  function step(next: number): void {
+    const clamped = clamp(next);
+    if (clamped === 0 || clamped === max) spinbutton.current?.focus();
+    onChange(clamped);
+  }
+
   const labelId = `allocation-${option.id}-label`;
 
   return (
@@ -69,12 +78,13 @@ export function AllocationStepper({
         <button
           type="button"
           aria-label={`Decrease ${option.label}`}
-          onClick={() => onChange(clamp(value - 1))}
+          onClick={() => step(value - 1)}
           disabled={value <= 0}
         >
           −
         </button>
         <div
+          ref={spinbutton}
           role="spinbutton"
           tabIndex={0}
           aria-labelledby={labelId}
@@ -90,7 +100,7 @@ export function AllocationStepper({
         <button
           type="button"
           aria-label={`Increase ${option.label}`}
-          onClick={() => onChange(clamp(value + 1))}
+          onClick={() => step(value + 1)}
           disabled={value >= max}
         >
           +

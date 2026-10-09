@@ -1,0 +1,12 @@
+{
+  "states": 150,
+  "controlsAudited": 1434,
+  "controlIssues": 0,
+  "overflowStates": 0,
+  "axeHardViolations": 0,
+  "axeBestPractice": [
+    "anon/route-claim-no-such-room@phone: page-has-heading-one"
+  ],
+  "failures": 0
+}
+UI AUDIT PASSED

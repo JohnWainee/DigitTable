@@ -67,4 +67,18 @@ describe("AllocationStepper", () => {
     render(<AllocationStepper option={option} value={2} budgetIfZero={2} onChange={() => {}} />);
     expect(screen.getAllByRole("button", { name: /increase/i })[1]).toBeDisabled();
   });
+
+  it("hands focus to the spinbutton when a tap reaches a bound, instead of dropping it to the page", async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <AllocationStepper option={option} value={2} budgetIfZero={3} onChange={() => {}} />,
+    );
+    await user.click(screen.getByRole("button", { name: /increase/i }));
+    expect(document.activeElement).toBe(screen.getByRole("spinbutton"));
+
+    rerender(<AllocationStepper option={option} value={1} budgetIfZero={3} onChange={() => {}} />);
+    screen.getByRole("button", { name: /decrease/i }).focus();
+    await user.click(screen.getByRole("button", { name: /decrease/i }));
+    expect(document.activeElement).toBe(screen.getByRole("spinbutton"));
+  });
 });
