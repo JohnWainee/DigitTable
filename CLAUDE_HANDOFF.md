@@ -548,6 +548,13 @@ Branch `sonnet-fu/reskin-fresh-20261006` on `ccb9f2d`. Fresh pop-out/mobile-view
 - Preserve this worktree's existing unrelated `package-lock.json` modification. The staging handoff branch remains ahead of its remote until DNS/network access permits a push; do not deploy, merge, or create production resources.
 - Next action: rerun the live smoke and emulator suite from a networked, loopback-permitted workstation; use a logged-in Claude environment for the fresh isolated reskin audit. Do not deploy or merge the candidate solely to obtain that evidence.
 
+## Staging verification and handoff push (2026-10-10, Codex hourly automation)
+
+- The named `digitable-staging-playthrough` Sonnet session (`31f4a4ef`) remains unavailable rather than complete: `claude logs 31f4a4ef` returned `ECONNREFUSED` for its control socket and `claude auth status` reports `loggedIn: false`. It has not been credited with any verification result.
+- Replacement local gate was rerun on this staging worktree: `npm run check` passed (format, lint, six-workspace typecheck, **714 passed / 11 todo**, 74 test files passed and 1 skipped) and `npm run build` passed. The only build output was the existing Vite >500 kB chunk-size warning.
+- A new emulator run remains blocked before test execution because `java -version` reports no Java runtime. This is an environment prerequisite failure, not a product result; the latest completed emulator evidence remains 2026-10-09 (**18 testing/rules + 86 Functions + 4 web**).
+- Pushed the prior gate-documentation commits `7c23740` and `ede48d2` to `origin/codex/staging-playthrough-20261007`. The pre-existing, unrelated `package-lock.json` worktree modification remains unmodified and uncommitted.
+
 ## Candidate-gate follow-up (2026-10-10, Codex hourly automation)
 
 - The requested Sonnet session remains unavailable rather than complete: `claude logs 31f4a4ef` again returned `ECONNREFUSED`, and `claude auth status` reports `loggedIn: false`. The clean isolated `sonnet/iw-reskin-orchestrated-20261010` worktree remains pinned to candidate `cd92f3a`; no source change or duplicate worktree was created.
