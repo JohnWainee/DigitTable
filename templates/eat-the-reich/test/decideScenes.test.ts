@@ -45,6 +45,22 @@ describe("decide: LoadScene / NextScene (matrix S1, S8)", () => {
     reinforcementsMode: "book" as const,
   };
 
+  it("requires the trusted room authority to resolve ID-only original scene commands", () => {
+    for (const command of [
+      { type: "LoadOriginalScene" as const, sceneId: "scene-1" },
+      { type: "NextOriginalScene" as const, sceneId: "scene-1", reason: "test" },
+    ]) {
+      const decision = eatTheReichTemplate.decide(
+        { state: scenelessState(), actor: GM_CTX, random: new FixedSequenceRandom([]) },
+        command,
+      );
+      expect(decision).toMatchObject({
+        ok: false,
+        code: "UNKNOWN_ACTION",
+      });
+    }
+  });
+
   it("LoadScene loads the first scene when none is active", () => {
     const decision = eatTheReichTemplate.decide(
       { state: scenelessState(), actor: GM_CTX, random: new FixedSequenceRandom([]) },

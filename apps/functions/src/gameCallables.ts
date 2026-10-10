@@ -6,6 +6,7 @@ import {
 } from "firebase-functions/v2/https";
 import type { Firestore } from "firebase-admin/firestore";
 import type { EatTheReichEvent } from "@digitable/template-eat-the-reich";
+import type { SceneDefinition } from "@digitable/template-eat-the-reich";
 import {
   FUNCTIONS_REGION,
   type RoomCommandResult,
@@ -20,6 +21,10 @@ import {
   type GameCommandDependencies,
   type GameCommandLogger,
 } from "./gameCommandAuthority.js";
+import {
+  EncounterCatalogAccessError,
+  getAuthorizedOriginalSceneCatalog,
+} from "./trustedSceneCatalog.js";
 
 export interface SubmitRoomCommandDependencies {
   readonly db: Firestore;
@@ -31,6 +36,10 @@ export interface SubmitRoomCommandDependencies {
 export type SubmitRoomCommandCallable = CallableFunction<
   unknown,
   Promise<RoomCommandResult<EatTheReichEvent>>
+>;
+export type GetEncounterCatalogCallable = CallableFunction<
+  unknown,
+  Promise<readonly SceneDefinition[]>
 >;
 
 function toHttpsError(code: StableErrorCode, message: string): HttpsError {
@@ -118,6 +127,31 @@ async function handleSubmitRoomCommand(
   return submitRoomCommand(roomId, uid, wire, gameDeps);
 }
 
+async function handleGetEncounterCatalog(
+  deps: SubmitRoomCommandDependencies,
+  request: CallableRequest<unknown>,
+): Promise<readonly SceneDefinition[]> {
+  if (request.app === undefined) {
+    deps.logger.info("gameCommand.appCheckMissing", { function: "getEncounterCatalog" });
+  }
+  const uid = requireAuth(request);
+  const roomId = requireRoomId(request);
+  try {
+    return await getAuthorizedOriginalSceneCatalog(deps.db, roomId, uid);
+  } catch (error) {
+    if (error instanceof EncounterCatalogAccessError) {
+      const message =
+        error.code === "AUTH_REQUIRED"
+          ? "Sign-in is required to access this encounter catalog."
+          : error.code === "ROLE_FORBIDDEN"
+            ? "Only the GM may access the original encounter catalog."
+            : "This room's membership data could not be verified.";
+      throw toHttpsError(error.code, message);
+    }
+    throw error;
+  }
+}
+
 /**
  * Builds the `submitRoomCommand` callable against explicit dependencies —
  * same production/test-injection shape as `callables.ts`'s
@@ -125,11 +159,16 @@ async function handleSubmitRoomCommand(
  */
 export function createGameCallables(deps: SubmitRoomCommandDependencies): {
   readonly submitRoomCommand: SubmitRoomCommandCallable;
+  readonly getEncounterCatalog: GetEncounterCatalogCallable;
 } {
   return {
     submitRoomCommand: onCall<unknown, Promise<RoomCommandResult<EatTheReichEvent>>>(
       { enforceAppCheck: false, invoker: "public", region: FUNCTIONS_REGION },
       (request) => handleSubmitRoomCommand(deps, request),
+    ),
+    getEncounterCatalog: onCall<unknown, Promise<readonly SceneDefinition[]>>(
+      { enforceAppCheck: false, invoker: "public", region: FUNCTIONS_REGION },
+      (request) => handleGetEncounterCatalog(deps, request),
     ),
   };
 }

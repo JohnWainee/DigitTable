@@ -14,7 +14,9 @@ import {
   type RoomAdmissionAccepted,
   type RoomAdmissionRejected,
 } from "@digitable/contracts";
+import type { SceneDefinition } from "@digitable/template-eat-the-reich";
 import { callable, getRoomFunctions, type FunctionsEmulatorConfig } from "../firebase/functions.js";
+import { parseEncounterCatalog } from "./encounterCatalog.js";
 import type { FirestoreEmulatorConfig } from "../firebase/firestore.js";
 import { stableErrorFromThrown } from "../firebase/functionsError.js";
 import {
@@ -142,6 +144,21 @@ export class FirebaseSessionClient {
       return { ok: true, ...response.data };
     } catch (error) {
       return { ok: false, ...stableErrorFromThrown(error) };
+    }
+  }
+
+  /** Private original encounter data is fetched only through the GM-authorized callable. */
+  async getEncounterCatalog(roomId: string): Promise<readonly SceneDefinition[]> {
+    await this.ensureSignedIn();
+    const fn = callable<{ readonly roomId: string }, unknown>(
+      getRoomFunctions(this.app, this.emulator?.functions),
+      "getEncounterCatalog",
+    );
+    try {
+      const response = await fn({ roomId });
+      return parseEncounterCatalog(response.data);
+    } catch (error) {
+      throw new Error(stableErrorFromThrown(error).message);
     }
   }
 }

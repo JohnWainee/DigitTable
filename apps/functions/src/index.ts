@@ -35,3 +35,4 @@ export const recoverSeat = callables.recoverSeat;
 
 const gameCallables = createGameCallables({ db: getFirestore(), logger });
 export const submitRoomCommand = gameCallables.submitRoomCommand;
+export const getEncounterCatalog = gameCallables.getEncounterCatalog;

@@ -2,8 +2,10 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
 import { describe, expect, it, vi } from "vitest";
-import { ORIGINAL_MISSION, type SceneView } from "@digitable/template-eat-the-reich";
+import type { SceneView } from "@digitable/template-eat-the-reich";
+import { PUBLIC_SCENE_CATALOG } from "@digitable/template-eat-the-reich/public-scenes";
 import { SceneDirector } from "../../src/gm2/SceneDirector.js";
+import { fixtureEncounterCatalog } from "../../src/session/fixtureEncounterCatalog.js";
 
 const noop = vi.fn();
 
@@ -13,6 +15,8 @@ function director(scene: SceneView | null): JSX.Element {
       scene={scene}
       objectives={[]}
       threats={[]}
+      catalog={fixtureEncounterCatalog()}
+      catalogStatus="ready"
       onLoadScene={noop}
       onNextScene={noop}
       onRevealThreat={noop}
@@ -41,7 +45,7 @@ function selectedScene(): string {
 }
 
 function sceneView(id: string): SceneView {
-  const definition = ORIGINAL_MISSION.find((s) => s.sceneId === id)!;
+  const definition = PUBLIC_SCENE_CATALOG.find((s) => s.sceneId === id)!;
   return {
     id,
     title: definition.title,
@@ -53,7 +57,7 @@ function sceneView(id: string): SceneView {
   };
 }
 
-const ids = ORIGINAL_MISSION.map((s) => s.sceneId);
+const ids = PUBLIC_SCENE_CATALOG.map((s) => s.sceneId);
 
 describe("SceneDirector default scene selection", () => {
   it("offers the opening scene when none is loaded", () => {
@@ -98,7 +102,7 @@ describe("SceneDirector default scene selection", () => {
     render(director(null));
     const cards = screen.getAllByRole("button", { name: /^Select scene/ });
     expect(cards).toHaveLength(4);
-    for (const [index, definition] of ORIGINAL_MISSION.entries()) {
+    for (const [index, definition] of PUBLIC_SCENE_CATALOG.entries()) {
       const card = cards[index]!;
       expect(card).toHaveAttribute("data-scene-id", definition.sceneId);
       expect(within(card).getByRole("img")).toHaveAttribute(
@@ -108,7 +112,7 @@ describe("SceneDirector default scene selection", () => {
       expect(within(card).getByText(definition.locationLabel)).toBeInTheDocument();
     }
     expect(screen.getByText(/GM briefing:/i).parentElement?.textContent).toContain(
-      ORIGINAL_MISSION[0]!.gmBriefing,
+      fixtureEncounterCatalog()[0]!.gmBriefing,
     );
     expect(screen.getByRole("heading", { name: "Objectives" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Threats" })).toBeInTheDocument();
@@ -118,11 +122,34 @@ describe("SceneDirector default scene selection", () => {
     const active = sceneView(ids[0]!);
     render(director(active));
     const current = screen.getByRole("button", {
-      name: new RegExp(`Select scene 1: ${ORIGINAL_MISSION[0]!.title}.*currently active`),
+      name: new RegExp(`Select scene 1: ${PUBLIC_SCENE_CATALOG[0]!.title}.*currently active`),
     });
     expect(current).toBeDisabled();
     expect(current).toHaveAttribute("aria-pressed", "false");
     expect(selectedScene()).toBe(ids[1]);
+  });
+
+  it("sends only a public scene ID through the command callback", () => {
+    const onLoadScene = vi.fn();
+    render(
+      <SceneDirector
+        scene={null}
+        objectives={[]}
+        threats={[]}
+        catalog={fixtureEncounterCatalog()}
+        catalogStatus="ready"
+        onLoadScene={onLoadScene}
+        onNextScene={noop}
+        onRevealThreat={noop}
+        onEndRound={noop}
+        onSetSceneRules={noop}
+        onEditRating={noop}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Load scene" }));
+    expect(onLoadScene).toHaveBeenCalledExactlyOnceWith(PUBLIC_SCENE_CATALOG[0]!.sceneId);
+    expect(JSON.stringify(onLoadScene.mock.calls)).not.toContain("gmBriefing");
+    expect(JSON.stringify(onLoadScene.mock.calls)).not.toContain("Training opposition");
   });
 
   it("supports keyboard scene selection and has no axe violations in the library", async () => {

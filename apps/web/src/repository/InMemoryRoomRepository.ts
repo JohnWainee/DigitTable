@@ -32,6 +32,17 @@ import {
   type EatTheReichView,
 } from "@digitable/template-eat-the-reich";
 import { assembleTailPage, authorizedPartitions, clampTailLimit } from "./eventTail.js";
+import { fixtureEncounterCatalog } from "../session/fixtureEncounterCatalog.js";
+
+function resolveFixtureSceneCommand(command: EatTheReichCommand): EatTheReichCommand {
+  if (command.type !== "LoadOriginalScene" && command.type !== "NextOriginalScene") return command;
+  const definition = fixtureEncounterCatalog().find((scene) => scene.sceneId === command.sceneId);
+  if (!definition) return command;
+  const { gmBriefing: _fixtureBriefing, ...scene } = definition;
+  return command.type === "LoadOriginalScene"
+    ? { type: "LoadScene", ...scene }
+    : { type: "NextScene", ...scene, reason: command.reason };
+}
 
 const PLATFORM_VERSION = "0.0.0-local";
 
@@ -162,7 +173,7 @@ export class InMemoryRoomRepository implements RoomRepository<
       member: actor,
       authority: this.authority,
       random,
-      command: request.payload,
+      command: resolveFixtureSceneCommand(request.payload),
       commandId: request.commandId,
       occurredAtServer: new Date().toISOString(),
       ...(priorReceipt !== undefined ? { priorReceipt } : {}),

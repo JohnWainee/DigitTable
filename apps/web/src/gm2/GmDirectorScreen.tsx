@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { navigate } from "../router.js";
 import { ConnectionStatusStrip } from "../shell/ConnectionStatusStrip.js";
 import { FixtureModeBanner } from "../shell/FixtureModeBanner.js";
 import { readOwnershipRecord } from "../session/ownership.js";
 import { useRoomProjection } from "../session/useRoomProjection.js";
+import { getEncounterCatalog } from "../session/roomClient.js";
 import { asCommandId } from "@digitable/contracts";
 import type {
   CharacterCorrectionPatch,
@@ -48,6 +49,27 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
   const [correctingCharacterId, setCorrectingCharacterId] = useState<string | null>(null);
   const [missionEndReason, setMissionEndReason] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [encounterCatalog, setEncounterCatalog] = useState<readonly SceneDefinition[]>([]);
+  const [catalogStatus, setCatalogStatus] = useState<"loading" | "ready" | "error">("loading");
+
+  useEffect(() => {
+    if (!isGm) return;
+    let current = true;
+    void getEncounterCatalog(roomId, memberId)
+      .then((catalog) => {
+        if (!current) return;
+        setEncounterCatalog(catalog);
+        setCatalogStatus("ready");
+      })
+      .catch(() => {
+        if (!current) return;
+        setEncounterCatalog([]);
+        setCatalogStatus("error");
+      });
+    return () => {
+      current = false;
+    };
+  }, [isGm, memberId, roomId]);
 
   if (!isGm) {
     return (
@@ -167,13 +189,13 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
         scene={view.scene}
         objectives={view.objectives}
         threats={view.threats}
-        onLoadScene={(definition: SceneDefinition) => {
-          const { gmBriefing: _gmBriefing, ...payload } = definition;
-          void send({ type: "LoadScene", ...payload });
+        catalog={encounterCatalog}
+        catalogStatus={catalogStatus}
+        onLoadScene={(sceneId: string) => {
+          void send({ type: "LoadOriginalScene", sceneId });
         }}
-        onNextScene={(definition: SceneDefinition, reason: string | null) => {
-          const { gmBriefing: _gmBriefing, ...payload } = definition;
-          void send({ type: "NextScene", ...payload, reason });
+        onNextScene={(sceneId: string, reason: string | null) => {
+          void send({ type: "NextOriginalScene", sceneId, reason });
         }}
         onRevealThreat={(threatId) => {
           void send({ type: "RevealThreat", threatId });

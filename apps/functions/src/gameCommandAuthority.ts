@@ -26,6 +26,7 @@ import {
   type RoomCommandResult,
   type StableErrorCode,
 } from "@digitable/contracts";
+import { resolveOriginalSceneCommand } from "./trustedSceneCatalog.js";
 
 export type GameCommandResult = RoomCommandResult<EatTheReichEvent>;
 
@@ -405,6 +406,26 @@ export async function submitRoomCommand(
       );
       return rejectedResult(wire.commandId, code, message);
     }
+
+    const resolvedSceneCommand = resolveOriginalSceneCommand(command, member.capability);
+    if (!resolvedSceneCommand.ok) {
+      const message =
+        resolvedSceneCommand.code === "ROLE_FORBIDDEN"
+          ? "Only the GM may load an original mission scene."
+          : "This original mission scene was not recognized.";
+      writeRejectedReceipt(
+        txn,
+        db,
+        roomId,
+        member,
+        wire.commandId,
+        authority.roomRevision,
+        resolvedSceneCommand.code,
+        message,
+      );
+      return rejectedResult(wire.commandId, resolvedSceneCommand.code, message);
+    }
+    command = resolvedSceneCommand.command;
 
     const actorContext: AuthorizedMemberContext = {
       roomId: asRoomId(roomId),

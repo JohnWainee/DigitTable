@@ -834,6 +834,17 @@ export function parseCommand(value: unknown): EatTheReichCommand {
         rollId: expectString(value.rollId, "command.rollId"),
         categoryId: expectString(value.categoryId, "command.categoryId"),
       };
+    case "LoadOriginalScene":
+      return {
+        type: "LoadOriginalScene",
+        sceneId: expectString(value.sceneId, "command.sceneId"),
+      };
+    case "NextOriginalScene":
+      return {
+        type: "NextOriginalScene",
+        sceneId: expectString(value.sceneId, "command.sceneId"),
+        reason: expectNullableString(value.reason, "command.reason"),
+      };
     case "LoadScene": {
       const objectives = value.objectives;
       const threats = value.threats;

@@ -11,6 +11,7 @@ import {
   type RecoverSeatInput,
   type RoomId,
 } from "@digitable/contracts";
+import type { SceneDefinition } from "@digitable/template-eat-the-reich";
 import {
   generateRecoveryCode,
   hashSecret,
@@ -19,6 +20,7 @@ import {
 } from "@digitable/engine";
 import { InMemoryRoomRepository } from "../repository/InMemoryRoomRepository.js";
 import type { RecoverSeatResult } from "./FirebaseSessionClient.js";
+import { fixtureEncounterCatalog } from "./fixtureEncounterCatalog.js";
 
 const CODE_ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";
 
@@ -191,6 +193,14 @@ export class RoomEngineStore {
 
   getRepository(roomId: RoomId): InMemoryRoomRepository | null {
     return this.roomsById.get(roomId)?.repository ?? null;
+  }
+
+  getEncounterCatalog(roomId: RoomId, memberId: MemberId): readonly SceneDefinition[] {
+    const room = this.roomsById.get(roomId);
+    if (!room || room.capabilitiesByMember.get(memberId) !== "gm") {
+      throw new Error("Only the GM can access the local fixture encounter catalog.");
+    }
+    return fixtureEncounterCatalog();
   }
 
   roomExists(roomId: RoomId): boolean {

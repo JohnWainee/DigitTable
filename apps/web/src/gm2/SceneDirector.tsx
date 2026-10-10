@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { OptionPicker } from "../shared/OptionPicker.js";
-import {
-  ORIGINAL_MISSION,
-  type EatTheReichView,
-  type SceneDefinition,
-} from "@digitable/template-eat-the-reich";
+import type { EatTheReichView, SceneDefinition } from "@digitable/template-eat-the-reich";
+import { PUBLIC_SCENE_CATALOG } from "@digitable/template-eat-the-reich/public-scenes";
 import { Icon } from "../shared/Icon.js";
 import { SceneArt } from "../shared/SceneArt.js";
 
@@ -12,8 +9,10 @@ export interface SceneDirectorProps {
   readonly scene: EatTheReichView["scene"];
   readonly objectives: EatTheReichView["objectives"];
   readonly threats: EatTheReichView["threats"];
-  readonly onLoadScene: (definition: SceneDefinition) => void;
-  readonly onNextScene: (definition: SceneDefinition, reason: string | null) => void;
+  readonly catalog: readonly SceneDefinition[];
+  readonly catalogStatus: "loading" | "ready" | "error";
+  readonly onLoadScene: (sceneId: string) => void;
+  readonly onNextScene: (sceneId: string, reason: string | null) => void;
   readonly onRevealThreat: (threatId: string) => void;
   readonly onEndRound: () => void;
   readonly onSetSceneRules: (reinforcements: "book" | "simplified", reason: string) => void;
@@ -28,12 +27,12 @@ export interface SceneDirectorProps {
 
 /** The opening scene when none is loaded, otherwise the next scene in mission order. */
 function defaultSceneId(currentSceneId: string | null): string {
-  if (currentSceneId === null) return ORIGINAL_MISSION[0]!.sceneId;
-  const index = ORIGINAL_MISSION.findIndex((s) => s.sceneId === currentSceneId);
+  if (currentSceneId === null) return PUBLIC_SCENE_CATALOG[0]!.sceneId;
+  const index = PUBLIC_SCENE_CATALOG.findIndex((s) => s.sceneId === currentSceneId);
   return (
-    ORIGINAL_MISSION[index + 1]?.sceneId ??
-    ORIGINAL_MISSION.find((s) => s.sceneId !== currentSceneId)?.sceneId ??
-    ORIGINAL_MISSION[0]!.sceneId
+    PUBLIC_SCENE_CATALOG[index + 1]?.sceneId ??
+    PUBLIC_SCENE_CATALOG.find((s) => s.sceneId !== currentSceneId)?.sceneId ??
+    PUBLIC_SCENE_CATALOG[0]!.sceneId
   );
 }
 
@@ -44,9 +43,9 @@ type EditableTarget =
 /**
  * docs/ETR_SESSION_FLOW.md section 7/5: scene control against B04's real
  * `LoadScene`/`NextScene`/`RevealThreat` commands, plus c07's round/rules/
- * edit controls. The template has no server-side scene catalog
- * (scenes.ts's own doc comment); this is the "natural place" it names for
- * presenting `ORIGINAL_MISSION` and sending one as a command's payload.
+ * edit controls. Original scene content is obtained through the trusted,
+ * GM-authorized catalog callable; this browser module imports only public
+ * labels and art keys.
  *
  * c07 R3: lists every Objective/Threat with its full GM-only detail
  * (rating/attack/challenge, revealed state, foreshadowing notes) — not
@@ -59,6 +58,8 @@ export function SceneDirector({
   scene,
   objectives,
   threats,
+  catalog,
+  catalogStatus,
   onLoadScene,
   onNextScene,
   onRevealThreat,
@@ -82,21 +83,25 @@ export function SceneDirector({
   const [editChallenge, setEditChallenge] = useState("");
   const [editReason, setEditReason] = useState("");
 
-  const selected =
-    ORIGINAL_MISSION.find((s) => s.sceneId === selectedSceneId) ?? ORIGINAL_MISSION[0]!;
+  const selectedMetadata =
+    PUBLIC_SCENE_CATALOG.find((s) => s.sceneId === selectedSceneId) ?? PUBLIC_SCENE_CATALOG[0]!;
+  const selected = catalog.find((s) => s.sceneId === selectedSceneId) ?? null;
   const primaryComplete = objectives.some((o) => o.kind === "primary" && o.status === "complete");
   const hiddenThreats = threats.filter((t) => "revealed" in t && !t.revealed);
 
   function handleAdvance(): void {
     if (!scene) {
-      onLoadScene(selected);
+      onLoadScene(selectedSceneId);
       return;
     }
-    onNextScene(selected, primaryComplete ? null : reason);
+    onNextScene(selectedSceneId, primaryComplete ? null : reason);
     setReason("");
   }
 
-  const canAdvance = scene ? primaryComplete || reason.trim() !== "" : true;
+  const canAdvance =
+    catalogStatus === "ready" &&
+    selected !== null &&
+    (scene ? primaryComplete || reason.trim() !== "" : true);
 
   const editTargets: readonly EditableTarget[] = [
     ...objectives.map((o): EditableTarget => ({ kind: "objective", id: o.id })),
@@ -213,38 +218,32 @@ export function SceneDirector({
           active; player and table views receive only the approved scene projection.
         </p>
         <ol className="encounter-library" aria-label="Original mission scenes">
-          {ORIGINAL_MISSION.map((definition, index) => {
-            const isCurrent = definition.sceneId === currentSceneId;
-            const isSelected = definition.sceneId === selectedSceneId;
+          {PUBLIC_SCENE_CATALOG.map((entry, index) => {
+            const isCurrent = entry.sceneId === currentSceneId;
+            const isSelected = entry.sceneId === selectedSceneId;
             return (
-              <li key={definition.sceneId}>
+              <li key={entry.sceneId}>
                 <button
                   type="button"
                   className="encounter-library-card"
-                  data-scene-id={definition.sceneId}
-                  aria-label={`Select scene ${index + 1}: ${definition.title}${isCurrent ? ", currently active" : ""}`}
+                  data-scene-id={entry.sceneId}
+                  aria-label={`Select scene ${index + 1}: ${entry.title}${isCurrent ? ", currently active" : ""}`}
                   aria-pressed={isSelected}
                   disabled={isCurrent}
-                  onClick={() =>
-                    setChoice({ forSceneId: currentSceneId, sceneId: definition.sceneId })
-                  }
+                  onClick={() => setChoice({ forSceneId: currentSceneId, sceneId: entry.sceneId })}
                 >
                   <SceneArt
-                    key={`${definition.sceneId}:library`}
-                    sceneId={definition.sceneId}
-                    title={definition.title}
+                    key={`${entry.sceneId}:library`}
+                    sceneId={entry.artKey}
+                    title={entry.title}
                   />
                   <span className="encounter-library-card-copy">
                     <span className="encounter-library-card-kicker">
                       Scene {String(index + 1).padStart(2, "0")}
                       {isCurrent ? " · Current" : isSelected ? " · Selected" : ""}
                     </span>
-                    <strong>{definition.title}</strong>
-                    <span>{definition.locationLabel}</span>
-                    <span className="encounter-library-card-counts">
-                      {definition.objectives.length} objectives · {definition.threats.length}{" "}
-                      threats
-                    </span>
+                    <strong>{entry.title}</strong>
+                    <span>{entry.locationLabel}</span>
                   </span>
                 </button>
               </li>
@@ -252,29 +251,39 @@ export function SceneDirector({
           })}
         </ol>
         <div className="encounter-preview">
-          <p role="status">Previewing {selected.title}</p>
-          <h4>Selected: {selected.title}</h4>
-          <p>{selected.locationLabel}</p>
-          <h4>Objectives</h4>
-          <ul>
-            {selected.objectives.map((objective) => (
-              <li key={objective.id}>
-                {objective.title} ({objective.kind}; rating {objective.rating})
-              </li>
-            ))}
-          </ul>
-          <h4>Threats</h4>
-          <ul>
-            {selected.threats.map((threat) => (
-              <li key={threat.id}>
-                {threat.name} — rating {threat.rating}, attack {threat.attack}
-                {threat.revealed ? " · revealed on load" : " · staged to reveal later"}
-              </li>
-            ))}
-          </ul>
-          <p className="form-hint">
-            <strong>GM briefing:</strong> {selected.gmBriefing}
-          </p>
+          <p>Previewing {selectedMetadata.title}</p>
+          <h4>Selected: {selectedMetadata.title}</h4>
+          <p>{selectedMetadata.locationLabel}</p>
+          {catalogStatus === "loading" && <p role="status">Loading private GM encounter notes…</p>}
+          {catalogStatus === "error" && (
+            <p role="alert">
+              The trusted GM encounter catalog could not be loaded. Try refreshing.
+            </p>
+          )}
+          {selected && (
+            <>
+              <h4>Objectives</h4>
+              <ul>
+                {selected.objectives.map((objective) => (
+                  <li key={objective.id}>
+                    {objective.title} ({objective.kind}; rating {objective.rating})
+                  </li>
+                ))}
+              </ul>
+              <h4>Threats</h4>
+              <ul>
+                {selected.threats.map((threat) => (
+                  <li key={threat.id}>
+                    {threat.name} — rating {threat.rating}, attack {threat.attack}
+                    {threat.revealed ? " · revealed on load" : " · staged to reveal later"}
+                  </li>
+                ))}
+              </ul>
+              <p className="form-hint">
+                <strong>GM briefing:</strong> {selected.gmBriefing}
+              </p>
+            </>
+          )}
         </div>
         {scene && !primaryComplete && (
           <div className="form-field">

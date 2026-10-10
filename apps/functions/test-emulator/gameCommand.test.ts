@@ -2,10 +2,15 @@ import { getApps, initializeApp } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import { HttpsError, type CallableRequest } from "firebase-functions/v2/https";
 import { eatTheReichTemplate } from "@digitable/template-eat-the-reich";
+import { ORIGINAL_MISSION } from "@digitable/template-eat-the-reich";
 import { asMemberId, asRoomId, type RoomCommandResult } from "@digitable/contracts";
 import { beforeAll, describe, expect, it } from "vitest";
 import { submitRoomCommand } from "../src/gameCommandAuthority.js";
-import { createGameCallables, type SubmitRoomCommandCallable } from "../src/gameCallables.js";
+import {
+  createGameCallables,
+  type GetEncounterCatalogCallable,
+  type SubmitRoomCommandCallable,
+} from "../src/gameCallables.js";
 import type { GameCommandLogger } from "../src/gameCommandAuthority.js";
 
 const TEMPLATE_ID = eatTheReichTemplate.manifest.templateId;
@@ -611,6 +616,10 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       }).submitRoomCommand;
     }
 
+    function encounterCatalogCallable(): GetEncounterCatalogCallable {
+      return createGameCallables({ db, logger: recorder(), ...fixedClock() }).getEncounterCatalog;
+    }
+
     it("rejects an unauthenticated call before any Firestore read", async () => {
       const { roomId } = await seedRoom();
       await expectHttpsError(
@@ -660,6 +669,53 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
         ),
       );
       expect(result.status).toBe("accepted");
+    });
+
+    it("returns private original scene details only to the room's GM capability", async () => {
+      const { roomId } = await seedRoom({ withTable: true });
+      const catalog = encounterCatalogCallable();
+      const gmCatalog = await catalog.run(request({ roomId }, { uid: `uid-gm-${roomCounter}` }));
+      expect(gmCatalog).toHaveLength(4);
+      expect(gmCatalog[1]?.gmBriefing).toContain("RevealThreat");
+      expect(gmCatalog[1]?.threats[1]?.notes).toContain("slow, heavy footsteps");
+
+      await expectHttpsError(
+        catalog.run(request({ roomId }, { uid: `uid-player-${roomCounter}` })),
+        "permission-denied",
+        "ROLE_FORBIDDEN",
+      );
+      await expectHttpsError(
+        catalog.run(request({ roomId }, { uid: `uid-table-${roomCounter}` })),
+        "permission-denied",
+        "ROLE_FORBIDDEN",
+      );
+    });
+
+    it("resolves an ID-only scene command in trusted authority and returns only the redacted event copy", async () => {
+      const { roomId } = await seedRoom();
+      const privateScene = ORIGINAL_MISSION.find((scene) => scene.sceneId === "metro-platform")!;
+      const result = await callable().run(
+        request(
+          {
+            roomId,
+            command: {
+              commandId: commandId(),
+              payload: {
+                type: "NextOriginalScene",
+                sceneId: privateScene.sceneId,
+                reason: "Move on for this command test.",
+              },
+              templateId: TEMPLATE_ID,
+              templateVersion: TEMPLATE_VERSION,
+            },
+          },
+          { uid: `uid-gm-${roomCounter}` },
+        ),
+      );
+      expect(result.status).toBe("accepted");
+      const serialized = JSON.stringify(result);
+      expect(serialized).not.toContain(privateScene.gmBriefing);
+      expect(serialized).not.toContain(privateScene.threats[1]?.notes);
     });
   });
 });

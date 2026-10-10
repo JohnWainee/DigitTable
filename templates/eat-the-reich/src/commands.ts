@@ -104,6 +104,17 @@ export type EatTheReichCommand =
       readonly categoryId: string;
     }
   | {
+      /** Trusted server resolves the original scene; clients send only its public ID. */
+      readonly type: "LoadOriginalScene";
+      readonly sceneId: string;
+    }
+  | {
+      /** Trusted server resolves the original scene; clients send only its public ID. */
+      readonly type: "NextOriginalScene";
+      readonly sceneId: string;
+      readonly reason: string | null;
+    }
+  | {
       readonly type: "LoadScene";
       readonly sceneId: string;
       readonly title: string;

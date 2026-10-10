@@ -1563,6 +1563,8 @@ function authorizeGameAction(
         : deny(stableError("ROLE_FORBIDDEN", "Only a player may choose an injury category."));
     case "LoadScene":
     case "NextScene":
+    case "LoadOriginalScene":
+    case "NextOriginalScene":
     case "EndMission":
     case "EndRound":
     case "RevealThreat":
@@ -1609,6 +1611,14 @@ function decide(
       return decideAllocateResults(ctx, command);
     case "ChooseInjuryCategory":
       return decideChooseInjuryCategory(ctx, command);
+    case "LoadOriginalScene":
+    case "NextOriginalScene":
+      return rejected(
+        stableError(
+          "UNKNOWN_ACTION",
+          "Original scene selections must be resolved by the trusted room authority.",
+        ),
+      );
     case "LoadScene":
       return decideLoadScene(ctx, command);
     case "NextScene":

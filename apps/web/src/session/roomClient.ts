@@ -1,4 +1,5 @@
 import {
+  asMemberId,
   asRoomId,
   type Capability,
   type CreateRoomInput,
@@ -14,6 +15,7 @@ import type {
   EatTheReichEvent,
   EatTheReichView,
 } from "@digitable/template-eat-the-reich";
+import type { SceneDefinition } from "@digitable/template-eat-the-reich";
 import { firebaseBootstrap } from "./firebaseBootstrap.js";
 import {
   FirebaseSessionClient,
@@ -44,6 +46,11 @@ const emulatorConfig: SessionEmulatorConfig | undefined = emulatorConfigFor(
   {
     VITE_FIREBASE_USE_EMULATOR: import.meta.env.VITE_FIREBASE_USE_EMULATOR as string | undefined,
     VITE_EMULATOR_HOST: import.meta.env.VITE_EMULATOR_HOST as string | undefined,
+    VITE_EMULATOR_AUTH_PORT: import.meta.env.VITE_EMULATOR_AUTH_PORT as string | undefined,
+    VITE_EMULATOR_FUNCTIONS_PORT: import.meta.env.VITE_EMULATOR_FUNCTIONS_PORT as
+      string | undefined,
+    VITE_EMULATOR_FIRESTORE_PORT: import.meta.env.VITE_EMULATOR_FIRESTORE_PORT as
+      string | undefined,
   },
   typeof window === "undefined" ? undefined : window.location.hostname,
 );
@@ -100,6 +107,17 @@ export function getRoomRepository(
     );
   }
   return roomEngineStore.getRepository(typedRoomId);
+}
+
+/** Fetch original scene details only through the GM-authorized trusted boundary. */
+export function getEncounterCatalog(
+  roomId: string,
+  memberId: string,
+): Promise<readonly SceneDefinition[]> {
+  const typedRoomId = asRoomId(roomId);
+  const typedMemberId = asMemberId(memberId);
+  if (isLiveMode) return getLiveSessionClient().getEncounterCatalog(roomId);
+  return Promise.resolve(roomEngineStore.getEncounterCatalog(typedRoomId, typedMemberId));
 }
 
 export function fixtureRoomExists(roomId: string): boolean {
