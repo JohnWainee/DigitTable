@@ -2,6 +2,7 @@ import { createHash, randomBytes as nodeRandomBytes } from "node:crypto";
 import type { Firestore, Transaction } from "firebase-admin/firestore";
 import { eatTheReichTemplate } from "@digitable/template-eat-the-reich";
 import type { EatTheReichEvent } from "@digitable/template-eat-the-reich";
+import type { EatTheReichCommand } from "@digitable/template-eat-the-reich";
 import {
   authorizePlatform,
   createSeededRandom,
@@ -388,7 +389,32 @@ export async function submitRoomCommand(
       return rejectedResult(wire.commandId, platformResult.code, platformResult.message);
     }
 
-    let command;
+    // Communications are a platform-guarded GM command family. Check this
+    // before template parsing/authorization, even if a future template parser
+    // or command authorizer accidentally becomes more permissive.
+    const rawType =
+      typeof wire.payload === "object" && wire.payload !== null && !Array.isArray(wire.payload)
+        ? (wire.payload as Record<string, unknown>).type
+        : undefined;
+    if (
+      (rawType === "BroadcastMessage" || rawType === "SendPrivateMessage") &&
+      member.capability !== "gm"
+    ) {
+      const message = "Only the GM may send session messages.";
+      writeRejectedReceipt(
+        txn,
+        db,
+        roomId,
+        member,
+        wire.commandId,
+        authority.roomRevision,
+        "ROLE_FORBIDDEN",
+        message,
+      );
+      return rejectedResult(wire.commandId, "ROLE_FORBIDDEN", message);
+    }
+
+    let command: EatTheReichCommand;
     try {
       command = eatTheReichTemplate.schemas.parseCommand(wire.payload);
     } catch {
@@ -405,6 +431,27 @@ export async function submitRoomCommand(
         message,
       );
       return rejectedResult(wire.commandId, code, message);
+    }
+
+    if (command.type === "SendPrivateMessage") {
+      const recipientMemberId = command.recipientMemberId;
+      const recipient = bindings.find(
+        (binding) => binding.memberId === recipientMemberId && binding.capability === "player",
+      );
+      if (!recipient) {
+        const message = "That player is not available for a private note.";
+        writeRejectedReceipt(
+          txn,
+          db,
+          roomId,
+          member,
+          wire.commandId,
+          authority.roomRevision,
+          "UNKNOWN_ACTION",
+          message,
+        );
+        return rejectedResult(wire.commandId, "UNKNOWN_ACTION", message);
+      }
     }
 
     const resolvedSceneCommand = resolveOriginalSceneCommand(command, member.capability);

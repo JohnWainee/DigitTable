@@ -101,6 +101,7 @@ describe("Player dashboard heading structure (F7)", () => {
       expect.objectContaining({ level: 3, text: "Threats" }),
       { level: 2, text: "Party" },
       { level: 2, text: "Choose an action" },
+      { level: 2, text: "Session timeline" },
     ]);
     await expectAccessibleHeadings();
   });

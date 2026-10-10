@@ -153,6 +153,33 @@ class FakeRepository implements Repository {
     return Promise.resolve({ records, cursor, hasMore: matching.length > selected.length });
   }
 
+  readRecentEventTail(
+    _memberId: MemberId,
+    viewer: ViewerContext,
+    limit = 50,
+  ): Promise<readonly EventTailRecord<EatTheReichEvent>[]> {
+    const allowed =
+      viewer.capability === "gm"
+        ? new Set<EventTailPartition>(["shared", "gm", "member"])
+        : viewer.capability === "player"
+          ? new Set<EventTailPartition>(["shared", "member"])
+          : new Set<EventTailPartition>(["shared"]);
+    return Promise.resolve(
+      this.tail
+        .filter((event) => allowed.has(event.partition))
+        .sort((a, b) => a.sequence - b.sequence)
+        .slice(-limit)
+        .map((event) => ({
+          eventId: event.eventId,
+          commandId: `cmd-${event.eventId}`,
+          sequence: event.sequence,
+          roomRevision: event.roomRevision,
+          partition: event.partition,
+          payload: event.payload,
+        })),
+    );
+  }
+
   presentationScope(memberId: MemberId): string {
     this.presentationScopeCalls.push(memberId);
     return "test-scope";
@@ -287,6 +314,19 @@ describe("useRoomProjection presentation", () => {
         expect(revision).toBeLessThanOrEqual(render.projection);
       }
     }
+  });
+
+  it("loads a bounded recent timeline in addition to the presentation cursor", async () => {
+    repository.projection = projection(6);
+    repository.tail = [
+      tailEvent("recent-1", 5, 5, { type: "BroadcastPosted", text: "hello table" }, "shared"),
+    ];
+    const { result } = renderProjection(new MemoryStorage());
+    await waitFor(() => expect(result.current.timeline).toHaveLength(1));
+    expect(result.current.timeline[0]).toMatchObject({
+      eventId: "recent-1",
+      payload: { type: "BroadcastPosted", text: "hello table" },
+    });
   });
 
   it("keeps an ordered queue that a later item never overwrites (b)", async () => {

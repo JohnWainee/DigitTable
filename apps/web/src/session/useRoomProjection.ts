@@ -5,6 +5,7 @@ import {
   type Capability,
   type CommandId,
   type EventTailPartition,
+  type EventTailRecord,
   type RoomCommandResult,
   type RoomDispatchFailure,
   type RoomRepository,
@@ -53,6 +54,8 @@ export interface RoomProjectionState {
   readonly pending: boolean;
   /** Ordered, unacknowledged, revision-gated presentation queue. Never a source of domain state. */
   readonly presentation: readonly PresentationItem[];
+  /** Bounded, authorized event history for the session timeline; never domain state. */
+  readonly timeline: readonly EventTailRecord<EatTheReichEvent>[];
   readonly acknowledgePresentation: (eventId: string) => void;
   readonly dispatch: (
     commandId: CommandId,
@@ -67,6 +70,26 @@ const rollContextOf = (event: EatTheReichEvent): RollContext | null =>
   event.type === "ActionRolled"
     ? { rollId: event.rollId, attackSuccessesRolled: event.attackSuccessesRolled }
     : null;
+
+const TIMELINE_PARTITION_ORDER: readonly EventTailPartition[] = ["gm", "member", "shared"];
+
+function mergeTimelineRecords(
+  current: readonly EventTailRecord<EatTheReichEvent>[],
+  incoming: readonly EventTailRecord<EatTheReichEvent>[],
+): readonly EventTailRecord<EatTheReichEvent>[] {
+  const byId = new Map<string, EventTailRecord<EatTheReichEvent>>();
+  for (const record of [...current, ...incoming]) {
+    const existing = byId.get(record.eventId);
+    const preferred =
+      !existing ||
+      TIMELINE_PARTITION_ORDER.indexOf(record.partition) <
+        TIMELINE_PARTITION_ORDER.indexOf(existing.partition);
+    if (preferred) byId.set(record.eventId, record);
+  }
+  return [...byId.values()]
+    .sort((a, b) => a.sequence - b.sequence || a.eventId.localeCompare(b.eventId))
+    .slice(-60);
+}
 
 /**
  * Adds the roll context presentation needs. Called when publishing (inside an
@@ -105,6 +128,7 @@ export function useRoomProjection(
   const [lastError, setLastError] = useState<RoomDispatchFailure | null>(null);
   const [pending, setPending] = useState(false);
   const [published, setPublished] = useState<readonly PresentationItem[]>([]);
+  const [timeline, setTimeline] = useState<readonly EventTailRecord<EatTheReichEvent>[]>([]);
   const repositoryRef = useRef<Repository | null>(null);
   const sessionRef = useRef<PresentationSession<EatTheReichEvent> | null>(null);
   const dispatching = useRef(false);
@@ -132,6 +156,7 @@ export function useRoomProjection(
 
     let ledgerStore: PresentationLedgerStorage | null = null;
     let session: PresentationSession<EatTheReichEvent> | null = null;
+    let timelineInitialized = false;
     // `reconcilePending` drains the outbox exactly once, so sequences it
     // recovered must outlive a failed baseline attempt (e.g. a head read that
     // throws) until a baseline has actually been decided and persisted.
@@ -184,9 +209,18 @@ export function useRoomProjection(
       }
       const active = session;
       if (!active) return;
+      if (!timelineInitialized) {
+        const recent = await repo.readRecentEventTail(member, viewer, 50);
+        if (cancelled) return;
+        timelineInitialized = true;
+        setTimeline(recent);
+      }
       for (let page = 0; page < 4; page += 1) {
         const tail = await repo.readEventTail(member, viewer, active.fetchCursor());
         if (cancelled) return;
+        if (tail.records.length > 0) {
+          setTimeline((prior) => mergeTimelineRecords(prior, tail.records));
+        }
         active.ingest(tail.records);
         if (!tail.hasMore) break;
       }
@@ -270,6 +304,7 @@ export function useRoomProjection(
         if (cancelled) return;
         setProjection(null);
         setPublished([]);
+        setTimeline([]);
         setLastError(null);
         if (!repository || !memberId) {
           setStatus("not-found");
@@ -368,6 +403,7 @@ export function useRoomProjection(
     lastError,
     pending,
     presentation,
+    timeline: timeline.filter((record) => record.roomRevision <= (projection?.roomRevision ?? -1)),
     acknowledgePresentation,
     dispatch,
   };

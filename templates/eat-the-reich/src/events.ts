@@ -210,4 +210,13 @@ export type EatTheReichEvent =
     }
   | {
       readonly type: "Resumed";
+    }
+  | {
+      readonly type: "BroadcastPosted";
+      readonly text: string;
+    }
+  | {
+      readonly type: "PrivateMessageSent";
+      readonly recipientMemberId: MemberId;
+      readonly text: string;
     };

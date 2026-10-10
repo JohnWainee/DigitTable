@@ -22,6 +22,7 @@ import { AllocationPanel2 } from "./AllocationPanel2.js";
 import { ChooseInjuryPanel2 } from "./ChooseInjuryPanel2.js";
 import { ConfirmSummary2 } from "./ConfirmSummary2.js";
 import { newUuid } from "../shared/uuid.js";
+import { SessionTimeline } from "../shared/SessionTimeline.js";
 
 export interface PlayerDashboardScreenProps {
   readonly roomId: string;
@@ -52,6 +53,7 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
     pending,
     presentation,
     acknowledgePresentation,
+    timeline,
   } = useRoomProjection(roomId, memberId, "player", { presentEvents: true });
   const connection = status === "not-found" ? "signed-out" : status;
   const selfId = projection?.view.self?.id ?? null;
@@ -307,6 +309,7 @@ export function PlayerDashboardScreen({ roomId }: PlayerDashboardScreenProps): J
       <SceneCard scene={view.scene} objectives={view.objectives} threats={view.threats} />
       <PartyStrip roster={view.roster} selfCharacterId={self.id} />
       {body}
+      <SessionTimeline records={timeline} capability="player" />
     </main>
   );
 }

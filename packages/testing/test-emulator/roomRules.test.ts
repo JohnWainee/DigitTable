@@ -120,6 +120,28 @@ describe("Phase 2 Firestore and RTDB room rules", () => {
     await assertFails(get(tableUid, `rooms/${room}/events/gm/items/1`));
   });
 
+  it("keeps private-note event copies readable only by the GM and addressed player's partition", async () => {
+    await testEnv.withSecurityRulesDisabled(
+      async (adminContext: RulesTestContext): Promise<void> => {
+        const db = adminContext.firestore();
+        const privateNote = {
+          sequence: 77,
+          payload: { type: "PrivateMessageSent", recipientMemberId: "player-b", text: "private" },
+        };
+        await Promise.all([
+          db.doc(`rooms/${room}/events/gm/items/77`).set(privateNote),
+          db.doc(`rooms/${room}/events/member-player-b/items/77`).set(privateNote),
+        ]);
+      },
+    );
+    await assertSucceeds(get(gmUid, `rooms/${room}/events/gm/items/77`));
+    await assertSucceeds(get(otherUid, `rooms/${room}/events/member-player-b/items/77`));
+    await assertFails(get(playerUid, `rooms/${room}/events/member-player-b/items/77`));
+    await assertFails(get(tableUid, `rooms/${room}/events/gm/items/77`));
+    await assertFails(get(tableUid, `rooms/${room}/events/member-player-b/items/77`));
+    await assertFails(list(tableUid, `rooms/${room}/events/member-player-b/items`));
+  });
+
   it("board task A06: restricts the seat-recovery audit trail to the GM seat only", async () => {
     await assertSucceeds(get(gmUid, `rooms/${room}/audit/audit-1`));
     await assertFails(get(playerUid, `rooms/${room}/audit/audit-1`));

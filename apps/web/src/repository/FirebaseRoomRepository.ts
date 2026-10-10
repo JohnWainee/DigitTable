@@ -44,6 +44,7 @@ import { getRoomFirestore, type FirestoreEmulatorConfig } from "../firebase/fire
 import { stableErrorFromThrown } from "../firebase/functionsError.js";
 import { CommandOutbox, type PendingCommand } from "./commandOutbox.js";
 import {
+  assembleRecentTail,
   assembleTailPage,
   authorizedPartitions,
   clampTailLimit,
@@ -430,6 +431,38 @@ export class FirebaseRoomRepository implements RoomRepository<
     > = {};
     for (const [partition, records] of perPartition) merged[partition] = records;
     return assembleTailPage(merged, after, pageLimit);
+  }
+
+  /** Reads a bounded recent timeline window without expanding authorized partitions. */
+  async readRecentEventTail(
+    memberId: MemberId,
+    viewer: ViewerContext,
+    limit?: number,
+  ): Promise<readonly EventTailRecord<EatTheReichEvent>[]> {
+    this.identity();
+    const pageLimit = clampTailLimit(limit);
+    const partitions = authorizedPartitions(viewer.capability);
+    const db = getRoomFirestore(this.app, this.emulator?.firestore);
+    const perPartition = await Promise.all(
+      partitions.map(async (partition) => {
+        const path = partitionCollectionPath(this.roomId, partition, memberId);
+        const snapshot = await getDocsFromServer(
+          query(collection(db, path), orderBy("sequence", "desc"), firestoreLimit(pageLimit)),
+        );
+        const records = snapshot.docs.map((stored) =>
+          parseTailDocument(partition, stored.id, stored.data(), (payload) =>
+            eatTheReichTemplate.schemas.parseEvent(payload),
+          ),
+        );
+        return [partition, records] as const;
+      }),
+    );
+    this.identity();
+    const merged: Partial<
+      Record<EventTailPartition, readonly EventTailRecord<EatTheReichEvent>[]>
+    > = {};
+    for (const [partition, records] of perPartition) merged[partition] = records;
+    return assembleRecentTail(merged, pageLimit);
   }
 
   /**

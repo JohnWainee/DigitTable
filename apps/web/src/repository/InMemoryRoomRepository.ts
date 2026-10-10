@@ -31,7 +31,12 @@ import {
   type EatTheReichState,
   type EatTheReichView,
 } from "@digitable/template-eat-the-reich";
-import { assembleTailPage, authorizedPartitions, clampTailLimit } from "./eventTail.js";
+import {
+  assembleRecentTail,
+  assembleTailPage,
+  authorizedPartitions,
+  clampTailLimit,
+} from "./eventTail.js";
 import { fixtureEncounterCatalog } from "../session/fixtureEncounterCatalog.js";
 
 function resolveFixtureSceneCommand(command: EatTheReichCommand): EatTheReichCommand {
@@ -274,6 +279,39 @@ export class InMemoryRoomRepository implements RoomRepository<
     return Promise.resolve(
       assembleTailPage(this.tailRecords(memberId, viewer, after, pageLimit), after, pageLimit),
     );
+  }
+
+  /** See `RoomRepository.readRecentEventTail`. */
+  readRecentEventTail(
+    memberId: MemberId,
+    viewer: ViewerContext,
+    limit?: number,
+  ): Promise<readonly EventTailRecord<EatTheReichEvent>[]> {
+    const pageLimit = clampTailLimit(limit);
+    const perPartition: Partial<
+      Record<EventTailPartition, readonly EventTailRecord<EatTheReichEvent>[]>
+    > = {};
+    for (const partition of authorizedPartitions(viewer.capability)) {
+      const records = this.eventLog
+        .flatMap(({ destination, envelope }) => {
+          const permittedPartition = this.partitionFor(destination, memberId, viewer);
+          if (permittedPartition !== partition) return [];
+          return [
+            {
+              eventId: envelope.eventId,
+              commandId: envelope.commandId,
+              sequence: envelope.sequence,
+              roomRevision: envelope.roomRevision,
+              partition,
+              payload: envelope.payload,
+            },
+          ];
+        })
+        .sort((a, b) => b.sequence - a.sequence)
+        .slice(0, pageLimit);
+      perPartition[partition] = records;
+    }
+    return Promise.resolve(assembleRecentTail(perPartition, pageLimit));
   }
 
   /** See `RoomRepository.readEventTailHead`. */

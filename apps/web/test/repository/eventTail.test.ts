@@ -10,6 +10,7 @@ import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 import {
   assembleTailPage,
+  assembleRecentTail,
   authorizedPartitions,
   clampTailLimit,
   parseTailDocument,
@@ -310,6 +311,22 @@ describe("assembleTailPage paging property", () => {
       }),
       { numRuns: 200 },
     );
+  });
+});
+
+describe("assembleRecentTail", () => {
+  it("deduplicates visible copies in favor of the most private partition and returns newest events", () => {
+    const shared = record("shared", 1, "same-event");
+    const gm = { ...record("gm", 1, "same-event"), payload: { type: "Ping" as const, value: 99 } };
+    const recent = assembleRecentTail(
+      { shared: [shared, record("shared", 2)], gm: [gm, record("gm", 3)] },
+      2,
+    );
+    expect(recent.map((entry) => entry.sequence)).toEqual([2, 3]);
+    expect(assembleRecentTail({ shared: [shared], gm: [gm] })[0]).toMatchObject({
+      partition: "gm",
+      payload: { value: 99 },
+    });
   });
 });
 

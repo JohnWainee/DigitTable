@@ -89,6 +89,7 @@ const report = {
   modal: [],
   pickers: [],
   encounterLibrary: [],
+  communications: [],
   reducedMotion: null,
   routes: [],
   failures: [],
@@ -1083,6 +1084,78 @@ async function main() {
     );
     await captureState(gm, "console-scene-loaded");
     await auditEncounterLibrary(gm);
+
+    // Exercise both authorized GM communication paths in a live session.
+    // Private text must reach only the selected player's timeline and the GM,
+    // never the shared/table stream or the command result surface.
+    await applyViewport(gm, byName["desktop"]);
+    const publicMessage = "UI audit broadcast reaches the table";
+    await setInput(gm, "#session-broadcast-text", publicMessage);
+    await clickText(gm, "button", /^Send broadcast$/);
+    await waitFor(
+      gm,
+      `document.querySelector(".session-timeline")?.textContent.includes(${JSON.stringify(publicMessage)})`,
+      30000,
+      "GM broadcast timeline",
+    );
+    await waitFor(
+      player,
+      `document.querySelector(".session-timeline")?.textContent.includes(${JSON.stringify(publicMessage)})`,
+      30000,
+      "player broadcast timeline",
+    );
+    await waitFor(
+      table,
+      `document.querySelector(".session-timeline")?.textContent.includes(${JSON.stringify(publicMessage)})`,
+      30000,
+      "table broadcast timeline",
+    );
+
+    const privateMessage = "UI audit private note only for Ada";
+    await ev(gm, `document.getElementById("private-message-recipient").click()`);
+    await waitFor(
+      gm,
+      `document.querySelector('[role="dialog"] .picker-option')`,
+      10000,
+      "private recipient picker",
+    );
+    const recipientOption = await ev(
+      gm,
+      `(() => { const option = document.querySelector('[role="dialog"] .picker-option'); if (!option) return null; const label = option.textContent.trim(); option.click(); return label; })()`,
+    );
+    if (!recipientOption)
+      fail("communications", "no claimed player was available for a private note");
+    await setInput(gm, "#private-message-text", privateMessage);
+    await clickText(gm, "button", /^Send private note$/);
+    await waitFor(
+      gm,
+      `document.querySelector(".session-timeline")?.textContent.includes(${JSON.stringify(privateMessage)})`,
+      30000,
+      "GM private-note history",
+    );
+    await waitFor(
+      player,
+      `document.querySelector(".session-timeline")?.textContent.includes(${JSON.stringify(privateMessage)})`,
+      30000,
+      "recipient private-note history",
+    );
+    const tablePrivateLeak = await ev(
+      table,
+      `document.querySelector(".session-timeline")?.textContent.includes(${JSON.stringify(privateMessage)}) ?? false`,
+    );
+    if (tablePrivateLeak) fail("communications", "private note appeared in the table timeline");
+    report.communications.push({
+      broadcast: { gm: true, player: true, table: true },
+      privateNote: {
+        gm: true,
+        recipient: true,
+        recipientLabel: recipientOption,
+        tableLeak: tablePrivateLeak,
+      },
+    });
+    await captureState(gm, "console-messages");
+    await captureState(player, "player-messages", { axeViewports: ["phone"] });
+    await captureState(table, "table-messages", { axeViewports: ["table"] });
 
     // Player declares; GM sees pending.
     await clickText(player, "button", /^Declare action$/);

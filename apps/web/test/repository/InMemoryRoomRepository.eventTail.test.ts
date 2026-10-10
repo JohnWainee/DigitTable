@@ -25,6 +25,11 @@ const PLAYER_ONE_VIEWER: ViewerContext = {
   viewerId: PLAYER_ONE,
   capability: "player",
 };
+const PLAYER_TWO_VIEWER: ViewerContext = {
+  roomId: ROOM,
+  viewerId: PLAYER_TWO,
+  capability: "player",
+};
 const GM_VIEWER: ViewerContext = { roomId: ROOM, viewerId: "gm", capability: "gm" };
 const TABLE_VIEWER: ViewerContext = { roomId: ROOM, viewerId: "table", capability: "table" };
 const ZERO: EventTailCursor = { shared: 0, gm: 0, member: 0 };
@@ -126,6 +131,34 @@ describe("InMemoryRoomRepository authorized event tail", () => {
     const page = await repo.readEventTail(TABLE, TABLE_VIEWER, ZERO);
     expect(page.records.every((r) => r.partition === "shared")).toBe(true);
     expect(page.records.some((r) => actionDeclared(r) !== null)).toBe(true);
+  });
+
+  it("recent history preserves recipient-only private notes and never exposes them to another seat or table", async () => {
+    const broadcast = "Shared note e9b4";
+    const secret = "Private note only for player two a173";
+    await accepted("cmd-broadcast", GM, { type: "BroadcastMessage", text: broadcast });
+    await accepted("cmd-private", GM, {
+      type: "SendPrivateMessage",
+      recipientMemberId: PLAYER_TWO,
+      text: secret,
+    });
+
+    const gmRecords = await repo.readRecentEventTail(GM, GM_VIEWER);
+    const playerOneRecords = await repo.readRecentEventTail(PLAYER_ONE, PLAYER_ONE_VIEWER);
+    const playerTwoRecords = await repo.readRecentEventTail(PLAYER_TWO, PLAYER_TWO_VIEWER);
+    const tableRecords = await repo.readRecentEventTail(TABLE, TABLE_VIEWER);
+    expect(gmRecords.filter((record) => record.payload.type === "PrivateMessageSent")).toHaveLength(
+      1,
+    );
+    expect(playerOneRecords.some((record) => JSON.stringify(record.payload).includes(secret))).toBe(
+      false,
+    );
+    expect(playerTwoRecords.some((record) => JSON.stringify(record.payload).includes(secret))).toBe(
+      true,
+    );
+    expect(tableRecords.every((record) => record.partition === "shared")).toBe(true);
+    expect(JSON.stringify(tableRecords)).not.toContain(secret);
+    expect(JSON.stringify(tableRecords)).toContain(broadcast);
   });
 
   it("pagination with limit 1 walks the whole tail exactly once via the returned cursor", async () => {

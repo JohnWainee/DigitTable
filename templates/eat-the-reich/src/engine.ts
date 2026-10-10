@@ -1520,6 +1520,49 @@ function decideResume(): Decision<EatTheReichEvent> {
   return decided([broadcastEvent("session-resumed", { type: "Resumed" }, [{ kind: "shared" }])]);
 }
 
+const MAX_SESSION_MESSAGE_LENGTH = 500;
+
+function normalizedSessionMessage(text: string): string | null {
+  const normalized = text.trim();
+  if (normalized.length < 1 || normalized.length > MAX_SESSION_MESSAGE_LENGTH) return null;
+  return normalized;
+}
+
+function decideBroadcastMessage(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "BroadcastMessage" }>,
+): Decision<EatTheReichEvent> {
+  const text = normalizedSessionMessage(command.text);
+  if (!text)
+    return rejected(stableError("INVALID_REQUEST", "Message must be 1 to 500 characters."));
+  if (!ctx.commandId)
+    return rejected(stableError("INVALID_REQUEST", "This message could not be sent safely."));
+  return decided([
+    broadcastEvent(`${ctx.commandId}-broadcast`, { type: "BroadcastPosted", text }, [
+      { kind: "shared" },
+    ]),
+  ]);
+}
+
+function decidePrivateMessage(
+  ctx: DecisionContext<EatTheReichState>,
+  command: Extract<EatTheReichCommand, { type: "SendPrivateMessage" }>,
+): Decision<EatTheReichEvent> {
+  const text = normalizedSessionMessage(command.text);
+  if (!text)
+    return rejected(stableError("INVALID_REQUEST", "Message must be 1 to 500 characters."));
+  if (!ctx.commandId)
+    return rejected(stableError("INVALID_REQUEST", "This message could not be sent safely."));
+  const recipientMemberId = asMemberId(command.recipientMemberId);
+  return decided([
+    broadcastEvent(
+      `${ctx.commandId}-private`,
+      { type: "PrivateMessageSent", recipientMemberId, text },
+      [{ kind: "gm" }, { kind: "member", memberId: recipientMemberId }],
+    ),
+  ]);
+}
+
 // ---------------------------------------------------------------------------
 // GameTemplate wiring
 // ---------------------------------------------------------------------------
@@ -1587,6 +1630,11 @@ function authorizeGameAction(
       return ctx.capability === "gm"
         ? allow()
         : deny(stableError("ROLE_FORBIDDEN", "Only the GM may resume the session."));
+    case "BroadcastMessage":
+    case "SendPrivateMessage":
+      return ctx.capability === "gm"
+        ? allow()
+        : deny(stableError("ROLE_FORBIDDEN", "Only the GM may send session messages."));
   }
 }
 
@@ -1647,6 +1695,10 @@ function decide(
       return decidePause();
     case "Resume":
       return decideResume();
+    case "BroadcastMessage":
+      return decideBroadcastMessage(ctx, command);
+    case "SendPrivateMessage":
+      return decidePrivateMessage(ctx, command);
   }
 }
 
@@ -2085,6 +2137,9 @@ function reduce(state: EatTheReichState, event: EatTheReichEvent): EatTheReichSt
       return { ...state, paused: true };
     case "Resumed":
       return { ...state, paused: false };
+    case "BroadcastPosted":
+    case "PrivateMessageSent":
+      return state;
   }
 }
 
@@ -2432,6 +2487,9 @@ function theatre(event: EatTheReichEvent, prefs: PresentationPreferences): Theat
         fallback: { announcement },
       };
     }
+    case "BroadcastPosted":
+    case "PrivateMessageSent":
+      return null;
   }
 }
 

@@ -72,6 +72,14 @@ function expectString(value: unknown, where: string): string {
   return value;
 }
 
+const MAX_SESSION_MESSAGE_LENGTH = 500;
+
+function expectBoundedMessage(value: unknown, where: string): string {
+  const text = expectString(value, where);
+  if (text.length > MAX_SESSION_MESSAGE_LENGTH) fail(where, "message exceeds the allowed length");
+  return text;
+}
+
 function expectNullableString(value: unknown, where: string): string | null {
   if (value === null) return null;
   return expectString(value, where);
@@ -1060,6 +1068,17 @@ export function parseCommand(value: unknown): EatTheReichCommand {
       return { type: "Pause" };
     case "Resume":
       return { type: "Resume" };
+    case "BroadcastMessage":
+      return {
+        type: "BroadcastMessage",
+        text: expectBoundedMessage(value.text, "command.text"),
+      };
+    case "SendPrivateMessage":
+      return {
+        type: "SendPrivateMessage",
+        recipientMemberId: expectString(value.recipientMemberId, "command.recipientMemberId"),
+        text: expectBoundedMessage(value.text, "command.text"),
+      };
     default:
       return fail("command.type", `unknown command type ${String(value.type)}`);
   }
@@ -1417,6 +1436,16 @@ export function parseEvent(value: unknown): EatTheReichEvent {
       return { type: "Paused" };
     case "Resumed":
       return { type: "Resumed" };
+    case "BroadcastPosted":
+      return { type: "BroadcastPosted", text: expectBoundedMessage(value.text, "event.text") };
+    case "PrivateMessageSent":
+      return {
+        type: "PrivateMessageSent",
+        recipientMemberId: asMemberId(
+          expectString(value.recipientMemberId, "event.recipientMemberId"),
+        ),
+        text: expectBoundedMessage(value.text, "event.text"),
+      };
     default:
       return fail("event.type", `unknown event type ${String(value.type)}`);
   }

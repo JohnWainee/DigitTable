@@ -7,6 +7,7 @@ import type { EatTheReichView, RollView, RollViewFull } from "@digitable/templat
 import { SceneCard } from "../player2/SceneCard.js";
 import { PartyStrip } from "../player2/PartyStrip.js";
 import { RouteMap, ROUTE_MAP_SCENE_ORDER } from "./RouteMap.js";
+import { SessionTimeline } from "../shared/SessionTimeline.js";
 
 export interface TableDashboardScreenProps {
   readonly roomId: string;
@@ -40,7 +41,9 @@ export function TableDashboardScreen({ roomId }: TableDashboardScreenProps): JSX
   const ownership = readOwnershipRecord();
   const memberId = ownership?.roomId === roomId ? ownership.memberId : "";
   const isTable = ownership?.roomId === roomId && ownership.capability === "table";
-  const { status, projection } = useRoomProjection(roomId, memberId, "table");
+  const { status, projection, timeline } = useRoomProjection(roomId, memberId, "table", {
+    presentEvents: true,
+  });
   const connection = status === "not-found" ? "signed-out" : status;
 
   if (!isTable) {
@@ -107,6 +110,7 @@ export function TableDashboardScreen({ roomId }: TableDashboardScreenProps): JSX
         artVariant="banner"
       />
       <PartyStrip roster={view.roster} />
+      <SessionTimeline records={timeline} capability="table" />
 
       {acting.length > 0 && (
         <section aria-labelledby="acting-heading">

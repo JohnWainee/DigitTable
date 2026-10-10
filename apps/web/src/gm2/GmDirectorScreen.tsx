@@ -22,6 +22,8 @@ import { RosterPanel } from "./RosterPanel.js";
 import { GmToolsPanel } from "./GmToolsPanel.js";
 import { CorrectionDialog } from "./CorrectionDialog.js";
 import { newUuid } from "../shared/uuid.js";
+import { GmCommunications } from "./GmCommunications.js";
+import { SessionTimeline } from "../shared/SessionTimeline.js";
 
 export interface GmDirectorScreenProps {
   readonly roomId: string;
@@ -42,9 +44,10 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
     status,
     projection,
     dispatch,
+    timeline,
     lastError,
     pending: commandPending,
-  } = useRoomProjection(roomId, memberId, "gm");
+  } = useRoomProjection(roomId, memberId, "gm", { presentEvents: true });
   const connection = status === "not-found" ? "signed-out" : status;
   const [correctingCharacterId, setCorrectingCharacterId] = useState<string | null>(null);
   const [missionEndReason, setMissionEndReason] = useState("");
@@ -107,10 +110,14 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
     );
   }
 
-  async function send(payload: EatTheReichCommand): Promise<void> {
+  async function send(payload: EatTheReichCommand): Promise<boolean> {
     setError(null);
     const result = await dispatch(asCommandId(newUuid()), payload);
-    if (result.status === "rejected") setError(result.message);
+    if (result.status === "rejected") {
+      setError(result.message);
+      return false;
+    }
+    return true;
   }
 
   const view = projection.view;
@@ -231,6 +238,14 @@ export function GmDirectorScreen({ roomId }: GmDirectorScreenProps): JSX.Element
         }}
       />
       <RosterPanel gmSheets={view.gmSheets} onOpenCorrection={setCorrectingCharacterId} />
+      <GmCommunications
+        roster={view.roster}
+        onBroadcast={(text) => send({ type: "BroadcastMessage", text })}
+        onPrivateMessage={(recipientMemberId, text) =>
+          send({ type: "SendPrivateMessage", recipientMemberId, text })
+        }
+      />
+      <SessionTimeline records={timeline} capability="gm" />
       <GmToolsPanel
         gmSheets={view.gmSheets}
         rolls={view.rolls}

@@ -55,23 +55,34 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
 
   /** Seeds a fresh, isolated room with a current ETR campaign state: one GM, one player holding Rook, one active scene, and (optionally) a table seat. */
   async function seedRoom(
-    options: { readonly withTable?: boolean; readonly roomStatus?: "active" | "archived" } = {},
+    options: {
+      readonly withTable?: boolean;
+      readonly withSecondPlayer?: boolean;
+      readonly roomStatus?: "active" | "archived";
+    } = {},
   ): Promise<{
     readonly roomId: string;
     readonly gmMemberId: string;
     readonly playerMemberId: string;
+    readonly secondPlayerMemberId: string | null;
     readonly tableMemberId: string | null;
   }> {
     roomCounter += 1;
     const roomId = `room-gamecmd-${RUN}-${roomCounter}`;
     const gmMemberId = `member-gm-${RUN}-${roomCounter}`;
     const playerMemberId = `member-player-${RUN}-${roomCounter}`;
+    const secondPlayerMemberId = options.withSecondPlayer
+      ? `member-player-two-${RUN}-${roomCounter}`
+      : null;
     const tableMemberId = options.withTable ? `member-table-${RUN}-${roomCounter}` : null;
 
     const initialState = eatTheReichTemplate.initialState({
       roomId: asRoomId(roomId),
       gmMemberId: asMemberId(gmMemberId),
-      memberIds: [asMemberId(playerMemberId)],
+      memberIds: [
+        asMemberId(playerMemberId),
+        ...(secondPlayerMemberId ? [asMemberId(secondPlayerMemberId)] : []),
+      ],
     });
     const claimedState = eatTheReichTemplate.reduce(initialState, {
       type: "CharacterClaimed",
@@ -101,7 +112,7 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       nextSequence: 1,
       roomStatus: options.roomStatus ?? "active",
       admissionStatus: "open",
-      participantCount: tableMemberId ? 3 : 2,
+      participantCount: 2 + Number(secondPlayerMemberId !== null) + Number(tableMemberId !== null),
       tableSeatClaimed: tableMemberId !== null,
       gmMemberId,
       state,
@@ -139,6 +150,19 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
         capability: "player",
       }),
     ];
+    if (secondPlayerMemberId !== null) {
+      writes.push(
+        db.doc(`rooms/${roomId}/uidBindings/uid-player-two-${roomCounter}`).set({
+          memberId: secondPlayerMemberId,
+          capability: "player",
+        }),
+        db.doc(`rooms/${roomId}/bindings/${secondPlayerMemberId}`).set({
+          memberId: secondPlayerMemberId,
+          uid: `uid-player-two-${roomCounter}`,
+          capability: "player",
+        }),
+      );
+    }
     if (tableMemberId !== null) {
       writes.push(
         db.doc(`rooms/${roomId}/uidBindings/uid-table-${roomCounter}`).set({
@@ -153,7 +177,7 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       );
     }
     await Promise.all(writes);
-    return { roomId, gmMemberId, playerMemberId, tableMemberId };
+    return { roomId, gmMemberId, playerMemberId, secondPlayerMemberId, tableMemberId };
   }
 
   function beginActionPayload(): Record<string, unknown> {
@@ -210,6 +234,119 @@ describe("submitRoomCommand (apps/functions, board task A04)", () => {
       expect(gmProjection).toMatchObject({ viewerId: "gm", roomRevision: 1 });
       const tableProjection = (await db.doc(`rooms/${roomId}/projections/table`).get()).data();
       expect(tableProjection).toMatchObject({ viewerId: "table", roomRevision: 1 });
+    });
+
+    it("broadcasts publicly while storing private notes only for the GM and chosen player", async () => {
+      const { roomId, playerMemberId, secondPlayerMemberId, tableMemberId } = await seedRoom({
+        withTable: true,
+        withSecondPlayer: true,
+      });
+      if (!secondPlayerMemberId || !tableMemberId) throw new Error("expected all test seats");
+      const logger = recorder();
+      const broadcastBody = "Public broadcast sentinel 3bc20";
+      const broadcast = await submitRoomCommand(
+        roomId,
+        `uid-gm-${roomCounter}`,
+        {
+          commandId: commandId(),
+          payload: { type: "BroadcastMessage", text: broadcastBody },
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
+        { db, logger, ...fixedClock() },
+      );
+      expect(broadcast).toMatchObject({
+        status: "accepted",
+        sharedEvents: [{ type: "BroadcastPosted", text: broadcastBody }],
+      });
+      const broadcastShared = (await db.doc(`rooms/${roomId}/events/shared/items/1`).get()).data();
+      expect(broadcastShared?.payload).toEqual({ type: "BroadcastPosted", text: broadcastBody });
+      expect((await db.doc(`rooms/${roomId}/events/gm/items/1`).get()).exists).toBe(false);
+
+      const privateBody = "Private note sentinel f7a13";
+      const privateNote = await submitRoomCommand(
+        roomId,
+        `uid-gm-${roomCounter}`,
+        {
+          commandId: commandId(),
+          payload: {
+            type: "SendPrivateMessage",
+            recipientMemberId: secondPlayerMemberId,
+            text: privateBody,
+          },
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
+        { db, logger, ...fixedClock() },
+      );
+      expect(privateNote).toMatchObject({ status: "accepted", sharedEvents: [] });
+      expect(JSON.stringify(privateNote)).not.toContain(privateBody);
+      const gmCopy = (await db.doc(`rooms/${roomId}/events/gm/items/2`).get()).data();
+      const recipientCopy = (
+        await db.doc(`rooms/${roomId}/events/member-${secondPlayerMemberId}/items/2`).get()
+      ).data();
+      expect(gmCopy?.payload).toEqual({
+        type: "PrivateMessageSent",
+        recipientMemberId: secondPlayerMemberId,
+        text: privateBody,
+      });
+      expect(recipientCopy?.payload).toEqual(gmCopy?.payload);
+      expect((await db.doc(`rooms/${roomId}/events/shared/items/2`).get()).exists).toBe(false);
+      expect(
+        (await db.doc(`rooms/${roomId}/events/member-${playerMemberId}/items/2`).get()).exists,
+      ).toBe(false);
+      expect(
+        (await db.doc(`rooms/${roomId}/events/member-${tableMemberId}/items/2`).get()).exists,
+      ).toBe(false);
+
+      for (const viewerId of ["gm", playerMemberId, secondPlayerMemberId, "table"]) {
+        const projection = (await db.doc(`rooms/${roomId}/projections/${viewerId}`).get()).data();
+        expect(projection, `missing projection for ${viewerId}`).toBeDefined();
+        expect(JSON.stringify(projection)).not.toContain(privateBody);
+      }
+      expect(JSON.stringify(logger.events)).not.toContain(privateBody);
+    });
+
+    it("rejects unauthorized/nonexistent private-message targets without reflecting message text", async () => {
+      const { roomId } = await seedRoom({ withTable: true });
+      const body = "Do not reflect this secret note 8e1f2";
+      const playerAttempt = await submitRoomCommand(
+        roomId,
+        `uid-player-${roomCounter}`,
+        {
+          commandId: commandId(),
+          payload: {
+            type: "SendPrivateMessage",
+            recipientMemberId: `member-player-${RUN}-wrong`,
+            text: body,
+          },
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
+        { db, logger: recorder(), ...fixedClock() },
+      );
+      expect(playerAttempt).toMatchObject({ status: "rejected", code: "ROLE_FORBIDDEN" });
+      expect(JSON.stringify(playerAttempt)).not.toContain(body);
+
+      const targetAttempt = await submitRoomCommand(
+        roomId,
+        `uid-gm-${roomCounter}`,
+        {
+          commandId: commandId(),
+          payload: {
+            type: "SendPrivateMessage",
+            recipientMemberId: `member-missing-${RUN}`,
+            text: body,
+          },
+          templateId: TEMPLATE_ID,
+          templateVersion: TEMPLATE_VERSION,
+        },
+        { db, logger: recorder(), ...fixedClock() },
+      );
+      expect(targetAttempt).toMatchObject({ status: "rejected", code: "UNKNOWN_ACTION" });
+      expect(JSON.stringify(targetAttempt)).not.toContain(body);
+      expect((await db.collection(`rooms/${roomId}/events/shared/items`).get()).size).toBe(0);
+      expect((await db.collection(`rooms/${roomId}/events/gm/items`).get()).size).toBe(0);
     });
 
     it("a sequential retry with the same commandId short-circuits: no new event, unchanged authority", async () => {

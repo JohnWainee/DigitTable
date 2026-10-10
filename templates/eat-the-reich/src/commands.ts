@@ -210,4 +210,13 @@ export type EatTheReichCommand =
     }
   | {
       readonly type: "Resume";
+    }
+  | {
+      readonly type: "BroadcastMessage";
+      readonly text: string;
+    }
+  | {
+      readonly type: "SendPrivateMessage";
+      readonly recipientMemberId: string;
+      readonly text: string;
     };

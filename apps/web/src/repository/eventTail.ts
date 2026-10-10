@@ -169,6 +169,30 @@ export function assembleTailPage<TEvent>(
   };
 }
 
+/** Merge recent per-partition queries, prefer the viewer's most-private copy, and keep newest N. */
+export function assembleRecentTail<TEvent>(
+  perPartition: Partial<Record<EventTailPartition, readonly EventTailRecord<TEvent>[]>>,
+  limit?: number,
+): readonly EventTailRecord<TEvent>[] {
+  const pageLimit = clampTailLimit(limit);
+  const byEventId = new Map<string, EventTailRecord<TEvent>>();
+  for (const partition of PARTITION_TIE_ORDER) {
+    for (const record of perPartition[partition] ?? []) {
+      if (record.partition !== partition) continue;
+      const existing = byEventId.get(record.eventId);
+      if (
+        !existing ||
+        PARTITION_TIE_ORDER.indexOf(partition) < PARTITION_TIE_ORDER.indexOf(existing.partition)
+      ) {
+        byEventId.set(record.eventId, record);
+      }
+    }
+  }
+  return [...byEventId.values()]
+    .sort((a, b) => a.sequence - b.sequence || a.eventId.localeCompare(b.eventId))
+    .slice(-pageLimit);
+}
+
 /**
  * Defaults to `EVENT_TAIL_PAGE_LIMIT`, floors non-integers, and clamps into
  * `[1, EVENT_TAIL_PAGE_LIMIT]`. `NaN` falls back to the default.

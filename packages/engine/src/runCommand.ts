@@ -23,6 +23,7 @@ export interface CommandHandlerTemplate<TState, TCommand, TEvent> {
     ctx: {
       readonly state: TState;
       readonly actor: AuthorizedMemberContext;
+      readonly commandId: CommandId;
       readonly random: RandomSource;
     },
     command: TCommand,
@@ -106,7 +107,12 @@ export function runCommand<TState, TCommand, TEvent>(
   }
 
   const decision = template.decide(
-    { state: input.authority.state, actor: input.member, random: input.random },
+    {
+      state: input.authority.state,
+      actor: input.member,
+      commandId: input.commandId,
+      random: input.random,
+    },
     input.command,
   );
   if (!decision.ok) {

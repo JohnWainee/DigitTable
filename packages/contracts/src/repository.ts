@@ -2,7 +2,7 @@ import type { CommandId, MemberId } from "./ids.js";
 import type { StableErrorCode } from "./errors.js";
 import type { Capability, ViewerContext } from "./template.js";
 import type { ViewerProjection } from "./projection.js";
-import type { EventTailCursor, EventTailPage } from "./eventTail.js";
+import type { EventTailCursor, EventTailPage, EventTailRecord } from "./eventTail.js";
 
 /**
  * A caller-supplied command dispatch request. `commandId` must be minted by
@@ -113,6 +113,13 @@ export interface RoomRepository<TCommand, TEvent, TView> {
     after: EventTailCursor,
     limit?: number,
   ): Promise<EventTailPage<TEvent>>;
+
+  /** Reads the most recent bounded timeline entries from only this viewer's authorized partitions. */
+  readRecentEventTail(
+    memberId: MemberId,
+    viewer: ViewerContext,
+    limit?: number,
+  ): Promise<readonly EventTailRecord<TEvent>[]>;
 
   /**
    * An opaque, identity-scoped key under which a client may persist

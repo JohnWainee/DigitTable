@@ -1,0 +1,31 @@
+{
+  "label": "phase3-messages-axe-fix",
+  "base": "http://127.0.0.1:4188",
+  "startedAt": "2026-10-10T01:35:00.346Z",
+  "states": [],
+  "modal": [],
+  "pickers": [],
+  "encounterLibrary": [],
+  "communications": [],
+  "reducedMotion": null,
+  "routes": [],
+  "failures": [
+    {
+      "scope": "flow",
+      "message": "Chrome DevTools endpoint never came up"
+    }
+  ],
+  "console": {},
+  "finishedAt": "2026-10-10T01:35:15.514Z",
+  "ok": false,
+  "summary": {
+    "states": 0,
+    "encounterLibraryChecks": 0,
+    "controlsAudited": 0,
+    "controlIssues": 0,
+    "overflowStates": 0,
+    "axeHardViolations": 0,
+    "axeBestPractice": [],
+    "failures": 1
+  }
+}

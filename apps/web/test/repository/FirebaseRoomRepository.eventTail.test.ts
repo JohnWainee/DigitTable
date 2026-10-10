@@ -141,6 +141,26 @@ describe("FirebaseRoomRepository authorized event tail", () => {
     expect(queriedPaths()).toEqual(["rooms/room/events/shared/items"]);
   });
 
+  it("recent history limits queries to partitions authorized for that viewer", async () => {
+    mocks.getDocsFromServer.mockResolvedValue(documents([]));
+    await repo.readRecentEventTail(member, player, 20);
+    expect(queriedPaths().sort()).toEqual([
+      "rooms/room/events/member-member/items",
+      "rooms/room/events/shared/items",
+    ]);
+    const calls = mocks.getDocsFromServer.mock.calls.map(([call]) => call as QueryCall);
+    expect(
+      calls.every((call) => call.constraints.some((constraint) => constraint.kind === "orderBy")),
+    ).toBe(true);
+    expect(queriedPaths()).not.toContain("rooms/room/events/gm/items");
+
+    vi.clearAllMocks();
+    mocks.user.currentUser = { uid: "uid-original" };
+    mocks.getDocsFromServer.mockResolvedValue(documents([]));
+    await repo.readRecentEventTail(member, table, 20);
+    expect(queriedPaths()).toEqual(["rooms/room/events/shared/items"]);
+  });
+
   it("bounds each partition query by that partition's cursor", async () => {
     mocks.getDocsFromServer.mockResolvedValue(documents([]));
     await repo.readEventTail(member, gm, { shared: 5, gm: 2, member: 7 });

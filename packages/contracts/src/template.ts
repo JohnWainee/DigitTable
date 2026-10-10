@@ -1,6 +1,6 @@
 import type { StableError } from "./errors.js";
 import type { EventDestination } from "./event.js";
-import type { MemberId, RoomId, ViewerId } from "./ids.js";
+import type { CommandId, MemberId, RoomId, ViewerId } from "./ids.js";
 import type { RandomSource } from "./random.js";
 import type { TemplateManifest, VersionedTemplateRecord, MigrationResult } from "./versions.js";
 import type { ViewerProjection } from "./projection.js";
@@ -45,6 +45,8 @@ export function deny(error: StableError): AuthorizationResult {
 export interface DecisionContext<TState> {
   readonly state: TState;
   readonly actor: AuthorizedMemberContext;
+  /** Trusted idempotency identity for deterministic, unique event IDs. */
+  readonly commandId?: CommandId;
   readonly random: RandomSource;
 }
 
