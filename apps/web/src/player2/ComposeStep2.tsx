@@ -140,27 +140,38 @@ export function ComposeStep2({
         <legend>Items</legend>
         <div className="gear-list">
           {character.items.map((item) => (
-            <label key={item.id} className="gear-option">
-              <input
-                type="checkbox"
-                checked={itemIds.includes(item.id)}
-                disabled={item.usesRemaining <= 0 || item.poolEligible === false}
-                onChange={() => toggleClaimable(itemIds, item.id, setItemIds)}
-              />
-              {item.name} ({item.usesRemaining}/{item.maxUses} uses)
-              {item.usesRemaining <= 0 ? " — no uses left" : ""}
-              {item.useEffect?.kind === "gainBlood"
-                ? ` — mark to regain ${item.useEffect.amount} Blood`
-                : ""}
-              {item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
-                ? " — mark to ignore an Injury or being Downed; then destroy the hat"
-                : ""}
+            // The action button sits beside the option label, never inside it: a button inside a
+            // <label> is interactive content in the checkbox's name and its tap target overlaps
+            // the row that toggles the checkbox.
+            <div key={item.id} className="gear-row">
+              <label className="gear-option">
+                <input
+                  type="checkbox"
+                  checked={itemIds.includes(item.id)}
+                  disabled={item.usesRemaining <= 0 || item.poolEligible === false}
+                  onChange={() => toggleClaimable(itemIds, item.id, setItemIds)}
+                />
+                <span>
+                  {item.name} ({item.usesRemaining}/{item.maxUses} uses)
+                  {item.usesRemaining <= 0 ? " — no uses left" : ""}
+                  {item.useEffect?.kind === "gainBlood"
+                    ? ` — mark to regain ${item.useEffect.amount} Blood`
+                    : ""}
+                  {item.useEffect?.kind === "ignoreInjuryOrDownedAndDestroy"
+                    ? " — mark to ignore an Injury or being Downed; then destroy the hat"
+                    : ""}
+                </span>
+              </label>
               {item.useEffect?.kind === "gainBlood" && item.usesRemaining > 0 ? (
-                <button type="button" onClick={() => onUseUtilityItem(item.id)}>
+                <button
+                  type="button"
+                  className="secondary-action"
+                  onClick={() => onUseUtilityItem(item.id)}
+                >
                   Mark and regain Blood
                 </button>
               ) : null}
-            </label>
+            </div>
           ))}
         </div>
       </fieldset>

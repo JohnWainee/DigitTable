@@ -52,6 +52,7 @@ const LABEL = arg("label", "run");
 const PORT = Number(arg("port", "9350"));
 const SHOTS = !args.includes("--no-shots");
 const TOLERATE = args.includes("--tolerate-baseline");
+const DUMP_HTML = args.includes("--dump-html"); // also write a scriptless HTML snapshot per state under <out>/dump
 const MODAL_ONLY = args.includes("--modal-only"); // skip the per-state sweep (fast iteration on the pop-out)
 const CHROME =
   process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
@@ -87,6 +88,7 @@ const report = {
   startedAt: new Date().toISOString(),
   states: [],
   modal: [],
+  pickers: [],
   reducedMotion: null,
   routes: [],
   failures: [],
@@ -141,6 +143,37 @@ class Cdp {
 }
 
 const devices = [];
+
+// ---------- mid-word wrap probe ----------
+// A label that wraps inside a word ("APPLY CORRECTIO / N") reads as a rendering bug and is hard
+// for low-vision and dyslexic readers. For every visible control/heading text node this walks the
+// characters with Range rects and reports any word whose letters sit on different lines. Spaces
+// and hyphens are legitimate break points, so only letters inside one unbroken run count.
+const WORD_BREAK_PROBE = `(() => {
+  const found = [];
+  const sel = "button, a, label, legend, summary, h1, h2, h3, th, option";
+  for (const el of document.querySelectorAll(sel)) {
+    const box = el.getBoundingClientRect();
+    if (box.width === 0 || box.height === 0 || getComputedStyle(el).visibility === "hidden") continue;
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const text = node.nodeValue;
+      let top = null, word = "", broken = false;
+      const flush = () => { if (broken && word.length > 1) found.push({ control: el.tagName.toLowerCase() + (el.id ? "#" + el.id : ""), word }); top = null; word = ""; broken = false; };
+      for (let i = 0; i < text.length; i += 1) {
+        if (/[\\s\\-\\u2010-\\u2014/]/.test(text[i])) { flush(); continue; }
+        const range = document.createRange();
+        range.setStart(node, i); range.setEnd(node, i + 1);
+        const rect = range.getClientRects()[0];
+        if (!rect) continue;
+        if (top !== null && Math.abs(rect.top - top) > rect.height / 2) broken = true;
+        top = rect.top; word += text[i];
+      }
+      flush();
+    }
+  }
+  return found;
+})()`;
 
 async function openDevice(cdp, name, vp) {
   const { browserContextId } = await cdp.send("Target.createBrowserContext", {
@@ -260,12 +293,17 @@ async function setInput(device, selector, value) {
   );
 }
 
-async function screenshot(device, file, { fullPage = true } = {}) {
+async function screenshot(device, file, { fullPage = true, focus = null } = {}) {
   if (!SHOTS) return null;
   await ev(
     device,
     `(async () => { const step = Math.max(200, innerHeight - 100); for (let y = 0; y < document.documentElement.scrollHeight; y += step) { scrollTo(0, y); await new Promise(r => setTimeout(r, 80)); } scrollTo(0, 0); })()`,
   );
+  if (focus)
+    await ev(
+      device,
+      `document.querySelector(${JSON.stringify(focus)})?.scrollIntoView({ block: "center" })`,
+    );
   await sleep(350);
   const params = { format: "jpeg", quality: 70 };
   if (fullPage) {
@@ -343,10 +381,24 @@ function isHardAxe(violation) {
 async function captureState(device, state, { axeViewports = ["phone", "tablet", "desktop"] } = {}) {
   if (MODAL_ONLY) return;
   const original = device.vp;
+  if (DUMP_HTML) {
+    // Scriptless DOM snapshot of this state, so styling can be iterated on a static page (see
+    // the `--dump-html` note in the header). Contains rendered room text only: no tokens or secrets
+    // are in the DOM after the one-time reveal cards are dismissed, but treat the output as private.
+    const html = await ev(
+      device,
+      `document.documentElement.outerHTML.replace(/<script[\\s\\S]*?<\\/script>/g, "")`,
+    );
+    mkdirSync(join(OUT, "dump"), { recursive: true });
+    writeFileSync(join(OUT, "dump", `${device.name}-${state}.html`), `<!doctype html>\n${html}`);
+  }
   for (const vp of VIEWPORTS) {
     await applyViewport(device, vp);
     await sleep(250);
     const audit = await ev(device, CONTROL_AUDIT);
+    const brokenWords = await ev(device, WORD_BREAK_PROBE);
+    for (const w of brokenWords)
+      fail(`${device.name}/${state}@${vp.name}`, `word "${w.word}" wraps mid-word in ${w.control}`);
     const file = await screenshot(device, `${device.name}-${state}-${vp.name}.jpg`);
     const entry = {
       surface: device.name,
@@ -376,6 +428,185 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
     report.states.push(entry);
   }
   await applyViewport(device, original);
+}
+
+// ---------- option pickers (the replacement for native <select>) ----------
+
+const PICKER_GEOMETRY = `(() => {
+  const dialog = document.querySelector('[role="dialog"]');
+  if (!dialog) return { open: false };
+  const box = (el) => { if (!el) return null; const r = el.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, width: r.width, height: r.height }; };
+  const body = dialog.querySelector(".sheet-body");
+  const options = [...dialog.querySelectorAll(".picker-option")];
+  const cancel = [...dialog.querySelectorAll("button")].find(b => /cancel/i.test(b.textContent));
+  const current = dialog.querySelector(".sheet-context .picker-current");
+  const selected = dialog.querySelector('.picker-option[aria-current="true"]');
+  const title = dialog.querySelector("h2");
+  return {
+    open: true,
+    dialog: box(dialog), cancel: box(cancel), current: box(current), title: box(title),
+    optionCount: options.length,
+    optionMinHeight: Math.min(...options.map(o => o.getBoundingClientRect().height)),
+    optionMinFont: Math.min(...options.map(o => parseFloat(getComputedStyle(o).fontSize))),
+    optionsOverflowX: options.some(o => o.scrollWidth > o.clientWidth + 1),
+    selectedCount: dialog.querySelectorAll('.picker-option[aria-current="true"]').length,
+    selectedText: selected ? selected.textContent : null,
+    body: { scrollHeight: body.scrollHeight, clientHeight: body.clientHeight, overflowY: getComputedStyle(body).overflowY },
+    pageOverflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    rootLocked: document.documentElement.classList.contains("sheet-open"),
+    activeIsInside: dialog.contains(document.activeElement),
+    inertSiblings: (() => { const s = [...document.body.children].filter(c => !c.contains(dialog) && c.tagName !== "SCRIPT"); return s.length > 0 && s.every(c => c.hasAttribute("inert")); })(),
+  };
+})()`;
+
+async function auditPickers(gm) {
+  const expectedPickerIds = [
+    "advance-character",
+    "advance-select",
+    "edit-target",
+    "grant-character",
+    "reassign-character",
+    "scene-select",
+  ];
+  const cases = [
+    { name: "phone-small", ...byName["phone-small"] },
+    { name: "phone", ...byName["phone"] },
+    { name: "phone-landscape", ...byName["phone-landscape"] },
+    { name: "keyboard-short-360x300", width: 360, height: 300, mobile: true },
+    { name: "tablet", ...byName["tablet"] },
+    { name: "desktop", ...byName["desktop"] },
+  ];
+  const triggers = await ev(gm, `[...document.querySelectorAll(".picker-trigger")].map(b => b.id)`);
+  const actualPickerIds = [...triggers].sort();
+  if (JSON.stringify(actualPickerIds) !== JSON.stringify([...expectedPickerIds].sort()))
+    fail(
+      "pickers",
+      `expected exactly ${expectedPickerIds.join(", ")}; found ${actualPickerIds.join(", ")}`,
+    );
+  const nativeSelectCount = await ev(gm, `document.querySelectorAll("select").length`);
+  if (nativeSelectCount !== 0)
+    fail("pickers", `expected no native selects in the GM console; found ${nativeSelectCount}`);
+  for (const vp of cases) {
+    await applyViewport(gm, vp);
+    for (const id of triggers) {
+      const record = {
+        picker: id,
+        viewport: vp.name,
+        size: `${vp.width}x${vp.height}`,
+        checks: {},
+      };
+      await ev(
+        gm,
+        `(() => { const b = document.getElementById(${JSON.stringify(id)}); b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
+      );
+      await waitFor(
+        gm,
+        `document.querySelector('[role="dialog"] .picker-option')`,
+        10000,
+        `picker ${id} open`,
+      );
+      await sleep(350);
+      const geo = await ev(gm, PICKER_GEOMETRY);
+      record.geometry = geo;
+      const frame = { left: 0, top: 0, right: vp.width, bottom: vp.height };
+      record.checks.dialogInsideViewport = within(geo.dialog, frame);
+      record.checks.titleVisible = within(geo.title, frame);
+      record.checks.currentChoiceVisible = within(geo.current, frame);
+      record.checks.cancelVisibleAndTappable =
+        within(geo.cancel, frame) && geo.cancel.height >= 43.5;
+      record.checks.optionsAtLeast44 = geo.optionCount > 0 && geo.optionMinHeight >= 43.5;
+      record.checks.optionsAtLeast16px = geo.optionMinFont >= 16;
+      record.checks.noOptionHorizontalClip = !geo.optionsOverflowX;
+      record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+      record.checks.exactlyOneSelected = geo.selectedCount === 1 || id === "edit-target";
+      record.checks.rootScrollLocked = geo.rootLocked;
+      record.checks.backgroundInert = geo.inertSiblings;
+      record.checks.focusInsideDialog = geo.activeIsInside;
+      const optionsOverflow = geo.body.scrollHeight > geo.body.clientHeight;
+      if (vp.name === "keyboard-short-360x300")
+        record.checks.shortViewportScrollsOptionList = optionsOverflow;
+      if (optionsOverflow) {
+        record.checks.bodyScrolls =
+          geo.body.overflowY === "auto" || geo.body.overflowY === "scroll";
+        await ev(
+          gm,
+          `(() => { const b = document.querySelector('[role="dialog"] .sheet-body'); b.scrollTop = b.scrollHeight; })()`,
+        );
+        await sleep(150);
+        const lastOption = await ev(
+          gm,
+          `(() => { const o = [...document.querySelectorAll('[role="dialog"] .picker-option')].pop(); const r = o.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, left: r.left, right: r.right }; })()`,
+        );
+        record.checks.lastOptionReachable = within(lastOption, frame);
+        const afterScroll = await ev(gm, PICKER_GEOMETRY);
+        record.checks.currentChoiceVisibleAfterLastOptionScroll = within(
+          afterScroll.current,
+          frame,
+        );
+      }
+      if (id === "scene-select" || id === "grant-character") {
+        record.screenshot = await screenshot(gm, `gm-picker-${id}-${vp.name}.jpg`, {
+          fullPage: false,
+        });
+      }
+      for (const [k, v] of Object.entries(record.checks)) {
+        if (!v) fail(`picker-${id}@${vp.name}`, `${k} failed`);
+      }
+      // Choose the current option (no state change), confirm it closes and focus returns to the control.
+      await ev(
+        gm,
+        `(document.querySelector('.picker-option[aria-current="true"]') || document.querySelector('.picker-option')).click()`,
+      );
+      await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 10000, `picker ${id} closed`);
+      record.afterClose = await ev(
+        gm,
+        `({ focusOnTrigger: document.activeElement?.id === ${JSON.stringify(id)}, anyInert: [...document.body.children].some(c => c.hasAttribute("inert")), rootLocked: document.documentElement.classList.contains("sheet-open") })`,
+      );
+      if (!record.afterClose.focusOnTrigger)
+        fail(`picker-${id}@${vp.name}`, "focus did not return to the control");
+      if (record.afterClose.anyInert)
+        fail(`picker-${id}@${vp.name}`, "background still inert after close");
+      if (record.afterClose.rootLocked)
+        fail(`picker-${id}@${vp.name}`, "scroll lock left on after close");
+      report.pickers.push(record);
+    }
+  }
+  // A real choice through the picker changes the field's value (scene-select).
+  await applyViewport(gm, byName["phone"]);
+  const before = await ev(gm, `document.getElementById("scene-select").dataset.value`);
+  await ev(gm, `document.getElementById("scene-select").click()`);
+  await waitFor(
+    gm,
+    `document.querySelector('[role="dialog"] .picker-option')`,
+    10000,
+    "scene picker",
+  );
+  await ev(
+    gm,
+    `[...document.querySelectorAll('.picker-option')].find(o => o.getAttribute("aria-current") !== "true").click()`,
+  );
+  await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 10000, "scene picker closed");
+  const after = await ev(gm, `document.getElementById("scene-select").dataset.value`);
+  if (before === after)
+    fail("pickers", "choosing a different option did not change the control's value");
+  report.pickersChanged = { before, after };
+  // Put the GM's selection back so the rest of the flow advances to the scene it expects.
+  await ev(gm, `document.getElementById("scene-select").click()`);
+  await waitFor(
+    gm,
+    `document.querySelector('[role="dialog"] .picker-option')`,
+    10000,
+    "scene picker",
+  );
+  await ev(
+    gm,
+    `document.querySelector('.picker-option[data-value=${JSON.stringify(before)}]').click()`,
+  );
+  await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 10000, "scene picker closed");
+  if ((await ev(gm, `document.getElementById("scene-select").dataset.value`)) !== before) {
+    fail("pickers", "could not restore the original scene selection");
+  }
+  await applyViewport(gm, byName["desktop"]);
 }
 
 // ---------- modal (correction sheet) audit ----------
@@ -419,8 +650,11 @@ function within(box, frame, tolerance = 1) {
 }
 
 async function openCorrection(gm) {
-  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => /^rook/i.test(li.textContent.trim()))?.querySelector("button")`;
-  await waitFor(gm, finder, 20000, "Rook's Correct button");
+  // Roster-agnostic: the first claimed character's Correct button, whatever the roster (the
+  // sourcebook roster replaced the placeholder "Rook"). Same selector fix as `c77cd94` on the
+  // sonnet-w lineage, which never reached this branch.
+  const finder = `[...document.querySelectorAll(".roster-panel-list li")].find(li => li.querySelector("button"))?.querySelector("button")`;
+  await waitFor(gm, finder, 20000, "a claimed character's Correct button");
   await ev(
     gm,
     `(() => { const b = ${finder}; b.scrollIntoView({ block: "center" }); b.focus(); b.click(); return true; })()`,
@@ -570,6 +804,27 @@ async function auditModal(gm) {
 
   const frameOf = (vp) => ({ left: 0, top: 0, right: vp.width, bottom: vp.height });
 
+  // The sheet's own labels and its Apply/Cancel row must never break inside a word.
+  for (const [vp, textPx] of [
+    [byName["phone-small"], null],
+    [byName["phone"], null],
+    [byName["tablet"], null],
+    [byName["phone-small"], 24],
+  ]) {
+    await scenario(
+      `word-breaks-${vp.name}${textPx ? `-${(textPx / 16) * 100}` : ""}`,
+      vp,
+      async (record) => {
+        if (textPx) await ev(gm, `document.documentElement.style.fontSize = "${textPx}px"`);
+        await openCorrection(gm);
+        await sleep(300);
+        const broken = await ev(gm, WORD_BREAK_PROBE);
+        record.brokenWords = broken;
+        record.checks.noMidWordWraps = broken.length === 0;
+      },
+    );
+  }
+
   await scenario("zoom-emulated", byName["phone"], async (record) => {
     await openCorrection(gm);
     await gm.cdp.send("Emulation.setPageScaleFactor", { pageScaleFactor: 1.6 }, gm.sessionId);
@@ -645,17 +900,86 @@ async function auditModal(gm) {
     });
   }
 
+  // Browser Back with the sheet open must close only the sheet: same route, console intact, and the
+  // history stack left as it was (a second Back must not be needed to undo the sheet's own entry).
+  await scenario("back-closes-only-the-sheet", byName["phone"], async (record) => {
+    const hashBefore = await ev(gm, `location.hash`);
+    const lenBefore = await ev(gm, `history.length`);
+    await openCorrection(gm);
+    const lenOpen = await ev(gm, `history.length`);
+    const stateOpen = await ev(gm, `typeof (history.state && history.state.digitableSheet)`);
+    await ev(gm, `history.back()`);
+    await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 5000, "sheet closed by Back");
+    await sleep(300);
+    record.checks.sheetClosed = true;
+    record.checks.routeUnchanged = (await ev(gm, `location.hash`)) === hashBefore;
+    record.checks.consoleStillRendered = await ev(
+      gm,
+      `Boolean(document.querySelector(".roster-panel-list"))`,
+    );
+    record.checks.rootUnlocked = !(await ev(
+      gm,
+      `document.documentElement.classList.contains("sheet-open")`,
+    ));
+    // Reopen and close with Cancel: the entry must be removed again (state is not the sheet entry).
+    await openCorrection(gm);
+    await closeCorrection(gm);
+    await sleep(300);
+    record.checks.cancelRemovesEntry = !(await ev(
+      gm,
+      `Boolean(history.state && history.state.digitableSheet)`,
+    ));
+    // The sheet's own entry must not leak: after open+Back+open+Cancel the visible stack is back at
+    // its baseline depth (entries beyond the cursor stay in `history.length` as forward entries, so
+    // compare the entry count we can observe: the length may only have grown by the one forward slot).
+    const lenAfter = await ev(gm, `history.length`);
+    record.checks.stackNotGrownBeyondOneEntry = lenAfter <= lenBefore + 1;
+    // Length can stay flat when a push truncates leftover forward entries, so observe the entry itself.
+    record.checks.entryAddedWhileOpen = stateOpen === "number";
+    record.notes.push(`history.length before/open/after: ${lenBefore}/${lenOpen}/${lenAfter}`);
+  });
+
+  // Almost nothing visible (landscape phone with the keyboard up leaves ~140px): the sheet must stop
+  // pinning its header and action row and scroll as one page, so Apply/Cancel stay reachable.
+  for (const vp of [
+    { name: "visible-140", width: 320, height: 140, mobile: true },
+    { name: "visible-160-landscape", width: 667, height: 160, mobile: true },
+  ]) {
+    await scenario(`short-${vp.name}`, vp, async (record) => {
+      await openCorrection(gm);
+      const frame = frameOf(vp);
+      const geo = await ev(gm, MODAL_GEOMETRY);
+      record.geometry = geo;
+      record.checks.dialogInsideViewport = within(geo.dialog, frame);
+      record.checks.noPageOverflow = geo.pageOverflowPx <= 1;
+      // The container-query branch must really have engaged (the sheet itself scrolls), otherwise
+      // the geometry checks below could pass on the pinned layout and prove nothing about it.
+      record.checks.containerBranchEngaged = await ev(
+        gm,
+        `getComputedStyle(document.querySelector('[role="dialog"]')).overflowY === "auto"`,
+      );
+      await ev(
+        gm,
+        `(() => { const d = document.querySelector('[role="dialog"]'); d.scrollTop = d.scrollHeight; })()`,
+      );
+      await sleep(200);
+      const end = await ev(gm, MODAL_GEOMETRY);
+      record.checks.applyReachable = within(end.apply, frame);
+      record.checks.cancelReachable = within(end.cancel, frame);
+      record.checks.actionTargets44 = end.apply?.height >= 43.5 && end.cancel?.height >= 43.5;
+      record.screenshot = await screenshot(gm, `gm-correction-short-${vp.name}.jpg`, {
+        fullPage: false,
+      });
+    });
+  }
+
   // Text scaling: what a browser "font size: large/very large" does to every rem. 320px at 150% and
-  // 375px at 200% are gating. 320px at 200% is recorded but NOT gating: at that size the (unchanged,
-  // rem-padded) panels behind the sheet leave under 70px for a check-box row and overflow the page,
-  // which widens the layout viewport; that limit is the console's, not the sheet's, and is listed in
-  // the handoff.
+  // 375px at 200% and 320px at 200% are all gating, with the sheet open AND closed (the closed-sheet
+  // console used to overflow ~5px at 320px/200% until nested gutters were capped by vw).
   for (const [vp, px, informationalChecks] of [
     [byName["phone-small"], 24, []],
     [byName["phone"], 32, []],
-    // Only the two geometry checks the console's overflow can break are non-gating here; the sheet's own
-    // bodyKeepsRoom / actionsReachable / reasonReachable still gate.
-    [byName["phone-small"], 32, ["dialogInsideViewport", "noPageOverflow"]],
+    [byName["phone-small"], 32, []],
   ]) {
     await scenario(
       `text-${px === 24 ? "150" : "200"}-${vp.name}`,
@@ -694,6 +1018,15 @@ async function auditModal(gm) {
           `gm-correction-text-${px === 24 ? "150" : "200"}-${vp.name}.jpg`,
           { fullPage: false },
         );
+        // Sheet closed: the console itself must not scroll sideways at this text size (fu backlog;
+        // the open-sheet measurement above cannot see it because the page behind is scroll-locked).
+        await closeCorrection(gm);
+        record.closedPageOverflowPx = await ev(
+          gm,
+          `document.documentElement.scrollWidth - document.documentElement.clientWidth`,
+        );
+        record.checks.closedNoPageOverflow = record.closedPageOverflowPx <= 1;
+        await ev(gm, `document.documentElement.style.fontSize = ""`);
       },
       { informationalChecks },
     );
@@ -872,6 +1205,7 @@ async function main() {
     await waitFor(gm, `${textMatch("button", "/^Roll it$/")}`, 30000, "Roll it");
     await captureState(gm, "console-pending");
 
+    await auditPickers(gm);
     await auditModal(gm);
     await auditReducedMotion(gm);
 

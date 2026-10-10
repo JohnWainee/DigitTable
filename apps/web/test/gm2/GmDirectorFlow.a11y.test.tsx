@@ -40,8 +40,8 @@ function renderApp(hash = "#/"): ReturnType<typeof render> {
 }
 
 /**
- * c07: `GmToolsPanel`'s character `<select>` options repeat every roster
- * name too, so an unscoped `getByText`/`getByRole("heading")` lookup for
+ * c07: `GmToolsPanel`'s character pickers list every roster name too while
+ * open, so an unscoped `getByText`/`getByRole("heading")` lookup for
  * a name is no longer unique — scope to the roster list itself.
  */
 function rosterList(): HTMLElement {

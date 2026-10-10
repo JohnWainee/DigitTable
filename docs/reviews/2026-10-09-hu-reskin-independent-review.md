@@ -1,0 +1,7 @@
+# hu reskin increment independent review
+
+- **Date:** 2026-10-09; **reviewed:** `2254ff1` against `9a01f1d`; **reviewer:** fresh read-only subagent (not the author).
+- **Verdict:** no high or medium findings; presentation and audit script only (no engine, contracts, template, Functions, rules or licensed text).
+- **Confirmed by the reviewer:** every `min(rem, vw)` cap equals the 100%-text rem value at 320 px (5vw = 1rem, 4.25vw = 0.85rem, 4vw = 0.8rem, 13.75vw = 2.75rem), so nothing changes at 100% text on any width of 320 px or more; the safe-area `max()` still wins when larger; `SelectedEcho` is `aria-hidden` and non-focusable so the select is announced once; the SceneDirector test is not vacuous. `vitest` on styles + gm2 passed 73/73; prettier clean.
+- **Low findings (accepted):** (1) the audit's canvas measure ignores letter-spacing and text-transform and could slightly under-measure (a false fail is safe; a false pass is unlikely given the 1 px tolerance); (2) the echo check does not itself test the echo is unclipped (page-level overflow audit covers it); (3) the committed "before" report is from a `--modal-only` run, so the "8 failures" per-state figure in the evidence README is the author's console record of the preceding full run, not a committed artefact.
+- **Reviewer did not** run the browser audit or emulators; those results are recorded by the author in `docs/evidence/hu-reskin/README.md`.

@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { useBackDismiss } from "./useBackDismiss.js";
 import { useVisualViewportBox } from "./useVisualViewportBox.js";
 
 const FOCUSABLE_SELECTOR =
@@ -55,6 +56,8 @@ export interface SheetDialogProps {
   readonly onClose: () => void;
   /** Sticky action row (primary and cancel buttons); always reachable without scrolling the body. */
   readonly footer: ReactNode;
+  /** Optional pinned context that remains visible while the dialog body scrolls. */
+  readonly pinnedContext?: ReactNode;
   readonly children: ReactNode;
 }
 
@@ -84,6 +87,7 @@ export function SheetDialog({
   title,
   onClose,
   footer,
+  pinnedContext,
   children,
 }: SheetDialogProps): JSX.Element {
   const backdropRef = useRef<HTMLDivElement>(null);
@@ -91,6 +95,7 @@ export function SheetDialog({
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   useVisualViewportBox(backdropRef);
+  useBackDismiss(onClose);
 
   // Focus, inert background, and root scroll lock share one lifecycle so the
   // restore order is deterministic: un-inert first, then return focus (an
@@ -193,6 +198,7 @@ export function SheetDialog({
             {title}
           </h2>
         </div>
+        {pinnedContext !== undefined && <div className="sheet-context">{pinnedContext}</div>}
         <div className="sheet-body">{children}</div>
         <div className="sheet-footer">{footer}</div>
       </div>

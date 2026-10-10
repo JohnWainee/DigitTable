@@ -1,0 +1,7 @@
+# ia reskin increment independent review
+
+- **Date:** 2026-10-09; **reviewed:** the uncommitted diff over `554c622` (`styles.css`, `ui-audit.mjs`, `reskinContract.test.ts`); **reviewer:** fresh read-only subagent (not the author).
+- **Verdict:** approve; no high or medium findings. Presentation and audit script only (no engine, contracts, template, Functions, rules, auth or projection change).
+- **Confirmed:** every `min(<rem>, <vw>)` equals the old rem value at 320 px / 100% text (20 px, 11.2 px, 1.792 px) and only shrinks beyond that; the one real change at 320 px/100% is that `.sheet-actions` now stacks on phones (two 13rem columns need 26rem); no touch-target, font-size or colour change; the probe's template-literal escaping is correct and the scenarios cannot pass vacuously (`scenario()` fails on zero checks or a throw); `.gear-option:has(> button)` matches only the GM Reveal row, not checkbox/radio rows or the `.gear-row` option-plus-button pattern.
+- **Low findings (accepted):** (1) buttons lose some side padding at 150-200% text on narrow phones (intended trade-off; the label stays whole); (2) the probe gets no rects for `<option>` text, skips one-letter words and reads only the first client rect per character; (3) a legitimately long unbreakable token under `overflow-wrap: anywhere` would be reported as a break (it fails loudly, so it cannot hide).
+- **Reviewer did not** run the browser audit, tests or emulators; the author's results are in `docs/evidence/ia-reskin/README.md`.

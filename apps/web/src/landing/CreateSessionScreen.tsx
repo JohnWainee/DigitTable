@@ -87,6 +87,9 @@ export function CreateSessionScreen(): JSX.Element {
               minLength={4}
               maxLength={128}
               autoComplete="off"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               value={passphrase}
               onChange={(e) => setPassphrase(e.target.value)}
             />

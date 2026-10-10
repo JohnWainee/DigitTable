@@ -66,6 +66,9 @@ export function JoinTableScreen(): JSX.Element {
             <label htmlFor="table-room-code">Room code</label>
             <input
               id="table-room-code"
+              autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck={false}
               type="text"
               required
               value={roomCode}
@@ -76,6 +79,10 @@ export function JoinTableScreen(): JSX.Element {
             <label htmlFor="table-code">Table code</label>
             <input
               id="table-code"
+              autoComplete="off"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               type="text"
               required
               value={tableCode}
