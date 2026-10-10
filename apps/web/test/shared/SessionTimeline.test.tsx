@@ -27,6 +27,11 @@ describe("SessionTimeline", () => {
     expect(await axe(container)).toHaveNoViolations();
     rerender(<SessionTimeline records={[privateRecord]} capability="player" />);
     expect(screen.getByText("Private note from GM: secret detail")).toBeInTheDocument();
+    expect(screen.getByRole("list", { name: "Recent session events" })).toHaveAttribute(
+      "tabindex",
+      "0",
+    );
+    expect(await axe(container)).toHaveNoViolations();
     rerender(<SessionTimeline records={[privateRecord]} capability="gm" />);
     expect(screen.getByText("Private note sent: secret detail")).toBeInTheDocument();
   });
