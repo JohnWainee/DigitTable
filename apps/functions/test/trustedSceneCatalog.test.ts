@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ORIGINAL_MISSION } from "@digitable/template-eat-the-reich";
 import { PUBLIC_SCENE_CATALOG } from "@digitable/template-eat-the-reich/public-scenes";
 import { resolveOriginalSceneCommand } from "../src/trustedSceneCatalog.js";
+import { privateOriginalContentSentinels } from "../../../scripts/playtest/private-original-content-sentinels.mjs";
 
 describe("trusted original scene catalog", () => {
   it("keeps public card metadata aligned with private trusted definitions", () => {
@@ -14,6 +15,17 @@ describe("trusted original scene catalog", () => {
         artKey: scene.sceneId,
       });
     }
+  });
+
+  it("keeps the browser bundle scan exhaustive for every current briefing and unrevealed threat note", () => {
+    expect(privateOriginalContentSentinels.briefings).toEqual(
+      ORIGINAL_MISSION.map((scene) => scene.gmBriefing),
+    );
+    expect(privateOriginalContentSentinels.unrevealedThreatNotes).toEqual(
+      ORIGINAL_MISSION.flatMap((scene) =>
+        scene.threats.filter((threat) => !threat.revealed).map((threat) => threat.notes),
+      ),
+    );
   });
 
   it("expands an ID-only GM command inside the trusted authority", () => {
