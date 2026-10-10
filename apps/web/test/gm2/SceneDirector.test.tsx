@@ -1,4 +1,6 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { axe } from "jest-axe";
 import { describe, expect, it, vi } from "vitest";
 import { ORIGINAL_MISSION, type SceneView } from "@digitable/template-eat-the-reich";
 import { SceneDirector } from "../../src/gm2/SceneDirector.js";
@@ -21,18 +23,21 @@ function director(scene: SceneView | null): JSX.Element {
   );
 }
 
-function pickerTrigger(): HTMLElement {
-  return screen.getByRole("button", { name: /^Scene/ });
-}
-
 function chooseScene(id: string): void {
-  fireEvent.click(pickerTrigger());
-  const title = ORIGINAL_MISSION.find((s) => s.sceneId === id)!.title;
-  fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: title }));
+  const card = screen
+    .getAllByRole("button", { name: /^Select scene/ })
+    .find((button) => button.getAttribute("data-scene-id") === id);
+  if (!card) throw new Error(`No scene card for ${id}`);
+  fireEvent.click(card);
 }
 
 function selectedScene(): string {
-  return pickerTrigger().dataset.value ?? "";
+  return (
+    screen
+      .getAllByRole("button", { name: /^Select scene/ })
+      .find((button) => button.getAttribute("aria-pressed") === "true")
+      ?.getAttribute("data-scene-id") ?? ""
+  );
 }
 
 function sceneView(id: string): SceneView {
@@ -71,9 +76,9 @@ describe("SceneDirector default scene selection", () => {
   it("re-defaults when the loaded scene changes, without remounting", () => {
     const { rerender } = render(director(null));
     expect(selectedScene()).toBe(ids[0]);
-    const select = pickerTrigger();
+    const cards = screen.getAllByRole("button", { name: /^Select scene/ });
     rerender(director(sceneView(ids[0]!)));
-    expect(pickerTrigger()).toBe(select);
+    expect(screen.getAllByRole("button", { name: /^Select scene/ })).toEqual(cards);
     expect(selectedScene()).toBe(ids[1]);
     rerender(director(sceneView(ids[1]!)));
     expect(selectedScene()).toBe(ids[2]);
@@ -87,5 +92,47 @@ describe("SceneDirector default scene selection", () => {
     expect(selectedScene()).toBe(ids[3]);
     rerender(director(sceneView(ids[1]!)));
     expect(selectedScene()).toBe(ids[2]);
+  });
+
+  it("renders the four factory scenes with their mapped original art and usable previews", () => {
+    render(director(null));
+    const cards = screen.getAllByRole("button", { name: /^Select scene/ });
+    expect(cards).toHaveLength(4);
+    for (const [index, definition] of ORIGINAL_MISSION.entries()) {
+      const card = cards[index]!;
+      expect(card).toHaveAttribute("data-scene-id", definition.sceneId);
+      expect(within(card).getByRole("img")).toHaveAttribute(
+        "src",
+        `/etr/${definition.sceneId}-640.webp`,
+      );
+      expect(within(card).getByText(definition.locationLabel)).toBeInTheDocument();
+    }
+    expect(screen.getByText(/GM briefing:/i).parentElement?.textContent).toContain(
+      ORIGINAL_MISSION[0]!.gmBriefing,
+    );
+    expect(screen.getByRole("heading", { name: "Objectives" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Threats" })).toBeInTheDocument();
+  });
+
+  it("keeps the active scene visibly selected and prevents loading it again", () => {
+    const active = sceneView(ids[0]!);
+    render(director(active));
+    const current = screen.getByRole("button", {
+      name: new RegExp(`Select scene 1: ${ORIGINAL_MISSION[0]!.title}.*currently active`),
+    });
+    expect(current).toBeDisabled();
+    expect(current).toHaveAttribute("aria-pressed", "false");
+    expect(selectedScene()).toBe(ids[1]);
+  });
+
+  it("supports keyboard scene selection and has no axe violations in the library", async () => {
+    const user = userEvent.setup();
+    render(director(null));
+    await user.tab();
+    const firstCard = screen.getAllByRole("button", { name: /^Select scene/ })[0]!;
+    expect(firstCard).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(firstCard).toHaveAttribute("aria-pressed", "true");
+    expect(await axe(document.body)).toHaveNoViolations();
   });
 });

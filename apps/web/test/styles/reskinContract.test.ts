@@ -114,6 +114,7 @@ describe("reskin stylesheet contract", () => {
         "link-button",
         "picker-trigger",
         "picker-option",
+        "encounter-library-card",
       ]);
       const uncovered: string[] = [];
       for (const file of sourceFiles(join(here, "../../src"))) {

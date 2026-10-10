@@ -66,7 +66,7 @@ service cloud.firestore {
         // receipt during reconnect. The resource-data check remains for
         // existing documents. Command IDs are UUIDs and member IDs are
         // server-minted, so another member cannot construct this prefix.
-        allow get: if isOwnMember(roomId, resource.data.memberId)
+        allow get: if (resource != null && isOwnMember(roomId, resource.data.memberId))
           || (isMember(roomId)
             && resource == null
             && binding(roomId).data.memberId.matches('^[A-Za-z0-9-]+$')

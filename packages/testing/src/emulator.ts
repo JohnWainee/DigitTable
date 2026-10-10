@@ -18,12 +18,22 @@ export type { RulesTestEnvironment } from "@firebase/rules-unit-testing";
  */
 export const DEMO_PROJECT_ID = "demo-digitable";
 
+function emulatorPort(name: string, fallback: number): number {
+  const value = process.env[name];
+  if (value === undefined || value === "") return fallback;
+  const port = Number(value);
+  if (!Number.isInteger(port) || port < 1 || port > 65_535) {
+    throw new Error(`${name} must be an integer port from 1 to 65535.`);
+  }
+  return port;
+}
+
 const FIRESTORE_EMULATOR_HOST = "127.0.0.1";
-const FIRESTORE_EMULATOR_PORT = 8080;
+const FIRESTORE_EMULATOR_PORT = emulatorPort("DIGITABLE_EMULATOR_FIRESTORE_PORT", 8080);
 const DATABASE_EMULATOR_HOST = "127.0.0.1";
-const DATABASE_EMULATOR_PORT = 9000;
+const DATABASE_EMULATOR_PORT = emulatorPort("DIGITABLE_EMULATOR_DATABASE_PORT", 9000);
 const AUTH_EMULATOR_HOST = "127.0.0.1";
-const AUTH_EMULATOR_PORT = 9099;
+const AUTH_EMULATOR_PORT = emulatorPort("DIGITABLE_EMULATOR_AUTH_PORT", 9099);
 
 // packages/testing/src/emulator.ts -> repo root (where firebase.json/firestore.rules/
 // database.rules.json live) is three directories up.

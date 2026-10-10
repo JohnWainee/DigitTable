@@ -25,6 +25,33 @@ describe("emulatorConfigFor", () => {
     expect(config?.auth.url).toBe("http://10.0.0.5:9099");
   });
 
+  it("supports explicit local ports for parallel emulator rigs", () => {
+    expect(
+      emulatorConfigFor(
+        {
+          VITE_FIREBASE_USE_EMULATOR: "true",
+          VITE_EMULATOR_AUTH_PORT: "47099",
+          VITE_EMULATOR_FUNCTIONS_PORT: "47001",
+          VITE_EMULATOR_FIRESTORE_PORT: "47080",
+        },
+        "127.0.0.1",
+      ),
+    ).toEqual({
+      auth: { url: "http://127.0.0.1:47099" },
+      functions: { host: "127.0.0.1", port: 47001 },
+      firestore: { host: "127.0.0.1", port: 47080 },
+    });
+  });
+
+  it("rejects malformed emulator ports", () => {
+    expect(() =>
+      emulatorConfigFor(
+        { VITE_FIREBASE_USE_EMULATOR: "true", VITE_EMULATOR_AUTH_PORT: "9099/tcp" },
+        "localhost",
+      ),
+    ).toThrow(/VITE_EMULATOR_AUTH_PORT/);
+  });
+
   it("falls back to 127.0.0.1 when there is no page hostname or override", () => {
     expect(emulatorConfigFor({ VITE_FIREBASE_USE_EMULATOR: "true" }, undefined)?.firestore).toEqual(
       {

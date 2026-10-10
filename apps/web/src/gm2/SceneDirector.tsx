@@ -26,7 +26,7 @@ export interface SceneDirectorProps {
   ) => void;
 }
 
-/** The opening scene when none is loaded, otherwise the scene after the current one (wrapping to any other scene), so "Advance scene" never defaults to reloading the current scene. */
+/** The opening scene when none is loaded, otherwise the next scene in mission order. */
 function defaultSceneId(currentSceneId: string | null): string {
   if (currentSceneId === null) return ORIGINAL_MISSION[0]!.sceneId;
   const index = ORIGINAL_MISSION.findIndex((s) => s.sceneId === currentSceneId);
@@ -207,17 +207,75 @@ export function SceneDirector({
 
       <fieldset>
         <legend>{scene ? "Advance to a new scene" : "Load the opening scene"}</legend>
-        <OptionPicker
-          id="scene-select"
-          label="Scene"
-          value={selectedSceneId}
-          onChange={(sceneId) => setChoice({ forSceneId: currentSceneId, sceneId })}
-          options={ORIGINAL_MISSION.map((definition) => ({
-            value: definition.sceneId,
-            label: definition.title,
-          }))}
-        />
-        <p className="form-hint">{selected.gmBriefing}</p>
+        <h3>Encounter library</h3>
+        <p className="form-hint">
+          Choose one of the four original mission scenes. The current scene is locked while it is
+          active; player and table views receive only the approved scene projection.
+        </p>
+        <ol className="encounter-library" aria-label="Original mission scenes">
+          {ORIGINAL_MISSION.map((definition, index) => {
+            const isCurrent = definition.sceneId === currentSceneId;
+            const isSelected = definition.sceneId === selectedSceneId;
+            return (
+              <li key={definition.sceneId}>
+                <button
+                  type="button"
+                  className="encounter-library-card"
+                  data-scene-id={definition.sceneId}
+                  aria-label={`Select scene ${index + 1}: ${definition.title}${isCurrent ? ", currently active" : ""}`}
+                  aria-pressed={isSelected}
+                  disabled={isCurrent}
+                  onClick={() =>
+                    setChoice({ forSceneId: currentSceneId, sceneId: definition.sceneId })
+                  }
+                >
+                  <SceneArt
+                    key={`${definition.sceneId}:library`}
+                    sceneId={definition.sceneId}
+                    title={definition.title}
+                  />
+                  <span className="encounter-library-card-copy">
+                    <span className="encounter-library-card-kicker">
+                      Scene {String(index + 1).padStart(2, "0")}
+                      {isCurrent ? " · Current" : isSelected ? " · Selected" : ""}
+                    </span>
+                    <strong>{definition.title}</strong>
+                    <span>{definition.locationLabel}</span>
+                    <span className="encounter-library-card-counts">
+                      {definition.objectives.length} objectives · {definition.threats.length}{" "}
+                      threats
+                    </span>
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+        <div className="encounter-preview">
+          <p role="status">Previewing {selected.title}</p>
+          <h4>Selected: {selected.title}</h4>
+          <p>{selected.locationLabel}</p>
+          <h4>Objectives</h4>
+          <ul>
+            {selected.objectives.map((objective) => (
+              <li key={objective.id}>
+                {objective.title} ({objective.kind}; rating {objective.rating})
+              </li>
+            ))}
+          </ul>
+          <h4>Threats</h4>
+          <ul>
+            {selected.threats.map((threat) => (
+              <li key={threat.id}>
+                {threat.name} — rating {threat.rating}, attack {threat.attack}
+                {threat.revealed ? " · revealed on load" : " · staged to reveal later"}
+              </li>
+            ))}
+          </ul>
+          <p className="form-hint">
+            <strong>GM briefing:</strong> {selected.gmBriefing}
+          </p>
+        </div>
         {scene && !primaryComplete && (
           <div className="form-field">
             <label htmlFor="scene-reason">

@@ -88,6 +88,7 @@ const report = {
   states: [],
   modal: [],
   pickers: [],
+  encounterLibrary: [],
   reducedMotion: null,
   routes: [],
   failures: [],
@@ -379,6 +380,98 @@ async function captureState(device, state, { axeViewports = ["phone", "tablet", 
   await applyViewport(device, original);
 }
 
+// ---------- original four-scene encounter library ----------
+
+const ENCOUNTER_LIBRARY_GEOMETRY = `(() => {
+  const cards = [...document.querySelectorAll(".encounter-library-card")];
+  const box = el => { const r = el.getBoundingClientRect(); return { left: r.left, right: r.right, width: r.width, height: r.height }; };
+  const selected = cards.filter(card => card.getAttribute("aria-pressed") === "true");
+  const current = cards.filter(card => card.disabled);
+  return {
+    count: cards.length,
+    selectedCount: selected.length,
+    selectedId: selected[0]?.dataset.sceneId ?? null,
+    currentCount: current.length,
+    cards: cards.map(card => ({
+      id: card.dataset.sceneId,
+      disabled: card.disabled,
+      rect: box(card),
+      image: card.querySelector("img")?.getAttribute("src") ?? null,
+      imageAlt: card.querySelector("img")?.getAttribute("alt") ?? null,
+    })),
+    previewTitle: document.querySelector(".encounter-preview h4")?.textContent ?? "",
+    pageOverflowPx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  };
+})()`;
+
+async function auditEncounterLibrary(gm) {
+  if (MODAL_ONLY) return;
+  const cases = [
+    ...VIEWPORTS,
+    { name: "keyboard-short-360x300", width: 360, height: 300, mobile: true },
+  ];
+  const original = gm.vp;
+  for (const vp of cases) {
+    await applyViewport(gm, vp);
+    const initial = await ev(gm, ENCOUNTER_LIBRARY_GEOMETRY);
+    const record = { viewport: vp.name, size: `${vp.width}x${vp.height}`, initial };
+    if (initial.count !== 4)
+      fail(`encounter-library@${vp.name}`, `expected 4 cards, found ${initial.count}`);
+    if (initial.selectedCount !== 1)
+      fail(
+        `encounter-library@${vp.name}`,
+        `expected one selected card, found ${initial.selectedCount}`,
+      );
+    if (initial.currentCount !== 1)
+      fail(
+        `encounter-library@${vp.name}`,
+        `expected one locked active scene, found ${initial.currentCount}`,
+      );
+    if (initial.selectedId === initial.cards.find((card) => card.disabled)?.id)
+      fail(`encounter-library@${vp.name}`, "active scene is selected as the next scene");
+    if (initial.pageOverflowPx > 1)
+      fail(`encounter-library@${vp.name}`, `horizontal overflow ${initial.pageOverflowPx}px`);
+    for (const card of initial.cards) {
+      if (Math.min(card.rect.width, card.rect.height) < 43.5)
+        fail(
+          `encounter-library@${vp.name}`,
+          `${card.id} target is ${Math.round(card.rect.width)}x${Math.round(card.rect.height)}`,
+        );
+      if (card.rect.left < -0.5 || card.rect.right > vp.width + 0.5)
+        fail(`encounter-library@${vp.name}`, `${card.id} is horizontally outside the viewport`);
+      if (!card.image?.includes(`/etr/${card.id}-640.webp`) || !card.imageAlt)
+        fail(`encounter-library@${vp.name}`, `${card.id} lacks its mapped art or alt text`);
+    }
+    const selectable = initial.cards.find(
+      (card) => !card.disabled && card.id !== initial.selectedId,
+    );
+    if (selectable) {
+      await ev(
+        gm,
+        `document.querySelector('[data-scene-id=${JSON.stringify(selectable.id)}].encounter-library-card').click()`,
+      );
+      const changed = await ev(gm, ENCOUNTER_LIBRARY_GEOMETRY);
+      record.afterSelection = changed.selectedId;
+      if (changed.selectedId !== selectable.id)
+        fail(`encounter-library@${vp.name}`, "selecting another card did not update the preview");
+      await ev(
+        gm,
+        `document.querySelector('[data-scene-id=${JSON.stringify(initial.selectedId)}].encounter-library-card').click()`,
+      );
+    }
+    if (["phone", "tablet", "desktop"].includes(vp.name)) {
+      record.axe = await runAxe(gm);
+      for (const v of record.axe.filter(isHardAxe))
+        fail(
+          `encounter-library/${vp.name}`,
+          `axe ${v.id} (${v.impact}) x${v.count}: ${v.nodes[0]}`,
+        );
+    }
+    report.encounterLibrary.push(record);
+  }
+  await applyViewport(gm, original);
+}
+
 // ---------- option pickers (the replacement for native <select>) ----------
 
 const PICKER_GEOMETRY = `(() => {
@@ -473,7 +566,7 @@ async function auditPickers(gm) {
         );
         record.checks.lastOptionReachable = within(lastOption, frame);
       }
-      if (id === "scene-select" || id === "grant-character") {
+      if (id === "grant-character") {
         record.screenshot = await screenshot(gm, `gm-picker-${id}-${vp.name}.jpg`, {
           fullPage: false,
         });
@@ -499,41 +592,6 @@ async function auditPickers(gm) {
         fail(`picker-${id}@${vp.name}`, "scroll lock left on after close");
       report.pickers.push(record);
     }
-  }
-  // A real choice through the picker changes the field's value (scene-select).
-  await applyViewport(gm, byName["phone"]);
-  const before = await ev(gm, `document.getElementById("scene-select").dataset.value`);
-  await ev(gm, `document.getElementById("scene-select").click()`);
-  await waitFor(
-    gm,
-    `document.querySelector('[role="dialog"] .picker-option')`,
-    10000,
-    "scene picker",
-  );
-  await ev(
-    gm,
-    `[...document.querySelectorAll('.picker-option')].find(o => o.getAttribute("aria-current") !== "true").click()`,
-  );
-  await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 10000, "scene picker closed");
-  const after = await ev(gm, `document.getElementById("scene-select").dataset.value`);
-  if (before === after)
-    fail("pickers", "choosing a different option did not change the control's value");
-  report.pickersChanged = { before, after };
-  // Put the GM's selection back so the rest of the flow advances to the scene it expects.
-  await ev(gm, `document.getElementById("scene-select").click()`);
-  await waitFor(
-    gm,
-    `document.querySelector('[role="dialog"] .picker-option')`,
-    10000,
-    "scene picker",
-  );
-  await ev(
-    gm,
-    `document.querySelector('.picker-option[data-value=${JSON.stringify(before)}]').click()`,
-  );
-  await waitFor(gm, `!document.querySelector('[role="dialog"]')`, 10000, "scene picker closed");
-  if ((await ev(gm, `document.getElementById("scene-select").dataset.value`)) !== before) {
-    fail("pickers", "could not restore the original scene selection");
   }
   await applyViewport(gm, byName["desktop"]);
 }
@@ -1024,6 +1082,7 @@ async function main() {
       "claimed",
     );
     await captureState(gm, "console-scene-loaded");
+    await auditEncounterLibrary(gm);
 
     // Player declares; GM sees pending.
     await clickText(player, "button", /^Declare action$/);
@@ -1096,6 +1155,7 @@ async function main() {
     report.ok = report.failures.length === 0;
     report.summary = {
       states: report.states.length,
+      encounterLibraryChecks: report.encounterLibrary.length,
       controlsAudited: report.states.reduce((n, s) => n + s.controls, 0),
       controlIssues: report.states.reduce((n, s) => n + s.controlIssues.length, 0),
       overflowStates: report.states.filter((s) => s.overflowPx > 1).length,

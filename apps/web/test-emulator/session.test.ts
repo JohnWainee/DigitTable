@@ -24,9 +24,17 @@ import { MemoryStorage } from "../test/memoryStorage.js";
 describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A05)", () => {
   const RUN = Date.now().toString(36);
   const emulator: SessionEmulatorConfig = {
-    auth: { url: "http://127.0.0.1:9099" },
-    functions: { host: "127.0.0.1", port: 5001 },
-    firestore: { host: "127.0.0.1", port: 8080 },
+    auth: {
+      url: `http://127.0.0.1:${process.env.DIGITABLE_EMULATOR_AUTH_PORT ?? "9099"}`,
+    },
+    functions: {
+      host: "127.0.0.1",
+      port: Number(process.env.DIGITABLE_EMULATOR_FUNCTIONS_PORT ?? "5001"),
+    },
+    firestore: {
+      host: "127.0.0.1",
+      port: Number(process.env.DIGITABLE_EMULATOR_FIRESTORE_PORT ?? "8080"),
+    },
   };
 
   // Two independent Firebase apps simulate two independent browser tabs
@@ -105,7 +113,7 @@ describe("FirebaseSessionClient + FirebaseRoomRepository (apps/web, board task A
     const playerMemberId = asMemberId(joined.memberId);
     const outbox = new CommandOutbox(
       storage,
-      "demo-digitable:127.0.0.1:8080",
+      `demo-digitable:127.0.0.1:${process.env.DIGITABLE_EMULATOR_FIRESTORE_PORT ?? "8080"}`,
       await playerSession.ensureSignedIn(),
       roomId,
       playerMemberId,
