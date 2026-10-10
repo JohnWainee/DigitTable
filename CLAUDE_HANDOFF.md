@@ -555,6 +555,13 @@ Branch `sonnet-fu/reskin-fresh-20261006` on `ccb9f2d`. Fresh pop-out/mobile-view
 - A new emulator run remains blocked before test execution because `java -version` reports no Java runtime. This is an environment prerequisite failure, not a product result; the latest completed emulator evidence remains 2026-10-09 (**18 testing/rules + 86 Functions + 4 web**).
 - Pushed the prior gate-documentation commits `7c23740` and `ede48d2` to `origin/codex/staging-playthrough-20261007`. The pre-existing, unrelated `package-lock.json` worktree modification remains unmodified and uncommitted.
 
+## Staging-session confirmation (2026-10-10, Codex hourly automation)
+
+- The requested `digitable-staging-playthrough` Sonnet session remains unavailable rather than complete: `claude logs 31f4a4ef` returned `ECONNREFUSED` for `/tmp/cc-daemon-501/e88de350/control.sock`, and `claude auth status` remains logged out. No unavailable session result has been credited.
+- Replacement staging verification: `npm run check` passed again without touching the existing unrelated `package-lock.json` change (**714 passed / 11 todo**, 74 files passed and 1 skipped). The known local JDK is available only with `PATH=/opt/homebrew/opt/openjdk/bin:$PATH`; a default-port emulator retry stopped before tests because another local lane owns Auth/Firestore/RTDB ports 9099/8080/9000. It is a port-contention result, not emulator or product evidence.
+- The isolated reskin candidate was independently re-reviewed, documented, committed as `077b955`, and pushed to `origin/sonnet/iw-reskin-orchestrated-20261010`. Its exact earlier remapped-port emulator evidence (18 rules + 86 Functions + 4 web) and local GM/player/table smoke remain valid. Neither candidate nor staging build was deployed or merged.
+- Next action: when the active local emulator lane releases its ports, rerun the staging emulator suite; physical-device keyboard and changed-build staging evidence still require the stated environment/authorization. Preserve this worktree's dirty `package-lock.json`.
+
 ## Candidate-gate follow-up (2026-10-10, Codex hourly automation)
 
 - The requested Sonnet session remains unavailable rather than complete: `claude logs 31f4a4ef` again returned `ECONNREFUSED`, and `claude auth status` reports `loggedIn: false`. The clean isolated `sonnet/iw-reskin-orchestrated-20261010` worktree remains pinned to candidate `cd92f3a`; no source change or duplicate worktree was created.
